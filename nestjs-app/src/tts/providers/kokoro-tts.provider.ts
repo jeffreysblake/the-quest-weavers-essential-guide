@@ -58,14 +58,14 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
     try {
       // Dynamically import kokoro-js (optional dependency)
       const kokoroModule = await import('kokoro-js');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const KokoroTTS = (kokoroModule as any).KokoroTTS || kokoroModule;
 
       this.logger.log('Initializing Kokoro TTS...');
 
       // Load the ONNX model with available options
       // Note: kokoro-js API may vary by version
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       const options: any = {
         dtype: this.modelSize, // q8 (200MB), q4 (100MB), fp16 (164MB)
       };

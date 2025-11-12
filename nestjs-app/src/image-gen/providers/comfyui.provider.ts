@@ -207,7 +207,7 @@ export class ComfyUIProvider implements ImageGenProvider {
           // Extract output images
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           const outputs = history.outputs;
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
           for (const nodeId in outputs) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             const output = outputs[nodeId];

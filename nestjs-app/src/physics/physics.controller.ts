@@ -16,60 +16,77 @@ export class PhysicsController {
   constructor(private readonly physicsService: PhysicsService) {}
 
   /**
-   * Create a new physics body
+   * Create a new physics entity
    * @param createPhysicsBodyDto
-   * @returns Created physics body
+   * @returns Created physics entity
    */
   @Post()
   create(@Body() createPhysicsBodyDto: CreatePhysicsBodyDto) {
-    // TODO: Implement physics body creation
-    return { message: 'Physics body creation not implemented' };
+    return this.physicsService.createEntity({
+      name: `physics-entity-${Date.now()}`,
+      position: createPhysicsBodyDto.position,
+      rotation: { x: 0, y: 0, z: 0 },
+      mass: createPhysicsBodyDto.mass,
+      size: { width: 1, height: 1, depth: 1 },
+      active: true,
+    });
   }
 
   /**
-   * Retrieve all physics bodies
-   * @returns Array of physics bodies
+   * Retrieve all physics entities
+   * @returns Array of physics entities
    */
   @Get()
   findAll() {
-    // TODO: Implement physics body listing
-    return [];
+    return this.physicsService.findAll();
   }
 
   /**
-   * Retrieve specific physics body by ID
+   * Retrieve specific physics entity by ID
    * @param id
-   * @returns Physics body with matching ID or undefined
+   * @returns Physics entity with matching ID or undefined
    */
   @Get(':id')
   findOne(@Param('id') id: string) {
-    // TODO: Implement physics body retrieval
-    return null;
+    const entity = this.physicsService.findOne(id);
+    if (!entity) {
+      return { error: 'Physics entity not found' };
+    }
+    return entity;
   }
 
   /**
-   * Update existing physics body
+   * Update existing physics entity
    * @param id
    * @param updatePhysicsBodyDto
-   * @returns Updated physics body or undefined if not found
+   * @returns Updated physics entity or undefined if not found
    */
   @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updatePhysicsBodyDto: UpdatePhysicsBodyDto,
   ) {
-    // TODO: Implement physics body update
-    return { message: 'Physics body update not implemented' };
+    const entity = this.physicsService.findOne(id);
+    if (!entity) {
+      return { error: 'Physics entity not found' };
+    }
+
+    return this.physicsService.updateEntity(id, updatePhysicsBodyDto);
   }
 
   /**
-   * Remove physics body by ID
+   * Remove physics entity by ID
    * @param id
    * @returns Boolean indicating success or failure
    */
   @Delete(':id')
   remove(@Param('id') id: string) {
-    // TODO: Implement physics body removal
-    return { message: 'Physics body removal not implemented' };
+    const success = this.physicsService.removeEntity(id);
+    return {
+      success,
+      message: success
+        ? 'Physics entity removed'
+        : 'Physics entity not found',
+    };
   }
 }
