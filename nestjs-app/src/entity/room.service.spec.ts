@@ -8,10 +8,7 @@ describe('RoomService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RoomService,
-        EntityService
-      ],
+      providers: [RoomService, EntityService],
     }).compile();
 
     service = module.get<RoomService>(RoomService);
@@ -26,9 +23,9 @@ describe('RoomService', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const result = service.createRoom(roomData);
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
@@ -40,12 +37,12 @@ describe('RoomService', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = service.createRoom(roomData);
     const retrievedRoom = service.getRoom(createdRoom.id);
-    
+
     expect(retrievedRoom).toBeDefined();
     expect(retrievedRoom?.id).toBe(createdRoom.id);
   });
@@ -55,23 +52,23 @@ describe('RoomService', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = service.createRoom(roomData);
-    
+
     // Create a test entity (player)
     const playerData = {
       name: 'Test Player',
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
-    
+
     const createdPlayer = entityService.createEntity(playerData);
-    
+
     // Add player to room
     const result = service.addPlayerToRoom(createdRoom.id, createdPlayer.id);
-    
+
     expect(result).toBe(true);
   });
 
@@ -80,23 +77,23 @@ describe('RoomService', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = service.createRoom(roomData);
-    
+
     // Create a test entity (object)
     const objectData = {
       name: 'Test Object',
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
-    
+
     const createdObject = entityService.createEntity(objectData);
-    
+
     // Add object to room
     const result = service.addObjectToRoom(createdRoom.id, createdObject.id);
-    
+
     expect(result).toBe(true);
   });
 });

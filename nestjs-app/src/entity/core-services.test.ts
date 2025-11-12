@@ -12,12 +12,7 @@ describe('Core Services Tests', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        EntityService,
-        RoomService,
-        PlayerService,
-        ObjectService
-      ],
+      providers: [EntityService, RoomService, PlayerService, ObjectService],
     }).compile();
 
     entityService = module.get<EntityService>(EntityService);
@@ -32,7 +27,7 @@ describe('Core Services Tests', () => {
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
-    
+
     const result = entityService.createEntity(testData);
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
@@ -46,9 +41,9 @@ describe('Core Services Tests', () => {
       position: { x: 0, y: 0, z: 0 },
       size: { width: 10, height: 10, depth: 3 },
       objects: [],
-      players: []
+      players: [],
     };
-    
+
     const result = roomService.createRoom(roomData);
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
@@ -61,9 +56,9 @@ describe('Core Services Tests', () => {
       health: 100,
       inventory: [],
       level: 1,
-      experience: 0
+      experience: 0,
     };
-    
+
     const result = playerService.createPlayer(playerData);
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
@@ -75,7 +70,7 @@ describe('Core Services Tests', () => {
       position: { x: 0, y: 0, z: 0 },
       objectType: 'item' as const,
     };
-    
+
     const result = objectService.createObject(objectData);
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();

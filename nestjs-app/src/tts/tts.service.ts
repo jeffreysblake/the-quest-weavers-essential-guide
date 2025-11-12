@@ -21,7 +21,9 @@ export class TTSService implements OnModuleInit {
     if (isPrimary) {
       this.primaryProvider = provider.name;
     }
-    this.logger.log(`Registered TTS provider: ${provider.name}${isPrimary ? ' (primary)' : ''}`);
+    this.logger.log(
+      `Registered TTS provider: ${provider.name}${isPrimary ? ' (primary)' : ''}`,
+    );
   }
 
   /**
@@ -40,7 +42,9 @@ export class TTSService implements OnModuleInit {
           this.logger.warn(`TTS provider "${name}" is not available`);
         }
       } catch (error) {
-        this.logger.warn(`Failed to check TTS provider "${name}": ${error.message}`);
+        this.logger.warn(
+          `Failed to check TTS provider "${name}": ${error.message}`,
+        );
       }
     }
 
@@ -48,9 +52,14 @@ export class TTSService implements OnModuleInit {
       this.logger.warn('No TTS providers are available');
     } else {
       // If primary provider is not available, use first available
-      if (!this.primaryProvider || !availableProviders.includes(this.primaryProvider)) {
+      if (
+        !this.primaryProvider ||
+        !availableProviders.includes(this.primaryProvider)
+      ) {
         this.primaryProvider = availableProviders[0];
-        this.logger.log(`Using "${this.primaryProvider}" as primary TTS provider`);
+        this.logger.log(
+          `Using "${this.primaryProvider}" as primary TTS provider`,
+        );
       }
       this.isInitialized = true;
     }
@@ -59,9 +68,15 @@ export class TTSService implements OnModuleInit {
   /**
    * Generate speech from text
    */
-  async generateSpeech(text: string, options?: TTSOptions, providerName?: string): Promise<TTSResult> {
+  async generateSpeech(
+    text: string,
+    options?: TTSOptions,
+    providerName?: string,
+  ): Promise<TTSResult> {
     if (!this.isInitialized) {
-      throw new Error('TTS service is not initialized - no providers available');
+      throw new Error(
+        'TTS service is not initialized - no providers available',
+      );
     }
 
     // Determine which provider to use
@@ -79,15 +94,21 @@ export class TTSService implements OnModuleInit {
 
     try {
       const result = await provider.generateSpeech(text, options);
-      this.logger.log(`Speech generated successfully (${result.audioBuffer.length} bytes)`);
+      this.logger.log(
+        `Speech generated successfully (${result.audioBuffer.length} bytes)`,
+      );
       return result;
     } catch (error) {
-      this.logger.error(`Speech generation failed with ${targetProvider}: ${error.message}`);
+      this.logger.error(
+        `Speech generation failed with ${targetProvider}: ${error.message}`,
+      );
 
       // Try fallback to another provider
       if (providerName === undefined && this.providers.size > 1) {
         this.logger.log('Attempting fallback to another provider...');
-        const fallbackProvider = Array.from(this.providers.keys()).find((name) => name !== targetProvider);
+        const fallbackProvider = Array.from(this.providers.keys()).find(
+          (name) => name !== targetProvider,
+        );
         if (fallbackProvider) {
           return this.generateSpeech(text, options, fallbackProvider);
         }

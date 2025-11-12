@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { 
-  LLMProvider, 
-  LLMResponse, 
-  LLMRequestOptions, 
+import {
+  LLMProvider,
+  LLMResponse,
+  LLMRequestOptions,
   StructuredLLMResponse,
-  ConversationTurn 
+  ConversationTurn,
 } from '../interfaces/llm.interface';
 
 interface OpenAIConfig {
@@ -51,15 +51,17 @@ export class OpenAIProvider implements LLMProvider {
       timeout: 30000,
       maxRetries: 3,
       baseUrl: 'https://api.openai.com/v1',
-      ...config
+      ...config,
     };
-    
-    this.logger.log(`OpenAI provider initialized with model: ${this.config.defaultModel}`);
+
+    this.logger.log(
+      `OpenAI provider initialized with model: ${this.config.defaultModel}`,
+    );
   }
 
   async isAvailable(): Promise<boolean> {
     const now = Date.now();
-    
+
     // Use cached health status if recent
     if (now - this.lastHealthCheck < this.HEALTH_CHECK_INTERVAL) {
       return this.isHealthy;
@@ -70,12 +72,12 @@ export class OpenAIProvider implements LLMProvider {
       const response = await this.makeRequest({
         model: this.config.defaultModel!,
         messages: [{ role: 'user', content: 'test' }],
-        max_tokens: 1
+        max_tokens: 1,
       });
-      
+
       this.isHealthy = response.choices?.length > 0;
       this.lastHealthCheck = now;
-      
+
       return this.isHealthy;
     } catch (error) {
       this.logger.warn(`OpenAI health check failed: ${error.message}`);
@@ -86,11 +88,11 @@ export class OpenAIProvider implements LLMProvider {
   }
 
   async generateResponse(
-    prompt: string, 
-    options: LLMRequestOptions = {}
+    prompt: string,
+    options: LLMRequestOptions = {},
   ): Promise<LLMResponse> {
     const messages = this.buildMessages(prompt, options);
-    
+
     // Use -1 for max_tokens if maxTokens is not specified for LM Studio compatibility
     const maxTokens = options.maxTokens !== undefined ? options.maxTokens : -1;
 
@@ -117,25 +119,25 @@ export class OpenAIProvider implements LLMProvider {
       usage: {
         promptTokens: response.usage.prompt_tokens,
         completionTokens: response.usage.completion_tokens,
-        totalTokens: response.usage.total_tokens
+        totalTokens: response.usage.total_tokens,
       },
       model: response.model,
       finishReason: this.mapFinishReason(choice.finish_reason),
       metadata: {
         processingTime,
-        provider: this.name
-      }
+        provider: this.name,
+      },
     };
   }
 
   async generateStructuredResponse<T>(
     prompt: string,
     schema: any,
-    options: LLMRequestOptions = {}
+    options: LLMRequestOptions = {},
   ): Promise<StructuredLLMResponse<T>> {
     // Use response_format for structured output if available
     const messages = this.buildMessages(prompt, options);
-    
+
     // Use -1 for max_tokens if maxTokens is not specified for LM Studio compatibility
     const maxTokens = options.maxTokens !== undefined ? options.maxTokens : -1;
 
@@ -146,7 +148,7 @@ export class OpenAIProvider implements LLMProvider {
       temperature: Math.min(options.temperature ?? 0.7, 0.3), // Lower temp for structured
       top_p: options.topP ?? 1.0,
       stream: false, // Ensure stream is disabled
-      response_format: { type: 'json_object' } // Request JSON format
+      response_format: { type: 'json_object' }, // Request JSON format
     };
 
     const startTime = Date.now();
@@ -163,14 +165,14 @@ export class OpenAIProvider implements LLMProvider {
       usage: {
         promptTokens: response.usage.prompt_tokens,
         completionTokens: response.usage.completion_tokens,
-        totalTokens: response.usage.total_tokens
+        totalTokens: response.usage.total_tokens,
       },
       model: response.model,
       finishReason: this.mapFinishReason(choice.finish_reason),
       metadata: {
         processingTime,
-        provider: this.name
-      }
+        provider: this.name,
+      },
     };
 
     // Parse the structured response
@@ -179,7 +181,7 @@ export class OpenAIProvider implements LLMProvider {
 
     try {
       parsedContent = JSON.parse(choice.message.content);
-      
+
       // Basic validation against schema
       const validation = this.validateSchema(parsedContent, schema);
       if (!validation.valid) {
@@ -193,18 +195,22 @@ export class OpenAIProvider implements LLMProvider {
     return {
       ...baseResponse,
       parsedContent,
-      validationErrors: validationErrors.length > 0 ? validationErrors : undefined
+      validationErrors:
+        validationErrors.length > 0 ? validationErrors : undefined,
     };
   }
 
-  private buildMessages(prompt: string, options: LLMRequestOptions): OpenAIMessage[] {
+  private buildMessages(
+    prompt: string,
+    options: LLMRequestOptions,
+  ): OpenAIMessage[] {
     const messages: OpenAIMessage[] = [];
 
     // Add system prompt if provided
     if (options.systemPrompt) {
       messages.push({
         role: 'system',
-        content: options.systemPrompt
+        content: options.systemPrompt,
       });
     }
 
@@ -212,8 +218,8 @@ export class OpenAIProvider implements LLMProvider {
     if (options.conversationHistory) {
       for (const turn of options.conversationHistory) {
         messages.push({
-          role: turn.role as 'system' | 'user' | 'assistant',
-          content: turn.content
+          role: turn.role,
+          content: turn.content,
         });
       }
     }
@@ -221,7 +227,7 @@ export class OpenAIProvider implements LLMProvider {
     // Add the current prompt
     messages.push({
       role: 'user',
-      content: prompt
+      content: prompt,
     });
 
     return messages;
@@ -229,49 +235,59 @@ export class OpenAIProvider implements LLMProvider {
 
   private async makeRequest(requestBody: any): Promise<OpenAIResponse> {
     const url = `${this.config.baseUrl}/chat/completions`;
-    
+
     let lastError: Error;
     for (let attempt = 1; attempt <= this.config.maxRetries!; attempt++) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+        const timeoutId = setTimeout(
+          () => controller.abort(),
+          this.config.timeout,
+        );
 
         const response = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.config.apiKey}`,
-            'User-Agent': 'Quest-Weaver-Engine/1.0'
+            Authorization: `Bearer ${this.config.apiKey}`,
+            'User-Agent': 'Quest-Weaver-Engine/1.0',
           },
           body: JSON.stringify(requestBody),
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         clearTimeout(timeoutId);
 
         if (!response.ok) {
           const errorData = await response.text();
-          throw new Error(`OpenAI API error (${response.status}): ${errorData}`);
+          throw new Error(
+            `OpenAI API error (${response.status}): ${errorData}`,
+          );
         }
 
         const data = await response.json();
         return data;
-
       } catch (error) {
         lastError = error as Error;
-        
+
         if (attempt < this.config.maxRetries!) {
           const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000); // Exponential backoff
-          this.logger.warn(`OpenAI request attempt ${attempt} failed, retrying in ${delay}ms: ${error.message}`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          this.logger.warn(
+            `OpenAI request attempt ${attempt} failed, retrying in ${delay}ms: ${error.message}`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
 
-    throw new Error(`OpenAI request failed after ${this.config.maxRetries} attempts: ${lastError!.message}`);
+    throw new Error(
+      `OpenAI request failed after ${this.config.maxRetries} attempts: ${lastError!.message}`,
+    );
   }
 
-  private mapFinishReason(reason: string): 'stop' | 'length' | 'content_filter' | 'error' {
+  private mapFinishReason(
+    reason: string,
+  ): 'stop' | 'length' | 'content_filter' | 'error' {
     switch (reason) {
       case 'stop':
         return 'stop';
@@ -284,11 +300,17 @@ export class OpenAIProvider implements LLMProvider {
     }
   }
 
-  private validateSchema(data: any, schema: any): { valid: boolean; errors: string[] } {
+  private validateSchema(
+    data: any,
+    schema: any,
+  ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
     // Basic type checking
-    if (schema.type === 'object' && (typeof data !== 'object' || data === null)) {
+    if (
+      schema.type === 'object' &&
+      (typeof data !== 'object' || data === null)
+    ) {
       errors.push('Expected object type');
     } else if (schema.type === 'array' && !Array.isArray(data)) {
       errors.push('Expected array type');
@@ -301,7 +323,11 @@ export class OpenAIProvider implements LLMProvider {
     }
 
     // Check required properties for objects
-    if (schema.type === 'object' && schema.required && Array.isArray(schema.required)) {
+    if (
+      schema.type === 'object' &&
+      schema.required &&
+      Array.isArray(schema.required)
+    ) {
       for (const prop of schema.required) {
         if (!(prop in data)) {
           errors.push(`Missing required property: ${prop}`);
@@ -313,10 +339,13 @@ export class OpenAIProvider implements LLMProvider {
   }
 
   // Static factory method for easy configuration
-  static create(apiKey: string, config: Partial<OpenAIConfig> = {}): OpenAIProvider {
+  static create(
+    apiKey: string,
+    config: Partial<OpenAIConfig> = {},
+  ): OpenAIProvider {
     return new OpenAIProvider({
       apiKey,
-      ...config
+      ...config,
     });
   }
 }

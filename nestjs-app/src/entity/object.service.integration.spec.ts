@@ -8,10 +8,7 @@ describe('ObjectService (Integration)', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ObjectService,
-        EntityService
-      ],
+      providers: [ObjectService, EntityService],
     }).compile();
 
     service = module.get<ObjectService>(ObjectService);
@@ -29,12 +26,12 @@ describe('ObjectService (Integration)', () => {
       objectType: 'item' as const,
       properties: {
         weight: 2.5,
-        value: 100
-      }
+        value: 100,
+      },
     };
-    
+
     const result = service.createObject(objectData);
-    
+
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
     expect(result.name).toBe('Test Object');

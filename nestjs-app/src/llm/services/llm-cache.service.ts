@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { LLMResponse, StructuredLLMResponse } from '../interfaces/llm.interface';
+import {
+  LLMResponse,
+  StructuredLLMResponse,
+} from '../interfaces/llm.interface';
 
 interface CacheEntry {
   key: string;
@@ -27,11 +30,11 @@ export class LLMCacheService {
   private readonly DEFAULT_TTL = 3600000; // 1 hour
   private readonly MAX_CACHE_SIZE = 1000;
   private readonly CLEANUP_INTERVAL = 300000; // 5 minutes
-  
+
   private stats = {
     hits: 0,
     misses: 0,
-    responseTimes: [] as number[]
+    responseTimes: [] as number[],
   };
 
   constructor() {
@@ -43,9 +46,11 @@ export class LLMCacheService {
   /**
    * Get cached response for a prompt
    */
-  async get(key: string): Promise<LLMResponse | StructuredLLMResponse<any> | null> {
+  async get(
+    key: string,
+  ): Promise<LLMResponse | StructuredLLMResponse<any> | null> {
     const startTime = Date.now();
-    
+
     const entry = this.cache.get(key);
     if (!entry) {
       this.stats.misses++;
@@ -62,10 +67,10 @@ export class LLMCacheService {
     // Update access stats
     entry.accessCount++;
     entry.lastAccessed = Date.now();
-    
+
     this.stats.hits++;
     this.stats.responseTimes.push(Date.now() - startTime);
-    
+
     this.logger.debug(`Cache hit for key: ${key}`);
     return entry.value;
   }
@@ -74,9 +79,9 @@ export class LLMCacheService {
    * Cache a response
    */
   async set(
-    key: string, 
-    value: LLMResponse | StructuredLLMResponse<any>, 
-    ttl: number = this.DEFAULT_TTL
+    key: string,
+    value: LLMResponse | StructuredLLMResponse<any>,
+    ttl: number = this.DEFAULT_TTL,
   ): Promise<void> {
     // Enforce cache size limit
     if (this.cache.size >= this.MAX_CACHE_SIZE) {
@@ -89,7 +94,7 @@ export class LLMCacheService {
       timestamp: Date.now(),
       ttl,
       accessCount: 0,
-      lastAccessed: Date.now()
+      lastAccessed: Date.now(),
     };
 
     this.cache.set(key, entry);
@@ -99,18 +104,16 @@ export class LLMCacheService {
   /**
    * Generate cache key for a prompt and options
    */
-  generateKey(
-    prompt: string, 
-    options: any = {}, 
-    schema?: any
-  ): string {
+  generateKey(prompt: string, options: any = {}, schema?: any): string {
     const keyComponents = {
       prompt: this.hashString(prompt),
       model: options.model || 'default',
       temperature: options.temperature || 0.7,
       maxTokens: options.maxTokens || 2000,
-      systemPrompt: options.systemPrompt ? this.hashString(options.systemPrompt) : '',
-      schema: schema ? this.hashString(JSON.stringify(schema)) : ''
+      systemPrompt: options.systemPrompt
+        ? this.hashString(options.systemPrompt)
+        : '',
+      schema: schema ? this.hashString(JSON.stringify(schema)) : '',
     };
 
     return `llm:${JSON.stringify(keyComponents)}`;
@@ -124,11 +127,11 @@ export class LLMCacheService {
     response: LLMResponse | StructuredLLMResponse<any>,
     options: any = {},
     schema?: any,
-    customTTL?: number
+    customTTL?: number,
   ): Promise<void> {
     const key = this.generateKey(prompt, options, schema);
     const ttl = customTTL || this.calculateTTL(prompt, options);
-    
+
     await this.set(key, response, ttl);
   }
 
@@ -138,7 +141,7 @@ export class LLMCacheService {
   async getCachedPromptResponse(
     prompt: string,
     options: any = {},
-    schema?: any
+    schema?: any,
   ): Promise<LLMResponse | StructuredLLMResponse<any> | null> {
     const key = this.generateKey(prompt, options, schema);
     return this.get(key);
@@ -151,11 +154,11 @@ export class LLMCacheService {
     type: 'room' | 'npc' | 'quest' | 'dialogue',
     parameters: any,
     result: any,
-    customTTL?: number
+    customTTL?: number,
   ): Promise<void> {
     const key = this.generateContentKey(type, parameters);
     const ttl = customTTL || this.getContentTTL(type);
-    
+
     await this.set(key, result, ttl);
   }
 
@@ -164,7 +167,7 @@ export class LLMCacheService {
    */
   async getCachedContentGeneration(
     type: 'room' | 'npc' | 'quest' | 'dialogue',
-    parameters: any
+    parameters: any,
   ): Promise<any | null> {
     const key = this.generateContentKey(type, parameters);
     return this.get(key);
@@ -176,7 +179,7 @@ export class LLMCacheService {
   async cacheTemplateCompilation(
     templateId: string,
     variables: Record<string, any>,
-    compiled: any
+    compiled: any,
   ): Promise<void> {
     const key = `template:${templateId}:${this.hashString(JSON.stringify(variables))}`;
     // Template compilations have shorter TTL since they're fast to regenerate
@@ -188,7 +191,7 @@ export class LLMCacheService {
    */
   async getCachedTemplateCompilation(
     templateId: string,
-    variables: Record<string, any>
+    variables: Record<string, any>,
   ): Promise<any | null> {
     const key = `template:${templateId}:${this.hashString(JSON.stringify(variables))}`;
     return this.get(key);
@@ -199,15 +202,17 @@ export class LLMCacheService {
    */
   async invalidate(pattern: string): Promise<number> {
     let deleted = 0;
-    
+
     for (const [key] of this.cache) {
       if (key.includes(pattern)) {
         this.cache.delete(key);
         deleted++;
       }
     }
-    
-    this.logger.log(`Invalidated ${deleted} cache entries matching pattern: ${pattern}`);
+
+    this.logger.log(
+      `Invalidated ${deleted} cache entries matching pattern: ${pattern}`,
+    );
     return deleted;
   }
 
@@ -226,9 +231,11 @@ export class LLMCacheService {
   getStats(): CacheStats {
     const totalRequests = this.stats.hits + this.stats.misses;
     const hitRate = totalRequests > 0 ? this.stats.hits / totalRequests : 0;
-    const averageResponseTime = this.stats.responseTimes.length > 0 
-      ? this.stats.responseTimes.reduce((a, b) => a + b, 0) / this.stats.responseTimes.length 
-      : 0;
+    const averageResponseTime =
+      this.stats.responseTimes.length > 0
+        ? this.stats.responseTimes.reduce((a, b) => a + b, 0) /
+          this.stats.responseTimes.length
+        : 0;
 
     const memoryUsage = this.estimateMemoryUsage();
 
@@ -239,19 +246,21 @@ export class LLMCacheService {
       totalHits: this.stats.hits,
       totalMisses: this.stats.misses,
       averageResponseTime,
-      memoryUsage
+      memoryUsage,
     };
   }
 
   /**
    * Preemptively warm cache with common requests
    */
-  async warmCache(warmupRequests: Array<{
-    type: 'prompt' | 'content' | 'template';
-    data: any;
-  }>): Promise<void> {
+  async warmCache(
+    warmupRequests: Array<{
+      type: 'prompt' | 'content' | 'template';
+      data: any;
+    }>,
+  ): Promise<void> {
     this.logger.log(`Warming cache with ${warmupRequests.length} requests`);
-    
+
     for (const request of warmupRequests) {
       try {
         // This would typically involve making actual LLM calls
@@ -262,7 +271,7 @@ export class LLMCacheService {
           usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
           model: 'placeholder',
           finishReason: 'stop',
-          metadata: { warmedUp: true, timestamp: Date.now() }
+          metadata: { warmedUp: true, timestamp: Date.now() },
         };
         await this.set(key, placeholder, this.DEFAULT_TTL);
       } catch (error) {
@@ -276,7 +285,7 @@ export class LLMCacheService {
    */
   async optimize(): Promise<void> {
     const entries = Array.from(this.cache.entries());
-    
+
     // Sort by value (access count / age ratio)
     entries.sort(([, a], [, b]) => {
       const aValue = this.calculateEntryValue(a);
@@ -287,12 +296,14 @@ export class LLMCacheService {
     // Remove bottom 25% if cache is getting full
     if (this.cache.size > this.MAX_CACHE_SIZE * 0.75) {
       const toRemove = Math.floor(entries.length * 0.25);
-      
+
       for (let i = 0; i < toRemove; i++) {
         this.cache.delete(entries[i][0]);
       }
-      
-      this.logger.log(`Optimized cache by removing ${toRemove} low-value entries`);
+
+      this.logger.log(
+        `Optimized cache by removing ${toRemove} low-value entries`,
+      );
     }
   }
 
@@ -334,11 +345,11 @@ export class LLMCacheService {
     if (prompt.includes('generate') || prompt.includes('create')) {
       return 7200000; // 2 hours for generated content
     }
-    
+
     if (options.temperature > 0.8) {
       return 1800000; // 30 minutes for high creativity
     }
-    
+
     return this.DEFAULT_TTL;
   }
 
@@ -349,9 +360,9 @@ export class LLMCacheService {
       case 'npc':
         return 10800000; // 3 hours - NPCs are fairly stable
       case 'quest':
-        return 7200000;  // 2 hours - quests may need updates
+        return 7200000; // 2 hours - quests may need updates
       case 'dialogue':
-        return 3600000;  // 1 hour - dialogue is more context-dependent
+        return 3600000; // 1 hour - dialogue is more context-dependent
       default:
         return this.DEFAULT_TTL;
     }
@@ -370,30 +381,30 @@ export class LLMCacheService {
     const age = Date.now() - entry.timestamp;
     const accessFrequency = entry.accessCount / (age / 1000 / 60); // accesses per minute
     const recency = Date.now() - entry.lastAccessed;
-    
+
     // Higher value = more valuable (higher access frequency, lower recency)
     return accessFrequency / (recency / 1000 / 60);
   }
 
   private estimateMemoryUsage(): number {
     let totalSize = 0;
-    
+
     for (const entry of this.cache.values()) {
       totalSize += JSON.stringify(entry).length * 2; // Rough estimate (2 bytes per char)
     }
-    
+
     return totalSize;
   }
 
   private hashString(str: string): string {
     let hash = 0;
-    
+
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
-    
+
     return hash.toString(36);
   }
 }

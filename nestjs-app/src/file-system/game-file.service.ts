@@ -1,15 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FileScannerService } from './file-scanner.service';
 import { DatabaseService } from '../database/database.service';
-import { 
-  GameData, 
-  RoomData, 
-  ObjectData, 
-  NPCData, 
+import {
+  GameData,
+  RoomData,
+  ObjectData,
+  NPCData,
   RoomConnection,
   ValidationResult,
   ValidationError,
-  ValidationWarning
+  ValidationWarning,
 } from '../database/database.interfaces';
 import { IRoom } from '../entity/room.interface';
 import { IObject } from '../entity/object.interface';
@@ -21,7 +21,7 @@ export class GameFileService {
 
   constructor(
     private readonly fileScannerService: FileScannerService,
-    private readonly databaseService: DatabaseService
+    private readonly databaseService: DatabaseService,
   ) {}
 
   async loadGameFromFiles(gameId: string): Promise<{
@@ -39,12 +39,13 @@ export class GameFileService {
 
     try {
       // Validate game directory first
-      const validation = await this.fileScannerService.validateGameDirectory(gameId);
+      const validation =
+        await this.fileScannerService.validateGameDirectory(gameId);
       if (!validation.isValid) {
         return {
           success: false,
           message: `Validation failed: ${validation.errors.join(', ')}`,
-          loaded: { rooms: [], objects: [], npcs: [], connections: [] }
+          loaded: { rooms: [], objects: [], npcs: [], connections: [] },
         };
       }
 
@@ -54,7 +55,7 @@ export class GameFileService {
         return {
           success: true,
           message: 'No changes detected - game is up to date',
-          loaded: { rooms: [], objects: [], npcs: [], connections: [] }
+          loaded: { rooms: [], objects: [], npcs: [], connections: [] },
         };
       }
 
@@ -78,15 +79,14 @@ export class GameFileService {
       return {
         success: true,
         message: `Successfully loaded game ${gameId} with ${rooms.length} rooms, ${objects.length} objects, ${npcs.length} NPCs, and ${connections.length} connections`,
-        loaded: { game: gameData, rooms, objects, npcs, connections }
+        loaded: { game: gameData, rooms, objects, npcs, connections },
       };
-
     } catch (error) {
       this.logger.error(`Failed to load game ${gameId} from files:`, error);
       return {
         success: false,
         message: `Load failed: ${error.message}`,
-        loaded: { rooms: [], objects: [], npcs: [], connections: [] }
+        loaded: { rooms: [], objects: [], npcs: [], connections: [] },
       };
     }
   }
@@ -94,9 +94,9 @@ export class GameFileService {
   async loadGameConfig(gameId: string): Promise<GameData> {
     const configPath = `${this.fileScannerService.getGamesDirectory()}/${gameId}/game-config.json`;
     const content = await this.fileScannerService.getFileContent(configPath);
-    
+
     const rawConfig = JSON.parse(content);
-    
+
     return {
       id: rawConfig.id,
       name: rawConfig.name,
@@ -105,26 +105,29 @@ export class GameFileService {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isActive: true,
-      metadata: rawConfig.metadata
+      metadata: rawConfig.metadata,
     };
   }
 
   async loadRooms(gameId: string): Promise<RoomData[]> {
     const roomsDir = `${this.fileScannerService.getGamesDirectory()}/${gameId}/rooms`;
     const rooms: RoomData[] = [];
-    
+
     try {
       const fs = require('fs');
       if (!fs.existsSync(roomsDir)) {
         return rooms;
       }
 
-      const roomFiles = fs.readdirSync(roomsDir).filter((f: string) => f.endsWith('.json'));
-      
+      const roomFiles = fs
+        .readdirSync(roomsDir)
+        .filter((f: string) => f.endsWith('.json'));
+
       for (const roomFile of roomFiles) {
         try {
           const roomPath = `${roomsDir}/${roomFile}`;
-          const content = await this.fileScannerService.getFileContent(roomPath);
+          const content =
+            await this.fileScannerService.getFileContent(roomPath);
           const rawRoom = JSON.parse(content);
 
           const roomData: RoomData = {
@@ -139,7 +142,7 @@ export class GameFileService {
             depth: rawRoom.size?.depth || rawRoom.depth || 3,
             environmentData: rawRoom.environment,
             version: 1,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           };
 
           rooms.push(roomData);
@@ -157,19 +160,22 @@ export class GameFileService {
   async loadObjects(gameId: string): Promise<ObjectData[]> {
     const objectsDir = `${this.fileScannerService.getGamesDirectory()}/${gameId}/objects`;
     const objects: ObjectData[] = [];
-    
+
     try {
       const fs = require('fs');
       if (!fs.existsSync(objectsDir)) {
         return objects;
       }
 
-      const objectFiles = fs.readdirSync(objectsDir).filter((f: string) => f.endsWith('.json'));
-      
+      const objectFiles = fs
+        .readdirSync(objectsDir)
+        .filter((f: string) => f.endsWith('.json'));
+
       for (const objectFile of objectFiles) {
         try {
           const objectPath = `${objectsDir}/${objectFile}`;
-          const content = await this.fileScannerService.getFileContent(objectPath);
+          const content =
+            await this.fileScannerService.getFileContent(objectPath);
           const rawObject = JSON.parse(content);
 
           const objectData: ObjectData = {
@@ -191,7 +197,7 @@ export class GameFileService {
             stateData: rawObject.state_data,
             properties: rawObject.properties,
             version: 1,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           };
 
           objects.push(objectData);
@@ -200,7 +206,10 @@ export class GameFileService {
         }
       }
     } catch (error) {
-      this.logger.error(`Failed to load objects directory for ${gameId}:`, error);
+      this.logger.error(
+        `Failed to load objects directory for ${gameId}:`,
+        error,
+      );
     }
 
     return objects;
@@ -209,15 +218,17 @@ export class GameFileService {
   async loadNpcs(gameId: string): Promise<NPCData[]> {
     const npcsDir = `${this.fileScannerService.getGamesDirectory()}/${gameId}/npcs`;
     const npcs: NPCData[] = [];
-    
+
     try {
       const fs = require('fs');
       if (!fs.existsSync(npcsDir)) {
         return npcs;
       }
 
-      const npcFiles = fs.readdirSync(npcsDir).filter((f: string) => f.endsWith('.json'));
-      
+      const npcFiles = fs
+        .readdirSync(npcsDir)
+        .filter((f: string) => f.endsWith('.json'));
+
       for (const npcFile of npcFiles) {
         try {
           const npcPath = `${npcsDir}/${npcFile}`;
@@ -240,7 +251,7 @@ export class GameFileService {
             behaviorConfig: rawNpc.behavior_config,
             attributes: rawNpc.attributes,
             version: 1,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           };
 
           npcs.push(npcData);
@@ -257,13 +268,19 @@ export class GameFileService {
 
   async loadConnections(gameId: string): Promise<RoomConnection[]> {
     const connectionsPath = `${this.fileScannerService.getGamesDirectory()}/${gameId}/connections.json`;
-    
+
     try {
-      const content = await this.fileScannerService.getFileContent(connectionsPath);
+      const content =
+        await this.fileScannerService.getFileContent(connectionsPath);
       const rawConnections = JSON.parse(content);
 
-      if (!rawConnections.connections || !Array.isArray(rawConnections.connections)) {
-        this.logger.warn(`Invalid connections format in ${gameId}/connections.json`);
+      if (
+        !rawConnections.connections ||
+        !Array.isArray(rawConnections.connections)
+      ) {
+        this.logger.warn(
+          `Invalid connections format in ${gameId}/connections.json`,
+        );
         return [];
       }
 
@@ -275,9 +292,8 @@ export class GameFileService {
         description: conn.description,
         isLocked: conn.is_locked || false,
         requiredKeyId: conn.required_key || null,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       }));
-
     } catch (error) {
       this.logger.error(`Failed to load connections for ${gameId}:`, error);
       return [];
@@ -289,7 +305,7 @@ export class GameFileService {
     rooms: RoomData[],
     objects: ObjectData[],
     npcs: NPCData[],
-    connections: RoomConnection[]
+    connections: RoomConnection[],
   ): void {
     this.databaseService.transaction((db) => {
       // Save game config
@@ -306,11 +322,17 @@ export class GameFileService {
           gameData.version,
           gameData.createdAt,
           gameData.updatedAt,
-          gameData.isActive
+          gameData.isActive,
         );
 
         // Save version history - call synchronously
-        this.databaseService.saveVersion('game', gameData.id, gameData, 'file_loader', 'Loaded from files');
+        this.databaseService.saveVersion(
+          'game',
+          gameData.id,
+          gameData,
+          'file_loader',
+          'Loaded from files',
+        );
       }
 
       // Save rooms
@@ -323,13 +345,29 @@ export class GameFileService {
 
       for (const room of rooms) {
         insertRoom.run(
-          room.id, room.gameId, room.name, room.description, room.longDescription,
-          room.position.x, room.position.y, room.position.z,
-          room.width, room.height, room.depth,
-          JSON.stringify(room.environmentData), room.version, room.createdAt
+          room.id,
+          room.gameId,
+          room.name,
+          room.description,
+          room.longDescription,
+          room.position.x,
+          room.position.y,
+          room.position.z,
+          room.width,
+          room.height,
+          room.depth,
+          JSON.stringify(room.environmentData),
+          room.version,
+          room.createdAt,
         );
 
-        this.databaseService.saveVersion('room', room.id, room, 'file_loader', 'Loaded from files');
+        this.databaseService.saveVersion(
+          'room',
+          room.id,
+          room,
+          'file_loader',
+          'Loaded from files',
+        );
       }
 
       // Save objects
@@ -343,15 +381,36 @@ export class GameFileService {
 
       for (const object of objects) {
         insertObject.run(
-          object.id, object.gameId, object.name, object.description, object.objectType,
-          object.position.x, object.position.y, object.position.z,
-          object.material, JSON.stringify(object.materialProperties), object.weight,
-          object.health, object.maxHealth, object.isPortable, object.isContainer,
-          object.canContain, object.containerCapacity, JSON.stringify(object.stateData),
-          JSON.stringify(object.properties), object.version, object.createdAt
+          object.id,
+          object.gameId,
+          object.name,
+          object.description,
+          object.objectType,
+          object.position.x,
+          object.position.y,
+          object.position.z,
+          object.material,
+          JSON.stringify(object.materialProperties),
+          object.weight,
+          object.health,
+          object.maxHealth,
+          object.isPortable,
+          object.isContainer,
+          object.canContain,
+          object.containerCapacity,
+          JSON.stringify(object.stateData),
+          JSON.stringify(object.properties),
+          object.version,
+          object.createdAt,
         );
 
-        this.databaseService.saveVersion('object', object.id, object, 'file_loader', 'Loaded from files');
+        this.databaseService.saveVersion(
+          'object',
+          object.id,
+          object,
+          'file_loader',
+          'Loaded from files',
+        );
       }
 
       // Save NPCs
@@ -365,19 +424,39 @@ export class GameFileService {
 
       for (const npc of npcs) {
         insertNpc.run(
-          npc.id, npc.gameId, npc.name, npc.description, npc.npcType,
-          npc.position.x, npc.position.y, npc.position.z,
-          npc.health, npc.maxHealth, npc.level, npc.experience,
-          JSON.stringify(npc.inventoryData), JSON.stringify(npc.dialogueTreeData),
-          JSON.stringify(npc.behaviorConfig), JSON.stringify(npc.attributes),
-          npc.version, npc.createdAt
+          npc.id,
+          npc.gameId,
+          npc.name,
+          npc.description,
+          npc.npcType,
+          npc.position.x,
+          npc.position.y,
+          npc.position.z,
+          npc.health,
+          npc.maxHealth,
+          npc.level,
+          npc.experience,
+          JSON.stringify(npc.inventoryData),
+          JSON.stringify(npc.dialogueTreeData),
+          JSON.stringify(npc.behaviorConfig),
+          JSON.stringify(npc.attributes),
+          npc.version,
+          npc.createdAt,
         );
 
-        this.databaseService.saveVersion('npc', npc.id, npc, 'file_loader', 'Loaded from files');
+        this.databaseService.saveVersion(
+          'npc',
+          npc.id,
+          npc,
+          'file_loader',
+          'Loaded from files',
+        );
       }
 
       // Clear existing connections for this game
-      db.prepare('DELETE FROM room_connections WHERE room_id IN (SELECT id FROM rooms WHERE game_id = ?)').run(gameData?.id);
+      db.prepare(
+        'DELETE FROM room_connections WHERE room_id IN (SELECT id FROM rooms WHERE game_id = ?)',
+      ).run(gameData?.id);
 
       // Save connections
       const insertConnection = db.prepare(`
@@ -387,15 +466,22 @@ export class GameFileService {
 
       for (const connection of connections) {
         insertConnection.run(
-          connection.roomId, connection.connectedRoomId, connection.direction,
-          connection.description, connection.isLocked, connection.requiredKeyId,
-          connection.createdAt
+          connection.roomId,
+          connection.connectedRoomId,
+          connection.direction,
+          connection.description,
+          connection.isLocked,
+          connection.requiredKeyId,
+          connection.createdAt,
         );
       }
     });
   }
 
-  async exportGameToFiles(gameId: string, outputDirectory?: string): Promise<{
+  async exportGameToFiles(
+    gameId: string,
+    outputDirectory?: string,
+  ): Promise<{
     success: boolean;
     message: string;
     exportPath?: string;
@@ -403,13 +489,13 @@ export class GameFileService {
     // Implementation for exporting database game back to files
     // This will be useful for backing up or sharing games
     this.logger.log(`Exporting game ${gameId} to files...`);
-    
+
     // This is a placeholder - full implementation would read from database
     // and write to file system in the proper format
-    
+
     return {
       success: false,
-      message: 'Export functionality not yet implemented'
+      message: 'Export functionality not yet implemented',
     };
   }
 
@@ -419,20 +505,21 @@ export class GameFileService {
 
     try {
       // Use the file scanner validation
-      const scannerResult = await this.fileScannerService.validateGameDirectory(gameId);
-      
+      const scannerResult =
+        await this.fileScannerService.validateGameDirectory(gameId);
+
       // Convert to our format
-      scannerResult.errors.forEach(error => {
+      scannerResult.errors.forEach((error) => {
         errors.push({
           type: 'missing_file',
-          message: error
+          message: error,
         });
       });
 
-      scannerResult.warnings.forEach(warning => {
+      scannerResult.warnings.forEach((warning) => {
         warnings.push({
           type: 'best_practice',
-          message: warning
+          message: warning,
         });
       });
 
@@ -440,18 +527,17 @@ export class GameFileService {
       // - Check for orphaned references
       // - Validate JSON schemas
       // - Check for circular dependencies in connections
-      
     } catch (error) {
       errors.push({
         type: 'invalid_data',
-        message: `Validation failed: ${error.message}`
+        message: `Validation failed: ${error.message}`,
       });
     }
 
     return {
       isValid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 }

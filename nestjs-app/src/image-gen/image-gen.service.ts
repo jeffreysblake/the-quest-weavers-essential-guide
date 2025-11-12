@@ -1,7 +1,30 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue, Job } from 'bullmq';
-import { ImageGenJobData, ImageGenJobResult } from './interfaces/image-gen.interface';
+import { ImageGenJobData } from './interfaces/image-gen.interface';
+
+export interface JobStatusResponse {
+  id?: string;
+  status: string;
+  progress?: number | string | object;
+  data?: ImageGenJobData;
+  result?: unknown;
+  failedReason?: string;
+  createdAt?: number;
+  processedAt?: number | null;
+  finishedAt?: number | null;
+}
+
+export interface QueueMetricsResponse {
+  available: boolean;
+  message?: string;
+  waiting?: number;
+  active?: number;
+  completed?: number;
+  failed?: number;
+  delayed?: number;
+  total?: number;
+}
 
 @Injectable()
 export class ImageGenService implements OnModuleInit {
@@ -19,14 +42,22 @@ export class ImageGenService implements OnModuleInit {
       this.isQueueAvailable = true;
       this.logger.log('Image generation queue is ready');
     } catch (error) {
-      this.logger.warn('Image generation queue not available. Redis may not be running.');
-      this.logger.warn('To enable image generation: Start Redis server (redis-server)');
+      this.logger.warn(
+        'Image generation queue not available. Redis may not be running.',
+      );
+      this.logger.warn(
+        'To enable image generation: Start Redis server (redis-server)',
+      );
     }
   }
 
-  async queueImageGeneration(data: ImageGenJobData): Promise<Job<ImageGenJobData>> {
+  async queueImageGeneration(
+    data: ImageGenJobData,
+  ): Promise<Job<ImageGenJobData>> {
     if (!this.isQueueAvailable) {
-      throw new Error('Image generation queue is not available. Ensure Redis is running.');
+      throw new Error(
+        'Image generation queue is not available. Ensure Redis is running.',
+      );
     }
 
     const job = await this.imageQueue.add('generate-image', data, {
@@ -51,7 +82,7 @@ export class ImageGenService implements OnModuleInit {
     return job;
   }
 
-  async getJobStatus(jobId: string): Promise<any> {
+  async getJobStatus(jobId: string): Promise<JobStatusResponse> {
     if (!this.isQueueAvailable) {
       return { status: 'queue_unavailable' };
     }
@@ -62,12 +93,11 @@ export class ImageGenService implements OnModuleInit {
     }
 
     const state = await job.getState();
-    const progress = job.progress;
 
     return {
       id: job.id,
       status: state,
-      progress,
+      progress: job.progress as number | string | object | undefined,
       data: job.data,
       result: job.returnvalue,
       failedReason: job.failedReason,
@@ -77,7 +107,7 @@ export class ImageGenService implements OnModuleInit {
     };
   }
 
-  async getQueueMetrics(): Promise<any> {
+  async getQueueMetrics(): Promise<QueueMetricsResponse> {
     if (!this.isQueueAvailable) {
       return {
         available: false,

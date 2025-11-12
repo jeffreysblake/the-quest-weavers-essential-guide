@@ -10,7 +10,7 @@ describe('DatabaseService', () => {
   beforeEach(async () => {
     // Create a temporary test database
     testDbPath = path.join(__dirname, '../../test.db');
-    
+
     // Clean up if exists
     if (fs.existsSync(testDbPath)) {
       fs.unlinkSync(testDbPath);
@@ -60,18 +60,26 @@ describe('DatabaseService', () => {
 
     it('should rollback failed transactions', async () => {
       // First create a test table
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE test_table (
           id INTEGER PRIMARY KEY,
           value TEXT
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Insert initial data
-      service.prepare('INSERT INTO test_table (value) VALUES (?)').run('initial');
+      service
+        .prepare('INSERT INTO test_table (value) VALUES (?)')
+        .run('initial');
 
       // Verify initial state
-      const initial = service.prepare('SELECT COUNT(*) as count FROM test_table').get() as any;
+      const initial = service
+        .prepare('SELECT COUNT(*) as count FROM test_table')
+        .get() as any;
       expect(initial.count).toBe(1);
 
       // Attempt transaction that should fail
@@ -85,7 +93,9 @@ describe('DatabaseService', () => {
       }
 
       // Verify rollback occurred
-      const final = service.prepare('SELECT COUNT(*) as count FROM test_table').get() as any;
+      const final = service
+        .prepare('SELECT COUNT(*) as count FROM test_table')
+        .get() as any;
       expect(final.count).toBe(1);
     });
   });
@@ -93,7 +103,9 @@ describe('DatabaseService', () => {
   describe('Version Management', () => {
     beforeEach(() => {
       // Create version_history table
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE version_history (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           entity_type TEXT NOT NULL,
@@ -104,7 +116,9 @@ describe('DatabaseService', () => {
           reason TEXT,
           created_at TEXT NOT NULL
         )
-      `).run();
+      `,
+        )
+        .run();
     });
 
     it('should save entity versions', () => {
@@ -115,16 +129,20 @@ describe('DatabaseService', () => {
         'test-1',
         testEntity,
         'test-author',
-        'Test save'
+        'Test save',
       );
 
       expect(version).toBe(1);
 
       // Verify version was saved
-      const saved = service.prepare(`
+      const saved = service
+        .prepare(
+          `
         SELECT * FROM version_history 
         WHERE entity_type = ? AND entity_id = ? AND version = ?
-      `).get('test', 'test-1', 1) as any;
+      `,
+        )
+        .get('test', 'test-1', 1) as any;
 
       expect(saved).toBeDefined();
       expect(saved.entity_type).toBe('test');
@@ -138,8 +156,20 @@ describe('DatabaseService', () => {
       const entity1 = { id: 'test-1', name: 'Version 1' };
       const entity2 = { id: 'test-1', name: 'Version 2' };
 
-      const v1 = service.saveVersion('test', 'test-1', entity1, 'author', 'First');
-      const v2 = service.saveVersion('test', 'test-1', entity2, 'author', 'Second');
+      const v1 = service.saveVersion(
+        'test',
+        'test-1',
+        entity1,
+        'author',
+        'First',
+      );
+      const v2 = service.saveVersion(
+        'test',
+        'test-1',
+        entity2,
+        'author',
+        'Second',
+      );
 
       expect(v1).toBe(1);
       expect(v2).toBe(2);
@@ -147,9 +177,9 @@ describe('DatabaseService', () => {
 
     it('should retrieve specific versions', async () => {
       const entity = { id: 'test-1', name: 'Test Entity', value: 42 };
-      
+
       service.saveVersion('test', 'test-1', entity, 'author');
-      
+
       const retrieved = await service.getVersion('test', 'test-1', 1);
       expect(retrieved).toEqual(entity);
     });
@@ -173,7 +203,7 @@ describe('DatabaseService', () => {
       service.saveVersion('test', 'test-1', entity2, 'author', 'Second');
 
       const versions = await service.listVersions('test', 'test-1');
-      
+
       expect(versions).toHaveLength(2);
       expect(versions[0].version).toBe(2); // Latest first
       expect(versions[1].version).toBe(1);
@@ -183,12 +213,16 @@ describe('DatabaseService', () => {
 
     it('should rollback to specific version', async () => {
       // Create main table for testing rollback
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE test_entities (
           id TEXT PRIMARY KEY,
           data TEXT
         )
-      `).run();
+      `,
+        )
+        .run();
 
       const entity1 = { id: 'test-1', name: 'Version 1' };
       const entity2 = { id: 'test-1', name: 'Version 2' };
@@ -198,7 +232,10 @@ describe('DatabaseService', () => {
       service.saveVersion('test', 'test-1', entity2, 'author');
 
       // Insert current state (version 2)
-      service.prepare('INSERT OR REPLACE INTO test_entities (id, data) VALUES (?, ?)')
+      service
+        .prepare(
+          'INSERT OR REPLACE INTO test_entities (id, data) VALUES (?, ?)',
+        )
         .run('test-1', JSON.stringify(entity2));
 
       // Rollback to version 1
@@ -214,22 +251,30 @@ describe('DatabaseService', () => {
   describe('Database Queries', () => {
     beforeEach(() => {
       // Create test table
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE test_items (
           id TEXT PRIMARY KEY,
           name TEXT,
           value INTEGER
         )
-      `).run();
+      `,
+        )
+        .run();
     });
 
     it('should handle prepared statements', () => {
-      const insert = service.prepare('INSERT INTO test_items (id, name, value) VALUES (?, ?, ?)');
-      
+      const insert = service.prepare(
+        'INSERT INTO test_items (id, name, value) VALUES (?, ?, ?)',
+      );
+
       insert.run('item1', 'Test Item 1', 100);
       insert.run('item2', 'Test Item 2', 200);
 
-      const select = service.prepare('SELECT * FROM test_items WHERE value > ?');
+      const select = service.prepare(
+        'SELECT * FROM test_items WHERE value > ?',
+      );
       const results = select.all(150) as any[];
 
       expect(results).toHaveLength(1);
@@ -246,17 +291,25 @@ describe('DatabaseService', () => {
   describe('Schema Management', () => {
     it('should detect existing tables', () => {
       // Create a test table
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE schema_test (
           id INTEGER PRIMARY KEY
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Check if table exists
-      const tables = service.prepare(`
+      const tables = service
+        .prepare(
+          `
         SELECT name FROM sqlite_master 
         WHERE type='table' AND name='schema_test'
-      `).all() as any[];
+      `,
+        )
+        .all() as any[];
 
       expect(tables).toHaveLength(1);
       expect(tables[0].name).toBe('schema_test');
@@ -264,23 +317,33 @@ describe('DatabaseService', () => {
 
     it('should handle table creation and modification', () => {
       // Create table
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE migration_test (
           id INTEGER PRIMARY KEY,
           name TEXT
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Add column (simulating migration)
-      service.prepare(`
+      service
+        .prepare(
+          `
         ALTER TABLE migration_test 
         ADD COLUMN description TEXT
-      `).run();
+      `,
+        )
+        .run();
 
       // Verify structure
-      const info = service.prepare('PRAGMA table_info(migration_test)').all() as any[];
-      
-      const columns = info.map(col => col.name);
+      const info = service
+        .prepare('PRAGMA table_info(migration_test)')
+        .all() as any[];
+
+      const columns = info.map((col) => col.name);
       expect(columns).toContain('id');
       expect(columns).toContain('name');
       expect(columns).toContain('description');

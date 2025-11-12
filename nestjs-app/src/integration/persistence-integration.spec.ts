@@ -23,7 +23,14 @@ describe('Persistence System Integration', () => {
 
   beforeAll(async () => {
     // Setup test database
-    testDbPath = path.join(__dirname, '../../test-integration-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9) + '.db');
+    testDbPath = path.join(
+      __dirname,
+      '../../test-integration-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9) +
+        '.db',
+    );
 
     // Clean up if exists
     if (fs.existsSync(testDbPath)) {
@@ -33,15 +40,15 @@ describe('Persistence System Integration', () => {
     module = await Test.createTestingModule({
       imports: [CLIModule],
     })
-    .overrideProvider(DatabaseService)
-    .useFactory({
-      factory: () => {
-        const service = new DatabaseService();
-        service.setDatabasePath(testDbPath);
-        return service;
-      }
-    })
-    .compile();
+      .overrideProvider(DatabaseService)
+      .useFactory({
+        factory: () => {
+          const service = new DatabaseService();
+          service.setDatabasePath(testDbPath);
+          return service;
+        },
+      })
+      .compile();
 
     cliService = module.get<CLIService>(CLIService);
     gameManagerService = module.get<GameManagerService>(GameManagerService);
@@ -70,13 +77,17 @@ describe('Persistence System Integration', () => {
 
   describe('End-to-End Game Creation and Management', () => {
     it('should create a complete game with entities and persist it', async () => {
-      const gameId = 'integration-test-e2e-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'integration-test-e2e-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // 1. Create a new game
       const gameData = await gameManagerService.createGame({
         name: 'Integration Test Game',
         description: 'A game for testing the complete system',
-        gameId: gameId
+        gameId: gameId,
       });
 
       expect(gameData.id).toBe(gameId);
@@ -86,19 +97,19 @@ describe('Persistence System Integration', () => {
       const room = await gameManagerService.createEntity(gameId, 'room', {
         name: 'Test Room',
         description: 'A room for testing',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       const object = await gameManagerService.createEntity(gameId, 'object', {
         name: 'Test Sword',
         description: 'A mighty sword',
-        position: { x: 1, y: 1, z: 0 }
+        position: { x: 1, y: 1, z: 0 },
       });
 
       const player = await gameManagerService.createEntity(gameId, 'player', {
         name: 'Test Hero',
         description: 'A brave hero',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       expect(room.name).toBe('Test Room');
@@ -114,9 +125,9 @@ describe('Persistence System Integration', () => {
       const entities = await gameManagerService.listEntities(gameId);
       expect(entities).toHaveLength(3);
 
-      const rooms = entities.filter(e => e.type === 'room');
-      const objects = entities.filter(e => e.type === 'object');
-      const players = entities.filter(e => e.type === 'player');
+      const rooms = entities.filter((e) => e.type === 'room');
+      const objects = entities.filter((e) => e.type === 'object');
+      const players = entities.filter((e) => e.type === 'player');
 
       expect(rooms).toHaveLength(1);
       expect(objects).toHaveLength(1);
@@ -126,11 +137,19 @@ describe('Persistence System Integration', () => {
 
   describe('Version Management Integration', () => {
     it('should create versions and rollback entities', async () => {
-      const gameId = 'integration-test-version-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'integration-test-version-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -140,7 +159,15 @@ describe('Persistence System Integration', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Integration Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Integration Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create a room
       const room = roomService.createRoom({
@@ -152,21 +179,27 @@ describe('Persistence System Integration', () => {
         size: { width: 10, height: 10, depth: 3 },
         objects: [],
         players: [],
-        gameId: gameId
+        gameId: gameId,
       });
 
       // Save initial version
-      const version1 = await roomService.saveRoomVersion(room.id, 'Initial creation');
+      const version1 = await roomService.saveRoomVersion(
+        room.id,
+        'Initial creation',
+      );
       expect(version1).toBe(1);
 
       // Modify room
-      roomService.updateEntity(room.id, { 
+      roomService.updateEntity(room.id, {
         description: 'Updated description',
-        name: 'Updated Room Name'
+        name: 'Updated Room Name',
       });
 
       // Save second version
-      const version2 = await roomService.saveRoomVersion(room.id, 'Updated room');
+      const version2 = await roomService.saveRoomVersion(
+        room.id,
+        'Updated room',
+      );
       expect(version2).toBe(2);
 
       // Verify current state
@@ -190,11 +223,19 @@ describe('Persistence System Integration', () => {
 
   describe('Player Interaction System', () => {
     it('should handle complex player interactions with persistence', async () => {
-      const gameId = 'integration-test-interaction-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'integration-test-interaction-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -204,7 +245,15 @@ describe('Persistence System Integration', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Integration Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Integration Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create game environment
       const room = roomService.createRoom({
@@ -216,7 +265,7 @@ describe('Persistence System Integration', () => {
         size: { width: 15, height: 15, depth: 3 },
         objects: [],
         players: [],
-        gameId: gameId
+        gameId: gameId,
       });
 
       const sword = objectService.createObject({
@@ -228,7 +277,7 @@ describe('Persistence System Integration', () => {
         isContainer: false,
         position: { x: 5, y: 5, z: 0 },
         state: {},
-        gameId: gameId
+        gameId: gameId,
       });
 
       const chest = objectService.createObject({
@@ -240,7 +289,7 @@ describe('Persistence System Integration', () => {
         isContainer: true,
         position: { x: 10, y: 10, z: 0 },
         state: { isOpen: false, isLocked: false },
-        gameId: gameId
+        gameId: gameId,
       });
 
       const player = playerService.createPlayer({
@@ -251,18 +300,26 @@ describe('Persistence System Integration', () => {
         level: 5,
         experience: 1000,
         inventory: [],
-        gameId: gameId
+        gameId: gameId,
       });
 
       // Player interactions
-      
+
       // 1. Examine the sword
-      const examineResult = playerService.interactWithObject(player.id, sword.id, 'examine');
+      const examineResult = playerService.interactWithObject(
+        player.id,
+        sword.id,
+        'examine',
+      );
       expect(examineResult.success).toBeTruthy();
       expect(examineResult.message).toContain('Magic Sword');
 
       // 2. Take the sword
-      const takeResult = playerService.interactWithObject(player.id, sword.id, 'take');
+      const takeResult = playerService.interactWithObject(
+        player.id,
+        sword.id,
+        'take',
+      );
       expect(takeResult.success).toBeTruthy();
       expect(takeResult.message).toContain('You take the Magic Sword');
 
@@ -272,12 +329,21 @@ describe('Persistence System Integration', () => {
       expect(inventory[0].name).toBe('Magic Sword');
 
       // 4. Open the chest
-      const openResult = playerService.interactWithObject(player.id, chest.id, 'open');
+      const openResult = playerService.interactWithObject(
+        player.id,
+        chest.id,
+        'open',
+      );
       expect(openResult.success).toBeTruthy();
       expect(openResult.message).toContain('You open the Treasure Chest');
 
       // 5. Cast a spell
-      const spellResult = playerService.castSpell(player.id, 'fire', chest.id, 3);
+      const spellResult = playerService.castSpell(
+        player.id,
+        'fire',
+        chest.id,
+        3,
+      );
       expect(spellResult.success).toBeTruthy();
       expect(spellResult.message).toContain('Adventurer casts Fireball!');
 
@@ -287,7 +353,10 @@ describe('Persistence System Integration', () => {
       // Clear cache and verify persistence
       await gameManagerService.clearAllCaches();
 
-      const reloadedPlayer = await playerService.getPlayerWithFallback(player.id, gameId);
+      const reloadedPlayer = await playerService.getPlayerWithFallback(
+        player.id,
+        gameId,
+      );
       expect(reloadedPlayer).toBeDefined();
       expect(reloadedPlayer?.name).toBe('Adventurer');
       expect(reloadedPlayer?.inventory).toHaveLength(1);
@@ -296,11 +365,19 @@ describe('Persistence System Integration', () => {
 
   describe('Cache Performance', () => {
     it('should demonstrate cache performance benefits', async () => {
-      const gameId = 'integration-test-cache-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'integration-test-cache-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -310,7 +387,15 @@ describe('Persistence System Integration', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Integration Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Integration Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create multiple entities
       const entities = [];
@@ -324,7 +409,7 @@ describe('Persistence System Integration', () => {
           size: { width: 10, height: 10, depth: 3 },
           objects: [],
           players: [],
-          gameId: gameId
+          gameId: gameId,
         });
         entities.push(room);
       }
@@ -339,17 +424,20 @@ describe('Persistence System Integration', () => {
 
       // Clear cache and measure database access time
       roomService.clearCache();
-      
+
       const dbStartTime = Date.now();
       for (const entity of entities) {
-        const retrieved = await roomService.getRoomWithFallback(entity.id, gameId);
+        const retrieved = await roomService.getRoomWithFallback(
+          entity.id,
+          gameId,
+        );
         expect(retrieved).toBeDefined();
       }
       const dbTime = Date.now() - dbStartTime;
 
       // Cache should be significantly faster (though timing may vary in tests)
       expect(cacheTime).toBeLessThan(dbTime + 50); // Allow some margin for test variance
-      
+
       // Verify cache is populated
       const cacheStats = roomService.getCacheStats();
       expect(cacheStats.size).toBeGreaterThan(0);
@@ -358,11 +446,19 @@ describe('Persistence System Integration', () => {
 
   describe('Database Consistency', () => {
     it('should maintain referential integrity across services', async () => {
-      const gameId = 'integration-test-consistency-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'integration-test-consistency-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -372,7 +468,15 @@ describe('Persistence System Integration', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Integration Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Integration Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create related entities
       const room = roomService.createRoom({
@@ -384,7 +488,7 @@ describe('Persistence System Integration', () => {
         size: { width: 10, height: 10, depth: 3 },
         objects: [],
         players: [],
-        gameId: gameId
+        gameId: gameId,
       });
 
       const container = objectService.createObject({
@@ -396,7 +500,7 @@ describe('Persistence System Integration', () => {
         isContainer: true,
         position: { x: 5, y: 5, z: 0 },
         state: { isOpen: true },
-        gameId: gameId
+        gameId: gameId,
       });
 
       const item = objectService.createObject({
@@ -411,9 +515,9 @@ describe('Persistence System Integration', () => {
         spatialRelationship: {
           relationshipType: 'inside',
           targetId: container.id,
-          description: 'The coin is inside the storage box'
+          description: 'The coin is inside the storage box',
         },
-        gameId: gameId
+        gameId: gameId,
       });
 
       // Add objects to room
@@ -427,22 +531,36 @@ describe('Persistence System Integration', () => {
       await gameManagerService.clearAllCaches();
 
       // Reload and verify relationships are maintained
-      const reloadedRoom = await roomService.getRoomWithFallback(room.id, gameId);
+      const reloadedRoom = await roomService.getRoomWithFallback(
+        room.id,
+        gameId,
+      );
       expect(reloadedRoom?.objects).toContain(container.id);
       expect(reloadedRoom?.objects).toContain(item.id);
 
-      const reloadedItem = await objectService.getObjectWithFallback(item.id, gameId);
+      const reloadedItem = await objectService.getObjectWithFallback(
+        item.id,
+        gameId,
+      );
       expect(reloadedItem?.spatialRelationship?.targetId).toBe(container.id);
     });
   });
 
   describe('Error Recovery and Resilience', () => {
     it('should handle service failures gracefully', async () => {
-      const gameId = 'integration-test-recovery-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'integration-test-recovery-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -452,7 +570,15 @@ describe('Persistence System Integration', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Integration Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Integration Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create entities that will succeed
       const room = roomService.createRoom({
@@ -464,20 +590,23 @@ describe('Persistence System Integration', () => {
         size: { width: 10, height: 10, depth: 3 },
         objects: [],
         players: [],
-        gameId: gameId
+        gameId: gameId,
       });
 
       // Simulate partial failure in persistence
       const originalTransaction = databaseService.transaction;
       let callCount = 0;
-      
-      databaseService.transaction = jest.fn().mockImplementation(async (callback) => {
-        callCount++;
-        if (callCount === 2) { // Fail on second call
-          throw new Error('Simulated database failure');
-        }
-        return originalTransaction.call(databaseService, callback);
-      });
+
+      databaseService.transaction = jest
+        .fn()
+        .mockImplementation(async (callback) => {
+          callCount++;
+          if (callCount === 2) {
+            // Fail on second call
+            throw new Error('Simulated database failure');
+          }
+          return originalTransaction.call(databaseService, callback);
+        });
 
       // Attempt to persist - some may fail
       try {
@@ -498,24 +627,28 @@ describe('Persistence System Integration', () => {
       await gameManagerService.persistGame(gameId);
 
       const entities = await gameManagerService.listEntities(gameId);
-      expect(entities.some(e => e.id === room.id)).toBeTruthy();
+      expect(entities.some((e) => e.id === room.id)).toBeTruthy();
     });
   });
 
   describe('System Integration Validation', () => {
     it('should validate the complete system workflow', async () => {
-      const gameId = 'integration-test-workflow-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'integration-test-workflow-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // First create a test game for this workflow
       await gameManagerService.createGame({
         name: 'Workflow Test Game',
         description: 'A game for testing the workflow',
-        gameId: gameId
+        gameId: gameId,
       });
 
       // 1. List games (should include our test game)
       const games = await gameManagerService.listGames();
-      expect(games.some(game => game.id === gameId)).toBeTruthy();
+      expect(games.some((game) => game.id === gameId)).toBeTruthy();
 
       // 2. Get cache statistics
       const cacheStats = await gameManagerService.getCacheStats();
@@ -546,7 +679,12 @@ describe('Persistence System Integration', () => {
       await gameManagerService.loadGame(gameId);
 
       const reloadedStats = await gameManagerService.getCacheStats();
-      expect(reloadedStats.entities + reloadedStats.rooms + reloadedStats.objects + reloadedStats.players).toBeGreaterThan(0);
+      expect(
+        reloadedStats.entities +
+          reloadedStats.rooms +
+          reloadedStats.objects +
+          reloadedStats.players,
+      ).toBeGreaterThan(0);
     });
   });
 });

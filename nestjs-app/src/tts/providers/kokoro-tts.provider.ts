@@ -1,5 +1,9 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { TTSProvider, TTSOptions, TTSResult } from '../interfaces/tts.interface';
+import {
+  TTSProvider,
+  TTSOptions,
+  TTSResult,
+} from '../interfaces/tts.interface';
 
 /**
  * Kokoro TTS Provider - Native Node.js implementation
@@ -15,15 +19,15 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
   private readonly logger = new Logger(KokoroTTSProvider.name);
   readonly name = 'kokoro';
   readonly supportedVoices: string[] = [
-    'af_bella',    // American Female - Bella
-    'af_sarah',    // American Female - Sarah
-    'af_nicole',   // American Female - Nicole
-    'am_adam',     // American Male - Adam
-    'am_michael',  // American Male - Michael
-    'bf_emma',     // British Female - Emma
+    'af_bella', // American Female - Bella
+    'af_sarah', // American Female - Sarah
+    'af_nicole', // American Female - Nicole
+    'am_adam', // American Male - Adam
+    'am_michael', // American Male - Michael
+    'bf_emma', // British Female - Emma
     'bf_isabella', // British Female - Isabella
-    'bm_george',   // British Male - George
-    'bm_lewis',    // British Male - Lewis
+    'bm_george', // British Male - George
+    'bm_lewis', // British Male - Lewis
   ];
   readonly supportedFormats: string[] = ['wav', 'mp3'];
 
@@ -41,8 +45,12 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
     try {
       await this.initialize();
     } catch (error) {
-      this.logger.warn(`Kokoro TTS initialization failed: ${error.message}`);
-      this.logger.warn('TTS features will be limited. Install kokoro-js for native TTS support.');
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.warn(`Kokoro TTS initialization failed: ${errorMessage}`);
+      this.logger.warn(
+        'TTS features will be limited. Install kokoro-js for native TTS support.',
+      );
     }
   }
 
@@ -50,30 +58,38 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
     try {
       // Dynamically import kokoro-js (optional dependency)
       const kokoroModule = await import('kokoro-js');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       const KokoroTTS = (kokoroModule as any).KokoroTTS || kokoroModule;
 
       this.logger.log('Initializing Kokoro TTS...');
 
       // Load the ONNX model with available options
       // Note: kokoro-js API may vary by version
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const options: any = {
         dtype: this.modelSize, // q8 (200MB), q4 (100MB), fp16 (164MB)
       };
 
       // Add device option if supported
       if (this.useGPU) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         options.device = 'gpu';
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       this.tts = await (KokoroTTS.from_pretrained || KokoroTTS)(
         'onnx-community/Kokoro-82M-v1.0-ONNX',
-        options
+        options,
       );
 
       this.isInitialized = true;
-      this.logger.log(`Kokoro TTS initialized successfully (${this.useGPU ? 'GPU' : 'CPU'} mode, ${this.modelSize} quantization)`);
+      this.logger.log(
+        `Kokoro TTS initialized successfully (${this.useGPU ? 'GPU' : 'CPU'} mode, ${this.modelSize} quantization)`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to initialize Kokoro TTS: ${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to initialize Kokoro TTS: ${errorMessage}`);
       throw error;
     }
   }
@@ -87,10 +103,14 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
 
     // Validate voice
     if (!this.supportedVoices.includes(voice)) {
-      throw new Error(`Unsupported voice: ${voice}. Available voices: ${this.supportedVoices.join(', ')}`);
+      throw new Error(
+        `Unsupported voice: ${voice}. Available voices: ${this.supportedVoices.join(', ')}`,
+      );
     }
 
-    this.logger.log(`Generating speech with Kokoro (voice: ${voice}, speed: ${speed})`);
+    this.logger.log(
+      `Generating speech with Kokoro (voice: ${voice}, speed: ${speed})`,
+    );
 
     try {
       const startTime = Date.now();
@@ -106,7 +126,9 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
       // Convert to Buffer
       const audioBuffer = Buffer.from(audio.data);
 
-      this.logger.log(`Speech generated in ${duration}ms (${audioBuffer.length} bytes)`);
+      this.logger.log(
+        `Speech generated in ${duration}ms (${audioBuffer.length} bytes)`,
+      );
 
       return {
         audioBuffer,
@@ -137,8 +159,8 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
 
     // Estimate based on model size
     const vramSizes: Record<string, number> = {
-      q8: 512,   // ~512MB quantized
-      q4: 256,   // ~256MB heavily quantized
+      q8: 512, // ~512MB quantized
+      q4: 256, // ~256MB heavily quantized
       fp16: 1024, // ~1GB full precision
     };
 
@@ -149,7 +171,10 @@ export class KokoroTTSProvider implements TTSProvider, OnModuleInit {
    * Generate streaming audio (chunked generation)
    * Note: Streaming support depends on kokoro-js version and capabilities
    */
-  async *generateStreamingAudio(text: string, options?: TTSOptions): AsyncGenerator<Buffer> {
+  async *generateStreamingAudio(
+    text: string,
+    options?: TTSOptions,
+  ): AsyncGenerator<Buffer> {
     if (!this.isInitialized) {
       throw new Error('Kokoro TTS is not initialized');
     }

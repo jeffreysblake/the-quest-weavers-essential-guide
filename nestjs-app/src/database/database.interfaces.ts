@@ -75,16 +75,16 @@ export interface ObjectData {
   createdAt: string;
 }
 
-export type ObjectType = 
-  | 'weapon' 
-  | 'armor' 
-  | 'item' 
-  | 'container' 
-  | 'furniture' 
-  | 'quest-item' 
-  | 'consumable' 
-  | 'key' 
-  | 'tool' 
+export type ObjectType =
+  | 'weapon'
+  | 'armor'
+  | 'item'
+  | 'container'
+  | 'furniture'
+  | 'quest-item'
+  | 'consumable'
+  | 'key'
+  | 'tool'
   | 'decoration';
 
 export interface MaterialProperties {
@@ -192,13 +192,13 @@ export interface SpatialRelationship {
   createdAt: string;
 }
 
-export type RelationshipType = 
-  | 'on_top_of' 
-  | 'inside' 
-  | 'next_to' 
-  | 'underneath' 
-  | 'attached_to' 
-  | 'behind' 
+export type RelationshipType =
+  | 'on_top_of'
+  | 'inside'
+  | 'next_to'
+  | 'underneath'
+  | 'attached_to'
+  | 'behind'
   | 'in_front_of';
 
 export interface RoomConnection {
@@ -212,16 +212,16 @@ export interface RoomConnection {
   createdAt: string;
 }
 
-export type Direction = 
-  | 'north' 
-  | 'south' 
-  | 'east' 
-  | 'west' 
-  | 'up' 
-  | 'down' 
-  | 'northeast' 
-  | 'northwest' 
-  | 'southeast' 
+export type Direction =
+  | 'north'
+  | 'south'
+  | 'east'
+  | 'west'
+  | 'up'
+  | 'down'
+  | 'northeast'
+  | 'northwest'
+  | 'southeast'
   | 'southwest';
 
 export interface RoomObject {
@@ -282,7 +282,12 @@ export interface ValidationResult {
 }
 
 export interface ValidationError {
-  type: 'missing_file' | 'invalid_json' | 'missing_reference' | 'duplicate_id' | 'invalid_data';
+  type:
+    | 'missing_file'
+    | 'invalid_json'
+    | 'missing_reference'
+    | 'duplicate_id'
+    | 'invalid_data';
   file?: string;
   line?: number;
   message: string;
@@ -290,7 +295,11 @@ export interface ValidationError {
 }
 
 export interface ValidationWarning {
-  type: 'unused_entity' | 'missing_description' | 'performance' | 'best_practice';
+  type:
+    | 'unused_entity'
+    | 'missing_description'
+    | 'performance'
+    | 'best_practice';
   file?: string;
   line?: number;
   message: string;

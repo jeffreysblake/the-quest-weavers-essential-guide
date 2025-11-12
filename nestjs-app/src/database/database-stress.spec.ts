@@ -35,7 +35,9 @@ describe('DatabaseService Stress Tests', () => {
   describe('High Volume Data Operations', () => {
     it('should handle 10,000 entity insertions efficiently', async () => {
       // Create stress test table
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS stress_entities (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           entity_type TEXT NOT NULL,
@@ -46,7 +48,9 @@ describe('DatabaseService Stress Tests', () => {
           reason TEXT,
           created_at TEXT NOT NULL
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM stress_entities').run();
@@ -64,7 +68,7 @@ describe('DatabaseService Stress Tests', () => {
           health: 100 + (i % 50),
           level: 1 + (i % 10),
           experience: i * 10,
-          data: `This is test data for entity ${i}`.repeat(10) // Make it substantial
+          data: `This is test data for entity ${i}`.repeat(10), // Make it substantial
         });
       }
 
@@ -72,7 +76,7 @@ describe('DatabaseService Stress Tests', () => {
       const batchSize = 1000;
       for (let i = 0; i < entities.length; i += batchSize) {
         const batch = entities.slice(i, i + batchSize);
-        
+
         service.transaction((db) => {
           const stmt = db.prepare(`
             INSERT INTO stress_entities (entity_type, entity_id, version, data, created_by, reason, created_at)
@@ -87,7 +91,7 @@ describe('DatabaseService Stress Tests', () => {
               JSON.stringify(entity),
               'stress-test',
               'Initial creation',
-              new Date().toISOString()
+              new Date().toISOString(),
             );
           }
         });
@@ -97,14 +101,18 @@ describe('DatabaseService Stress Tests', () => {
       console.log(`Inserted 10,000 entities in ${insertTime}ms`);
 
       // Verify all entities were inserted
-      const count = service.prepare('SELECT COUNT(*) as count FROM stress_entities').get() as any;
+      const count = service
+        .prepare('SELECT COUNT(*) as count FROM stress_entities')
+        .get() as any;
       expect(count.count).toBe(10000);
 
       // Test bulk retrieval performance
       const retrievalStart = Date.now();
-      const allEntities = service.prepare('SELECT * FROM stress_entities').all();
+      const allEntities = service
+        .prepare('SELECT * FROM stress_entities')
+        .all();
       const retrievalTime = Date.now() - retrievalStart;
-      
+
       console.log(`Retrieved 10,000 entities in ${retrievalTime}ms`);
       expect(allEntities).toHaveLength(10000);
       expect(insertTime).toBeLessThan(5000); // Should complete within 5 seconds
@@ -113,7 +121,9 @@ describe('DatabaseService Stress Tests', () => {
 
     it('should handle complex queries on large datasets', async () => {
       // Create tables with indices
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS entities (
           id TEXT PRIMARY KEY,
           name TEXT,
@@ -125,11 +135,25 @@ describe('DatabaseService Stress Tests', () => {
           z INTEGER,
           created_at TEXT
         )
-      `).run();
+      `,
+        )
+        .run();
 
-      service.prepare('CREATE INDEX IF NOT EXISTS idx_entities_type ON entities(type)').run();
-      service.prepare('CREATE INDEX IF NOT EXISTS idx_entities_level ON entities(level)').run();
-      service.prepare('CREATE INDEX IF NOT EXISTS idx_entities_position ON entities(x, y, z)').run();
+      service
+        .prepare(
+          'CREATE INDEX IF NOT EXISTS idx_entities_type ON entities(type)',
+        )
+        .run();
+      service
+        .prepare(
+          'CREATE INDEX IF NOT EXISTS idx_entities_level ON entities(level)',
+        )
+        .run();
+      service
+        .prepare(
+          'CREATE INDEX IF NOT EXISTS idx_entities_position ON entities(x, y, z)',
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM entities').run();
@@ -153,7 +177,7 @@ describe('DatabaseService Stress Tests', () => {
             i % 1000,
             Math.floor(i / 1000) % 1000,
             Math.floor(i / 1000000) % 10,
-            new Date(Date.now() - (i * 1000)).toISOString()
+            new Date(Date.now() - i * 1000).toISOString(),
           );
         }
       });
@@ -162,18 +186,24 @@ describe('DatabaseService Stress Tests', () => {
 
       // Test complex range queries
       const queryStart = Date.now();
-      
-      // Find all high-level players in a specific area  
-      const highLevelPlayersInArea = service.prepare(`
+
+      // Find all high-level players in a specific area
+      const highLevelPlayersInArea = service
+        .prepare(
+          `
         SELECT * FROM entities 
         WHERE type = 'player' 
           AND level > 10 
           AND x BETWEEN 0 AND 500 
           AND y BETWEEN 0 AND 500
-      `).all();
+      `,
+        )
+        .all();
 
       // Find entities near each other (spatial query)
-      const nearbyEntities = service.prepare(`
+      const nearbyEntities = service
+        .prepare(
+          `
         SELECT e1.id as id1, e2.id as id2, 
                ABS(e1.x - e2.x) + ABS(e1.y - e2.y) as distance
         FROM entities e1, entities e2 
@@ -182,17 +212,23 @@ describe('DatabaseService Stress Tests', () => {
           AND ABS(e1.y - e2.y) <= 50
         ORDER BY distance
         LIMIT 100
-      `).all();
+      `,
+        )
+        .all();
 
       // Aggregate statistics
-      const typeStats = service.prepare(`
+      const typeStats = service
+        .prepare(
+          `
         SELECT type, 
                COUNT(*) as count,
                AVG(level) as avg_level,
                AVG(health) as avg_health
         FROM entities 
         GROUP BY type
-      `).all();
+      `,
+        )
+        .all();
 
       const queryTime = Date.now() - queryStart;
       console.log(`Complex queries completed in ${queryTime}ms`);
@@ -206,53 +242,70 @@ describe('DatabaseService Stress Tests', () => {
 
   describe('Concurrent Operations Stress Test', () => {
     it('should handle multiple simultaneous transactions', async () => {
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS concurrent_test (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           thread_id INTEGER,
           value INTEGER,
           timestamp TEXT
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM concurrent_test').run();
 
       const numThreads = 10;
       const operationsPerThread = 20;
-      
-      const promises = Array.from({ length: numThreads }, async (_, threadId) => {
-        for (let i = 0; i < operationsPerThread; i++) {
-          service.transaction((db) => {
-            const stmt = db.prepare(`
+
+      const promises = Array.from(
+        { length: numThreads },
+        async (_, threadId) => {
+          for (let i = 0; i < operationsPerThread; i++) {
+            service.transaction((db) => {
+              const stmt = db.prepare(`
               INSERT INTO concurrent_test (thread_id, value, timestamp)
               VALUES (?, ?, ?)
             `);
-            stmt.run(threadId, i, new Date().toISOString());
-            
-            // Add some processing time to increase contention
-            const start = Date.now();
-            while (Date.now() - start < 1) { /* busy wait 1ms */ }
-          });
-        }
-      });
+              stmt.run(threadId, i, new Date().toISOString());
+
+              // Add some processing time to increase contention
+              const start = Date.now();
+              while (Date.now() - start < 1) {
+                /* busy wait 1ms */
+              }
+            });
+          }
+        },
+      );
 
       const startTime = Date.now();
       await Promise.all(promises);
       const totalTime = Date.now() - startTime;
 
-      console.log(`${numThreads} concurrent threads completed in ${totalTime}ms`);
+      console.log(
+        `${numThreads} concurrent threads completed in ${totalTime}ms`,
+      );
 
       // Verify all operations completed
-      const totalCount = service.prepare('SELECT COUNT(*) as count FROM concurrent_test').get() as any;
+      const totalCount = service
+        .prepare('SELECT COUNT(*) as count FROM concurrent_test')
+        .get() as any;
       expect(totalCount.count).toBe(numThreads * operationsPerThread);
 
       // Verify data integrity - each thread should have correct count
-      const threadCounts = service.prepare(`
+      const threadCounts = service
+        .prepare(
+          `
         SELECT thread_id, COUNT(*) as count 
         FROM concurrent_test 
         GROUP BY thread_id
-      `).all() as any[];
+      `,
+        )
+        .all() as any[];
 
       expect(threadCounts).toHaveLength(numThreads);
       threadCounts.forEach(({ count }) => {
@@ -263,18 +316,24 @@ describe('DatabaseService Stress Tests', () => {
 
   describe('Transaction Failure Recovery', () => {
     it('should handle transaction failures without corruption', async () => {
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS failure_test (
           id INTEGER PRIMARY KEY,
           value TEXT NOT NULL
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM failure_test').run();
 
       // Insert initial data
-      service.prepare('INSERT INTO failure_test (id, value) VALUES (1, ?)').run('initial');
+      service
+        .prepare('INSERT INTO failure_test (id, value) VALUES (1, ?)')
+        .run('initial');
 
       let failureCount = 0;
       const maxFailures = 100;
@@ -284,11 +343,16 @@ describe('DatabaseService Stress Tests', () => {
         try {
           service.transaction((db) => {
             // This will succeed
-            db.prepare('INSERT INTO failure_test (id, value) VALUES (?, ?)').run(i + 2, `value-${i}`);
-            
+            db.prepare(
+              'INSERT INTO failure_test (id, value) VALUES (?, ?)',
+            ).run(i + 2, `value-${i}`);
+
             // This might fail due to constraint violation
-            if (Math.random() < 0.3) { // 30% failure rate
-              db.prepare('INSERT INTO failure_test (id, value) VALUES (1, ?)').run('duplicate'); // Will fail due to primary key
+            if (Math.random() < 0.3) {
+              // 30% failure rate
+              db.prepare(
+                'INSERT INTO failure_test (id, value) VALUES (1, ?)',
+              ).run('duplicate'); // Will fail due to primary key
             }
           });
         } catch (error) {
@@ -300,83 +364,114 @@ describe('DatabaseService Stress Tests', () => {
       console.log(`${failureCount} transactions failed as expected`);
 
       // Verify database integrity
-      const allRows = service.prepare('SELECT * FROM failure_test ORDER BY id').all() as any[];
+      const allRows = service
+        .prepare('SELECT * FROM failure_test ORDER BY id')
+        .all() as any[];
       expect(allRows[0].value).toBe('initial'); // First row should be unchanged
-      
+
       // Verify no partial transactions were committed
-      const uniqueIds = new Set(allRows.map(row => row.id));
+      const uniqueIds = new Set(allRows.map((row) => row.id));
       expect(uniqueIds.size).toBe(allRows.length); // All IDs should be unique
 
       // Verify we can still perform normal operations
-      service.prepare('INSERT INTO failure_test (id, value) VALUES (?, ?)').run(99999, 'final-test');
-      const finalRow = service.prepare('SELECT * FROM failure_test WHERE id = 99999').get() as any;
+      service
+        .prepare('INSERT INTO failure_test (id, value) VALUES (?, ?)')
+        .run(99999, 'final-test');
+      const finalRow = service
+        .prepare('SELECT * FROM failure_test WHERE id = 99999')
+        .get() as any;
       expect(finalRow.value).toBe('final-test');
     });
 
     it('should recover from database lock contention', async () => {
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS lock_test (
           id INTEGER PRIMARY KEY,
           counter INTEGER DEFAULT 0
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM lock_test').run();
 
-      service.prepare('INSERT INTO lock_test (id, counter) VALUES (1, 0)').run();
+      service
+        .prepare('INSERT INTO lock_test (id, counter) VALUES (1, 0)')
+        .run();
 
       const numOperations = 50;
       const promises = Array.from({ length: numOperations }, async (_, i) => {
         let retries = 0;
         const maxRetries = 10;
-        
+
         while (retries < maxRetries) {
           try {
             service.transaction((db) => {
               // Read current value
-              const current = db.prepare('SELECT counter FROM lock_test WHERE id = 1').get() as any;
-              
+              const current = db
+                .prepare('SELECT counter FROM lock_test WHERE id = 1')
+                .get() as any;
+
               // Simulate processing time to increase lock contention
               const start = Date.now();
-              while (Date.now() - start < Math.random() * 5) { /* busy wait */ }
-              
+              while (Date.now() - start < Math.random() * 5) {
+                /* busy wait */
+              }
+
               // Update counter
-              db.prepare('UPDATE lock_test SET counter = ? WHERE id = 1').run(current.counter + 1);
+              db.prepare('UPDATE lock_test SET counter = ? WHERE id = 1').run(
+                current.counter + 1,
+              );
             });
             break; // Success, exit retry loop
           } catch (error) {
             retries++;
-            if (error.message.includes('BUSY') || error.message.includes('LOCKED')) {
+            if (
+              error.message.includes('BUSY') ||
+              error.message.includes('LOCKED')
+            ) {
               // Wait before retry with exponential backoff
-              await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 10));
+              await new Promise((resolve) =>
+                setTimeout(resolve, Math.pow(2, retries) * 10),
+              );
             } else {
               throw error; // Re-throw non-lock errors
             }
           }
         }
-        
+
         if (retries >= maxRetries) {
-          throw new Error(`Failed after ${maxRetries} retries for operation ${i}`);
+          throw new Error(
+            `Failed after ${maxRetries} retries for operation ${i}`,
+          );
         }
       });
 
       await Promise.all(promises);
 
       // Verify final counter value
-      const final = service.prepare('SELECT counter FROM lock_test WHERE id = 1').get() as any;
+      const final = service
+        .prepare('SELECT counter FROM lock_test WHERE id = 1')
+        .get() as any;
       expect(final.counter).toBe(numOperations);
     }, 30000);
   });
 
   describe('Memory and Resource Management', () => {
     it('should handle large JSON payloads without memory issues', async () => {
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS large_data_test (
           id INTEGER PRIMARY KEY,
           data TEXT
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM large_data_test').run();
@@ -393,28 +488,36 @@ describe('DatabaseService Stress Tests', () => {
             weight: Math.random() * 100,
             value: Math.random() * 1000,
             durability: Math.random() * 100,
-            metadata: 'C'.repeat(50)
-          }
+            metadata: 'C'.repeat(50),
+          },
         })),
         gameState: {
           rooms: Array.from({ length: 100 }, (_, i) => ({
             id: `room-${i}`,
             objects: Array.from({ length: 50 }, (_, j) => `obj-${i}-${j}`),
-            description: 'D'.repeat(500)
-          }))
-        }
+            description: 'D'.repeat(500),
+          })),
+        },
       };
 
       const jsonData = JSON.stringify(largeObject);
-      console.log(`Large object size: ${(jsonData.length / 1024 / 1024).toFixed(2)} MB`);
+      console.log(
+        `Large object size: ${(jsonData.length / 1024 / 1024).toFixed(2)} MB`,
+      );
 
       // Insert multiple large objects
-      const insertStmt = service.prepare('INSERT INTO large_data_test (id, data) VALUES (?, ?)');
-      
+      const insertStmt = service.prepare(
+        'INSERT INTO large_data_test (id, data) VALUES (?, ?)',
+      );
+
       const startTime = Date.now();
       service.transaction(() => {
         for (let i = 0; i < 50; i++) {
-          const modifiedObject = { ...largeObject, id: `large-entity-${i}`, index: i };
+          const modifiedObject = {
+            ...largeObject,
+            id: `large-entity-${i}`,
+            index: i,
+          };
           insertStmt.run(i, JSON.stringify(modifiedObject));
         }
       });
@@ -424,8 +527,10 @@ describe('DatabaseService Stress Tests', () => {
 
       // Test retrieval and parsing
       const retrievalStart = Date.now();
-      const allData = service.prepare('SELECT * FROM large_data_test').all() as any[];
-      
+      const allData = service
+        .prepare('SELECT * FROM large_data_test')
+        .all() as any[];
+
       let parseSuccessCount = 0;
       for (const row of allData) {
         try {
@@ -434,12 +539,16 @@ describe('DatabaseService Stress Tests', () => {
           expect(parsed.gameState.rooms).toHaveLength(100);
           parseSuccessCount++;
         } catch (error) {
-          throw new Error(`Failed to parse data for row ${row.id}: ${error.message}`);
+          throw new Error(
+            `Failed to parse data for row ${row.id}: ${error.message}`,
+          );
         }
       }
       const retrievalTime = Date.now() - retrievalStart;
 
-      console.log(`Retrieved and parsed ${parseSuccessCount} large objects in ${retrievalTime}ms`);
+      console.log(
+        `Retrieved and parsed ${parseSuccessCount} large objects in ${retrievalTime}ms`,
+      );
       expect(parseSuccessCount).toBe(50);
       expect(allData).toHaveLength(50);
     }, 30000);
@@ -455,12 +564,16 @@ describe('DatabaseService Stress Tests', () => {
         await tempService.connect();
 
         // Perform a quick operation to ensure connection is active
-        tempService.prepare('CREATE TABLE IF NOT EXISTS test (id INTEGER)').run();
+        tempService
+          .prepare('CREATE TABLE IF NOT EXISTS test (id INTEGER)')
+          .run();
         tempService.prepare('DELETE FROM test').run();
         tempService.prepare('INSERT INTO test (id) VALUES (?)').run(i);
-        const result = tempService.prepare('SELECT COUNT(*) as count FROM test').get() as any;
+        const result = tempService
+          .prepare('SELECT COUNT(*) as count FROM test')
+          .get() as any;
         expect(result.count).toBe(1);
-        
+
         connections.push({ service: tempService, path: tempDbPath });
       }
 
@@ -477,7 +590,9 @@ describe('DatabaseService Stress Tests', () => {
       console.log(`Closed all ${numConnections} connections`);
 
       // Verify our main connection still works
-      service.prepare('CREATE TABLE IF NOT EXISTS leak_test (id INTEGER)').run();
+      service
+        .prepare('CREATE TABLE IF NOT EXISTS leak_test (id INTEGER)')
+        .run();
       service.prepare('DELETE FROM leak_test').run();
       service.prepare('INSERT INTO leak_test (id) VALUES (1)').run();
       const result = service.prepare('SELECT * FROM leak_test').get() as any;
@@ -488,13 +603,21 @@ describe('DatabaseService Stress Tests', () => {
   describe('Database Corruption Recovery', () => {
     it('should detect and handle corrupted database files', async () => {
       // Create a normal database first
-      service.prepare('CREATE TABLE IF NOT EXISTS corruption_test (id INTEGER, data TEXT)').run();
+      service
+        .prepare(
+          'CREATE TABLE IF NOT EXISTS corruption_test (id INTEGER, data TEXT)',
+        )
+        .run();
       service.prepare('DELETE FROM corruption_test').run();
-      service.prepare('INSERT INTO corruption_test VALUES (1, ?)').run('test data');
-      
-      const originalData = service.prepare('SELECT * FROM corruption_test').get() as any;
+      service
+        .prepare('INSERT INTO corruption_test VALUES (1, ?)')
+        .run('test data');
+
+      const originalData = service
+        .prepare('SELECT * FROM corruption_test')
+        .get() as any;
       expect(originalData.data).toBe('test data');
-      
+
       await service.disconnect();
 
       // Check if file exists before corruption test
@@ -508,12 +631,12 @@ describe('DatabaseService Stress Tests', () => {
       const buffer = fs.readFileSync(testDbPath);
       const corruptedBuffer = Buffer.alloc(buffer.length);
       buffer.copy(corruptedBuffer);
-      
+
       // Overwrite part of the file with random data
       for (let i = 100; i < 200; i++) {
         corruptedBuffer[i] = Math.floor(Math.random() * 256);
       }
-      
+
       fs.writeFileSync(testDbPath, corruptedBuffer);
 
       // Try to open the corrupted database
@@ -528,12 +651,16 @@ describe('DatabaseService Stress Tests', () => {
     });
 
     it('should handle disk space exhaustion gracefully', async () => {
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS space_test (
           id INTEGER PRIMARY KEY,
           data TEXT
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM space_test').run();
@@ -544,29 +671,42 @@ describe('DatabaseService Stress Tests', () => {
       let lastError = null;
 
       try {
-        for (let i = 0; i < 1000; i++) { // Try to insert 1GB of data
-          service.prepare('INSERT INTO space_test (data) VALUES (?)').run(hugeString);
+        for (let i = 0; i < 1000; i++) {
+          // Try to insert 1GB of data
+          service
+            .prepare('INSERT INTO space_test (data) VALUES (?)')
+            .run(hugeString);
           insertCount++;
         }
       } catch (error) {
         lastError = error;
-        console.log(`Insert failed after ${insertCount} records: ${error.message}`);
+        console.log(
+          `Insert failed after ${insertCount} records: ${error.message}`,
+        );
       }
 
       // Verify database is still functional after failure
-      const count = service.prepare('SELECT COUNT(*) as count FROM space_test').get() as any;
+      const count = service
+        .prepare('SELECT COUNT(*) as count FROM space_test')
+        .get() as any;
       expect(count.count).toBe(insertCount);
 
       // Should still be able to insert smaller records
-      service.prepare('INSERT INTO space_test (data) VALUES (?)').run('small data');
-      const finalCount = service.prepare('SELECT COUNT(*) as count FROM space_test').get() as any;
+      service
+        .prepare('INSERT INTO space_test (data) VALUES (?)')
+        .run('small data');
+      const finalCount = service
+        .prepare('SELECT COUNT(*) as count FROM space_test')
+        .get() as any;
       expect(finalCount.count).toBe(insertCount + 1);
     }, 60000);
   });
 
   describe('Version Control Stress Tests', () => {
     it('should handle thousands of versions for a single entity', async () => {
-      service.prepare(`
+      service
+        .prepare(
+          `
         CREATE TABLE IF NOT EXISTS version_history (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           entity_type TEXT NOT NULL,
@@ -577,7 +717,9 @@ describe('DatabaseService Stress Tests', () => {
           reason TEXT,
           created_at TEXT NOT NULL
         )
-      `).run();
+      `,
+        )
+        .run();
 
       // Clear any existing data
       service.prepare('DELETE FROM version_history').run();
@@ -593,7 +735,10 @@ describe('DatabaseService Stress Tests', () => {
           name: `Entity Version ${version}`,
           value: version,
           timestamp: Date.now(),
-          changes: Array.from({ length: 10 }, (_, i) => `change-${version}-${i}`)
+          changes: Array.from(
+            { length: 10 },
+            (_, i) => `change-${version}-${i}`,
+          ),
         };
 
         service.saveVersion(
@@ -601,7 +746,7 @@ describe('DatabaseService Stress Tests', () => {
           entityId,
           versionData,
           'stress-test',
-          `Version ${version} update`
+          `Version ${version} update`,
         );
       }
       const creationTime = Date.now() - startTime;
@@ -614,7 +759,7 @@ describe('DatabaseService Stress Tests', () => {
         const retrievalStart = Date.now();
         const version = await service.getVersion('test', entityId, versionNum);
         const retrievalTime = Date.now() - retrievalStart;
-        
+
         expect(version).toBeDefined();
         expect(version.value).toBe(versionNum);
         expect(retrievalTime).toBeLessThan(50); // Should be very fast
@@ -624,7 +769,7 @@ describe('DatabaseService Stress Tests', () => {
       const latestStart = Date.now();
       const latest = await service.getVersion('test', entityId);
       const latestTime = Date.now() - latestStart;
-      
+
       expect(latest.value).toBe(numVersions);
       expect(latestTime).toBeLessThan(50);
 
@@ -632,11 +777,13 @@ describe('DatabaseService Stress Tests', () => {
       const listStart = Date.now();
       const allVersions = await service.listVersions('test', entityId);
       const listTime = Date.now() - listStart;
-      
+
       expect(allVersions).toHaveLength(numVersions);
       expect(listTime).toBeLessThan(500); // Should complete within 500ms
-      
-      console.log(`Version operations completed - Creation: ${creationTime}ms, Listing: ${listTime}ms`);
+
+      console.log(
+        `Version operations completed - Creation: ${creationTime}ms, Listing: ${listTime}ms`,
+      );
     }, 60000);
   });
 });

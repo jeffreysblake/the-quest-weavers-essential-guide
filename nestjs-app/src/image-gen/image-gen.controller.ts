@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Delete, Body, Param, Query, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Body,
+  Param,
+  Query,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import { ImageGenService } from './image-gen.service';
 import { GenerateImageDto } from './image-gen.dto';
 
@@ -25,7 +36,10 @@ export class ImageGenController {
   }
 
   @Post('generate')
-  async generateImage(@Body() dto: GenerateImageDto, @Query('userId') userId: string = 'anonymous') {
+  async generateImage(
+    @Body() dto: GenerateImageDto,
+    @Query('userId') userId: string = 'anonymous',
+  ) {
     if (!this.imageGenService.isAvailable()) {
       throw new HttpException(
         'Image generation service is not available. Ensure Redis is running.',

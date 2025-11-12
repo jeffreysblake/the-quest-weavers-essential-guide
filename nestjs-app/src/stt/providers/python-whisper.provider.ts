@@ -1,6 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { spawn, ChildProcess } from 'child_process';
-import { STTProvider, STTOptions, STTResult } from '../interfaces/stt.interface';
+import {
+  STTProvider,
+  STTOptions,
+  STTResult,
+} from '../interfaces/stt.interface';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as os from 'os';
@@ -45,11 +49,21 @@ export class PythonWhisperProvider implements STTProvider {
 
   constructor() {
     this.pythonPath = process.env.PYTHON_PATH || 'python3';
-    this.scriptPath = path.join(__dirname, '..', '..', '..', 'python', 'whisper_bridge.py');
+    this.scriptPath = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'python',
+      'whisper_bridge.py',
+    );
     this.modelPath = process.env.WHISPER_MODEL_PATH;
   }
 
-  async transcribe(audioBuffer: Buffer, options?: STTOptions): Promise<STTResult> {
+  async transcribe(
+    audioBuffer: Buffer,
+    options?: STTOptions,
+  ): Promise<STTResult> {
     // Write buffer to temporary file
     const tempFile = path.join(os.tmpdir(), `stt-${Date.now()}.wav`);
 
@@ -69,10 +83,20 @@ export class PythonWhisperProvider implements STTProvider {
     }
   }
 
-  async transcribeFile(filePath: string, options?: STTOptions): Promise<STTResult> {
-    const { language = 'en', model = 'base.en', wordTimestamps = false, temperature = 0 } = options || {};
+  async transcribeFile(
+    filePath: string,
+    options?: STTOptions,
+  ): Promise<STTResult> {
+    const {
+      language = 'en',
+      model = 'base.en',
+      wordTimestamps = false,
+      temperature = 0,
+    } = options || {};
 
-    this.logger.log(`Transcribing audio file: ${filePath} with model: ${model}`);
+    this.logger.log(
+      `Transcribing audio file: ${filePath} with model: ${model}`,
+    );
 
     try {
       // Check if file exists
@@ -85,7 +109,9 @@ export class PythonWhisperProvider implements STTProvider {
         temperature,
       });
 
-      this.logger.log(`Transcription completed: "${result.text.substring(0, 100)}..."`);
+      this.logger.log(
+        `Transcription completed: "${result.text.substring(0, 100)}..."`,
+      );
 
       return result;
     } catch (error) {
@@ -151,7 +177,9 @@ export class PythonWhisperProvider implements STTProvider {
             reject(new Error(`Failed to parse Python output: ${e.message}`));
           }
         } else {
-          this.logger.error(`Python script failed with code ${code}: ${stderr}`);
+          this.logger.error(
+            `Python script failed with code ${code}: ${stderr}`,
+          );
           reject(new Error(`Transcription failed: ${stderr}`));
         }
       });

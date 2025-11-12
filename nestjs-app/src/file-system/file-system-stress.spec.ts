@@ -16,7 +16,7 @@ describe('File System Edge Cases Stress Tests', () => {
   beforeEach(async () => {
     testDbPath = path.join(__dirname, '../../file-system-stress-test.db');
     testDir = path.join(__dirname, '../../test-file-system');
-    
+
     // Clean up existing test files
     if (fs.existsSync(testDbPath)) {
       fs.unlinkSync(testDbPath);
@@ -63,24 +63,24 @@ describe('File System Edge Cases Stress Tests', () => {
       const corruptedFiles = [
         {
           filename: 'game.json',
-          content: '{"id": "corruption-test", "name": "Corrupted Game"' // Missing closing brace
+          content: '{"id": "corruption-test", "name": "Corrupted Game"', // Missing closing brace
         },
         {
           filename: 'rooms.json',
-          content: '[{"id": "room1", "name": "Room 1"}, {"id": "room2"' // Incomplete second object
+          content: '[{"id": "room1", "name": "Room 1"}, {"id": "room2"', // Incomplete second object
         },
         {
           filename: 'objects.json',
-          content: '{"objects": [{"id": "obj1", "name": "Object 1"}' // Missing closing brackets
+          content: '{"objects": [{"id": "obj1", "name": "Object 1"}', // Missing closing brackets
         },
         {
           filename: 'npcs.json',
-          content: '[' // Just opening bracket
+          content: '[', // Just opening bracket
         },
         {
           filename: 'connections.json',
-          content: '{"connections": []}extra text' // Valid JSON with trailing garbage
-        }
+          content: '{"connections": []}extra text', // Valid JSON with trailing garbage
+        },
       ];
 
       // Write corrupted files
@@ -94,7 +94,9 @@ describe('File System Edge Cases Stress Tests', () => {
       const scanTime = Date.now() - scanStart;
 
       console.log(`Scanned directory with corrupted files in ${scanTime}ms`);
-      console.log(`Scan result: ${scanResult.totalGames} games found, ${scanResult.errors?.length || 0} errors`);
+      console.log(
+        `Scan result: ${scanResult.totalGames} games found, ${scanResult.errors?.length || 0} errors`,
+      );
 
       // Should detect corruption but not crash
       expect(scanResult.errors).toBeDefined();
@@ -103,7 +105,7 @@ describe('File System Edge Cases Stress Tests', () => {
 
       // Test game loading with corrupted files
       const loadResult = await gameFileService.loadGameFromFiles(gameId);
-      
+
       expect(loadResult.success).toBe(false);
       expect(loadResult.message).toMatch(/(corrupt|invalid|parse|error)/i);
     });
@@ -116,36 +118,36 @@ describe('File System Edge Cases Stress Tests', () => {
       const invalidJsonFiles = [
         {
           filename: 'malformed1.json',
-          content: '{name: "missing quotes"}' // Unquoted property name
+          content: '{name: "missing quotes"}', // Unquoted property name
         },
         {
           filename: 'malformed2.json',
-          content: '{"trailing": "comma",}' // Trailing comma
+          content: '{"trailing": "comma",}', // Trailing comma
         },
         {
           filename: 'malformed3.json',
-          content: '{single: \'quotes\'}' // Single quotes
+          content: "{single: 'quotes'}", // Single quotes
         },
         {
           filename: 'malformed4.json',
-          content: '{"duplicate": 1, "duplicate": 2}' // Duplicate keys
+          content: '{"duplicate": 1, "duplicate": 2}', // Duplicate keys
         },
         {
           filename: 'malformed5.json',
-          content: '{"number": 01}' // Leading zero in number
+          content: '{"number": 01}', // Leading zero in number
         },
         {
           filename: 'malformed6.json',
-          content: '{"undefined": undefined}' // JavaScript undefined
+          content: '{"undefined": undefined}', // JavaScript undefined
         },
         {
           filename: 'malformed7.json',
-          content: '{"comment": "value" /* comment */}' // Comments in JSON
+          content: '{"comment": "value" /* comment */}', // Comments in JSON
         },
         {
           filename: 'malformed8.json',
-          content: '\uFEFF{"bom": "file"}' // File with BOM
-        }
+          content: '\uFEFF{"bom": "file"}', // File with BOM
+        },
       ];
 
       let filesHandled = 0;
@@ -155,22 +157,27 @@ describe('File System Edge Cases Stress Tests', () => {
 
         try {
           const validation = await fileScannerService.validateGameFile(
-            path.join(gameDir, file.filename)
+            path.join(gameDir, file.filename),
           );
-          
+
           // Should detect invalid JSON
           if (!validation.isValid) {
             filesHandled++;
           }
         } catch (error) {
           // Acceptable to throw error for invalid JSON
-          if (error.message.includes('JSON') || error.message.includes('parse')) {
+          if (
+            error.message.includes('JSON') ||
+            error.message.includes('parse')
+          ) {
             filesHandled++;
           }
         }
       }
 
-      console.log(`Handled ${filesHandled}/${invalidJsonFiles.length} invalid JSON files`);
+      console.log(
+        `Handled ${filesHandled}/${invalidJsonFiles.length} invalid JSON files`,
+      );
       expect(filesHandled).toBe(invalidJsonFiles.length);
     });
 
@@ -183,20 +190,20 @@ describe('File System Edge Cases Stress Tests', () => {
       const binaryFiles = [
         {
           filename: 'binary1.json',
-          content: Buffer.from([0x00, 0x01, 0x02, 0x03, 0xFF, 0xFE, 0xFD])
+          content: Buffer.from([0x00, 0x01, 0x02, 0x03, 0xff, 0xfe, 0xfd]),
         },
         {
           filename: 'binary2.json',
           content: Buffer.concat([
             Buffer.from('{"valid": "start"}'),
             Buffer.from([0x00, 0x00, 0x00]),
-            Buffer.from('{"more": "data"}')
-          ])
+            Buffer.from('{"more": "data"}'),
+          ]),
         },
         {
           filename: 'mixed.json',
-          content: 'Valid text\x00\x01\x02Binary data\xFF\xFE{"json": "part"}'
-        }
+          content: 'Valid text\x00\x01\x02Binary data\xFF\xFE{"json": "part"}',
+        },
       ];
 
       let binaryFilesHandled = 0;
@@ -206,9 +213,9 @@ describe('File System Edge Cases Stress Tests', () => {
 
         try {
           const validation = await fileScannerService.validateGameFile(
-            path.join(gameDir, file.filename)
+            path.join(gameDir, file.filename),
           );
-          
+
           // Should detect binary/invalid content
           if (!validation.isValid) {
             binaryFilesHandled++;
@@ -219,7 +226,9 @@ describe('File System Edge Cases Stress Tests', () => {
         }
       }
 
-      console.log(`Handled ${binaryFilesHandled}/${binaryFiles.length} binary files`);
+      console.log(
+        `Handled ${binaryFilesHandled}/${binaryFiles.length} binary files`,
+      );
       expect(binaryFilesHandled).toBe(binaryFiles.length);
     });
   });
@@ -237,20 +246,20 @@ describe('File System Edge Cases Stress Tests', () => {
         roomsFile: 'missing-rooms.json',
         objectsFile: 'missing-objects.json',
         npcsFile: 'missing-npcs.json',
-        connectionsFile: 'missing-connections.json'
+        connectionsFile: 'missing-connections.json',
       };
 
       fs.writeFileSync(
         path.join(gameDir, 'game.json'),
-        JSON.stringify(gameJson, null, 2)
+        JSON.stringify(gameJson, null, 2),
       );
 
       // Test loading game with missing dependencies
       const loadResult = await gameFileService.loadGameFromFiles(gameId);
-      
+
       expect(loadResult.success).toBe(false);
       expect(loadResult.message).toMatch(/(missing|not found|dependency)/i);
-      
+
       // Should provide information about what's missing
       expect(loadResult.loaded.rooms).toHaveLength(0);
       expect(loadResult.loaded.objects).toHaveLength(0);
@@ -266,36 +275,48 @@ describe('File System Edge Cases Stress Tests', () => {
       const file1 = {
         id: 'file1',
         name: 'File 1',
-        includes: ['file2.json']
+        includes: ['file2.json'],
       };
 
       const file2 = {
         id: 'file2',
         name: 'File 2',
-        includes: ['file3.json']
+        includes: ['file3.json'],
       };
 
       const file3 = {
         id: 'file3',
         name: 'File 3',
-        includes: ['file1.json'] // Creates circular reference
+        includes: ['file1.json'], // Creates circular reference
       };
 
-      fs.writeFileSync(path.join(gameDir, 'file1.json'), JSON.stringify(file1, null, 2));
-      fs.writeFileSync(path.join(gameDir, 'file2.json'), JSON.stringify(file2, null, 2));
-      fs.writeFileSync(path.join(gameDir, 'file3.json'), JSON.stringify(file3, null, 2));
+      fs.writeFileSync(
+        path.join(gameDir, 'file1.json'),
+        JSON.stringify(file1, null, 2),
+      );
+      fs.writeFileSync(
+        path.join(gameDir, 'file2.json'),
+        JSON.stringify(file2, null, 2),
+      );
+      fs.writeFileSync(
+        path.join(gameDir, 'file3.json'),
+        JSON.stringify(file3, null, 2),
+      );
 
       const game = {
         id: gameId,
         name: 'Circular References Test',
-        includes: ['file1.json']
+        includes: ['file1.json'],
       };
 
-      fs.writeFileSync(path.join(gameDir, 'game.json'), JSON.stringify(game, null, 2));
+      fs.writeFileSync(
+        path.join(gameDir, 'game.json'),
+        JSON.stringify(game, null, 2),
+      );
 
       // Test should detect circular references
       const loadResult = await gameFileService.loadGameFromFiles(gameId);
-      
+
       // Should handle circular references gracefully
       if (!loadResult.success) {
         expect(loadResult.message).toMatch(/(circular|cycle|recursive)/i);
@@ -311,18 +332,23 @@ describe('File System Edge Cases Stress Tests', () => {
         // Create broken symlinks (if platform supports it)
         const targetFile = path.join(gameDir, 'nonexistent-target.json');
         const symlinkFile = path.join(gameDir, 'broken-symlink.json');
-        
+
         fs.symlinkSync(targetFile, symlinkFile);
 
         // Test scanning directory with broken symlinks
         const scanResult = await fileScannerService.scanGamesDirectory(testDir);
-        
+
         // Should handle broken symlinks gracefully
         expect(scanResult.errors).toBeDefined();
         if (scanResult.errors.length > 0) {
-          expect(scanResult.errors.some(error => 
-            error.includes('symlink') || error.includes('broken') || error.includes('ENOENT')
-          )).toBe(true);
+          expect(
+            scanResult.errors.some(
+              (error) =>
+                error.includes('symlink') ||
+                error.includes('broken') ||
+                error.includes('ENOENT'),
+            ),
+          ).toBe(true);
         }
       } catch (error) {
         // Symlinks might not be supported on all platforms
@@ -340,22 +366,22 @@ describe('File System Edge Cases Stress Tests', () => {
       const gameData = {
         id: gameId,
         name: 'Read-only Test Game',
-        description: 'Testing read-only file handling'
+        description: 'Testing read-only file handling',
       };
 
       const readonlyFile = path.join(gameDir, 'readonly-game.json');
       fs.writeFileSync(readonlyFile, JSON.stringify(gameData, null, 2));
-      
+
       try {
         // Make file read-only
         fs.chmodSync(readonlyFile, 0o444);
 
         // Should be able to read read-only files
         const loadResult = await gameFileService.loadGameFromFiles(gameId);
-        
+
         // Reading should work
         expect(loadResult.success).toBe(true);
-        
+
         // Clean up
         fs.chmodSync(readonlyFile, 0o644);
       } catch (error) {
@@ -367,23 +393,26 @@ describe('File System Edge Cases Stress Tests', () => {
     it('should handle permission denied scenarios', async () => {
       const gameId = 'permission-test';
       const gameDir = path.join(testDir, gameId);
-      
+
       try {
         fs.mkdirSync(gameDir, { recursive: true });
-        
+
         // Create a file we can't read
         const restrictedFile = path.join(gameDir, 'restricted.json');
         fs.writeFileSync(restrictedFile, '{"test": "data"}');
         fs.chmodSync(restrictedFile, 0o000); // No permissions
-        
-        const validation = await fileScannerService.validateGameFile(restrictedFile);
-        
+
+        const validation =
+          await fileScannerService.validateGameFile(restrictedFile);
+
         // Should handle permission errors gracefully
         expect(validation.isValid).toBe(false);
-        expect(validation.errors.some(error => 
-          error.includes('permission') || error.includes('EACCES')
-        )).toBe(true);
-        
+        expect(
+          validation.errors.some(
+            (error) => error.includes('permission') || error.includes('EACCES'),
+          ),
+        ).toBe(true);
+
         // Clean up
         fs.chmodSync(restrictedFile, 0o644);
       } catch (error) {
@@ -406,7 +435,7 @@ describe('File System Edge Cases Stress Tests', () => {
         description: 'Testing large file handling',
         rooms: [],
         objects: [],
-        npcs: []
+        npcs: [],
       };
 
       // Generate lots of data
@@ -418,8 +447,8 @@ describe('File System Edge Cases Stress Tests', () => {
           longDescription: 'B'.repeat(2000), // 2KB long description
           properties: Array.from({ length: 100 }, (_, j) => ({
             key: `property-${j}`,
-            value: 'C'.repeat(50)
-          }))
+            value: 'C'.repeat(50),
+          })),
         });
       }
 
@@ -428,7 +457,7 @@ describe('File System Edge Cases Stress Tests', () => {
       console.log(`Created large file: ${fileSizeMB.toFixed(2)} MB`);
 
       const largeFile = path.join(gameDir, 'large-game.json');
-      
+
       const writeStart = Date.now();
       fs.writeFileSync(largeFile, largeFileContent);
       const writeTime = Date.now() - writeStart;
@@ -458,13 +487,13 @@ describe('File System Edge Cases Stress Tests', () => {
       for (let i = 0; i < numFiles; i++) {
         const fileName = `entity-${i}.json`;
         const filePath = path.join(gameDir, fileName);
-        
+
         const entityData = {
           id: `entity-${i}`,
           name: `Entity ${i}`,
           type: i % 3 === 0 ? 'room' : i % 3 === 1 ? 'object' : 'npc',
           description: `Test entity ${i}`,
-          properties: { index: i }
+          properties: { index: i },
         };
 
         fs.writeFileSync(filePath, JSON.stringify(entityData, null, 2));
@@ -493,17 +522,21 @@ describe('File System Edge Cases Stress Tests', () => {
       // Test very long file names
       const longFileName = 'a'.repeat(200) + '.json'; // Very long filename
       const longFilePath = path.join(gameDir, longFileName);
-      
+
       try {
         fs.writeFileSync(longFilePath, '{"test": "long filename"}');
-        
-        const validation = await fileScannerService.validateGameFile(longFilePath);
-        
+
+        const validation =
+          await fileScannerService.validateGameFile(longFilePath);
+
         // Should handle long filenames (success or graceful failure)
         if (!validation.isValid) {
-          expect(validation.errors.some(error => 
-            error.includes('filename') || error.includes('ENAMETOOLONG')
-          )).toBe(true);
+          expect(
+            validation.errors.some(
+              (error) =>
+                error.includes('filename') || error.includes('ENAMETOOLONG'),
+            ),
+          ).toBe(true);
         }
       } catch (error) {
         // Platform might reject very long filenames
@@ -514,10 +547,10 @@ describe('File System Edge Cases Stress Tests', () => {
       const deepPath = path.join(gameDir, ...Array(20).fill('deep'));
       try {
         fs.mkdirSync(deepPath, { recursive: true });
-        
+
         const deepFile = path.join(deepPath, 'deep-file.json');
         fs.writeFileSync(deepFile, '{"test": "deep nesting"}');
-        
+
         const validation = await fileScannerService.validateGameFile(deepFile);
         expect(validation).toBeDefined();
       } catch (error) {
@@ -536,26 +569,26 @@ describe('File System Edge Cases Stress Tests', () => {
       const gameData = {
         id: gameId,
         name: 'Line Endings Test',
-        description: 'Testing different line endings'
+        description: 'Testing different line endings',
       };
 
       const lineEndingTests = [
         {
           name: 'unix-lf.json',
-          content: JSON.stringify(gameData, null, 2).replace(/\r\n/g, '\n') // LF only
+          content: JSON.stringify(gameData, null, 2).replace(/\r\n/g, '\n'), // LF only
         },
         {
           name: 'windows-crlf.json',
-          content: JSON.stringify(gameData, null, 2).replace(/\n/g, '\r\n') // CRLF
+          content: JSON.stringify(gameData, null, 2).replace(/\n/g, '\r\n'), // CRLF
         },
         {
           name: 'mac-cr.json',
-          content: JSON.stringify(gameData, null, 2).replace(/\n/g, '\r') // CR only
+          content: JSON.stringify(gameData, null, 2).replace(/\n/g, '\r'), // CR only
         },
         {
           name: 'mixed.json',
-          content: '{\n  "id": "test",\r\n  "name": "mixed"\r}'
-        }
+          content: '{\n  "id": "test",\r\n  "name": "mixed"\r}',
+        },
       ];
 
       let lineEndingsHandled = 0;
@@ -565,7 +598,8 @@ describe('File System Edge Cases Stress Tests', () => {
         fs.writeFileSync(filePath, test.content);
 
         try {
-          const validation = await fileScannerService.validateGameFile(filePath);
+          const validation =
+            await fileScannerService.validateGameFile(filePath);
           if (validation.isValid) {
             lineEndingsHandled++;
           }
@@ -577,7 +611,9 @@ describe('File System Edge Cases Stress Tests', () => {
         }
       }
 
-      console.log(`Handled ${lineEndingsHandled}/${lineEndingTests.length} line ending formats`);
+      console.log(
+        `Handled ${lineEndingsHandled}/${lineEndingTests.length} line ending formats`,
+      );
       expect(lineEndingsHandled).toBe(lineEndingTests.length);
     });
 
@@ -588,7 +624,7 @@ describe('File System Edge Cases Stress Tests', () => {
 
       const testFile = path.join(gameDir, 'locked-file.json');
       const testData = { id: 'test', name: 'Locked File Test' };
-      
+
       fs.writeFileSync(testFile, JSON.stringify(testData, null, 2));
 
       // Test concurrent access to the same file
@@ -601,8 +637,8 @@ describe('File System Edge Cases Stress Tests', () => {
       });
 
       const results = await Promise.all(concurrentReads);
-      const successfulReads = results.filter(r => r.isValid).length;
-      
+      const successfulReads = results.filter((r) => r.isValid).length;
+
       console.log(`${successfulReads}/10 concurrent reads succeeded`);
       expect(successfulReads).toBeGreaterThan(7); // Most should succeed
     });
@@ -615,32 +651,28 @@ describe('File System Edge Cases Stress Tests', () => {
       fs.mkdirSync(gameDir, { recursive: true });
 
       // Create test files
-      const testFiles = [
-        'game.json',
-        'rooms.json',
-        'objects.json'
-      ];
+      const testFiles = ['game.json', 'rooms.json', 'objects.json'];
 
       for (const fileName of testFiles) {
         fs.writeFileSync(
           path.join(gameDir, fileName),
-          JSON.stringify({ test: 'data' }, null, 2)
+          JSON.stringify({ test: 'data' }, null, 2),
         );
       }
 
       const initialFiles = fs.readdirSync(gameDir);
-      
+
       // Process files
       await gameFileService.loadGameFromFiles(gameId);
-      
+
       const finalFiles = fs.readdirSync(gameDir);
-      
+
       // Should not create additional temporary files
       expect(finalFiles.length).toBe(initialFiles.length);
-      
+
       // Should not leave lock files or temporary files
-      const tempFiles = finalFiles.filter(f => 
-        f.includes('.tmp') || f.includes('.lock') || f.includes('~')
+      const tempFiles = finalFiles.filter(
+        (f) => f.includes('.tmp') || f.includes('.lock') || f.includes('~'),
       );
       expect(tempFiles).toHaveLength(0);
     });
@@ -656,22 +688,22 @@ describe('File System Edge Cases Stress Tests', () => {
         name: 'Interrupt Test',
         data: Array.from({ length: 10000 }, (_, i) => ({
           id: i,
-          content: 'x'.repeat(100)
-        }))
+          content: 'x'.repeat(100),
+        })),
       };
 
       fs.writeFileSync(
         path.join(gameDir, 'large-game.json'),
-        JSON.stringify(largeData, null, 2)
+        JSON.stringify(largeData, null, 2),
       );
 
       // Simulate interruption by racing file processing with timeout
       try {
         await Promise.race([
           gameFileService.loadGameFromFiles(gameId),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Simulated interruption')), 100)
-          )
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Simulated interruption')), 100),
+          ),
         ]);
       } catch (error) {
         if (error.message === 'Simulated interruption') {

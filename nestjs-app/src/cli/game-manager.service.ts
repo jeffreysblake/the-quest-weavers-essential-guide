@@ -44,7 +44,7 @@ export class GameManagerService {
     private readonly objectService: ObjectService,
     private readonly playerService: PlayerService,
     private readonly gameFileService: GameFileService,
-    private readonly fileScanner: FileScannerService
+    private readonly fileScanner: FileScannerService,
   ) {}
 
   async createGame(gameData: CreateGameData): Promise<GameData> {
@@ -56,7 +56,7 @@ export class GameManagerService {
         version: 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        isActive: true
+        isActive: true,
       };
 
       // Save to database
@@ -66,12 +66,19 @@ export class GameManagerService {
           VALUES (?, ?, ?, ?, ?, ?, ?)
         `);
 
-        insertGame.run(game.id, game.name, game.description, game.version, game.createdAt, game.updatedAt, game.isActive);
+        insertGame.run(
+          game.id,
+          game.name,
+          game.description,
+          game.version,
+          game.createdAt,
+          game.updatedAt,
+          game.isActive,
+        );
       });
 
       this.logger.log(`Created game: ${game.name} (${game.id})`);
       return game;
-
     } catch (error) {
       this.logger.error(`Failed to create game: ${error.message}`);
       throw error;
@@ -80,19 +87,20 @@ export class GameManagerService {
 
   async listGames(): Promise<GameData[]> {
     try {
-      const query = this.databaseService.prepare('SELECT * FROM games ORDER BY created_at DESC');
+      const query = this.databaseService.prepare(
+        'SELECT * FROM games ORDER BY created_at DESC',
+      );
       const rows = query.all() as any[];
 
-      return rows.map(row => ({
+      return rows.map((row) => ({
         id: row.id,
         name: row.name,
         description: row.description,
         version: row.version,
         createdAt: row.created_at,
         updatedAt: row.updated_at || row.created_at,
-        isActive: row.is_active !== undefined ? Boolean(row.is_active) : true
+        isActive: row.is_active !== undefined ? Boolean(row.is_active) : true,
       }));
-
     } catch (error) {
       this.logger.error(`Failed to list games: ${error.message}`);
       throw error;
@@ -113,15 +121,17 @@ export class GameManagerService {
       // Create game.json
       const gameConfig = {
         id: gameId,
-        name: gameId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        name: gameId
+          .replace(/-/g, ' ')
+          .replace(/\b\w/g, (l) => l.toUpperCase()),
         description: `A Quest Weaver's Essential Guide adventure game`,
         version: 1,
-        connections: {}
+        connections: {},
       };
 
       await fs.writeFile(
         path.join(gameDir, 'game.json'),
-        JSON.stringify(gameConfig, null, 2)
+        JSON.stringify(gameConfig, null, 2),
       );
 
       // Create example room
@@ -134,41 +144,44 @@ export class GameManagerService {
         height: 10,
         depth: 3,
         objects: [],
-        npcs: []
+        npcs: [],
       };
 
       await fs.writeFile(
         path.join(gameDir, 'rooms', 'starting-room.json'),
-        JSON.stringify(startingRoom, null, 2)
+        JSON.stringify(startingRoom, null, 2),
       );
 
       // Create connections.json
       const connections = {
         rooms: {},
         objects: {},
-        npcs: {}
+        npcs: {},
       };
 
       await fs.writeFile(
         path.join(gameDir, 'connections.json'),
-        JSON.stringify(connections, null, 2)
+        JSON.stringify(connections, null, 2),
       );
 
       this.logger.log(`Created file structure for game: ${gameId}`);
-
     } catch (error) {
       this.logger.error(`Failed to create game files: ${error.message}`);
       throw error;
     }
   }
 
-  async createEntity(gameId: string, entityType: string, entityData: CreateEntityData): Promise<IBaseEntity> {
+  async createEntity(
+    gameId: string,
+    entityType: string,
+    entityData: CreateEntityData,
+  ): Promise<IBaseEntity> {
     try {
       const baseEntity = {
         name: entityData.name,
         description: entityData.description || '',
         position: entityData.position || { x: 0, y: 0, z: 0 },
-        gameId
+        gameId,
       };
 
       let entity: IBaseEntity;
@@ -181,7 +194,7 @@ export class GameManagerService {
             height: 10,
             size: { width: 10, height: 10, depth: 3 },
             objects: [],
-            players: []
+            players: [],
           } as Omit<IRoom, 'id' | 'type'>);
           break;
 
@@ -192,7 +205,7 @@ export class GameManagerService {
             material: 'wood',
             isPortable: true,
             isContainer: false,
-            state: {}
+            state: {},
           } as Omit<IObject, 'id' | 'type'>);
           break;
 
@@ -202,7 +215,7 @@ export class GameManagerService {
             health: 100,
             level: 1,
             experience: 0,
-            inventory: []
+            inventory: [],
           } as Omit<IPlayer, 'id' | 'type'>);
           break;
 
@@ -212,7 +225,6 @@ export class GameManagerService {
 
       this.logger.log(`Created ${entityType}: ${entity.name} (${entity.id})`);
       return entity;
-
     } catch (error) {
       this.logger.error(`Failed to create ${entityType}: ${error.message}`);
       throw error;
@@ -239,7 +251,6 @@ export class GameManagerService {
       }
 
       return entities.sort((a, b) => a.name.localeCompare(b.name));
-
     } catch (error) {
       this.logger.error(`Failed to list entities: ${error.message}`);
       throw error;
@@ -254,11 +265,10 @@ export class GameManagerService {
       await Promise.all([
         this.roomService.persistRooms(),
         this.objectService.persistObjects(),
-        this.playerService.persistPlayers()
+        this.playerService.persistPlayers(),
       ]);
 
       this.logger.log(`Successfully persisted game: ${gameId}`);
-
     } catch (error) {
       this.logger.error(`Failed to persist game ${gameId}: ${error.message}`);
       throw error;
@@ -273,11 +283,10 @@ export class GameManagerService {
       await Promise.all([
         this.roomService.loadRooms(gameId),
         this.objectService.loadObjects(gameId),
-        this.playerService.loadPlayers(gameId)
+        this.playerService.loadPlayers(gameId),
       ]);
 
       this.logger.log(`Successfully loaded game: ${gameId}`);
-
     } catch (error) {
       this.logger.error(`Failed to load game ${gameId}: ${error.message}`);
       throw error;
@@ -292,7 +301,6 @@ export class GameManagerService {
       this.playerService.clearCache();
 
       this.logger.log('Cleared all caches');
-
     } catch (error) {
       this.logger.error(`Failed to clear caches: ${error.message}`);
       throw error;
@@ -310,9 +318,8 @@ export class GameManagerService {
         entities: entityStats.size,
         rooms: roomStats.size,
         objects: objectStats.size,
-        players: playerStats.size
+        players: playerStats.size,
       };
-
     } catch (error) {
       this.logger.error(`Failed to get cache stats: ${error.message}`);
       throw error;
@@ -325,7 +332,7 @@ export class GameManagerService {
 
       // Load from files first
       const result = await this.gameFileService.loadGameFromFiles(gameId);
-      
+
       if (!result.success) {
         throw new Error(result.message);
       }
@@ -334,7 +341,6 @@ export class GameManagerService {
       await this.persistGame(gameId);
 
       this.logger.log(`Successfully synced game ${gameId}`);
-
     } catch (error) {
       this.logger.error(`Failed to sync game ${gameId}: ${error.message}`);
       throw error;
@@ -357,16 +363,27 @@ export class GameManagerService {
         try {
           switch (entity.type) {
             case 'room':
-              return await this.roomService.saveRoomVersion(entity.id, backupReason);
+              return await this.roomService.saveRoomVersion(
+                entity.id,
+                backupReason,
+              );
             case 'object':
-              return await this.objectService.saveObjectVersion(entity.id, backupReason);
+              return await this.objectService.saveObjectVersion(
+                entity.id,
+                backupReason,
+              );
             case 'player':
-              return await this.playerService.savePlayerVersion(entity.id, backupReason);
+              return await this.playerService.savePlayerVersion(
+                entity.id,
+                backupReason,
+              );
             default:
               return null;
           }
         } catch (error) {
-          this.logger.warn(`Failed to backup entity ${entity.id}: ${error.message}`);
+          this.logger.warn(
+            `Failed to backup entity ${entity.id}: ${error.message}`,
+          );
           return null;
         }
       });
@@ -375,7 +392,6 @@ export class GameManagerService {
 
       this.logger.log(`Created backup for game ${gameId} at ${timestamp}`);
       return timestamp;
-
     } catch (error) {
       this.logger.error(`Failed to backup game ${gameId}: ${error.message}`);
       throw error;
@@ -384,7 +400,9 @@ export class GameManagerService {
 
   async restoreGame(gameId: string, backupTimestamp: string): Promise<void> {
     try {
-      this.logger.log(`Restoring game ${gameId} from backup: ${backupTimestamp}`);
+      this.logger.log(
+        `Restoring game ${gameId} from backup: ${backupTimestamp}`,
+      );
 
       // Get all entities for the game
       const entities = await this.listEntities(gameId);
@@ -393,32 +411,47 @@ export class GameManagerService {
       const restorePromises = entities.map(async (entity) => {
         try {
           // Get versions for this entity
-          const versions = await this.databaseService.listVersions(entity.type, entity.id);
-          
+          const versions = await this.databaseService.listVersions(
+            entity.type,
+            entity.id,
+          );
+
           // Find the version closest to the backup timestamp
-          const backupVersion = versions.find(v => 
-            v.reason?.includes(backupTimestamp.substring(0, 16)) // Match date part
+          const backupVersion = versions.find(
+            (v) => v.reason?.includes(backupTimestamp.substring(0, 16)), // Match date part
           );
 
           if (backupVersion) {
             switch (entity.type) {
               case 'room':
-                return await this.roomService.rollbackRoom(entity.id, backupVersion.version);
+                return await this.roomService.rollbackRoom(
+                  entity.id,
+                  backupVersion.version,
+                );
               case 'object':
-                return await this.objectService.rollbackObject(entity.id, backupVersion.version);
+                return await this.objectService.rollbackObject(
+                  entity.id,
+                  backupVersion.version,
+                );
               case 'player':
-                return await this.playerService.rollbackPlayer(entity.id, backupVersion.version);
+                return await this.playerService.rollbackPlayer(
+                  entity.id,
+                  backupVersion.version,
+                );
             }
           }
         } catch (error) {
-          this.logger.warn(`Failed to restore entity ${entity.id}: ${error.message}`);
+          this.logger.warn(
+            `Failed to restore entity ${entity.id}: ${error.message}`,
+          );
         }
       });
 
       await Promise.all(restorePromises);
 
-      this.logger.log(`Restored game ${gameId} from backup: ${backupTimestamp}`);
-
+      this.logger.log(
+        `Restored game ${gameId} from backup: ${backupTimestamp}`,
+      );
     } catch (error) {
       this.logger.error(`Failed to restore game ${gameId}: ${error.message}`);
       throw error;

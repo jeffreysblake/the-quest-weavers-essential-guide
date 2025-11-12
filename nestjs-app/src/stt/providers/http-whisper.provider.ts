@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { STTProvider, STTOptions, STTResult } from '../interfaces/stt.interface';
+import {
+  STTProvider,
+  STTOptions,
+  STTResult,
+} from '../interfaces/stt.interface';
 import axios from 'axios';
 import FormData from 'form-data';
 
@@ -10,7 +14,18 @@ import FormData from 'form-data';
 export class HttpWhisperProvider implements STTProvider {
   private readonly logger = new Logger(HttpWhisperProvider.name);
   readonly name = 'http-whisper';
-  readonly supportedLanguages: string[] = ['auto', 'en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh', 'ja'];
+  readonly supportedLanguages: string[] = [
+    'auto',
+    'en',
+    'es',
+    'fr',
+    'de',
+    'it',
+    'pt',
+    'ru',
+    'zh',
+    'ja',
+  ];
   readonly supportedModels: string[] = ['base', 'small', 'medium', 'large'];
 
   private apiUrl: string;
@@ -21,8 +36,15 @@ export class HttpWhisperProvider implements STTProvider {
     this.apiKey = process.env.STT_API_KEY;
   }
 
-  async transcribe(audioBuffer: Buffer, options?: STTOptions): Promise<STTResult> {
-    const { language = 'en', wordTimestamps = false, temperature = 0 } = options || {};
+  async transcribe(
+    audioBuffer: Buffer,
+    options?: STTOptions,
+  ): Promise<STTResult> {
+    const {
+      language = 'en',
+      wordTimestamps = false,
+      temperature = 0,
+    } = options || {};
 
     this.logger.log(`Transcribing audio buffer (${audioBuffer.length} bytes)`);
 
@@ -53,16 +75,23 @@ export class HttpWhisperProvider implements STTProvider {
       // Parse response based on whisper.cpp format
       const result = this.parseWhisperResponse(response.data);
 
-      this.logger.log(`Transcription completed: "${result.text.substring(0, 100)}..."`);
+      this.logger.log(
+        `Transcription completed: "${result.text.substring(0, 100)}..."`,
+      );
 
       return result;
     } catch (error) {
-      this.logger.error(`HTTP transcription failed: ${error.message}`);
-      throw new Error(`Transcription failed: ${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`HTTP transcription failed: ${errorMessage}`);
+      throw new Error(`Transcription failed: ${errorMessage}`);
     }
   }
 
-  async transcribeFile(filePath: string, options?: STTOptions): Promise<STTResult> {
+  async transcribeFile(
+    filePath: string,
+    options?: STTOptions,
+  ): Promise<STTResult> {
     const fs = await import('fs');
     const fileBuffer = await fs.promises.readFile(filePath);
     return this.transcribe(fileBuffer, options);

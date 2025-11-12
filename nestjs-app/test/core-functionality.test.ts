@@ -21,7 +21,7 @@ describe('Core Functionality Tests', () => {
       .send({
         name: 'Test Room',
         width: 10,
-        height: 10
+        height: 10,
       })
       .expect(201);
 
@@ -36,7 +36,7 @@ describe('Core Functionality Tests', () => {
       .send({
         name: 'Test Player',
         health: 100,
-        level: 1
+        level: 1,
       })
       .expect(201);
 
@@ -50,7 +50,7 @@ describe('Core Functionality Tests', () => {
       .post('/objects')
       .send({
         name: 'Test Object',
-        objectType: 'item'
+        objectType: 'item',
       })
       .expect(201);
 

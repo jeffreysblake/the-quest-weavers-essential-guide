@@ -72,7 +72,7 @@ describe('PlayerService with Persistence', () => {
         level: 1,
         experience: 0,
         inventory: [],
-        gameId: 'test-game'
+        gameId: 'test-game',
       };
 
       const mockRun = jest.fn();
@@ -80,7 +80,10 @@ describe('PlayerService with Persistence', () => {
       mockDatabaseService.transaction.mockImplementation(async (callback) => {
         await callback({ prepare: mockPrepare });
       });
-      mockEntityService.createEntity.mockReturnValue({ id: 'player-1', ...playerData });
+      mockEntityService.createEntity.mockReturnValue({
+        id: 'player-1',
+        ...playerData,
+      });
 
       const result = service.createPlayer(playerData);
 
@@ -93,23 +96,25 @@ describe('PlayerService with Persistence', () => {
     it('should handle database save failure gracefully', async () => {
       const playerData = {
         name: 'Test Player',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       };
 
-      mockDatabaseService.transaction.mockRejectedValue(new Error('Database error'));
-      mockEntityService.createEntity.mockReturnValue({ 
-        id: 'player-1', 
-        ...playerData, 
+      mockDatabaseService.transaction.mockRejectedValue(
+        new Error('Database error'),
+      );
+      mockEntityService.createEntity.mockReturnValue({
+        id: 'player-1',
+        ...playerData,
         type: 'player',
         health: 100,
         level: 1,
         experience: 0,
-        inventory: []
+        inventory: [],
       });
 
       // Should still create player even if database fails
       const result = service.createPlayer(playerData);
-      
+
       expect(result).toBeDefined();
       expect(result.name).toBe('Test Player');
     });
@@ -126,13 +131,16 @@ describe('PlayerService with Persistence', () => {
         level: 1,
         experience: 0,
         inventory: [],
-        gameId: 'test-game'
+        gameId: 'test-game',
       };
 
       // Setup cache
       service['players'].set('player-1', mockPlayer);
 
-      const result = await service.getPlayerWithFallback('player-1', 'test-game');
+      const result = await service.getPlayerWithFallback(
+        'player-1',
+        'test-game',
+      );
 
       expect(result).toEqual(mockPlayer);
       expect(mockDatabaseService.prepare).not.toHaveBeenCalled();
@@ -147,12 +155,15 @@ describe('PlayerService with Persistence', () => {
         health: 100,
         level: 1,
         experience: 0,
-        inventory: []
+        inventory: [],
       };
 
       mockEntityService.getEntity.mockReturnValue(mockPlayer);
 
-      const result = await service.getPlayerWithFallback('player-1', 'test-game');
+      const result = await service.getPlayerWithFallback(
+        'player-1',
+        'test-game',
+      );
 
       expect(result).toEqual(mockPlayer);
       expect(mockEntityService.getEntity).toHaveBeenCalledWith('player-1');
@@ -170,16 +181,19 @@ describe('PlayerService with Persistence', () => {
         level: 3,
         experience: 150,
         inventory_data: '["item1", "item2"]',
-        game_id: 'test-game'
+        game_id: 'test-game',
       };
 
       mockEntityService.getEntity.mockReturnValue(null);
-      
+
       const mockGet = jest.fn().mockReturnValue(mockPlayerRow);
       const mockPrepare = jest.fn().mockReturnValue({ get: mockGet });
       mockDatabaseService.prepare.mockImplementation(mockPrepare);
 
-      const result = await service.getPlayerWithFallback('player-1', 'test-game');
+      const result = await service.getPlayerWithFallback(
+        'player-1',
+        'test-game',
+      );
 
       expect(result).toBeDefined();
       expect(result?.name).toBe('DB Player');
@@ -190,11 +204,14 @@ describe('PlayerService with Persistence', () => {
 
     it('should return undefined if player not found anywhere', async () => {
       mockEntityService.getEntity.mockReturnValue(null);
-      
+
       const mockGet = jest.fn().mockReturnValue(null);
       mockDatabaseService.prepare.mockReturnValue({ get: mockGet });
 
-      const result = await service.getPlayerWithFallback('nonexistent', 'test-game');
+      const result = await service.getPlayerWithFallback(
+        'nonexistent',
+        'test-game',
+      );
 
       expect(result).toBeUndefined();
     });
@@ -220,7 +237,7 @@ describe('PlayerService with Persistence', () => {
         id: 'obj-1',
         name: 'Test Object',
         type: 'object',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       };
 
       mockObjectService.getObject.mockReturnValue(mockObject);
@@ -239,8 +256,8 @@ describe('PlayerService with Persistence', () => {
         isPortable: true,
         spatialRelationship: {
           relationshipType: 'inside',
-          targetId: 'container-1'
-        }
+          targetId: 'container-1',
+        },
       };
 
       mockObjectService.getObject.mockReturnValue(mockObject);
@@ -259,7 +276,7 @@ describe('PlayerService with Persistence', () => {
         id: 'obj-1',
         name: 'Heavy Object',
         type: 'object',
-        isPortable: false
+        isPortable: false,
       };
 
       mockObjectService.getObject.mockReturnValue(mockObject);
@@ -290,7 +307,7 @@ describe('PlayerService with Persistence', () => {
       const mockPhysicsResult = {
         success: true,
         message: 'Target takes fire damage!',
-        damage: 25
+        damage: 25,
       };
 
       mockPhysicsService.applyEffect.mockReturnValue(mockPhysicsResult);
@@ -304,7 +321,7 @@ describe('PlayerService with Persistence', () => {
         type: 'fire',
         intensity: 8,
         sourceId: 'player-1',
-        description: 'powerful fireball'
+        description: 'powerful fireball',
       });
     });
 
@@ -312,21 +329,31 @@ describe('PlayerService with Persistence', () => {
       const mockPhysicsResult = {
         success: true,
         message: 'Lightning strikes the room!',
-        affectedEntities: ['obj-1', 'obj-2']
+        affectedEntities: ['obj-1', 'obj-2'],
       };
 
       mockPhysicsService.applyAreaEffect.mockReturnValue(mockPhysicsResult);
 
-      const result = service.castAreaSpell('player-1', 'lightning', 'room-1', 6);
+      const result = service.castAreaSpell(
+        'player-1',
+        'lightning',
+        'room-1',
+        6,
+      );
 
       expect(result.success).toBeTruthy();
-      expect(result.message).toContain('Wizard casts Lightning Bolt across the room!');
-      expect(mockPhysicsService.applyAreaEffect).toHaveBeenCalledWith('room-1', {
-        type: 'lightning',
-        intensity: 6,
-        sourceId: 'player-1',
-        description: 'area lightning bolt'
-      });
+      expect(result.message).toContain(
+        'Wizard casts Lightning Bolt across the room!',
+      );
+      expect(mockPhysicsService.applyAreaEffect).toHaveBeenCalledWith(
+        'room-1',
+        {
+          type: 'lightning',
+          intensity: 6,
+          sourceId: 'player-1',
+          description: 'area lightning bolt',
+        },
+      );
     });
 
     it('should handle spell casting for non-existent player', () => {
@@ -348,7 +375,7 @@ describe('PlayerService with Persistence', () => {
         level: 1,
         experience: 0,
         inventory: [],
-        gameId: 'test-game'
+        gameId: 'test-game',
       };
 
       service['players'].set('player-1', mockPlayer);
@@ -378,13 +405,14 @@ describe('PlayerService with Persistence', () => {
           level: 1,
           experience: 0,
           inventory_data: '[]',
-          game_id: 'test-game'
-        }
+          game_id: 'test-game',
+        },
       ];
 
       const mockAll = jest.fn().mockReturnValue(mockPlayerRows);
       const mockGet = jest.fn().mockReturnValue(mockPlayerRows[0]);
-      const mockPrepare = jest.fn()
+      const mockPrepare = jest
+        .fn()
         .mockReturnValueOnce({ all: mockAll })
         .mockReturnValueOnce({ get: mockGet });
       mockDatabaseService.prepare.mockImplementation(mockPrepare);
@@ -416,7 +444,11 @@ describe('PlayerService with Persistence', () => {
 
       expect(version).toBe(2);
       expect(mockDatabaseService.saveVersion).toHaveBeenCalledWith(
-        'player', 'player-1', mockPlayer, 'player_service', 'Test save'
+        'player',
+        'player-1',
+        mockPlayer,
+        'player_service',
+        'Test save',
       );
     });
 
@@ -433,7 +465,7 @@ describe('PlayerService with Persistence', () => {
       };
 
       mockDatabaseService.rollbackToVersion.mockResolvedValue(true);
-      
+
       const mockGet = jest.fn().mockReturnValue({
         id: 'player-1',
         name: 'Restored Player',
@@ -444,14 +476,18 @@ describe('PlayerService with Persistence', () => {
         level: 2,
         experience: 100,
         inventory_data: '["item1"]',
-        game_id: 'test-game'
+        game_id: 'test-game',
       });
       mockDatabaseService.prepare.mockReturnValue({ get: mockGet });
 
       const success = await service.rollbackPlayer('player-1', 1);
 
       expect(success).toBeTruthy();
-      expect(mockDatabaseService.rollbackToVersion).toHaveBeenCalledWith('player', 'player-1', 1);
+      expect(mockDatabaseService.rollbackToVersion).toHaveBeenCalledWith(
+        'player',
+        'player-1',
+        1,
+      );
       expect(service['players'].get('player-1')?.name).toBe('Restored Player');
     });
   });
@@ -500,14 +536,20 @@ describe('PlayerService with Persistence', () => {
       const result = service.addToInventory('player-1', 'new-item');
 
       expect(result).toBeTruthy();
-      expect(service['players'].get('player-1')?.inventory).toContain('new-item');
+      expect(service['players'].get('player-1')?.inventory).toContain(
+        'new-item',
+      );
     });
 
     it('should not add duplicate items', () => {
       const result = service.addToInventory('player-1', 'existing-item');
 
       expect(result).toBeTruthy();
-      expect(service['players'].get('player-1')?.inventory.filter(item => item === 'existing-item')).toHaveLength(1);
+      expect(
+        service['players']
+          .get('player-1')
+          ?.inventory.filter((item) => item === 'existing-item'),
+      ).toHaveLength(1);
     });
 
     it('should remove items from inventory', () => {
@@ -516,7 +558,9 @@ describe('PlayerService with Persistence', () => {
       const result = service.removeFromInventory('player-1', 'existing-item');
 
       expect(result).toBeTruthy();
-      expect(service['players'].get('player-1')?.inventory).not.toContain('existing-item');
+      expect(service['players'].get('player-1')?.inventory).not.toContain(
+        'existing-item',
+      );
     });
 
     it('should get inventory with object details', () => {

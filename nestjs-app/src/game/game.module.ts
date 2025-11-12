@@ -10,9 +10,15 @@ import { ObjectModule } from '../entity/object.module';
 import { DatabaseModule } from '../database/database.module';
 
 @Module({
-  imports: [DatabaseModule, EntityModule, RoomModule, PlayerModule, ObjectModule],
+  imports: [
+    DatabaseModule,
+    EntityModule,
+    RoomModule,
+    PlayerModule,
+    ObjectModule,
+  ],
   controllers: [GameController],
   providers: [GameService, GameStateService, CommandProcessorService],
-  exports: [GameService, GameStateService]
+  exports: [GameService, GameStateService],
 })
 export class GameModule {}

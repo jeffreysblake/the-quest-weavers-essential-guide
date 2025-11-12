@@ -1,4 +1,13 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsEnum, Min, Max, IsInt } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  Min,
+  Max,
+  IsInt,
+} from 'class-validator';
 
 export enum ImageModel {
   SDXL = 'sdxl',

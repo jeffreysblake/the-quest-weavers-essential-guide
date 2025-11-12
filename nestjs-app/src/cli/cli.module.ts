@@ -11,11 +11,11 @@ import { PlayerModule } from '../entity/player.module';
 @Module({
   imports: [
     DatabaseModule,
-    FileSystemModule, 
+    FileSystemModule,
     EntityModule,
     RoomModule,
     ObjectModule,
-    PlayerModule
+    PlayerModule,
   ],
   providers: [CLIService, GameManagerService],
   exports: [CLIService, GameManagerService],

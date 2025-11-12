@@ -23,7 +23,9 @@ export class STTService implements OnModuleInit {
     if (isPrimary) {
       this.primaryProvider = provider.name;
     }
-    this.logger.log(`Registered STT provider: ${provider.name}${isPrimary ? ' (primary)' : ''}`);
+    this.logger.log(
+      `Registered STT provider: ${provider.name}${isPrimary ? ' (primary)' : ''}`,
+    );
   }
 
   /**
@@ -42,7 +44,9 @@ export class STTService implements OnModuleInit {
           this.logger.warn(`STT provider "${name}" is not available`);
         }
       } catch (error) {
-        this.logger.warn(`Failed to check STT provider "${name}": ${error.message}`);
+        this.logger.warn(
+          `Failed to check STT provider "${name}": ${error.message}`,
+        );
       }
     }
 
@@ -50,9 +54,14 @@ export class STTService implements OnModuleInit {
       this.logger.warn('No STT providers are available');
     } else {
       // If primary provider is not available, use first available
-      if (!this.primaryProvider || !availableProviders.includes(this.primaryProvider)) {
+      if (
+        !this.primaryProvider ||
+        !availableProviders.includes(this.primaryProvider)
+      ) {
         this.primaryProvider = availableProviders[0];
-        this.logger.log(`Using "${this.primaryProvider}" as primary STT provider`);
+        this.logger.log(
+          `Using "${this.primaryProvider}" as primary STT provider`,
+        );
       }
       this.isInitialized = true;
     }
@@ -61,9 +70,15 @@ export class STTService implements OnModuleInit {
   /**
    * Transcribe audio buffer
    */
-  async transcribe(audioBuffer: Buffer, options?: STTOptions, providerName?: string): Promise<STTResult> {
+  async transcribe(
+    audioBuffer: Buffer,
+    options?: STTOptions,
+    providerName?: string,
+  ): Promise<STTResult> {
     if (!this.isInitialized) {
-      throw new Error('STT service is not initialized - no providers available');
+      throw new Error(
+        'STT service is not initialized - no providers available',
+      );
     }
 
     // Determine which provider to use
@@ -77,7 +92,9 @@ export class STTService implements OnModuleInit {
       throw new Error(`STT provider "${targetProvider}" not found`);
     }
 
-    this.logger.log(`Transcribing audio using provider: ${targetProvider} (${audioBuffer.length} bytes)`);
+    this.logger.log(
+      `Transcribing audio using provider: ${targetProvider} (${audioBuffer.length} bytes)`,
+    );
 
     try {
       const startTime = Date.now();
@@ -89,16 +106,22 @@ export class STTService implements OnModuleInit {
         this.totalAudioDuration += result.duration;
       }
 
-      this.logger.log(`Transcription completed in ${duration}ms: "${result.text.substring(0, 100)}..."`);
+      this.logger.log(
+        `Transcription completed in ${duration}ms: "${result.text.substring(0, 100)}..."`,
+      );
 
       return result;
     } catch (error) {
-      this.logger.error(`Transcription failed with ${targetProvider}: ${error.message}`);
+      this.logger.error(
+        `Transcription failed with ${targetProvider}: ${error.message}`,
+      );
 
       // Try fallback to another provider
       if (providerName === undefined && this.providers.size > 1) {
         this.logger.log('Attempting fallback to another provider...');
-        const fallbackProvider = Array.from(this.providers.keys()).find((name) => name !== targetProvider);
+        const fallbackProvider = Array.from(this.providers.keys()).find(
+          (name) => name !== targetProvider,
+        );
         if (fallbackProvider) {
           return this.transcribe(audioBuffer, options, fallbackProvider);
         }
@@ -111,9 +134,15 @@ export class STTService implements OnModuleInit {
   /**
    * Transcribe audio file
    */
-  async transcribeFile(filePath: string, options?: STTOptions, providerName?: string): Promise<STTResult> {
+  async transcribeFile(
+    filePath: string,
+    options?: STTOptions,
+    providerName?: string,
+  ): Promise<STTResult> {
     if (!this.isInitialized) {
-      throw new Error('STT service is not initialized - no providers available');
+      throw new Error(
+        'STT service is not initialized - no providers available',
+      );
     }
 
     const targetProvider = providerName || this.primaryProvider;
@@ -159,8 +188,16 @@ export class STTService implements OnModuleInit {
   /**
    * Get list of supported models
    */
-  getSupportedModels(): Array<{ model: string; provider: string; vramUsage?: number }> {
-    const models: Array<{ model: string; provider: string; vramUsage?: number }> = [];
+  getSupportedModels(): Array<{
+    model: string;
+    provider: string;
+    vramUsage?: number;
+  }> {
+    const models: Array<{
+      model: string;
+      provider: string;
+      vramUsage?: number;
+    }> = [];
 
     for (const [providerName, provider] of this.providers.entries()) {
       for (const model of provider.supportedModels) {

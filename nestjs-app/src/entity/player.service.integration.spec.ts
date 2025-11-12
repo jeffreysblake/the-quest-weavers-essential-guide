@@ -16,7 +16,7 @@ describe('PlayerService (Integration)', () => {
         EntityService,
         ObjectService,
         PhysicsService,
-        RoomService
+        RoomService,
       ],
     }).compile();
 
@@ -35,11 +35,11 @@ describe('PlayerService (Integration)', () => {
       health: 100,
       inventory: [],
       level: 1,
-      experience: 0
+      experience: 0,
     };
-    
+
     const result = service.createPlayer(playerData);
-    
+
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
     expect(result.name).toBe('Test Player');

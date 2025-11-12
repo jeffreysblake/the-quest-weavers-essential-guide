@@ -3,12 +3,12 @@ import { EntityService } from './entity.service';
 import { ObjectService } from './object.service';
 import { RoomService } from './room.service';
 import { IObject } from './object.interface';
-import { 
-  IPhysicsEffect, 
-  IPhysicsResult, 
-  IMaterialProperties, 
-  MaterialType, 
-  EffectType 
+import {
+  IPhysicsEffect,
+  IPhysicsResult,
+  IMaterialProperties,
+  MaterialType,
+  EffectType,
 } from './physics.interface';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class PhysicsService {
   constructor(
     private readonly entityService: EntityService,
     private readonly objectService: ObjectService,
-    private readonly roomService: RoomService
+    private readonly roomService: RoomService,
   ) {}
 
   // Apply an effect to a target object
@@ -25,12 +25,12 @@ export class PhysicsService {
     if (!target) {
       return {
         success: false,
-        message: 'Target object not found'
+        message: 'Target object not found',
       };
     }
 
     const result = this.calculateEffectOnObject(target, effect);
-    
+
     // Apply damage and state changes
     if (result.objectsAffected) {
       for (const affected of result.objectsAffected) {
@@ -56,12 +56,16 @@ export class PhysicsService {
   }
 
   // Apply area effect to all objects in a room or spatial area
-  applyAreaEffect(roomId: string, effect: IPhysicsEffect, sourcePosition?: { x: number, y: number, z: number }): IPhysicsResult {
+  applyAreaEffect(
+    roomId: string,
+    effect: IPhysicsEffect,
+    sourcePosition?: { x: number; y: number; z: number },
+  ): IPhysicsResult {
     const room = this.roomService.getRoom(roomId);
     if (!room) {
       return {
         success: false,
-        message: 'Room not found'
+        message: 'Room not found',
       };
     }
 
@@ -87,15 +91,18 @@ export class PhysicsService {
       success: results.length > 0,
       message: results.join(' '),
       objectsAffected: allAffected,
-      chainReactions: allChains
+      chainReactions: allChains,
     };
   }
 
-  private calculateEffectOnObject(target: IObject, effect: IPhysicsEffect): IPhysicsResult {
+  private calculateEffectOnObject(
+    target: IObject,
+    effect: IPhysicsEffect,
+  ): IPhysicsResult {
     if (!target.materialProperties) {
       return {
         success: false,
-        message: `${target.name} has no material properties to interact with`
+        message: `${target.name} has no material properties to interact with`,
       };
     }
 
@@ -107,7 +114,7 @@ export class PhysicsService {
       return {
         success: true,
         message: `${target.name} resists the ${effect.type} effect`,
-        objectsAffected: []
+        objectsAffected: [],
       };
     }
 
@@ -125,60 +132,72 @@ export class PhysicsService {
     }
   }
 
-  private handleFireEffect(target: IObject, effect: IPhysicsEffect, intensity: number): IPhysicsResult {
+  private handleFireEffect(
+    target: IObject,
+    effect: IPhysicsEffect,
+    intensity: number,
+  ): IPhysicsResult {
     const material = target.materialProperties!;
     const flammability = material.flammability || 0;
     const damage = Math.floor(intensity * (flammability / 10));
-    
+
     let message = `${target.name} is hit by ${effect.description}`;
     const chainReactions: any[] = [];
-    const objectsAffected = [{
-      objectId: target.id,
-      damage: damage,
-      newState: { ...target.state }
-    }];
+    const objectsAffected = [
+      {
+        objectId: target.id,
+        damage: damage,
+        newState: { ...target.state },
+      },
+    ];
 
     if (flammability > 5 && intensity > 3) {
       message += ` and catches fire!`;
       objectsAffected[0].newState = {
         ...target.state,
-        isOnFire: true
+        isOnFire: true,
       };
-      
+
       // Check for explosive contents or materials
       if (material.properties?.explosive || this.hasExplosiveContents(target)) {
         message += ` The ${target.name} explodes!`;
-        objectsAffected[0].damage = (target.health || target.maxHealth || 10);
-        
+        objectsAffected[0].damage = target.health || target.maxHealth || 10;
+
         // Create explosion effect for nearby objects
-        chainReactions.push(...this.getObjectsInRange(target.id, 2).map(nearbyId => ({
-          targetId: nearbyId,
-          effect: {
-            type: 'force' as EffectType,
-            intensity: intensity + 2,
-            description: `explosion from ${target.name}`
-          }
-        })));
+        chainReactions.push(
+          ...this.getObjectsInRange(target.id, 2).map((nearbyId) => ({
+            targetId: nearbyId,
+            effect: {
+              type: 'force' as EffectType,
+              intensity: intensity + 2,
+              description: `explosion from ${target.name}`,
+            },
+          })),
+        );
       }
     } else if (flammability > 0) {
       message += ` and is scorched`;
     } else {
       message += ` but the ${material.material} does not burn`;
-      
+
       // Even if the container doesn't burn, check for explosive contents
       if (this.hasExplosiveContents(target) && intensity > 4) {
         message += ` However, the heat ignites the contents and the ${target.name} explodes!`;
-        objectsAffected[0].damage = Math.floor((target.health || target.maxHealth || 10) * 0.8);
-        
+        objectsAffected[0].damage = Math.floor(
+          (target.health || target.maxHealth || 10) * 0.8,
+        );
+
         // Create explosion effect for nearby objects
-        chainReactions.push(...this.getObjectsInRange(target.id, 2).map(nearbyId => ({
-          targetId: nearbyId,
-          effect: {
-            type: 'force' as EffectType,
-            intensity: intensity + 1,
-            description: `explosion from ${target.name}`
-          }
-        })));
+        chainReactions.push(
+          ...this.getObjectsInRange(target.id, 2).map((nearbyId) => ({
+            targetId: nearbyId,
+            effect: {
+              type: 'force' as EffectType,
+              intensity: intensity + 1,
+              description: `explosion from ${target.name}`,
+            },
+          })),
+        );
       }
     }
 
@@ -186,47 +205,58 @@ export class PhysicsService {
       success: true,
       message,
       objectsAffected,
-      chainReactions
+      chainReactions,
     };
   }
 
-  private handleLightningEffect(target: IObject, effect: IPhysicsEffect, intensity: number): IPhysicsResult {
+  private handleLightningEffect(
+    target: IObject,
+    effect: IPhysicsEffect,
+    intensity: number,
+  ): IPhysicsResult {
     const material = target.materialProperties!;
     const conductivity = material.conductivity || 0;
     let damage = Math.floor(intensity * (conductivity > 5 ? 1.5 : 0.5));
-    
+
     let message = `${target.name} is struck by ${effect.description}`;
     const chainReactions: any[] = [];
-    
+
     if (conductivity > 7) {
       message += ` and conducts the electricity!`;
-      
+
       // Chain to conductive objects in contact
-      chainReactions.push(...this.getConnectedObjects(target.id)
-        .filter(id => {
-          const obj = this.objectService.getObject(id);
-          return obj?.materialProperties?.conductivity && obj.materialProperties.conductivity > 5;
-        })
-        .map(nearbyId => ({
-          targetId: nearbyId,
-          effect: {
-            type: 'lightning' as EffectType,
-            intensity: Math.max(1, intensity - 2),
-            description: `electrical conduction from ${target.name}`
-          }
-        })));
+      chainReactions.push(
+        ...this.getConnectedObjects(target.id)
+          .filter((id) => {
+            const obj = this.objectService.getObject(id);
+            return (
+              obj?.materialProperties?.conductivity &&
+              obj.materialProperties.conductivity > 5
+            );
+          })
+          .map((nearbyId) => ({
+            targetId: nearbyId,
+            effect: {
+              type: 'lightning' as EffectType,
+              intensity: Math.max(1, intensity - 2),
+              description: `electrical conduction from ${target.name}`,
+            },
+          })),
+      );
 
       // Special case: water conducts to everything touching it
       if (material.material === 'water') {
         const objectsInWater = this.getObjectsInSameLocation(target.id);
-        chainReactions.push(...objectsInWater.map(id => ({
-          targetId: id,
-          effect: {
-            type: 'lightning' as EffectType,
-            intensity: intensity,
-            description: `electrical conduction through water`
-          }
-        })));
+        chainReactions.push(
+          ...objectsInWater.map((id) => ({
+            targetId: id,
+            effect: {
+              type: 'lightning' as EffectType,
+              intensity: intensity,
+              description: `electrical conduction through water`,
+            },
+          })),
+        );
       }
     } else if (conductivity < 2) {
       message += ` but the ${material.material} does not conduct electricity`;
@@ -236,20 +266,26 @@ export class PhysicsService {
     return {
       success: true,
       message,
-      objectsAffected: [{
-        objectId: target.id,
-        damage
-      }],
-      chainReactions
+      objectsAffected: [
+        {
+          objectId: target.id,
+          damage,
+        },
+      ],
+      chainReactions,
     };
   }
 
-  private handleIceEffect(target: IObject, effect: IPhysicsEffect, intensity: number): IPhysicsResult {
+  private handleIceEffect(
+    target: IObject,
+    effect: IPhysicsEffect,
+    intensity: number,
+  ): IPhysicsResult {
     const material = target.materialProperties!;
     const damage = Math.floor(intensity * 0.8);
-    
+
     let message = `${target.name} is hit by ${effect.description}`;
-    
+
     // Ice effects can freeze water, make things brittle
     const newState = { ...target.state };
     if (material.material === 'water') {
@@ -263,31 +299,39 @@ export class PhysicsService {
     return {
       success: true,
       message,
-      objectsAffected: [{
-        objectId: target.id,
-        damage,
-        newState
-      }]
+      objectsAffected: [
+        {
+          objectId: target.id,
+          damage,
+          newState,
+        },
+      ],
     };
   }
 
-  private handleForceEffect(target: IObject, effect: IPhysicsEffect, intensity: number): IPhysicsResult {
+  private handleForceEffect(
+    target: IObject,
+    effect: IPhysicsEffect,
+    intensity: number,
+  ): IPhysicsResult {
     const material = target.materialProperties!;
     const brittleness = material.brittleness || 5;
     const damage = Math.floor(intensity * (brittleness / 10));
-    
+
     let message = `${target.name} is hit by ${effect.description}`;
-    
+
     if (brittleness > 7 && intensity > 6) {
       message += ` and shatters!`;
       return {
         success: true,
         message,
-        objectsAffected: [{
-          objectId: target.id,
-          damage: target.health || target.maxHealth || 10,
-          destroyed: true
-        }]
+        objectsAffected: [
+          {
+            objectId: target.id,
+            damage: target.health || target.maxHealth || 10,
+            destroyed: true,
+          },
+        ],
       };
     } else {
       message += ` and is damaged`;
@@ -296,21 +340,29 @@ export class PhysicsService {
     return {
       success: true,
       message,
-      objectsAffected: [{
-        objectId: target.id,
-        damage
-      }]
+      objectsAffected: [
+        {
+          objectId: target.id,
+          damage,
+        },
+      ],
     };
   }
 
-  private handleGenericEffect(target: IObject, effect: IPhysicsEffect, intensity: number): IPhysicsResult {
+  private handleGenericEffect(
+    target: IObject,
+    effect: IPhysicsEffect,
+    intensity: number,
+  ): IPhysicsResult {
     return {
       success: true,
       message: `${target.name} is affected by ${effect.description}`,
-      objectsAffected: [{
-        objectId: target.id,
-        damage: Math.floor(intensity)
-      }]
+      objectsAffected: [
+        {
+          objectId: target.id,
+          damage: Math.floor(intensity),
+        },
+      ],
     };
   }
 
@@ -337,11 +389,13 @@ export class PhysicsService {
 
   private hasExplosiveContents(target: IObject): boolean {
     if (!target.containedObjects) return false;
-    
-    return target.containedObjects.some(id => {
+
+    return target.containedObjects.some((id) => {
       const contained = this.objectService.getObject(id);
-      return contained?.materialProperties?.properties?.explosive ||
-             contained?.objectType === 'consumable'; // potions might explode
+      return (
+        contained?.materialProperties?.properties?.explosive ||
+        contained?.objectType === 'consumable'
+      ); // potions might explode
     });
   }
 
@@ -353,10 +407,10 @@ export class PhysicsService {
 
     // Find room containing this object
     const rooms = this.roomService.getAllRooms();
-    const room = rooms.find(r => r.objects.includes(sourceId));
+    const room = rooms.find((r) => r.objects.includes(sourceId));
     if (!room) return [];
 
-    return room.objects.filter(id => id !== sourceId);
+    return room.objects.filter((id) => id !== sourceId);
   }
 
   private getConnectedObjects(sourceId: string): string[] {
@@ -365,7 +419,7 @@ export class PhysicsService {
 
     // Get objects that are touching or connected
     const connected: string[] = [];
-    
+
     // Object this one is placed on/in
     if (sourceObject.spatialRelationship.targetId) {
       connected.push(sourceObject.spatialRelationship.targetId);
@@ -373,9 +427,9 @@ export class PhysicsService {
 
     // Objects placed on this one
     const rooms = this.roomService.getAllRooms();
-    const room = rooms.find(r => r.objects.includes(sourceId));
+    const room = rooms.find((r) => r.objects.includes(sourceId));
     if (room) {
-      room.objects.forEach(id => {
+      room.objects.forEach((id) => {
         const obj = this.objectService.getObject(id);
         if (obj?.spatialRelationship?.targetId === sourceId) {
           connected.push(id);
@@ -395,9 +449,9 @@ export class PhysicsService {
     const sameLocation: string[] = [];
 
     const rooms = this.roomService.getAllRooms();
-    const room = rooms.find(r => r.objects.includes(sourceId));
+    const room = rooms.find((r) => r.objects.includes(sourceId));
     if (room) {
-      room.objects.forEach(id => {
+      room.objects.forEach((id) => {
         if (id !== sourceId) {
           const obj = this.objectService.getObject(id);
           if (obj?.spatialRelationship?.targetId === targetId) {
@@ -419,7 +473,7 @@ export class PhysicsService {
         conductivity: 1,
         flammability: 8,
         brittleness: 6,
-        resistances: { fire: 2, lightning: 8, ice: 5 }
+        resistances: { fire: 2, lightning: 8, ice: 5 },
       },
       metal: {
         material: 'metal',
@@ -427,7 +481,7 @@ export class PhysicsService {
         conductivity: 9,
         flammability: 0,
         brittleness: 3,
-        resistances: { fire: 8, lightning: 1, ice: 7 }
+        resistances: { fire: 8, lightning: 1, ice: 7 },
       },
       stone: {
         material: 'stone',
@@ -435,7 +489,7 @@ export class PhysicsService {
         conductivity: 2,
         flammability: 0,
         brittleness: 4,
-        resistances: { fire: 9, lightning: 9, ice: 8, force: 8 }
+        resistances: { fire: 9, lightning: 9, ice: 8, force: 8 },
       },
       water: {
         material: 'water',
@@ -443,7 +497,7 @@ export class PhysicsService {
         conductivity: 8,
         flammability: 0,
         brittleness: 10,
-        resistances: { fire: 9, lightning: 1 }
+        resistances: { fire: 9, lightning: 1 },
       },
       cloth: {
         material: 'cloth',
@@ -451,7 +505,7 @@ export class PhysicsService {
         conductivity: 1,
         flammability: 9,
         brittleness: 7,
-        resistances: { lightning: 8, ice: 3 }
+        resistances: { lightning: 8, ice: 3 },
       },
       glass: {
         material: 'glass',
@@ -460,7 +514,7 @@ export class PhysicsService {
         flammability: 0,
         brittleness: 9,
         resistances: { fire: 6, lightning: 9 },
-        properties: { transparent: true }
+        properties: { transparent: true },
       },
       leather: {
         material: 'leather',
@@ -468,7 +522,7 @@ export class PhysicsService {
         conductivity: 2,
         flammability: 6,
         brittleness: 5,
-        resistances: { lightning: 7, ice: 6 }
+        resistances: { lightning: 7, ice: 6 },
       },
       paper: {
         material: 'paper',
@@ -476,7 +530,7 @@ export class PhysicsService {
         conductivity: 1,
         flammability: 10,
         brittleness: 8,
-        resistances: { lightning: 8 }
+        resistances: { lightning: 8 },
       },
       organic: {
         material: 'organic',
@@ -484,7 +538,7 @@ export class PhysicsService {
         conductivity: 3,
         flammability: 7,
         brittleness: 6,
-        resistances: { lightning: 6, ice: 4 }
+        resistances: { lightning: 6, ice: 4 },
       },
       crystal: {
         material: 'crystal',
@@ -493,7 +547,7 @@ export class PhysicsService {
         flammability: 0,
         brittleness: 8,
         resistances: { fire: 7, force: 3 },
-        properties: { transparent: true }
+        properties: { transparent: true },
       },
       ice: {
         material: 'ice',
@@ -501,7 +555,7 @@ export class PhysicsService {
         conductivity: 6,
         flammability: 0,
         brittleness: 7,
-        resistances: { ice: 10, fire: 1 }
+        resistances: { ice: 10, fire: 1 },
       },
       gas: {
         material: 'gas',
@@ -510,8 +564,8 @@ export class PhysicsService {
         flammability: 8,
         brittleness: 10,
         resistances: { force: 9 },
-        properties: { explosive: true }
-      }
+        properties: { explosive: true },
+      },
     };
 
     return presets[material] || presets.stone;

@@ -13,7 +13,13 @@ describe('Game Scenario Integration Tests', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EntityService, ObjectService, PlayerService, RoomService, PhysicsService],
+      providers: [
+        EntityService,
+        ObjectService,
+        PlayerService,
+        RoomService,
+        PhysicsService,
+      ],
     }).compile();
 
     entityService = module.get<EntityService>(EntityService);
@@ -131,18 +137,28 @@ describe('Game Scenario Integration Tests', () => {
       });
 
       // Verify spatial relationships
-      expect(objectService.getObjectLocation(sword.id)).toBe('The iron sword lies on the wooden desk');
-      expect(objectService.getObjectLocation(key.id)).toBe('The brass key is hidden inside the treasure chest');
-      expect(objectService.getObjectLocation(potion.id)).toBe('The health potion sits next to the treasure chest');
+      expect(objectService.getObjectLocation(sword.id)).toBe(
+        'The iron sword lies on the wooden desk',
+      );
+      expect(objectService.getObjectLocation(key.id)).toBe(
+        'The brass key is hidden inside the treasure chest',
+      );
+      expect(objectService.getObjectLocation(potion.id)).toBe(
+        'The health potion sits next to the treasure chest',
+      );
 
       // Close the chest first so we can test opening it
       chest.state = { isOpen: false, isLocked: false };
       entityService.updateEntity(chest.id, chest);
-      
+
       // Test interactions
-      
+
       // 1. Examine the chest (closed)
-      let result = playerService.interactWithObject(player.id, chest.id, 'examine');
+      let result = playerService.interactWithObject(
+        player.id,
+        chest.id,
+        'examine',
+      );
       expect(result.success).toBe(true);
       expect(result.message).toContain('treasure chest');
 
@@ -247,21 +263,27 @@ describe('Game Scenario Integration Tests', () => {
       });
 
       // Place first two items successfully
-      expect(objectService.placeObject(item1.id, {
-        relationshipType: 'inside',
-        targetId: smallChest.id,
-      })).toBe(true);
+      expect(
+        objectService.placeObject(item1.id, {
+          relationshipType: 'inside',
+          targetId: smallChest.id,
+        }),
+      ).toBe(true);
 
-      expect(objectService.placeObject(item2.id, {
-        relationshipType: 'inside',
-        targetId: smallChest.id,
-      })).toBe(true);
+      expect(
+        objectService.placeObject(item2.id, {
+          relationshipType: 'inside',
+          targetId: smallChest.id,
+        }),
+      ).toBe(true);
 
       // Third item should fail due to capacity
-      expect(objectService.placeObject(item3.id, {
-        relationshipType: 'inside',
-        targetId: smallChest.id,
-      })).toBe(false);
+      expect(
+        objectService.placeObject(item3.id, {
+          relationshipType: 'inside',
+          targetId: smallChest.id,
+        }),
+      ).toBe(false);
 
       // Verify only 2 items in chest
       const contents = objectService.getObjectsInContainer(smallChest.id);
@@ -292,7 +314,11 @@ describe('Game Scenario Integration Tests', () => {
       });
 
       // Try to open locked chest
-      const result = playerService.interactWithObject(player.id, lockedChest.id, 'open');
+      const result = playerService.interactWithObject(
+        player.id,
+        lockedChest.id,
+        'open',
+      );
       expect(result.success).toBe(false);
       expect(result.message).toBe('The locked chest is locked.');
     });

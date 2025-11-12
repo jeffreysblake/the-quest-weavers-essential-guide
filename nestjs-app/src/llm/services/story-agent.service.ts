@@ -13,7 +13,13 @@ interface StoryCreationSession {
   sessionId: string;
   theme: string;
   genre: string;
-  currentPhase: 'planning' | 'world_building' | 'character_creation' | 'content_generation' | 'refinement' | 'completed';
+  currentPhase:
+    | 'planning'
+    | 'world_building'
+    | 'character_creation'
+    | 'content_generation'
+    | 'refinement'
+    | 'completed';
   playerLevel: number;
   preferences: {
     complexity: 'simple' | 'moderate' | 'complex';
@@ -87,7 +93,7 @@ export class StoryAgentService {
     private narrativeService: NarrativeGeneratorService,
     private roomService: RoomService,
     private playerService: PlayerService,
-    private objectService: ObjectService
+    private objectService: ObjectService,
   ) {}
 
   /**
@@ -100,7 +106,7 @@ export class StoryAgentService {
     preferences?: any;
   }): Promise<{ sessionId: string; firstDecision: AgenticDecision }> {
     const sessionId = this.generateSessionId();
-    
+
     const session: StoryCreationSession = {
       sessionId,
       theme: request.theme,
@@ -112,26 +118,30 @@ export class StoryAgentService {
         length: 'medium',
         style: 'balanced',
         focusAreas: ['adventure', 'exploration'],
-        ...request.preferences
+        ...request.preferences,
       },
       generatedContent: {
         rooms: [],
         npcs: [],
         quests: [],
-        objects: []
+        objects: [],
       },
       userFeedback: [],
       decisions: [],
       state: {
         currentStep: 1,
-        totalSteps: this.calculateTotalSteps(request.preferences?.length || 'medium'),
+        totalSteps: this.calculateTotalSteps(
+          request.preferences?.length || 'medium',
+        ),
         errors: [],
-        warnings: []
-      }
+        warnings: [],
+      },
     };
 
     this.activeSessions.set(sessionId, session);
-    this.logger.log(`Started story creation session: ${sessionId} for theme: ${request.theme}`);
+    this.logger.log(
+      `Started story creation session: ${sessionId} for theme: ${request.theme}`,
+    );
 
     const firstDecision = await this.generateNextDecision(sessionId);
     if (!firstDecision) {
@@ -144,23 +154,23 @@ export class StoryAgentService {
    * Process user decision and continue with story creation
    */
   async processDecision(
-    sessionId: string, 
-    decisionId: string, 
+    sessionId: string,
+    decisionId: string,
     choice: string,
-    feedback?: string
+    feedback?: string,
   ): Promise<{
     nextDecision?: AgenticDecision;
     progress: { phase: string; step: number; total: number };
     generated: any[];
   }> {
     const session = this.getSession(sessionId);
-    
+
     // Record the decision
     const decision = {
       question: decisionId,
       options: [],
       chosen: choice,
-      reasoning: feedback
+      reasoning: feedback,
     };
     session.decisions.push(decision);
 
@@ -168,7 +178,7 @@ export class StoryAgentService {
       session.userFeedback.push({
         phase: session.currentPhase,
         feedback,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -176,15 +186,15 @@ export class StoryAgentService {
     await this.advanceSession(session, choice);
 
     const nextDecision = await this.generateNextDecision(sessionId);
-    
+
     return {
       nextDecision,
       progress: {
         phase: session.currentPhase,
         step: session.state.currentStep,
-        total: session.state.totalSteps
+        total: session.state.totalSteps,
       },
-      generated: this.getGeneratedContent(session)
+      generated: this.getGeneratedContent(session),
     };
   }
 
@@ -198,12 +208,12 @@ export class StoryAgentService {
     canContinue: boolean;
   } {
     const session = this.getSession(sessionId);
-    
+
     return {
       phase: session.currentPhase,
       progress: session.state.currentStep / session.state.totalSteps,
       generated: session.generatedContent,
-      canContinue: session.currentPhase !== 'completed'
+      canContinue: session.currentPhase !== 'completed',
     };
   }
 
@@ -212,7 +222,7 @@ export class StoryAgentService {
    */
   async validateStory(sessionId: string): Promise<StoryValidationResult> {
     const session = this.getSession(sessionId);
-    
+
     const validationPrompt = await this.promptTemplateService.renderTemplate(
       'story_validation',
       {
@@ -222,8 +232,8 @@ export class StoryAgentService {
         quests: session.generatedContent.quests.length.toString(),
         theme: session.theme,
         genre: session.genre,
-        playerLevel: session.playerLevel.toString()
-      }
+        playerLevel: session.playerLevel.toString(),
+      },
     );
 
     const schema = {
@@ -237,24 +247,31 @@ export class StoryAgentService {
             type: 'object',
             required: ['type', 'category', 'description'],
             properties: {
-              type: { type: 'string', enum: ['error', 'warning', 'suggestion'] },
-              category: { type: 'string', enum: ['consistency', 'balance', 'engagement', 'technical'] },
+              type: {
+                type: 'string',
+                enum: ['error', 'warning', 'suggestion'],
+              },
+              category: {
+                type: 'string',
+                enum: ['consistency', 'balance', 'engagement', 'technical'],
+              },
               description: { type: 'string' },
               suggestion: { type: 'string' },
-              autoFix: { type: 'boolean' }
-            }
-          }
+              autoFix: { type: 'boolean' },
+            },
+          },
         },
         qualityScore: { type: 'number', minimum: 0, maximum: 100 },
-        recommendations: { type: 'array', items: { type: 'string' } }
-      }
+        recommendations: { type: 'array', items: { type: 'string' } },
+      },
     };
 
-    const response = await this.llmService.generateStructuredResponse<StoryValidationResult>(
-      validationPrompt,
-      schema,
-      { temperature: 0.3 }
-    );
+    const response =
+      await this.llmService.generateStructuredResponse<StoryValidationResult>(
+        validationPrompt,
+        schema,
+        { temperature: 0.3 },
+      );
 
     return response.parsedContent;
   }
@@ -268,8 +285,8 @@ export class StoryAgentService {
   }> {
     const session = this.getSession(sessionId);
     const validation = await this.validateStory(sessionId);
-    
-    const fixableIssues = validation.issues.filter(issue => issue.autoFix);
+
+    const fixableIssues = validation.issues.filter((issue) => issue.autoFix);
     const fixedIssues: string[] = [];
     const remainingIssues: string[] = [];
 
@@ -301,19 +318,22 @@ export class StoryAgentService {
     summary: string;
   }> {
     const session = this.getSession(sessionId);
-    
+
     if (session.currentPhase !== 'completed') {
       throw new Error('Story creation not completed yet');
     }
 
     const validation = await this.validateStory(sessionId);
-    if (!validation.isValid && validation.issues.some(i => i.type === 'error')) {
+    if (
+      !validation.isValid &&
+      validation.issues.some((i) => i.type === 'error')
+    ) {
       throw new Error('Story has critical errors that prevent deployment');
     }
 
     // Deploy the generated content to the game world
     const deployedElements = await this.deployStoryElements(session);
-    
+
     // Generate a summary
     const summaryPrompt = await this.promptTemplateService.renderTemplate(
       'story_summary',
@@ -322,13 +342,13 @@ export class StoryAgentService {
         genre: session.genre,
         roomCount: deployedElements.rooms.length.toString(),
         npcCount: deployedElements.npcs.length.toString(),
-        questCount: deployedElements.quests.length.toString()
-      }
+        questCount: deployedElements.quests.length.toString(),
+      },
     );
 
     const summaryResponse = await this.llmService.generateResponse(
       summaryPrompt,
-      { temperature: 0.7 }
+      { temperature: 0.7 },
     );
 
     session.currentPhase = 'completed';
@@ -338,11 +358,13 @@ export class StoryAgentService {
 
     return {
       deployedElements,
-      summary: summaryResponse.content
+      summary: summaryResponse.content,
     };
   }
 
-  private async generateNextDecision(sessionId: string): Promise<AgenticDecision | undefined> {
+  private async generateNextDecision(
+    sessionId: string,
+  ): Promise<AgenticDecision | undefined> {
     const session = this.getSession(sessionId);
 
     switch (session.currentPhase) {
@@ -363,7 +385,9 @@ export class StoryAgentService {
     }
   }
 
-  private async generatePlanningDecision(session: StoryCreationSession): Promise<AgenticDecision> {
+  private async generatePlanningDecision(
+    session: StoryCreationSession,
+  ): Promise<AgenticDecision> {
     const decisionPrompt = `Based on the theme "${session.theme}" and genre "${session.genre}", 
     what aspect should we focus on first for this ${session.preferences.complexity} complexity story?`;
 
@@ -376,29 +400,40 @@ export class StoryAgentService {
           id: 'world_first',
           label: 'Build the World First',
           description: 'Create locations and environments before characters',
-          consequences: ['Rich environmental storytelling', 'Characters fit naturally into world']
+          consequences: [
+            'Rich environmental storytelling',
+            'Characters fit naturally into world',
+          ],
         },
         {
           id: 'characters_first',
           label: 'Create Characters First',
           description: 'Develop NPCs and their relationships before locations',
-          consequences: ['Character-driven narrative', 'Locations serve character needs']
+          consequences: [
+            'Character-driven narrative',
+            'Locations serve character needs',
+          ],
         },
         {
           id: 'story_driven',
           label: 'Plot-Driven Approach',
           description: 'Start with core story structure and build around it',
-          consequences: ['Tight narrative focus', 'All elements serve the plot']
-        }
+          consequences: [
+            'Tight narrative focus',
+            'All elements serve the plot',
+          ],
+        },
       ],
       autoExecuteAfter: this.DECISION_TIMEOUT,
-      defaultChoice: 'world_first'
+      defaultChoice: 'world_first',
     };
   }
 
-  private async generateWorldBuildingDecision(session: StoryCreationSession): Promise<AgenticDecision> {
+  private async generateWorldBuildingDecision(
+    session: StoryCreationSession,
+  ): Promise<AgenticDecision> {
     const roomCount = this.calculateRoomCount(session.preferences.length);
-    
+
     return {
       type: 'question',
       priority: 'medium',
@@ -407,27 +442,29 @@ export class StoryAgentService {
         {
           id: 'minimal',
           label: `Minimal (${Math.floor(roomCount * 0.7)})`,
-          description: 'Focused, tightly connected locations'
+          description: 'Focused, tightly connected locations',
         },
         {
           id: 'recommended',
           label: `Recommended (${roomCount})`,
-          description: 'Balanced variety and depth'
+          description: 'Balanced variety and depth',
         },
         {
           id: 'expanded',
           label: `Expanded (${Math.floor(roomCount * 1.3)})`,
-          description: 'Rich world with optional exploration'
-        }
+          description: 'Rich world with optional exploration',
+        },
       ],
       autoExecuteAfter: this.DECISION_TIMEOUT,
-      defaultChoice: 'recommended'
+      defaultChoice: 'recommended',
     };
   }
 
-  private async generateCharacterCreationDecision(session: StoryCreationSession): Promise<AgenticDecision> {
+  private async generateCharacterCreationDecision(
+    session: StoryCreationSession,
+  ): Promise<AgenticDecision> {
     const npcCount = this.calculateNPCCount(session.preferences.length);
-    
+
     return {
       type: 'question',
       priority: 'medium',
@@ -436,58 +473,74 @@ export class StoryAgentService {
         {
           id: 'diverse_cast',
           label: 'Diverse Cast',
-          description: 'Mix of allies, enemies, and neutrals with varied backgrounds'
+          description:
+            'Mix of allies, enemies, and neutrals with varied backgrounds',
         },
         {
           id: 'focused_relationships',
           label: 'Focused Relationships',
-          description: 'Fewer characters with deeper, interconnected relationships'
+          description:
+            'Fewer characters with deeper, interconnected relationships',
         },
         {
           id: 'antagonist_driven',
           label: 'Antagonist-Driven',
-          description: 'Strong villains and their network of minions/allies'
-        }
+          description: 'Strong villains and their network of minions/allies',
+        },
       ],
       autoExecuteAfter: this.DECISION_TIMEOUT,
-      defaultChoice: 'diverse_cast'
+      defaultChoice: 'diverse_cast',
     };
   }
 
-  private async generateContentDecision(session: StoryCreationSession): Promise<AgenticDecision> {
+  private async generateContentDecision(
+    session: StoryCreationSession,
+  ): Promise<AgenticDecision> {
     return {
       type: 'action',
       priority: 'high',
-      description: 'Ready to generate story content. This will create all locations, characters, and quests.',
+      description:
+        'Ready to generate story content. This will create all locations, characters, and quests.',
       options: [
         {
           id: 'generate_all',
           label: 'Generate Everything',
-          description: 'Create all story elements based on previous decisions'
+          description: 'Create all story elements based on previous decisions',
         },
         {
           id: 'preview_first',
           label: 'Preview First',
-          description: 'Show a preview of what will be generated before creating'
-        }
+          description:
+            'Show a preview of what will be generated before creating',
+        },
       ],
-      defaultChoice: 'generate_all'
+      defaultChoice: 'generate_all',
     };
   }
 
-  private async generateRefinementDecision(session: StoryCreationSession): Promise<AgenticDecision> {
+  private async generateRefinementDecision(
+    session: StoryCreationSession,
+  ): Promise<AgenticDecision> {
     const validation = await this.validateStory(session.sessionId);
-    
+
     if (validation.isValid && validation.qualityScore >= 80) {
       return {
         type: 'suggestion',
         priority: 'low',
         description: `Story looks great! Quality score: ${validation.qualityScore}/100. Ready to finalize?`,
         options: [
-          { id: 'finalize', label: 'Finalize Story', description: 'Deploy the story to the game world' },
-          { id: 'more_polish', label: 'More Polish', description: 'Continue refining the story' }
+          {
+            id: 'finalize',
+            label: 'Finalize Story',
+            description: 'Deploy the story to the game world',
+          },
+          {
+            id: 'more_polish',
+            label: 'More Polish',
+            description: 'Continue refining the story',
+          },
         ],
-        defaultChoice: 'finalize'
+        defaultChoice: 'finalize',
       };
     }
 
@@ -498,12 +551,15 @@ export class StoryAgentService {
       options: validation.recommendations.slice(0, 3).map((rec, index) => ({
         id: `improve_${index}`,
         label: rec,
-        description: 'Focus on this improvement area'
-      }))
+        description: 'Focus on this improvement area',
+      })),
     };
   }
 
-  private async advanceSession(session: StoryCreationSession, choice: string): Promise<void> {
+  private async advanceSession(
+    session: StoryCreationSession,
+    choice: string,
+  ): Promise<void> {
     switch (session.currentPhase) {
       case 'planning':
         await this.advancePlanning(session, choice);
@@ -526,46 +582,64 @@ export class StoryAgentService {
     this.activeSessions.set(session.sessionId, session);
   }
 
-  private async advancePlanning(session: StoryCreationSession, choice: string): Promise<void> {
+  private async advancePlanning(
+    session: StoryCreationSession,
+    choice: string,
+  ): Promise<void> {
     // Store planning decision and move to next phase
-    session.currentPhase = choice === 'characters_first' ? 'character_creation' : 'world_building';
+    session.currentPhase =
+      choice === 'characters_first' ? 'character_creation' : 'world_building';
   }
 
-  private async advanceWorldBuilding(session: StoryCreationSession, choice: string): Promise<void> {
+  private async advanceWorldBuilding(
+    session: StoryCreationSession,
+    choice: string,
+  ): Promise<void> {
     const roomCount = this.parseRoomChoice(choice, session.preferences.length);
-    
+
     // Generate rooms based on choice
     const storyOutline = await this.narrativeService.generateStory({
       genre: session.genre as any,
       theme: session.theme,
       targetLength: session.preferences.length as any,
-      playerLevel: session.playerLevel
+      playerLevel: session.playerLevel,
     });
 
     session.generatedContent.story = storyOutline;
     session.currentPhase = 'character_creation';
   }
 
-  private async advanceCharacterCreation(session: StoryCreationSession, choice: string): Promise<void> {
+  private async advanceCharacterCreation(
+    session: StoryCreationSession,
+    choice: string,
+  ): Promise<void> {
     // Character creation logic would go here
     session.currentPhase = 'content_generation';
   }
 
-  private async advanceContentGeneration(session: StoryCreationSession, choice: string): Promise<void> {
+  private async advanceContentGeneration(
+    session: StoryCreationSession,
+    choice: string,
+  ): Promise<void> {
     if (choice === 'generate_all' || choice === 'preview_first') {
       // Generate all story content
       if (session.generatedContent.story) {
-        const implemented = await this.narrativeService.implementStory(session.generatedContent.story);
+        const implemented = await this.narrativeService.implementStory(
+          session.generatedContent.story,
+        );
         session.generatedContent.rooms = implemented.rooms;
         session.generatedContent.npcs = implemented.npcs;
         session.generatedContent.quests = implemented.quests;
       }
     }
-    
+
     session.currentPhase = 'refinement';
   }
 
-  private async advanceRefinement(session: StoryCreationSession, choice: string): Promise<void> {
+  private async advanceRefinement(
+    session: StoryCreationSession,
+    choice: string,
+  ): Promise<void> {
     if (choice === 'finalize') {
       session.currentPhase = 'completed';
     }
@@ -580,7 +654,7 @@ export class StoryAgentService {
     const deployed = {
       rooms: [] as string[],
       npcs: [] as string[],
-      quests: [] as string[]
+      quests: [] as string[],
     };
 
     // Deploy rooms to the game world
@@ -601,7 +675,10 @@ export class StoryAgentService {
     return deployed;
   }
 
-  private async fixStoryIssue(session: StoryCreationSession, issue: any): Promise<void> {
+  private async fixStoryIssue(
+    session: StoryCreationSession,
+    issue: any,
+  ): Promise<void> {
     // Auto-fix logic would go here based on issue type
     this.logger.log(`Auto-fixing issue: ${issue.description}`);
   }
@@ -620,46 +697,74 @@ export class StoryAgentService {
 
   private calculateTotalSteps(length: string): number {
     switch (length) {
-      case 'short': return 8;
-      case 'medium': return 12;
-      case 'long': return 18;
-      default: return 10;
+      case 'short':
+        return 8;
+      case 'medium':
+        return 12;
+      case 'long':
+        return 18;
+      default:
+        return 10;
     }
   }
 
   private calculateRoomCount(length: string): number {
     switch (length) {
-      case 'short': return 5;
-      case 'medium': return 10;
-      case 'long': return 20;
-      default: return 8;
+      case 'short':
+        return 5;
+      case 'medium':
+        return 10;
+      case 'long':
+        return 20;
+      default:
+        return 8;
     }
   }
 
   private calculateNPCCount(length: string): number {
     switch (length) {
-      case 'short': return 3;
-      case 'medium': return 6;
-      case 'long': return 12;
-      default: return 5;
+      case 'short':
+        return 3;
+      case 'medium':
+        return 6;
+      case 'long':
+        return 12;
+      default:
+        return 5;
     }
   }
 
   private parseRoomChoice(choice: string, length: string): number {
     const base = this.calculateRoomCount(length);
     switch (choice) {
-      case 'minimal': return Math.floor(base * 0.7);
-      case 'expanded': return Math.floor(base * 1.3);
-      default: return base;
+      case 'minimal':
+        return Math.floor(base * 0.7);
+      case 'expanded':
+        return Math.floor(base * 1.3);
+      default:
+        return base;
     }
   }
 
   private getGeneratedContent(session: StoryCreationSession): any[] {
     const content: any[] = [];
-    if (session.generatedContent.story) content.push({ type: 'story', data: session.generatedContent.story });
-    if (session.generatedContent.rooms.length) content.push({ type: 'rooms', count: session.generatedContent.rooms.length });
-    if (session.generatedContent.npcs.length) content.push({ type: 'npcs', count: session.generatedContent.npcs.length });
-    if (session.generatedContent.quests.length) content.push({ type: 'quests', count: session.generatedContent.quests.length });
+    if (session.generatedContent.story)
+      content.push({ type: 'story', data: session.generatedContent.story });
+    if (session.generatedContent.rooms.length)
+      content.push({
+        type: 'rooms',
+        count: session.generatedContent.rooms.length,
+      });
+    if (session.generatedContent.npcs.length)
+      content.push({
+        type: 'npcs',
+        count: session.generatedContent.npcs.length,
+      });
+    if (session.generatedContent.quests.length)
+      content.push({
+        type: 'quests',
+        count: session.generatedContent.quests.length,
+      });
     return content;
   }
 }

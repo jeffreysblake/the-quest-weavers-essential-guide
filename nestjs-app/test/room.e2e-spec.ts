@@ -21,10 +21,10 @@ describe('Room (e2e)', () => {
       .send({
         name: 'Test Room',
         width: 10,
-        height: 10
+        height: 10,
       })
       .expect(201)
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('id');
         expect(res.body.name).toBe('Test Room');
       });

@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Body, Res, Query, HttpException, HttpStatus, StreamableFile, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Res,
+  Query,
+  HttpException,
+  HttpStatus,
+  StreamableFile,
+  Logger,
+} from '@nestjs/common';
 import type { Response } from 'express';
 import { Readable } from 'stream';
 import { TTSService } from './tts.service';
@@ -42,7 +53,10 @@ export class TTSController {
     @Res({ passthrough: true }) res?: Response,
   ): Promise<StreamableFile> {
     if (!this.ttsService.isAvailable()) {
-      throw new HttpException('TTS service is not available', HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(
+        'TTS service is not available',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
     }
 
     if (!dto.text || dto.text.trim().length === 0) {
@@ -50,7 +64,10 @@ export class TTSController {
     }
 
     if (dto.text.length > 5000) {
-      throw new HttpException('Text is too long (max 5000 characters)', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Text is too long (max 5000 characters)',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     this.logger.log(`Generating speech for ${dto.text.length} characters`);
@@ -92,9 +109,15 @@ export class TTSController {
   }
 
   @Post('synthesize')
-  async synthesizeText(@Body() dto: GenerateSpeechDto, @Query('provider') provider?: string) {
+  async synthesizeText(
+    @Body() dto: GenerateSpeechDto,
+    @Query('provider') provider?: string,
+  ) {
     if (!this.ttsService.isAvailable()) {
-      throw new HttpException('TTS service is not available', HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(
+        'TTS service is not available',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
     }
 
     try {

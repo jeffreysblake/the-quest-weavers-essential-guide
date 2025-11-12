@@ -38,7 +38,9 @@ export class VRAMManagerService {
     this.usedVRAM = this.baselineVRAM;
 
     this.logger.log(`Baseline VRAM usage: ${this.baselineVRAM}MB (LLM + STT)`);
-    this.logger.log(`Available VRAM for dynamic models: ${this.maxVRAM - this.baselineVRAM}MB`);
+    this.logger.log(
+      `Available VRAM for dynamic models: ${this.maxVRAM - this.baselineVRAM}MB`,
+    );
   }
 
   async loadModel(modelName: string, vramRequired: number): Promise<boolean> {
@@ -86,7 +88,7 @@ export class VRAMManagerService {
     return true;
   }
 
-  async unloadModel(modelName: string): Promise<boolean> {
+  unloadModel(modelName: string): boolean {
     const model = this.loadedModels.get(modelName);
     if (!model) {
       this.logger.warn(`Model ${modelName} is not loaded`);
@@ -117,7 +119,7 @@ export class VRAMManagerService {
       }
 
       this.logger.log(`Unloading LRU model: ${model.name} to free VRAM`);
-      await this.unloadModel(model.name);
+      this.unloadModel(model.name);
       freedSpace += model.vramUsage;
     }
 
@@ -159,7 +161,7 @@ export class VRAMManagerService {
     for (const [name, model] of this.loadedModels.entries()) {
       if (model.lastUsed && now - model.lastUsed > idleTimeMs) {
         this.logger.log(`Auto-unloading idle model: ${name}`);
-        await this.unloadModel(name);
+        this.unloadModel(name);
       }
     }
   }

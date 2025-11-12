@@ -1,4 +1,12 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, ValidateNested, IsEnum, IsPositive } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  ValidateNested,
+  IsEnum,
+  IsPositive,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 enum PhysicsShape {

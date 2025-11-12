@@ -78,7 +78,7 @@ describe('GameFileService', () => {
       id: 'test-game',
       name: 'Test Game',
       description: 'A test game',
-      version: 1
+      version: 1,
     };
 
     const mockRoomData = {
@@ -90,7 +90,7 @@ describe('GameFileService', () => {
       height: 10,
       depth: 3,
       objects: [],
-      npcs: []
+      npcs: [],
     };
 
     const mockObjectData = {
@@ -100,7 +100,7 @@ describe('GameFileService', () => {
       objectType: 'item',
       material: 'wood',
       isPortable: true,
-      position: { x: 0, y: 0, z: 0 }
+      position: { x: 0, y: 0, z: 0 },
     };
 
     const mockNPCData = {
@@ -110,7 +110,7 @@ describe('GameFileService', () => {
       npcType: 'npc',
       position: { x: 0, y: 0, z: 0 },
       health: 100,
-      level: 1
+      level: 1,
     };
 
     beforeEach(() => {
@@ -154,7 +154,9 @@ describe('GameFileService', () => {
 
     it('should load game successfully', async () => {
       mockDatabaseService.transaction.mockImplementation(async (callback) => {
-        await callback({ prepare: jest.fn().mockReturnValue({ run: jest.fn() }) });
+        await callback({
+          prepare: jest.fn().mockReturnValue({ run: jest.fn() }),
+        });
       });
 
       const result = await service.loadGameFromFiles('test-game');
@@ -201,7 +203,9 @@ describe('GameFileService', () => {
     });
 
     it('should handle database transaction failure', async () => {
-      mockDatabaseService.transaction.mockRejectedValue(new Error('Database error'));
+      mockDatabaseService.transaction.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       const result = await service.loadGameFromFiles('test-game');
 
@@ -242,7 +246,11 @@ describe('GameFileService', () => {
       mockFs.existsSync.mockImplementation((filePath: string) => {
         const pathStr = filePath.toString();
         // Only game.json and connections.json exist
-        return pathStr.includes('game.json') || pathStr.includes('connections.json') || pathStr.includes('test-game');
+        return (
+          pathStr.includes('game.json') ||
+          pathStr.includes('connections.json') ||
+          pathStr.includes('test-game')
+        );
       });
 
       mockFs.readdirSync.mockImplementation(() => {
@@ -370,7 +378,7 @@ describe('GameFileService', () => {
   describe('Performance and Batch Operations', () => {
     it('should handle large numbers of files efficiently', async () => {
       const manyFiles = Array.from({ length: 100 }, (_, i) => `room-${i}.json`);
-      
+
       mockFs.existsSync.mockReturnValue(true);
       mockFs.readdirSync.mockImplementation((dirPath: string) => {
         const pathStr = dirPath.toString();
@@ -393,7 +401,7 @@ describe('GameFileService', () => {
             width: 10,
             height: 10,
             objects: [],
-            npcs: []
+            npcs: [],
           });
         } else if (pathStr.includes('connections.json')) {
           return JSON.stringify({ rooms: {}, objects: {}, npcs: {} });
@@ -420,7 +428,11 @@ describe('GameFileService', () => {
       mockFs.readdirSync.mockImplementation((dirPath: string) => {
         const pathStr = dirPath.toString();
         if (pathStr.includes('rooms')) {
-          return ['good-room.json', 'corrupt-room.json', 'another-good-room.json'] as any;
+          return [
+            'good-room.json',
+            'corrupt-room.json',
+            'another-good-room.json',
+          ] as any;
         }
         return [] as any;
       });
@@ -437,7 +449,7 @@ describe('GameFileService', () => {
             width: 10,
             height: 10,
             objects: [],
-            npcs: []
+            npcs: [],
           });
         } else if (pathStr.includes('another-good-room.json')) {
           return JSON.stringify({
@@ -447,7 +459,7 @@ describe('GameFileService', () => {
             width: 10,
             height: 10,
             objects: [],
-            npcs: []
+            npcs: [],
           });
         } else if (pathStr.includes('corrupt-room.json')) {
           return 'corrupted json data {{{';

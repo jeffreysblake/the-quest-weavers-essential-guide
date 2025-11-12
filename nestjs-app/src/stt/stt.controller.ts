@@ -60,7 +60,10 @@ export class STTController {
     @Query('provider') provider?: string,
   ) {
     if (!this.sttService.isAvailable()) {
-      throw new HttpException('STT service is not available', HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(
+        'STT service is not available',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
     }
 
     if (!file) {
@@ -69,10 +72,15 @@ export class STTController {
 
     // Validate file size (max 25MB)
     if (file.size > 25 * 1024 * 1024) {
-      throw new HttpException('Audio file is too large (max 25MB)', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Audio file is too large (max 25MB)',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    this.logger.log(`Transcribing audio file: ${file.originalname} (${file.size} bytes)`);
+    this.logger.log(
+      `Transcribing audio file: ${file.originalname} (${file.size} bytes)`,
+    );
 
     try {
       const result = await this.sttService.transcribe(
@@ -96,7 +104,10 @@ export class STTController {
       };
     } catch (error) {
       this.logger.error(`Transcription failed: ${error.message}`);
-      throw new HttpException(error.message || 'Transcription failed', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error.message || 'Transcription failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -106,17 +117,25 @@ export class STTController {
     @Query('provider') provider?: string,
   ) {
     if (!this.sttService.isAvailable()) {
-      throw new HttpException('STT service is not available', HttpStatus.SERVICE_UNAVAILABLE);
+      throw new HttpException(
+        'STT service is not available',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
     }
 
     if (!body.audio) {
-      throw new HttpException('Base64 audio data is required', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Base64 audio data is required',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     try {
       const audioBuffer = Buffer.from(body.audio, 'base64');
 
-      this.logger.log(`Transcribing base64 audio (${audioBuffer.length} bytes)`);
+      this.logger.log(
+        `Transcribing base64 audio (${audioBuffer.length} bytes)`,
+      );
 
       const result = await this.sttService.transcribe(
         audioBuffer,
@@ -139,7 +158,10 @@ export class STTController {
       };
     } catch (error) {
       this.logger.error(`Transcription failed: ${error.message}`);
-      throw new HttpException(error.message || 'Transcription failed', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error.message || 'Transcription failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

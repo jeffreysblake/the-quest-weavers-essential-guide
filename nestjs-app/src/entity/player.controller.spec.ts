@@ -12,7 +12,13 @@ describe('PlayerController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PlayerController],
-      providers: [PlayerService, EntityService, ObjectService, PhysicsService, RoomService],
+      providers: [
+        PlayerService,
+        EntityService,
+        ObjectService,
+        PhysicsService,
+        RoomService,
+      ],
     }).compile();
 
     controller = module.get<PlayerController>(PlayerController);

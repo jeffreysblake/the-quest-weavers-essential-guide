@@ -17,7 +17,7 @@ describe('CommandProcessorService - Navigation Fixes', () => {
     name: 'Test Player',
     position: { x: 0, y: 0, z: 0 },
     health: 100,
-    inventory: []
+    inventory: [],
   };
 
   const mockRooms = [
@@ -28,7 +28,7 @@ describe('CommandProcessorService - Navigation Fixes', () => {
       position: { x: 0, y: 0, z: 0 },
       size: { width: 10, height: 10, depth: 3 },
       objects: ['torch-1', 'key-1'],
-      players: []
+      players: [],
     },
     {
       id: 'garden',
@@ -37,7 +37,7 @@ describe('CommandProcessorService - Navigation Fixes', () => {
       position: { x: 0, y: 15, z: 0 }, // Fixed: was y: 10, causing overlap
       size: { width: 10, height: 10, depth: 3 },
       objects: ['flower-1'],
-      players: []
+      players: [],
     },
     {
       id: 'library',
@@ -46,15 +46,15 @@ describe('CommandProcessorService - Navigation Fixes', () => {
       position: { x: 15, y: 0, z: 0 }, // Fixed: was x: 10, causing potential issues
       size: { width: 10, height: 10, depth: 3 },
       objects: ['book-1'],
-      players: []
-    }
+      players: [],
+    },
   ];
 
   const mockObjects = [
     { id: 'torch-1', name: 'Flickering Torch', canTake: false },
     { id: 'key-1', name: 'Brass Key', canTake: true },
     { id: 'flower-1', name: 'Glowing Flower', canTake: true },
-    { id: 'book-1', name: 'Ancient Tome', canTake: true }
+    { id: 'book-1', name: 'Ancient Tome', canTake: true },
   ];
 
   beforeEach(async () => {
@@ -68,8 +68,8 @@ describe('CommandProcessorService - Navigation Fixes', () => {
             movePlayer: jest.fn(),
             addToInventory: jest.fn(),
             removeFromInventory: jest.fn(),
-            getInventory: jest.fn().mockReturnValue([])
-          }
+            getInventory: jest.fn().mockReturnValue([]),
+          },
         },
         {
           provide: RoomService,
@@ -77,22 +77,22 @@ describe('CommandProcessorService - Navigation Fixes', () => {
             getAllRooms: jest.fn().mockReturnValue(mockRooms),
             getObjectsInRoom: jest.fn(),
             addObjectToRoom: jest.fn(),
-            removeObjectFromRoom: jest.fn()
-          }
+            removeObjectFromRoom: jest.fn(),
+          },
         },
         {
           provide: ObjectService,
           useValue: {
-            updateObjectPosition: jest.fn()
-          }
+            updateObjectPosition: jest.fn(),
+          },
         },
         {
           provide: EntityService,
           useValue: {
-            getEntity: jest.fn()
-          }
-        }
-      ]
+            getEntity: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<CommandProcessorService>(CommandProcessorService);
@@ -143,7 +143,11 @@ describe('CommandProcessorService - Navigation Fixes', () => {
     });
 
     it('should move north from Entry Hall to Garden with correct distance', async () => {
-      const result = await service.processCommand('go north', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'go north',
+        'player-1',
+        'game-1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.type).toBe('movement_success');
@@ -151,11 +155,19 @@ describe('CommandProcessorService - Navigation Fixes', () => {
       expect(result.playerStatus?.location).toBe('Garden');
 
       // Verify correct movement distance (15 units, not 10)
-      expect(playerService.movePlayer).toHaveBeenCalledWith('player-1', { x: 0, y: 15, z: 0 });
+      expect(playerService.movePlayer).toHaveBeenCalledWith('player-1', {
+        x: 0,
+        y: 15,
+        z: 0,
+      });
     });
 
     it('should move east from Entry Hall to Library with correct distance', async () => {
-      const result = await service.processCommand('go east', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'go east',
+        'player-1',
+        'game-1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.type).toBe('movement_success');
@@ -163,14 +175,22 @@ describe('CommandProcessorService - Navigation Fixes', () => {
       expect(result.playerStatus?.location).toBe('Library');
 
       // Verify correct movement distance (15 units, not 10)
-      expect(playerService.movePlayer).toHaveBeenCalledWith('player-1', { x: 15, y: 0, z: 0 });
+      expect(playerService.movePlayer).toHaveBeenCalledWith('player-1', {
+        x: 15,
+        y: 0,
+        z: 0,
+      });
     });
 
     it('should prevent invalid movement', async () => {
       const playerInGarden = { ...mockPlayer, position: { x: 5, y: 17, z: 0 } };
       jest.spyOn(playerService, 'getPlayer').mockReturnValue(playerInGarden);
 
-      const result = await service.processCommand('go east', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'go east',
+        'player-1',
+        'game-1',
+      );
 
       expect(result.success).toBe(false);
       expect(result.type).toBe('movement_blocked');
@@ -178,10 +198,18 @@ describe('CommandProcessorService - Navigation Fixes', () => {
     });
 
     it('should handle vertical movement', async () => {
-      const result = await service.processCommand('go up', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'go up',
+        'player-1',
+        'game-1',
+      );
 
       // Should attempt to move up by 1 unit
-      expect(playerService.movePlayer).toHaveBeenCalledWith('player-1', { x: 0, y: 0, z: 1 });
+      expect(playerService.movePlayer).toHaveBeenCalledWith('player-1', {
+        x: 0,
+        y: 0,
+        z: 1,
+      });
     });
   });
 
@@ -189,7 +217,7 @@ describe('CommandProcessorService - Navigation Fixes', () => {
     it('should return room description with items and exits', async () => {
       jest.spyOn(roomService, 'getObjectsInRoom').mockReturnValue([
         mockObjects[0], // Flickering Torch
-        mockObjects[1]  // Brass Key
+        mockObjects[1], // Brass Key
       ]);
 
       const result = await service.processCommand('look', 'player-1', 'game-1');
@@ -203,9 +231,15 @@ describe('CommandProcessorService - Navigation Fixes', () => {
     });
 
     it('should handle look at specific objects', async () => {
-      jest.spyOn(roomService, 'getObjectsInRoom').mockReturnValue([mockObjects[1]]);
+      jest
+        .spyOn(roomService, 'getObjectsInRoom')
+        .mockReturnValue([mockObjects[1]]);
 
-      const result = await service.processCommand('look key', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'look key',
+        'player-1',
+        'game-1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.type).toBe('examination');
@@ -214,22 +248,40 @@ describe('CommandProcessorService - Navigation Fixes', () => {
 
   describe('Object Interaction', () => {
     it('should handle taking objects with proper inventory management', async () => {
-      jest.spyOn(roomService, 'getObjectsInRoom').mockReturnValue([mockObjects[1]]);
+      jest
+        .spyOn(roomService, 'getObjectsInRoom')
+        .mockReturnValue([mockObjects[1]]);
 
-      const result = await service.processCommand('take key', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'take key',
+        'player-1',
+        'game-1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.type).toBe('action_success');
       expect(result.message).toBe('You take the Brass Key.');
 
-      expect(playerService.addToInventory).toHaveBeenCalledWith('player-1', 'key-1');
-      expect(roomService.removeObjectFromRoom).toHaveBeenCalledWith('entry-hall', 'key-1');
+      expect(playerService.addToInventory).toHaveBeenCalledWith(
+        'player-1',
+        'key-1',
+      );
+      expect(roomService.removeObjectFromRoom).toHaveBeenCalledWith(
+        'entry-hall',
+        'key-1',
+      );
     });
 
     it('should prevent taking non-portable objects', async () => {
-      jest.spyOn(roomService, 'getObjectsInRoom').mockReturnValue([mockObjects[0]]);
+      jest
+        .spyOn(roomService, 'getObjectsInRoom')
+        .mockReturnValue([mockObjects[0]]);
 
-      const result = await service.processCommand('take torch', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'take torch',
+        'player-1',
+        'game-1',
+      );
 
       expect(result.success).toBe(false);
       expect(result.type).toBe('action_failure');
@@ -237,17 +289,33 @@ describe('CommandProcessorService - Navigation Fixes', () => {
     });
 
     it('should handle dropping objects', async () => {
-      jest.spyOn(playerService, 'getInventory').mockReturnValue([mockObjects[1]]);
+      jest
+        .spyOn(playerService, 'getInventory')
+        .mockReturnValue([mockObjects[1]]);
 
-      const result = await service.processCommand('drop key', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'drop key',
+        'player-1',
+        'game-1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.type).toBe('action_success');
       expect(result.message).toBe('You drop the Brass Key.');
 
-      expect(playerService.removeFromInventory).toHaveBeenCalledWith('player-1', 'key-1');
-      expect(objectService.updateObjectPosition).toHaveBeenCalledWith('key-1', { x: 0, y: 0, z: 0 });
-      expect(roomService.addObjectToRoom).toHaveBeenCalledWith('entry-hall', 'key-1');
+      expect(playerService.removeFromInventory).toHaveBeenCalledWith(
+        'player-1',
+        'key-1',
+      );
+      expect(objectService.updateObjectPosition).toHaveBeenCalledWith('key-1', {
+        x: 0,
+        y: 0,
+        z: 0,
+      });
+      expect(roomService.addObjectToRoom).toHaveBeenCalledWith(
+        'entry-hall',
+        'key-1',
+      );
     });
   });
 
@@ -257,20 +325,34 @@ describe('CommandProcessorService - Navigation Fixes', () => {
 
       // Test direct direction commands
       await service.processCommand('north', 'player-1', 'game-1');
-      expect(playerService.movePlayer).toHaveBeenLastCalledWith('player-1', { x: 0, y: 15, z: 0 });
+      expect(playerService.movePlayer).toHaveBeenLastCalledWith('player-1', {
+        x: 0,
+        y: 15,
+        z: 0,
+      });
 
       // Reset mock
       jest.clearAllMocks();
 
       await service.processCommand('east', 'player-1', 'game-1');
-      expect(playerService.movePlayer).toHaveBeenLastCalledWith('player-1', { x: 15, y: 0, z: 0 });
+      expect(playerService.movePlayer).toHaveBeenLastCalledWith('player-1', {
+        x: 15,
+        y: 0,
+        z: 0,
+      });
     });
 
     it('should handle command variations', async () => {
-      jest.spyOn(roomService, 'getObjectsInRoom').mockReturnValue([mockObjects[1]]);
+      jest
+        .spyOn(roomService, 'getObjectsInRoom')
+        .mockReturnValue([mockObjects[1]]);
 
       // Test 'get' alias for 'take'
-      const result = await service.processCommand('get key', 'player-1', 'game-1');
+      const result = await service.processCommand(
+        'get key',
+        'player-1',
+        'game-1',
+      );
       expect(result.success).toBe(true);
       expect(result.message).toBe('You take the Brass Key.');
     });

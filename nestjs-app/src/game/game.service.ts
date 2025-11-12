@@ -65,7 +65,7 @@ export class GameService {
       inventory: [],
       level: 1,
       experience: 0,
-      gameId: gameId
+      gameId: gameId,
     });
 
     // Load or create initial game world
@@ -76,7 +76,7 @@ export class GameService {
       gameId,
       playerId: player.id,
       createdAt: new Date(),
-      lastActive: new Date()
+      lastActive: new Date(),
     };
 
     this.gameSessions.set(gameId, session);
@@ -97,23 +97,26 @@ export class GameService {
 
     // Update last active
     session.lastActive = new Date();
-    
+
     // Get current game state
     const gameState = await this.gameStateService.getGameState(gameId);
     const player = this.playerService.getPlayer(session.playerId);
     gameState.player = player;
-    
+
     return { gameState };
   }
 
   // Process a game command
-  async processCommand(gameId: string, command: string): Promise<CommandResult> {
+  async processCommand(
+    gameId: string,
+    command: string,
+  ): Promise<CommandResult> {
     const session = this.gameSessions.get(gameId);
     if (!session) {
       return {
         success: false,
         type: 'error',
-        message: 'Game session not found'
+        message: 'Game session not found',
       };
     }
 
@@ -125,14 +128,14 @@ export class GameService {
       const result = await this.commandProcessor.processCommand(
         command,
         session.playerId,
-        gameId
+        gameId,
       );
 
       // Update game state if needed
       if (result.success) {
         await this.gameStateService.updateGameState(gameId, {
           lastCommand: command,
-          lastCommandTime: new Date()
+          lastCommandTime: new Date(),
         });
       }
 
@@ -141,13 +144,15 @@ export class GameService {
       return {
         success: false,
         type: 'error',
-        message: `Command processing error: ${error.message}`
+        message: `Command processing error: ${error.message}`,
       };
     }
   }
 
   // Get player inventory
-  async getInventory(gameId: string): Promise<{ success: boolean; items?: any[]; message?: string }> {
+  async getInventory(
+    gameId: string,
+  ): Promise<{ success: boolean; items?: any[]; message?: string }> {
     const session = this.gameSessions.get(gameId);
     if (!session) {
       return { success: false, message: 'Game session not found' };
@@ -160,21 +165,26 @@ export class GameService {
       }
 
       const inventory = this.playerService.getInventory(session.playerId);
-      const items = inventory.map(item => ({
+      const items = inventory.map((item) => ({
         id: item.id,
         name: item.name,
         type: item.type,
-        quantity: 1 // Could be enhanced with quantity tracking
+        quantity: 1, // Could be enhanced with quantity tracking
       }));
 
       return { success: true, items };
     } catch (error) {
-      return { success: false, message: `Failed to get inventory: ${error.message}` };
+      return {
+        success: false,
+        message: `Failed to get inventory: ${error.message}`,
+      };
     }
   }
 
   // Get current room map
-  async getMap(gameId: string): Promise<{ success: boolean; map?: any; message?: string }> {
+  async getMap(
+    gameId: string,
+  ): Promise<{ success: boolean; map?: any; message?: string }> {
     const session = this.gameSessions.get(gameId);
     if (!session) {
       return { success: false, message: 'Game session not found' };
@@ -188,13 +198,13 @@ export class GameService {
 
       // Find player's current room
       const rooms = this.roomService.getAllRooms();
-      const currentRoom = rooms.find(room => 
-        this.isPlayerInRoom(player, room)
+      const currentRoom = rooms.find((room) =>
+        this.isPlayerInRoom(player, room),
       );
 
       if (!currentRoom) {
-        return { 
-          success: true, 
+        return {
+          success: true,
           map: {
             ascii: `
     ┌───────────────────┐
@@ -202,14 +212,14 @@ export class GameService {
     │                   │
     │        [?]        │
     │                   │
-    └───────────────────┘`
-          }
+    └───────────────────┘`,
+          },
         };
       }
 
       // Generate simple ASCII map for current room
       const map = this.generateRoomMap(currentRoom, rooms);
-      
+
       return { success: true, map };
     } catch (error) {
       return { success: false, message: `Failed to get map: ${error.message}` };
@@ -217,7 +227,10 @@ export class GameService {
   }
 
   // Save game state
-  async saveGame(gameId: string, slotName: string = 'quicksave'): Promise<{ success: boolean; message: string }> {
+  async saveGame(
+    gameId: string,
+    slotName: string = 'quicksave',
+  ): Promise<{ success: boolean; message: string }> {
     const session = this.gameSessions.get(gameId);
     if (!session) {
       return { success: false, message: 'Game session not found' };
@@ -232,15 +245,25 @@ export class GameService {
   }
 
   // Load saved game state
-  async loadGame(gameId: string, slotName: string = 'quicksave'): Promise<{ success: boolean; gameState?: any; message: string }> {
+  async loadGame(
+    gameId: string,
+    slotName: string = 'quicksave',
+  ): Promise<{ success: boolean; gameState?: any; message: string }> {
     const session = this.gameSessions.get(gameId);
     if (!session) {
       return { success: false, message: 'Game session not found' };
     }
 
     try {
-      const gameState = await this.gameStateService.loadGameState(gameId, slotName);
-      return { success: true, gameState, message: `Game loaded from slot: ${slotName}` };
+      const gameState = await this.gameStateService.loadGameState(
+        gameId,
+        slotName,
+      );
+      return {
+        success: true,
+        gameState,
+        message: `Game loaded from slot: ${slotName}`,
+      };
     } catch (error) {
       return { success: false, message: `Load failed: ${error.message}` };
     }
@@ -251,14 +274,15 @@ export class GameService {
     // Create starting room
     const startingRoom = this.roomService.createRoom({
       name: 'Entry Hall',
-      description: 'A dimly lit entry hall with stone walls and flickering torches. The air is heavy with the scent of age and mystery.',
+      description:
+        'A dimly lit entry hall with stone walls and flickering torches. The air is heavy with the scent of age and mystery.',
       position: { x: 0, y: 0, z: 0 },
       width: 10,
       height: 10,
       size: { width: 10, height: 10, depth: 3 },
       objects: [],
       players: [],
-      gameId: gameId
+      gameId: gameId,
     });
 
     // Create some initial objects
@@ -269,7 +293,7 @@ export class GameService {
       position: { x: 1, y: 1, z: 1 },
       material: 'wood',
       canTake: false,
-      gameId: gameId
+      gameId: gameId,
     });
 
     const key = this.objectService.createObject({
@@ -279,7 +303,7 @@ export class GameService {
       position: { x: 5, y: 5, z: 0 },
       material: 'metal',
       canTake: true,
-      gameId: gameId
+      gameId: gameId,
     });
 
     // Place objects in room
@@ -289,37 +313,40 @@ export class GameService {
     // Create adjacent rooms for movement with clear boundaries
     const northRoom = this.roomService.createRoom({
       name: 'Garden',
-      description: 'A peaceful garden with lush greenery and a small fountain in the center.',
+      description:
+        'A peaceful garden with lush greenery and a small fountain in the center.',
       position: { x: 0, y: 15, z: 0 },
       width: 10,
       height: 10,
       size: { width: 10, height: 10, depth: 3 },
       objects: [],
       players: [],
-      gameId: gameId
+      gameId: gameId,
     });
 
     const eastRoom = this.roomService.createRoom({
       name: 'Library',
-      description: 'A vast library filled with ancient books and scrolls reaching up to the vaulted ceiling.',
+      description:
+        'A vast library filled with ancient books and scrolls reaching up to the vaulted ceiling.',
       position: { x: 15, y: 0, z: 0 },
       width: 10,
       height: 10,
       size: { width: 10, height: 10, depth: 3 },
       objects: [],
       players: [],
-      gameId: gameId
+      gameId: gameId,
     });
 
     // Create some objects for the new rooms
     const book = this.objectService.createObject({
       name: 'Ancient Tome',
-      description: 'A leather-bound book with mysterious symbols etched on its cover.',
+      description:
+        'A leather-bound book with mysterious symbols etched on its cover.',
       objectType: 'item',
       position: { x: 2, y: 3, z: 0 },
       material: 'paper',
       canTake: true,
-      gameId: gameId
+      gameId: gameId,
     });
 
     const flower = this.objectService.createObject({
@@ -329,7 +356,7 @@ export class GameService {
       position: { x: 5, y: 5, z: 0 },
       material: 'organic',
       canTake: true,
-      gameId: gameId
+      gameId: gameId,
     });
 
     // Place objects in their respective rooms
@@ -339,7 +366,7 @@ export class GameService {
     // Save initial state
     await this.gameStateService.updateGameState(gameId, {
       startingRoomId: startingRoom.id,
-      initialized: true
+      initialized: true,
     });
   }
 
@@ -356,11 +383,17 @@ export class GameService {
   }
 
   // Generate simple ASCII map for a room
-  private generateRoomMap(currentRoom: any, allRooms: any[]): { ascii: string } {
+  private generateRoomMap(
+    currentRoom: any,
+    allRooms: any[],
+  ): { ascii: string } {
     const roomName = currentRoom.name;
     const padding = Math.max(0, (17 - roomName.length) / 2);
-    const paddedName = ' '.repeat(Math.floor(padding)) + roomName + ' '.repeat(Math.ceil(padding));
-    
+    const paddedName =
+      ' '.repeat(Math.floor(padding)) +
+      roomName +
+      ' '.repeat(Math.ceil(padding));
+
     return {
       ascii: `
     ┌───────────────────┐
@@ -368,12 +401,13 @@ export class GameService {
     │                   │
     │        [X]        │
     │                   │
-    └───────────────────┘`
+    └───────────────────┘`,
     };
   }
 
   // Clean up inactive sessions
-  cleanupInactiveSessions(maxInactiveTime: number = 3600000): number { // 1 hour default
+  cleanupInactiveSessions(maxInactiveTime: number = 3600000): number {
+    // 1 hour default
     const now = new Date();
     let cleaned = 0;
 
@@ -407,22 +441,30 @@ export class GameService {
         1,
         now,
         now,
-        1  // SQLite uses 1 for true, 0 for false
+        1, // SQLite uses 1 for true, 0 for false
       );
 
       // Save version history
-      this.databaseService.saveVersion('game', gameId, {
-        id: gameId,
-        name: 'The Quest Weaver Adventure',
-        description: 'A text-based adventure game created by The Quest Weaver',
-        version: 1,
-        created_at: now,
-        updated_at: now,
-        is_active: 1
-      }, 'game_service', 'Game created');
-
+      this.databaseService.saveVersion(
+        'game',
+        gameId,
+        {
+          id: gameId,
+          name: 'The Quest Weaver Adventure',
+          description:
+            'A text-based adventure game created by The Quest Weaver',
+          version: 1,
+          created_at: now,
+          updated_at: now,
+          is_active: 1,
+        },
+        'game_service',
+        'Game created',
+      );
     } catch (error) {
-      throw new Error(`Failed to save game ${gameId} to database: ${error.message}`);
+      throw new Error(
+        `Failed to save game ${gameId} to database: ${error.message}`,
+      );
     }
   }
 }

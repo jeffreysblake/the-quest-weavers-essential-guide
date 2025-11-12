@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsBoolean, IsOptional, ValidateNested, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsBoolean,
+  IsOptional,
+  ValidateNested,
+  IsNumber,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class PositionDto {

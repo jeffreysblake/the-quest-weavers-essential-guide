@@ -1,6 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { spawn, ChildProcess } from 'child_process';
-import { TTSProvider, TTSOptions, TTSResult } from '../interfaces/tts.interface';
+import {
+  TTSProvider,
+  TTSOptions,
+  TTSResult,
+} from '../interfaces/tts.interface';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as os from 'os';
@@ -21,20 +25,38 @@ export class PythonTTSProvider implements TTSProvider {
 
   constructor() {
     this.pythonPath = process.env.PYTHON_PATH || 'python3';
-    this.scriptPath = path.join(__dirname, '..', '..', '..', 'python', 'tts_bridge.py');
+    this.scriptPath = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'python',
+      'tts_bridge.py',
+    );
   }
 
   async generateSpeech(text: string, options?: TTSOptions): Promise<TTSResult> {
-    const { voice = 'default', speed = 1.0, format = 'wav', language = 'en' } = options || {};
+    const {
+      voice = 'default',
+      speed = 1.0,
+      format = 'wav',
+      language = 'en',
+    } = options || {};
 
-    this.logger.log(`Generating speech for text: "${text.substring(0, 50)}..."`);
+    this.logger.log(
+      `Generating speech for text: "${text.substring(0, 50)}..."`,
+    );
 
     try {
       // Create temporary file for audio output
       const tempFile = path.join(os.tmpdir(), `tts-${Date.now()}.${format}`);
 
       // Call Python script
-      await this.executePythonScript(text, tempFile, { voice, speed, language });
+      await this.executePythonScript(text, tempFile, {
+        voice,
+        speed,
+        language,
+      });
 
       // Read generated audio
       const audioBuffer = await fs.readFile(tempFile);
@@ -92,7 +114,9 @@ export class PythonTTSProvider implements TTSProvider {
         if (code === 0) {
           resolve();
         } else {
-          this.logger.error(`Python script failed with code ${code}: ${stderr}`);
+          this.logger.error(
+            `Python script failed with code ${code}: ${stderr}`,
+          );
           reject(new Error(`Python script failed: ${stderr}`));
         }
       });

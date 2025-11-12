@@ -7,7 +7,7 @@ export class ConfigService {
 
   // Get configuration values with defaults
   get<T>(key: string, defaultValue?: T): T | undefined {
-    return this.nestConfig.get(key, defaultValue) as T | undefined;
+    return this.nestConfig.get(key, defaultValue);
   }
 
   // Specific configuration getters
@@ -28,7 +28,7 @@ export class ConfigService {
     return {
       port: this.getPort(),
       databaseUrl: this.getDatabaseUrl(),
-      environment: this.isDevelopment() ? 'development' : 'production'
+      environment: this.isDevelopment() ? 'development' : 'production',
     };
   }
 }

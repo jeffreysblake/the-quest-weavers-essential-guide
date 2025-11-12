@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import { GameFileInfo, ChangeSet, EntityChange, EntityType } from '../database/database.interfaces';
+import {
+  GameFileInfo,
+  ChangeSet,
+  EntityChange,
+  EntityType,
+} from '../database/database.interfaces';
 
 @Injectable()
 export class FileScannerService {
@@ -14,7 +19,7 @@ export class FileScannerService {
 
   async scanGameDirectory(gameDirectory: string): Promise<GameFileInfo> {
     const fullPath = path.join(this.gamesDirectory, gameDirectory);
-    
+
     if (!fs.existsSync(fullPath)) {
       throw new Error(`Game directory does not exist: ${gameDirectory}`);
     }
@@ -28,14 +33,17 @@ export class FileScannerService {
     const objectsDir = path.join(fullPath, 'objects');
     const npcsDir = path.join(fullPath, 'npcs');
 
-    const roomCount = fs.existsSync(roomsDir) ? 
-      fs.readdirSync(roomsDir).filter(f => f.endsWith('.json')).length : 0;
-    
-    const objectCount = fs.existsSync(objectsDir) ? 
-      fs.readdirSync(objectsDir).filter(f => f.endsWith('.json')).length : 0;
-    
-    const npcCount = fs.existsSync(npcsDir) ? 
-      fs.readdirSync(npcsDir).filter(f => f.endsWith('.json')).length : 0;
+    const roomCount = fs.existsSync(roomsDir)
+      ? fs.readdirSync(roomsDir).filter((f) => f.endsWith('.json')).length
+      : 0;
+
+    const objectCount = fs.existsSync(objectsDir)
+      ? fs.readdirSync(objectsDir).filter((f) => f.endsWith('.json')).length
+      : 0;
+
+    const npcCount = fs.existsSync(npcsDir)
+      ? fs.readdirSync(npcsDir).filter((f) => f.endsWith('.json')).length
+      : 0;
 
     // Get the most recent modification time
     const lastModified = await this.getLastModifiedTime(fullPath);
@@ -47,19 +55,22 @@ export class FileScannerService {
       roomCount,
       objectCount,
       npcCount,
-      lastModified
+      lastModified,
     };
   }
 
   async scanAllGames(): Promise<GameFileInfo[]> {
     if (!fs.existsSync(this.gamesDirectory)) {
-      this.logger.warn(`Games directory does not exist: ${this.gamesDirectory}`);
+      this.logger.warn(
+        `Games directory does not exist: ${this.gamesDirectory}`,
+      );
       return [];
     }
 
-    const gameDirectories = fs.readdirSync(this.gamesDirectory, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name);
+    const gameDirectories = fs
+      .readdirSync(this.gamesDirectory, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
 
     const gameInfos: GameFileInfo[] = [];
 
@@ -95,7 +106,7 @@ export class FileScannerService {
           entityId: gameId,
           filePath: configPath,
           lastModified: configStat.mtime,
-          reason: 'Game configuration updated'
+          reason: 'Game configuration updated',
         });
       }
     }
@@ -104,10 +115,10 @@ export class FileScannerService {
     const roomsDir = path.join(gameDirectory, 'rooms');
     if (fs.existsSync(roomsDir)) {
       const roomChanges = await this.detectEntityChanges(
-        roomsDir, 
-        'room', 
+        roomsDir,
+        'room',
         lastSyncTime,
-        (filename) => path.basename(filename, '.json')
+        (filename) => path.basename(filename, '.json'),
       );
       changes.push(...roomChanges);
     }
@@ -116,10 +127,10 @@ export class FileScannerService {
     const objectsDir = path.join(gameDirectory, 'objects');
     if (fs.existsSync(objectsDir)) {
       const objectChanges = await this.detectEntityChanges(
-        objectsDir, 
-        'object', 
+        objectsDir,
+        'object',
         lastSyncTime,
-        (filename) => path.basename(filename, '.json')
+        (filename) => path.basename(filename, '.json'),
       );
       changes.push(...objectChanges);
     }
@@ -128,10 +139,10 @@ export class FileScannerService {
     const npcsDir = path.join(gameDirectory, 'npcs');
     if (fs.existsSync(npcsDir)) {
       const npcChanges = await this.detectEntityChanges(
-        npcsDir, 
-        'npc', 
+        npcsDir,
+        'npc',
         lastSyncTime,
-        (filename) => path.basename(filename, '.json')
+        (filename) => path.basename(filename, '.json'),
       );
       changes.push(...npcChanges);
     }
@@ -147,7 +158,7 @@ export class FileScannerService {
           entityId: `${gameId}-connections`,
           filePath: connectionsPath,
           lastModified: connectionsStat.mtime,
-          reason: 'Room connections updated'
+          reason: 'Room connections updated',
         });
       }
     }
@@ -160,7 +171,7 @@ export class FileScannerService {
     directory: string,
     entityType: EntityType,
     lastSyncTime?: Date,
-    getEntityId: (filename: string) => string = (f) => f
+    getEntityId: (filename: string) => string = (f) => f,
   ): Promise<EntityChange[]> {
     const changes: EntityChange[] = [];
 
@@ -168,7 +179,7 @@ export class FileScannerService {
       return changes;
     }
 
-    const files = fs.readdirSync(directory).filter(f => f.endsWith('.json'));
+    const files = fs.readdirSync(directory).filter((f) => f.endsWith('.json'));
 
     for (const filename of files) {
       const filePath = path.join(directory, filename);
@@ -182,7 +193,7 @@ export class FileScannerService {
           entityId,
           filePath,
           lastModified: fileStat.mtime,
-          reason: `${entityType} file updated`
+          reason: `${entityType} file updated`,
         });
       }
     }
@@ -197,10 +208,10 @@ export class FileScannerService {
       if (!fs.existsSync(dir)) return;
 
       const items = fs.readdirSync(dir, { withFileTypes: true });
-      
+
       for (const item of items) {
         const fullPath = path.join(dir, item.name);
-        
+
         if (item.isFile()) {
           const stat = fs.statSync(fullPath);
           if (stat.mtime > lastModified) {
@@ -220,7 +231,7 @@ export class FileScannerService {
     if (!fs.existsSync(filePath)) {
       throw new Error(`File does not exist: ${filePath}`);
     }
-    
+
     return fs.readFileSync(filePath, 'utf-8');
   }
 
@@ -242,7 +253,7 @@ export class FileScannerService {
 
   async ensureGameDirectory(gameId: string): Promise<string> {
     const gameDir = path.join(this.gamesDirectory, gameId);
-    
+
     // Create main game directory
     if (!fs.existsSync(gameDir)) {
       fs.mkdirSync(gameDir, { recursive: true });
@@ -283,9 +294,10 @@ export class FileScannerService {
       try {
         const configContent = fs.readFileSync(configPath, 'utf-8');
         const config = JSON.parse(configContent);
-        
+
         if (!config.id) errors.push('Game config missing required field: id');
-        if (!config.name) errors.push('Game config missing required field: name');
+        if (!config.name)
+          errors.push('Game config missing required field: name');
       } catch (error) {
         errors.push(`Invalid JSON in game-config.json: ${error.message}`);
       }
@@ -298,7 +310,9 @@ export class FileScannerService {
       if (!fs.existsSync(dirPath)) {
         warnings.push(`Missing ${dir} directory`);
       } else {
-        const files = fs.readdirSync(dirPath).filter(f => f.endsWith('.json'));
+        const files = fs
+          .readdirSync(dirPath)
+          .filter((f) => f.endsWith('.json'));
         if (files.length === 0) {
           warnings.push(`${dir} directory is empty`);
         }
@@ -313,9 +327,14 @@ export class FileScannerService {
       try {
         const connectionsContent = fs.readFileSync(connectionsPath, 'utf-8');
         const connections = JSON.parse(connectionsContent);
-        
-        if (!connections.connections || !Array.isArray(connections.connections)) {
-          errors.push('Invalid connections.json structure - missing connections array');
+
+        if (
+          !connections.connections ||
+          !Array.isArray(connections.connections)
+        ) {
+          errors.push(
+            'Invalid connections.json structure - missing connections array',
+          );
         }
       } catch (error) {
         errors.push(`Invalid JSON in connections.json: ${error.message}`);
@@ -325,7 +344,7 @@ export class FileScannerService {
     return {
       isValid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -338,8 +357,9 @@ export class FileScannerService {
       return [];
     }
 
-    return fs.readdirSync(this.gamesDirectory, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name);
+    return fs
+      .readdirSync(this.gamesDirectory, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
   }
 }

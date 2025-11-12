@@ -22,7 +22,7 @@ describe('Integration Tests', () => {
       .send({
         name: 'Test Room',
         width: 10,
-        height: 10
+        height: 10,
       })
       .expect(201);
 
@@ -35,7 +35,7 @@ describe('Integration Tests', () => {
       .send({
         name: 'Test Player',
         health: 100,
-        level: 1
+        level: 1,
       })
       .expect(201);
 
@@ -47,7 +47,7 @@ describe('Integration Tests', () => {
       .post('/objects')
       .send({
         name: 'Test Object',
-        objectType: 'item'
+        objectType: 'item',
       })
       .expect(201);
 
@@ -58,7 +58,7 @@ describe('Integration Tests', () => {
     const getAllEntities = await request(app.getHttpServer())
       .get('/entities')
       .expect(200);
-      
+
     expect(getAllEntities.body.length).toBeGreaterThanOrEqual(3);
   });
 

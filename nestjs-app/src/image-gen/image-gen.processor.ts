@@ -1,7 +1,10 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { ImageGenJobData, ImageGenJobResult } from './interfaces/image-gen.interface';
+import {
+  ImageGenJobData,
+  ImageGenJobResult,
+} from './interfaces/image-gen.interface';
 import { ComfyUIProvider } from './providers/comfyui.provider';
 
 @Processor('image-generation', {
@@ -15,9 +18,21 @@ export class ImageGenProcessor extends WorkerHost {
   }
 
   async process(job: Job<ImageGenJobData>): Promise<ImageGenJobResult> {
-    const { prompt, negativePrompt, width, height, steps, cfgScale, seed, sampler, model, userId } = job.data;
+    const {
+      prompt,
+      negativePrompt,
+      width,
+      height,
+      steps,
+      cfgScale,
+      seed,
+      sampler,
+      userId,
+    } = job.data;
 
-    this.logger.log(`Processing image generation job ${job.id} for user ${userId}`);
+    this.logger.log(
+      `Processing image generation job ${job.id} for user ${userId}`,
+    );
 
     try {
       // Update progress: 10% - Job started
@@ -47,7 +62,9 @@ export class ImageGenProcessor extends WorkerHost {
 
       await job.updateProgress(90);
 
-      this.logger.log(`Image generation completed for job ${job.id}: ${result.imagePath}`);
+      this.logger.log(
+        `Image generation completed for job ${job.id}: ${result.imagePath}`,
+      );
 
       await job.updateProgress(100);
 
@@ -62,7 +79,9 @@ export class ImageGenProcessor extends WorkerHost {
         generationTime: result.generationTime,
       };
     } catch (error) {
-      this.logger.error(`Failed to process job ${job.id}: ${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to process job ${job.id}: ${errorMessage}`);
       throw error;
     }
   }

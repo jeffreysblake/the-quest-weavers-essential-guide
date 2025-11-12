@@ -46,9 +46,13 @@ import { VRAMManagerService } from './vram-manager.service';
         const isAvailable = imageGenService.isAvailable();
 
         if (!isAvailable) {
-          logger.warn('Image generation queue not available. Redis may not be running.');
+          logger.warn(
+            'Image generation queue not available. Redis may not be running.',
+          );
           logger.warn('To enable image generation:');
-          logger.warn('  1. Install Redis: apt-get install redis-server (Linux) or brew install redis (Mac)');
+          logger.warn(
+            '  1. Install Redis: apt-get install redis-server (Linux) or brew install redis (Mac)',
+          );
           logger.warn('  2. Start Redis: redis-server');
           logger.warn('  3. Configure: Set REDIS_HOST and REDIS_PORT in .env');
           return;
@@ -60,9 +64,15 @@ import { VRAMManagerService } from './vram-manager.service';
         if (!comfyuiAvailable) {
           logger.warn('ComfyUI server not available.');
           logger.warn('To enable image generation with ComfyUI:');
-          logger.warn('  1. Install ComfyUI: https://github.com/comfyanonymous/ComfyUI');
-          logger.warn('  2. Start server: python main.py --listen 0.0.0.0 --port 8188');
-          logger.warn('  3. Download SDXL model and place in ComfyUI/models/checkpoints/');
+          logger.warn(
+            '  1. Install ComfyUI: https://github.com/comfyanonymous/ComfyUI',
+          );
+          logger.warn(
+            '  2. Start server: python main.py --listen 0.0.0.0 --port 8188',
+          );
+          logger.warn(
+            '  3. Download SDXL model and place in ComfyUI/models/checkpoints/',
+          );
           logger.warn('  4. Configure: Set COMFYUI_HOST in .env');
           return;
         }
@@ -78,11 +88,13 @@ import { VRAMManagerService } from './vram-manager.service';
         `);
 
         logger.log('ComfyUI provider is available');
-        logger.log(`Estimated VRAM for SDXL: ${comfyuiProvider.getVRAMUsage()}MB`);
+        logger.log(
+          `Estimated VRAM for SDXL: ${comfyuiProvider.getVRAMUsage()}MB`,
+        );
 
         // Set up auto-unload idle models every 5 minutes
-        setInterval(async () => {
-          await vramManager.autoUnloadIdleModels(300000); // 5 minutes
+        setInterval(() => {
+          void vramManager.autoUnloadIdleModels(300000); // 5 minutes
         }, 60000); // Check every minute
 
         return imageGenService;

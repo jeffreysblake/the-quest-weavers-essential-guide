@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { TTSProvider, TTSOptions, TTSResult } from '../interfaces/tts.interface';
+import {
+  TTSProvider,
+  TTSOptions,
+  TTSResult,
+} from '../interfaces/tts.interface';
 import axios from 'axios';
 
 /**
@@ -22,9 +26,16 @@ export class HttpTTSProvider implements TTSProvider {
   }
 
   async generateSpeech(text: string, options?: TTSOptions): Promise<TTSResult> {
-    const { voice = 'default', speed = 1.0, format = 'mp3', language = 'en' } = options || {};
+    const {
+      voice = 'default',
+      speed = 1.0,
+      format = 'mp3',
+      language = 'en',
+    } = options || {};
 
-    this.logger.log(`Generating speech via HTTP API: "${text.substring(0, 50)}..."`);
+    this.logger.log(
+      `Generating speech via HTTP API: "${text.substring(0, 50)}..."`,
+    );
 
     try {
       const response = await axios.post(

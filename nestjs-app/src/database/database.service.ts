@@ -1,4 +1,9 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Logger,
+} from '@nestjs/common';
 import Database from 'better-sqlite3';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -68,13 +73,13 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   async connect(): Promise<void> {
     try {
       this.database = new Database(this.dbPath);
-      
+
       // Enable foreign keys
       this.database.pragma('foreign_keys = ON');
-      
+
       // Enable WAL mode for better concurrency
       this.database.pragma('journal_mode = WAL');
-      
+
       this.logger.log('Database connection established');
     } catch (error) {
       this.logger.error('Failed to connect to database', error);
@@ -96,7 +101,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
   async migrate(): Promise<void> {
     this.logger.log('Running database migrations...');
-    
+
     try {
       // Create schema version table first
       this.database.exec(`
@@ -111,7 +116,9 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       const targetVersion = 1;
 
       if (currentVersion < targetVersion) {
-        this.logger.log(`Migrating from version ${currentVersion} to ${targetVersion}`);
+        this.logger.log(
+          `Migrating from version ${currentVersion} to ${targetVersion}`,
+        );
         await this.runMigrations(currentVersion, targetVersion);
       } else {
         this.logger.log(`Schema is up to date (version ${currentVersion})`);
@@ -124,7 +131,9 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
   private getCurrentSchemaVersion(): number {
     try {
-      const result = this.database.prepare('SELECT MAX(version) as version FROM schema_version').get() as { version: number | null };
+      const result = this.database
+        .prepare('SELECT MAX(version) as version FROM schema_version')
+        .get() as { version: number | null };
       return result?.version ?? 0;
     } catch (error) {
       // If table doesn't exist, we're at version 0
@@ -132,14 +141,19 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async runMigrations(fromVersion: number, toVersion: number): Promise<void> {
+  private async runMigrations(
+    fromVersion: number,
+    toVersion: number,
+  ): Promise<void> {
     const transaction = this.database.transaction(() => {
       for (let version = fromVersion + 1; version <= toVersion; version++) {
         this.logger.log(`Applying migration ${version}`);
         this.applyMigration(version);
-        
+
         // Record migration
-        this.database.prepare('INSERT INTO schema_version (version) VALUES (?)').run(version);
+        this.database
+          .prepare('INSERT INTO schema_version (version) VALUES (?)')
+          .run(version);
       }
     });
 
@@ -334,22 +348,33 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     entityId: string,
     data: T,
     changedBy?: string,
-    changeReason?: string
+    changeReason?: string,
   ): number {
     // Get current max version for this entity
     const maxVersionResult = this.database
-      .prepare('SELECT COALESCE(MAX(version_number), 0) as max_version FROM version_history WHERE entity_type = ? AND entity_id = ?')
+      .prepare(
+        'SELECT COALESCE(MAX(version_number), 0) as max_version FROM version_history WHERE entity_type = ? AND entity_id = ?',
+      )
       .get(entityType, entityId) as { max_version: number };
-    
+
     const newVersion = maxVersionResult.max_version + 1;
 
     // Save the version
     this.database
-      .prepare(`
+      .prepare(
+        `
         INSERT INTO version_history (entity_type, entity_id, version_number, data_snapshot, changed_by, change_reason)
         VALUES (?, ?, ?, ?, ?, ?)
-      `)
-      .run(entityType, entityId, newVersion, JSON.stringify(data), changedBy, changeReason);
+      `,
+      )
+      .run(
+        entityType,
+        entityId,
+        newVersion,
+        JSON.stringify(data),
+        changedBy,
+        changeReason,
+      );
 
     return newVersion;
   }
@@ -357,7 +382,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   async getVersion<T>(
     entityType: string,
     entityId: string,
-    version?: number
+    version?: number,
   ): Promise<T | null> {
     let query: string;
     let params: any[];
@@ -380,8 +405,10 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       params = [entityType, entityId];
     }
 
-    const result = this.database.prepare(query).get(...params) as { data_snapshot: string } | undefined;
-    
+    const result = this.database.prepare(query).get(...params) as
+      | { data_snapshot: string }
+      | undefined;
+
     if (!result) {
       return null;
     }
@@ -389,22 +416,30 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     try {
       return JSON.parse(result.data_snapshot) as T;
     } catch (error) {
-      this.logger.error(`Failed to parse version data for ${entityType}:${entityId}`, error);
+      this.logger.error(
+        `Failed to parse version data for ${entityType}:${entityId}`,
+        error,
+      );
       return null;
     }
   }
 
-  async listVersions(entityType: string, entityId: string): Promise<VersionInfo[]> {
+  async listVersions(
+    entityType: string,
+    entityId: string,
+  ): Promise<VersionInfo[]> {
     const results = this.database
-      .prepare(`
+      .prepare(
+        `
         SELECT id, entity_type, entity_id, version_number, changed_by, change_reason, created_at
         FROM version_history
         WHERE entity_type = ? AND entity_id = ?
         ORDER BY version_number DESC
-      `)
+      `,
+      )
       .all(entityType, entityId) as any[];
 
-    return results.map(row => ({
+    return results.map((row) => ({
       id: row.id,
       entityType: row.entity_type,
       entityId: row.entity_id,
@@ -422,7 +457,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   async rollbackToVersion(
     entityType: string,
     entityId: string,
-    version: number
+    version: number,
   ): Promise<boolean> {
     const versionData = await this.getVersion(entityType, entityId, version);
     if (!versionData) {
@@ -435,7 +470,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       entityId,
       versionData,
       'system',
-      `Rollback to version ${version}`
+      `Rollback to version ${version}`,
     );
 
     return true;
@@ -445,10 +480,11 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   async cleanupVersions(
     entityType: string,
     entityId: string,
-    keepVersions: number = 5
+    keepVersions: number = 5,
   ): Promise<number> {
     const deleteResult = this.database
-      .prepare(`
+      .prepare(
+        `
         DELETE FROM version_history 
         WHERE entity_type = ? AND entity_id = ? AND id NOT IN (
           SELECT id FROM version_history 
@@ -456,7 +492,8 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
           ORDER BY version_number DESC 
           LIMIT ?
         )
-      `)
+      `,
+      )
       .run(entityType, entityId, entityType, entityId, keepVersions);
 
     return deleteResult.changes;

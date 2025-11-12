@@ -26,30 +26,32 @@ describe('GameService - Transaction Fixes', () => {
             getGameState: jest.fn().mockResolvedValue({ initialized: true }),
             updateGameState: jest.fn().mockResolvedValue(true),
             saveGameState: jest.fn().mockResolvedValue(true),
-            loadGameState: jest.fn().mockResolvedValue({})
-          }
+            loadGameState: jest.fn().mockResolvedValue({}),
+          },
         },
         {
           provide: CommandProcessorService,
           useValue: {
-            processCommand: jest.fn().mockResolvedValue({ success: true })
-          }
+            processCommand: jest.fn().mockResolvedValue({ success: true }),
+          },
         },
         {
           provide: EntityService,
           useValue: {
             createEntity: jest.fn(),
             getEntity: jest.fn(),
-            updateEntity: jest.fn()
-          }
+            updateEntity: jest.fn(),
+          },
         },
         {
           provide: RoomService,
           useValue: {
-            createRoom: jest.fn().mockReturnValue({ id: 'room-1', name: 'Test Room' }),
+            createRoom: jest
+              .fn()
+              .mockReturnValue({ id: 'room-1', name: 'Test Room' }),
             addObjectToRoom: jest.fn().mockReturnValue(true),
-            getAllRooms: jest.fn().mockReturnValue([])
-          }
+            getAllRooms: jest.fn().mockReturnValue([]),
+          },
         },
         {
           provide: PlayerService,
@@ -58,15 +60,17 @@ describe('GameService - Transaction Fixes', () => {
               id: 'player-1',
               name: 'Test Player',
               position: { x: 0, y: 0, z: 0 },
-              health: 100
-            })
-          }
+              health: 100,
+            }),
+          },
         },
         {
           provide: ObjectService,
           useValue: {
-            createObject: jest.fn().mockReturnValue({ id: 'object-1', name: 'Test Object' })
-          }
+            createObject: jest
+              .fn()
+              .mockReturnValue({ id: 'object-1', name: 'Test Object' }),
+          },
         },
         {
           provide: DatabaseService,
@@ -75,8 +79,8 @@ describe('GameService - Transaction Fixes', () => {
             transaction: jest.fn().mockImplementation((callback) => {
               const mockDb = {
                 prepare: jest.fn().mockReturnValue({
-                  run: jest.fn()
-                })
+                  run: jest.fn(),
+                }),
               };
               return callback(mockDb);
             }),
@@ -84,12 +88,12 @@ describe('GameService - Transaction Fixes', () => {
             prepare: jest.fn().mockReturnValue({
               run: jest.fn(),
               get: jest.fn(),
-              all: jest.fn()
+              all: jest.fn(),
             }),
-            exec: jest.fn()
-          }
-        }
-      ]
+            exec: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<GameService>(GameService);
@@ -141,7 +145,8 @@ describe('GameService - Transaction Fixes', () => {
       expect(databaseService.saveVersion).toHaveBeenCalled();
 
       // Verify the call was not wrapped in a promise
-      const saveVersionCalls = (databaseService.saveVersion as jest.Mock).mock.calls;
+      const saveVersionCalls = (databaseService.saveVersion as jest.Mock).mock
+        .calls;
       expect(saveVersionCalls.length).toBeGreaterThan(0);
     });
   });

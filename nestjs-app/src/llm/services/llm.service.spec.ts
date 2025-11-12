@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LLMService } from './llm.service';
-import { LLMProvider, LLMResponse, StructuredLLMResponse } from '../interfaces/llm.interface';
+import {
+  LLMProvider,
+  LLMResponse,
+  StructuredLLMResponse,
+} from '../interfaces/llm.interface';
 import { LLMCacheService } from './llm-cache.service';
 import { LLMErrorHandlerService } from './llm-error-handler.service';
 
@@ -13,27 +17,34 @@ class MockLLMProvider implements LLMProvider {
     return !this.shouldFail;
   }
 
-  async generateResponse(prompt: string, options: any = {}): Promise<LLMResponse> {
+  async generateResponse(
+    prompt: string,
+    options: any = {},
+  ): Promise<LLMResponse> {
     if (this.shouldFail) {
       throw new Error('Mock provider failure');
     }
 
     // Check if this is a structured request by looking for JSON schema request
     let content: string;
-    if (prompt.includes('JSON') || prompt.includes('schema') || options.schema) {
+    if (
+      prompt.includes('JSON') ||
+      prompt.includes('schema') ||
+      options.schema
+    ) {
       // Check if it's a nested schema request
       if (prompt.includes('character')) {
         content = JSON.stringify({
           character: {
             name: 'mock_string_value',
-            skills: ['mock_item_1', 'mock_item_2']
-          }
+            skills: ['mock_item_1', 'mock_item_2'],
+          },
         });
       } else {
         content = JSON.stringify({
           name: 'mock_string_value',
           age: 42,
-          active: true
+          active: true,
         });
       }
     } else {
@@ -45,30 +56,30 @@ class MockLLMProvider implements LLMProvider {
       usage: {
         promptTokens: prompt.length / 4,
         completionTokens: content.length / 4,
-        totalTokens: (prompt.length + content.length) / 4
+        totalTokens: (prompt.length + content.length) / 4,
       },
       model: 'mock-model',
       finishReason: 'stop',
       metadata: {
         processingTime: 100,
-        provider: this.name
-      }
+        provider: this.name,
+      },
     };
   }
 
   async generateStructuredResponse<T>(
     prompt: string,
     schema: any,
-    options: any = {}
+    options: any = {},
   ): Promise<StructuredLLMResponse<T>> {
     const baseResponse = await this.generateResponse(prompt, options);
-    
+
     const mockStructuredData = this.generateMockDataForSchema(schema);
-    
+
     return {
       ...baseResponse,
       parsedContent: mockStructuredData,
-      validationErrors: undefined
+      validationErrors: undefined,
     };
   }
 
@@ -79,13 +90,13 @@ class MockLLMProvider implements LLMProvider {
   private generateMockDataForSchema(schema: any): any {
     if (schema.type === 'object') {
       const result: any = {};
-      
+
       if (schema.properties) {
-        for (const [key, propSchema] of Object.entries(schema.properties as any)) {
+        for (const [key, propSchema] of Object.entries(schema.properties)) {
           result[key] = this.generateMockDataForSchema(propSchema);
         }
       }
-      
+
       return result;
     } else if (schema.type === 'array') {
       return ['mock_item_1', 'mock_item_2'];
@@ -96,7 +107,7 @@ class MockLLMProvider implements LLMProvider {
     } else if (schema.type === 'boolean') {
       return true;
     }
-    
+
     return 'mock_value';
   }
 }
@@ -121,8 +132,8 @@ describe('LLMService', () => {
             invalidate: jest.fn(),
             getStats: jest.fn(() => ({ hitRate: 0.5, totalRequests: 0 })),
             getCachedPromptResponse: jest.fn(() => Promise.resolve(null)),
-            cachePromptResponse: jest.fn(() => Promise.resolve())
-          }
+            cachePromptResponse: jest.fn(() => Promise.resolve()),
+          },
         },
         {
           provide: LLMErrorHandlerService,
@@ -131,15 +142,20 @@ describe('LLMService', () => {
             createCircuitBreaker: jest.fn(),
             isSystemHealthy: jest.fn(() => true),
             logError: jest.fn(),
-            getErrorStats: jest.fn(() => ({ totalErrors: mockErrorCount, errorRate: mockErrorCount > 0 ? 0.5 : 0 })),
+            getErrorStats: jest.fn(() => ({
+              totalErrors: mockErrorCount,
+              errorRate: mockErrorCount > 0 ? 0.5 : 0,
+            })),
             handleError: jest.fn((error) => {
               mockErrorCount++;
               return error;
             }),
-            getUserFriendlyMessage: jest.fn((error) => 'All LLM providers are unavailable')
-          }
-        }
-      ]
+            getUserFriendlyMessage: jest.fn(
+              (error) => 'All LLM providers are unavailable',
+            ),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<LLMService>(LLMService);
@@ -174,7 +190,7 @@ describe('LLMService', () => {
   describe('Text Generation', () => {
     it('should generate text responses', async () => {
       const response = await service.generateResponse('Test prompt');
-      
+
       expect(response.content).toBeDefined();
       expect(response.content).toContain('Mock response to: Test prompt');
       expect(response.usage.totalTokens).toBeGreaterThan(0);
@@ -186,9 +202,9 @@ describe('LLMService', () => {
       const options = {
         temperature: 0.8,
         maxTokens: 150,
-        systemPrompt: 'You are a helpful assistant'
+        systemPrompt: 'You are a helpful assistant',
       };
-      
+
       const response = await service.generateResponse('Test prompt', options);
       expect(response.content).toBeDefined();
     });
@@ -197,11 +213,14 @@ describe('LLMService', () => {
       const options = {
         conversationHistory: [
           { role: 'user', content: 'Hello' },
-          { role: 'assistant', content: 'Hi there!' }
-        ]
+          { role: 'assistant', content: 'Hi there!' },
+        ],
       };
-      
-      const response = await service.generateResponse('Continue the conversation', options);
+
+      const response = await service.generateResponse(
+        'Continue the conversation',
+        options,
+      );
       expect(response.content).toBeDefined();
     });
   });
@@ -213,14 +232,14 @@ describe('LLMService', () => {
         properties: {
           name: { type: 'string' },
           age: { type: 'number' },
-          active: { type: 'boolean' }
+          active: { type: 'boolean' },
         },
-        required: ['name', 'age']
+        required: ['name', 'age'],
       };
-      
+
       const response = await service.generateStructuredResponse(
         'Generate a person',
-        schema
+        schema,
       );
 
       expect(response.parsedContent).toBeDefined();
@@ -238,17 +257,17 @@ describe('LLMService', () => {
             type: 'object',
             properties: {
               name: { type: 'string' },
-              skills: { type: 'array', items: { type: 'string' } }
-            }
-          }
-        }
+              skills: { type: 'array', items: { type: 'string' } },
+            },
+          },
+        },
       };
-      
+
       const response = await service.generateStructuredResponse(
         'Generate a character',
-        schema
+        schema,
       );
-      
+
       expect(response.parsedContent.character).toBeDefined();
       expect(response.parsedContent.character.name).toBe('mock_string_value');
       expect(Array.isArray(response.parsedContent.character.skills)).toBe(true);
@@ -259,7 +278,7 @@ describe('LLMService', () => {
     it('should fallback to secondary provider when primary fails', async () => {
       // Make primary provider fail
       mockProvider.setFailure(true);
-      
+
       const response = await service.generateResponse('Test prompt');
       expect(response.content).toBeDefined();
     });
@@ -268,10 +287,10 @@ describe('LLMService', () => {
       // Make all providers fail
       mockProvider.setFailure(true);
       fallbackProvider.setFailure(true);
-      
-      await expect(service.generateResponse('Test prompt'))
-        .rejects
-        .toThrow('All LLM providers are unavailable');
+
+      await expect(service.generateResponse('Test prompt')).rejects.toThrow(
+        'All LLM providers are unavailable',
+      );
     });
   });
 
@@ -284,7 +303,7 @@ describe('LLMService', () => {
     it('should return false when no providers are available', async () => {
       mockProvider.setFailure(true);
       fallbackProvider.setFailure(true);
-      
+
       const available = await service.isAvailable();
       expect(available).toBe(false);
     });
@@ -294,9 +313,9 @@ describe('LLMService', () => {
     it('should track request statistics', async () => {
       const initialStats = service.getStats();
       const initialRequests = initialStats.totalRequests;
-      
+
       await service.generateResponse('Test prompt');
-      
+
       const finalStats = service.getStats();
       expect(finalStats.totalRequests).toBe(initialRequests + 1);
       expect(finalStats.successRate).toBeGreaterThanOrEqual(0);
@@ -305,9 +324,13 @@ describe('LLMService', () => {
     it('should track error statistics', async () => {
       // Override the mock to have isAvailable return true but generateResponse throw error
       jest.spyOn(mockProvider, 'isAvailable').mockResolvedValue(true);
-      jest.spyOn(mockProvider, 'generateResponse').mockRejectedValue(new Error('Mock provider failure'));
+      jest
+        .spyOn(mockProvider, 'generateResponse')
+        .mockRejectedValue(new Error('Mock provider failure'));
       jest.spyOn(fallbackProvider, 'isAvailable').mockResolvedValue(true);
-      jest.spyOn(fallbackProvider, 'generateResponse').mockRejectedValue(new Error('Fallback provider failure'));
+      jest
+        .spyOn(fallbackProvider, 'generateResponse')
+        .mockRejectedValue(new Error('Fallback provider failure'));
 
       const initialStats = service.getStats();
 
@@ -333,7 +356,7 @@ describe('LLMService', () => {
 
     it('should handle provider test failures', async () => {
       mockProvider.setFailure(true);
-      
+
       const results = await service.testProviders();
       expect(results.get('mock')).toBe(false);
     });
@@ -343,24 +366,23 @@ describe('LLMService', () => {
     it('should generate conversational responses', async () => {
       const conversationHistory = [
         { role: 'user', content: 'What is the capital of France?' },
-        { role: 'assistant', content: 'The capital of France is Paris.' }
+        { role: 'assistant', content: 'The capital of France is Paris.' },
       ];
-      
+
       const response = await service.generateConversationResponse(
         'What about its population?',
-        conversationHistory
+        conversationHistory,
       );
-      
+
       expect(response.content).toBeDefined();
-      expect(response.content).toContain('Mock response to: What about its population?');
+      expect(response.content).toContain(
+        'Mock response to: What about its population?',
+      );
     });
 
     it('should handle empty conversation history', async () => {
-      const response = await service.generateConversationResponse(
-        'Hello',
-        []
-      );
-      
+      const response = await service.generateConversationResponse('Hello', []);
+
       expect(response.content).toBeDefined();
     });
   });

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+} from '@nestjs/common';
 import { PhysicsService } from './physics.service';
 import { CreatePhysicsBodyDto } from './physics.dto';
 import { UpdatePhysicsBodyDto } from './physics.dto';
@@ -9,7 +17,7 @@ export class PhysicsController {
 
   /**
    * Create a new physics body
-   * @param createPhysicsBodyDto 
+   * @param createPhysicsBodyDto
    * @returns Created physics body
    */
   @Post()
@@ -30,7 +38,7 @@ export class PhysicsController {
 
   /**
    * Retrieve specific physics body by ID
-   * @param id 
+   * @param id
    * @returns Physics body with matching ID or undefined
    */
   @Get(':id')
@@ -41,8 +49,8 @@ export class PhysicsController {
 
   /**
    * Update existing physics body
-   * @param id 
-   * @param updatePhysicsBodyDto 
+   * @param id
+   * @param updatePhysicsBodyDto
    * @returns Updated physics body or undefined if not found
    */
   @Put(':id')
@@ -56,7 +64,7 @@ export class PhysicsController {
 
   /**
    * Remove physics body by ID
-   * @param id 
+   * @param id
    * @returns Boolean indicating success or failure
    */
   @Delete(':id')

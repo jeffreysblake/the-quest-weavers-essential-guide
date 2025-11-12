@@ -34,7 +34,9 @@ import { HttpWhisperProvider } from './providers/http-whisper.provider';
             logger.log('Python Whisper provider is available');
           } else {
             logger.warn('Python Whisper provider is not available');
-            logger.warn('To enable: Install Python 3.8+ and openai-whisper or faster-whisper');
+            logger.warn(
+              'To enable: Install Python 3.8+ and openai-whisper or faster-whisper',
+            );
           }
         }
 
@@ -45,15 +47,23 @@ import { HttpWhisperProvider } from './providers/http-whisper.provider';
             logger.log('HTTP Whisper provider is available');
           } else {
             logger.warn('HTTP Whisper provider is not available');
-            logger.warn('To enable: Set STT_API_URL to your Whisper server endpoint');
+            logger.warn(
+              'To enable: Set STT_API_URL to your Whisper server endpoint',
+            );
           }
         }
 
         if (providers.length === 0) {
-          logger.warn('No STT providers available. Speech-to-text features will be disabled.');
+          logger.warn(
+            'No STT providers available. Speech-to-text features will be disabled.',
+          );
           logger.warn('Setup options:');
-          logger.warn('  1. Python Whisper: Install openai-whisper or faster-whisper');
-          logger.warn('  2. HTTP API: Configure STT_API_URL and set STT_HTTP_ENABLED=true');
+          logger.warn(
+            '  1. Python Whisper: Install openai-whisper or faster-whisper',
+          );
+          logger.warn(
+            '  2. HTTP API: Configure STT_API_URL and set STT_HTTP_ENABLED=true',
+          );
           return sttService;
         }
 
@@ -63,7 +73,9 @@ import { HttpWhisperProvider } from './providers/http-whisper.provider';
           sttService.registerProvider(item.provider, index === 0);
         });
 
-        logger.log(`STT Module initialized with ${providers.length} provider(s)`);
+        logger.log(
+          `STT Module initialized with ${providers.length} provider(s)`,
+        );
 
         return sttService;
       },

@@ -12,9 +12,9 @@ export class ObjectService {
 
   constructor(
     private readonly entityService: EntityService,
-    private readonly databaseService?: DatabaseService
+    private readonly databaseService?: DatabaseService,
   ) {}
-  
+
   createObject(objectData: Omit<IObject, 'id' | 'type'>): IObject {
     // Create object with generated ID
     const object: IObject = {
@@ -27,23 +27,26 @@ export class ObjectService {
       isContainer: objectData.isContainer || false,
       isPortable: objectData.isPortable ?? true,
     };
-    
+
     // Store in local cache
     this.objects.set(object.id, object);
-    
+
     // Also register in EntityService for compatibility (preserve existing ID)
     this.entityService['entities'].set(object.id, object);
-    
+
     // Save to database if available
     if (this.databaseService) {
-      this.saveObjectToDatabase(object).catch(error => {
-        this.logger.error(`Failed to save object ${object.id} to database:`, error);
+      this.saveObjectToDatabase(object).catch((error) => {
+        this.logger.error(
+          `Failed to save object ${object.id} to database:`,
+          error,
+        );
       });
     }
-    
+
     return object;
   }
-  
+
   getObject(id: string): IObject | undefined {
     // Check local cache first
     const object = this.objects.get(id);
@@ -59,7 +62,10 @@ export class ObjectService {
     return undefined;
   }
 
-  async getObjectWithFallback(id: string, gameId?: string): Promise<IObject | undefined> {
+  async getObjectWithFallback(
+    id: string,
+    gameId?: string,
+  ): Promise<IObject | undefined> {
     // First check local cache
     let object = this.objects.get(id);
     if (object) {
@@ -89,26 +95,30 @@ export class ObjectService {
 
   async getAllObjectsForGame(gameId: string): Promise<IObject[]> {
     // Get all in-memory objects for this game
-    const inMemoryObjects = Array.from(this.objects.values())
-      .filter(object => object.gameId === gameId);
+    const inMemoryObjects = Array.from(this.objects.values()).filter(
+      (object) => object.gameId === gameId,
+    );
 
     // If database is available, also load from database
     if (this.databaseService) {
       try {
         const dbObjects = await this.loadGameObjectsFromDatabase(gameId);
-        
+
         // Merge with in-memory objects, preferring in-memory versions
         const objectMap = new Map<string, IObject>();
-        
+
         // Add database objects first
-        dbObjects.forEach(object => objectMap.set(object.id, object));
-        
+        dbObjects.forEach((object) => objectMap.set(object.id, object));
+
         // Override with in-memory objects
-        inMemoryObjects.forEach(object => objectMap.set(object.id, object));
-        
+        inMemoryObjects.forEach((object) => objectMap.set(object.id, object));
+
         return Array.from(objectMap.values());
       } catch (error) {
-        this.logger.error(`Failed to load objects for game ${gameId} from database:`, error);
+        this.logger.error(
+          `Failed to load objects for game ${gameId} from database:`,
+          error,
+        );
       }
     }
 
@@ -152,36 +162,36 @@ export class ObjectService {
 
     return true;
   }
-  
+
   update(id: string, updates: Partial<IObject>): boolean {
     return this.updateObject(id, updates);
   }
 
   updateObject(
     id: string,
-    updates: Partial<Omit<IObject, 'id' | 'type'>>
+    updates: Partial<Omit<IObject, 'id' | 'type'>>,
   ): boolean {
     const object = this.getObject(id);
     if (!object) return false;
-    
+
     // Update the entity
     return this.entityService.updateEntity(id, {
       ...updates,
-      type: 'object'
+      type: 'object',
     });
   }
-  
+
   placeObject(objectId: string, relationship: ISpatialRelationship): boolean {
     const object = this.getObject(objectId);
     const target = this.entityService.getEntity(relationship.targetId);
-    
+
     if (!object || !target) return false;
-    
+
     // Validate placement constraints
     if (!this.canPlaceObject(object, target, relationship.relationshipType)) {
       return false;
     }
-    
+
     // Handle container relationships
     if (relationship.relationshipType === 'inside') {
       const targetObject = target as IObject;
@@ -192,90 +202,107 @@ export class ObjectService {
         }
       }
     }
-    
+
     // Update object's spatial relationship
     object.spatialRelationship = relationship;
     return this.entityService.updateEntity(objectId, object);
   }
-  
+
   removeObjectFromContainer(objectId: string, containerId: string): boolean {
     const container = this.getObject(containerId);
     if (!container || !container.containedObjects) return false;
-    
+
     const index = container.containedObjects.indexOf(objectId);
     if (index > -1) {
       container.containedObjects.splice(index, 1);
-      
+
       // Clear spatial relationship
       const object = this.getObject(objectId);
       if (object) {
         object.spatialRelationship = undefined;
         this.entityService.updateEntity(objectId, object);
       }
-      
+
       return this.entityService.updateEntity(containerId, container);
     }
     return false;
   }
-  
+
   getObjectsInContainer(containerId: string): IObject[] {
     const container = this.getObject(containerId);
     if (!container || !container.containedObjects) return [];
-    
+
     return container.containedObjects
-      .map(id => this.getObject(id))
-      .filter(obj => obj !== undefined) as IObject[];
+      .map((id) => this.getObject(id))
+      .filter((obj) => obj !== undefined);
   }
-  
+
   getObjectLocation(objectId: string): string {
     const object = this.getObject(objectId);
     if (!object || !object.spatialRelationship) {
       return `${object?.name || 'Unknown object'} is not placed anywhere`;
     }
-    
-    const target = this.entityService.getEntity(object.spatialRelationship.targetId);
-    const relationship = object.spatialRelationship.relationshipType.replace('_', ' ');
-    
-    return object.spatialRelationship.description || 
-           `${object.name} is ${relationship} ${target?.name || 'unknown target'}`;
+
+    const target = this.entityService.getEntity(
+      object.spatialRelationship.targetId,
+    );
+    const relationship = object.spatialRelationship.relationshipType.replace(
+      '_',
+      ' ',
+    );
+
+    return (
+      object.spatialRelationship.description ||
+      `${object.name} is ${relationship} ${target?.name || 'unknown target'}`
+    );
   }
-  
-  private canPlaceObject(object: IObject, target: any, relationshipType: string): boolean {
+
+  private canPlaceObject(
+    object: IObject,
+    target: any,
+    relationshipType: string,
+  ): boolean {
     // Basic validation
     if (object.id === target.id) return false;
-    
+
     switch (relationshipType) {
       case 'inside':
         if (target.type !== 'object') return false;
         const targetObj = target as IObject;
         if (!targetObj.isContainer || !targetObj.canContain) return false;
         if (targetObj.state?.isLocked) return false;
-        
+
         // Container must be open to place items inside (unless it starts open)
-        if (targetObj.state && targetObj.state.isOpen !== undefined && !targetObj.state.isOpen) {
+        if (
+          targetObj.state &&
+          targetObj.state.isOpen !== undefined &&
+          !targetObj.state.isOpen
+        ) {
           return false;
         }
-        
+
         // Check capacity
         const currentCount = targetObj.containedObjects?.length || 0;
         const capacity = targetObj.containerCapacity || 10;
         return currentCount < capacity;
-        
+
       case 'on_top_of':
         // Can't place on top of very small objects
-        return target.type === 'object' && 
-               (target as IObject).objectType === 'furniture';
-        
+        return (
+          target.type === 'object' &&
+          (target as IObject).objectType === 'furniture'
+        );
+
       case 'next_to':
       case 'underneath':
       case 'attached_to':
         return true;
-        
+
       default:
         return false;
     }
   }
-  
+
   // Enhanced persistence methods with database integration
   async persistObjects(): Promise<void> {
     if (!this.databaseService) {
@@ -297,7 +324,7 @@ export class ObjectService {
       throw error;
     }
   }
-  
+
   async loadObjects(gameId?: string): Promise<void> {
     if (!this.databaseService) {
       this.logger.warn('Database service not available for loading');
@@ -305,15 +332,15 @@ export class ObjectService {
     }
 
     try {
-      const objects = gameId ? 
-        await this.loadGameObjectsFromDatabase(gameId) : 
-        await this.loadAllObjectsFromDatabase();
+      const objects = gameId
+        ? await this.loadGameObjectsFromDatabase(gameId)
+        : await this.loadAllObjectsFromDatabase();
 
       this.logger.log(`Loading ${objects.length} objects from database`);
 
       // Clear current objects and load from database
       this.objects.clear();
-      objects.forEach(object => {
+      objects.forEach((object) => {
         this.objects.set(object.id, object);
         this.entityService['entities'].set(object.id, object); // Sync with EntityService
       });
@@ -336,10 +363,19 @@ export class ObjectService {
       throw new Error(`Object ${objectId} not found in memory`);
     }
 
-    return this.databaseService.saveVersion('object', objectId, object, 'object_service', reason);
+    return this.databaseService.saveVersion(
+      'object',
+      objectId,
+      object,
+      'object_service',
+      reason,
+    );
   }
 
-  async getObjectVersion(objectId: string, version?: number): Promise<IObject | null> {
+  async getObjectVersion(
+    objectId: string,
+    version?: number,
+  ): Promise<IObject | null> {
     if (!this.databaseService) {
       throw new Error('Database service not available for version management');
     }
@@ -352,8 +388,12 @@ export class ObjectService {
       throw new Error('Database service not available for version management');
     }
 
-    const success = await this.databaseService.rollbackToVersion('object', objectId, version);
-    
+    const success = await this.databaseService.rollbackToVersion(
+      'object',
+      objectId,
+      version,
+    );
+
     if (success) {
       // Reload object from database
       const object = await this.loadObjectFromDatabase(objectId);
@@ -367,7 +407,10 @@ export class ObjectService {
   }
 
   // Dynamic loading for gameplay
-  async loadObjectOnDemand(gameId: string, objectId: string): Promise<IObject | undefined> {
+  async loadObjectOnDemand(
+    gameId: string,
+    objectId: string,
+  ): Promise<IObject | undefined> {
     // Check if already loaded
     const existingObject = this.objects.get(objectId);
     if (existingObject) {
@@ -379,7 +422,10 @@ export class ObjectService {
     return object;
   }
 
-  async refreshObject(gameId: string, objectId: string): Promise<IObject | undefined> {
+  async refreshObject(
+    gameId: string,
+    objectId: string,
+  ): Promise<IObject | undefined> {
     // Force reload from database
     if (this.databaseService) {
       const object = await this.loadObjectFromDatabase(objectId, gameId);
@@ -402,7 +448,7 @@ export class ObjectService {
   getCacheStats(): { size: number; objects: string[] } {
     return {
       size: this.objects.size,
-      objects: Array.from(this.objects.keys())
+      objects: Array.from(this.objects.keys()),
     };
   }
 
@@ -421,14 +467,16 @@ export class ObjectService {
           objectType: object.objectType,
           position: object.position || { x: 0, y: 0, z: 0 },
           material: object.material,
-          materialProperties: object.materialProperties ? {
-            material: String(object.materialProperties.material),
-            density: object.materialProperties.density || 1,
-            conductivity: object.materialProperties.conductivity || 0,
-            flammability: object.materialProperties.flammability || 0,
-            brittleness: object.materialProperties.brittleness || 0,
-            resistances: object.materialProperties.resistances
-          } : undefined,
+          materialProperties: object.materialProperties
+            ? {
+                material: String(object.materialProperties.material),
+                density: object.materialProperties.density || 1,
+                conductivity: object.materialProperties.conductivity || 0,
+                flammability: object.materialProperties.flammability || 0,
+                brittleness: object.materialProperties.brittleness || 0,
+                resistances: object.materialProperties.resistances,
+              }
+            : undefined,
           weight: object.weight || 0,
           health: object.health,
           maxHealth: object.maxHealth,
@@ -439,7 +487,7 @@ export class ObjectService {
           stateData: object.state,
           properties: object.properties,
           version: 1,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
         };
 
         // Save to objects table
@@ -452,19 +500,36 @@ export class ObjectService {
         `);
 
         insertObject.run(
-          objectData.id, objectData.gameId, objectData.name, objectData.description, objectData.objectType,
-          objectData.position.x, objectData.position.y, objectData.position.z,
-          objectData.material, JSON.stringify(objectData.materialProperties), objectData.weight,
-          objectData.health, objectData.maxHealth, objectData.isPortable ? 1 : 0, objectData.isContainer ? 1 : 0,
-          objectData.canContain ? 1 : 0, objectData.containerCapacity, JSON.stringify(objectData.stateData),
-          JSON.stringify(objectData.properties), objectData.version, objectData.createdAt
+          objectData.id,
+          objectData.gameId,
+          objectData.name,
+          objectData.description,
+          objectData.objectType,
+          objectData.position.x,
+          objectData.position.y,
+          objectData.position.z,
+          objectData.material,
+          JSON.stringify(objectData.materialProperties),
+          objectData.weight,
+          objectData.health,
+          objectData.maxHealth,
+          objectData.isPortable ? 1 : 0,
+          objectData.isContainer ? 1 : 0,
+          objectData.canContain ? 1 : 0,
+          objectData.containerCapacity,
+          JSON.stringify(objectData.stateData),
+          JSON.stringify(objectData.properties),
+          objectData.version,
+          objectData.createdAt,
         );
 
         // Save spatial relationships if they exist
         if (object.spatialRelationship) {
           // Clear existing relationships for this object
-          db.prepare('DELETE FROM spatial_relationships WHERE object_id = ?').run(object.id);
-          
+          db.prepare(
+            'DELETE FROM spatial_relationships WHERE object_id = ?',
+          ).run(object.id);
+
           const insertRelationship = db.prepare(`
             INSERT INTO spatial_relationships (object_id, target_id, relationship_type, description, created_at)
             VALUES (?, ?, ?, ?, ?)
@@ -475,21 +540,32 @@ export class ObjectService {
             object.spatialRelationship.targetId,
             object.spatialRelationship.relationshipType,
             object.spatialRelationship.description,
-            new Date().toISOString()
+            new Date().toISOString(),
           );
         }
       });
 
       // Save version history
-      this.databaseService.saveVersion('object', object.id, object, 'object_service', 'Object updated');
-
+      this.databaseService.saveVersion(
+        'object',
+        object.id,
+        object,
+        'object_service',
+        'Object updated',
+      );
     } catch (error) {
-      this.logger.error(`Failed to save object ${object.id} to database:`, error);
+      this.logger.error(
+        `Failed to save object ${object.id} to database:`,
+        error,
+      );
       throw error;
     }
   }
 
-  private async loadObjectFromDatabase(objectId: string, gameId?: string): Promise<IObject | undefined> {
+  private async loadObjectFromDatabase(
+    objectId: string,
+    gameId?: string,
+  ): Promise<IObject | undefined> {
     if (!this.databaseService) return undefined;
 
     try {
@@ -498,10 +574,10 @@ export class ObjectService {
         SELECT * FROM objects 
         WHERE id = ? ${gameId ? 'AND game_id = ?' : ''}
       `);
-      
-      const objectRow = gameId ? 
-        objectQuery.get(objectId, gameId) as any : 
-        objectQuery.get(objectId) as any;
+
+      const objectRow = gameId
+        ? (objectQuery.get(objectId, gameId) as any)
+        : (objectQuery.get(objectId) as any);
 
       if (!objectRow) return undefined;
 
@@ -521,10 +597,12 @@ export class ObjectService {
         position: {
           x: objectRow.position_x || 0,
           y: objectRow.position_y || 0,
-          z: objectRow.position_z || 0
+          z: objectRow.position_z || 0,
         },
         material: objectRow.material,
-        materialProperties: objectRow.material_properties ? JSON.parse(objectRow.material_properties) : undefined,
+        materialProperties: objectRow.material_properties
+          ? JSON.parse(objectRow.material_properties)
+          : undefined,
         weight: objectRow.weight || 0,
         health: objectRow.health,
         maxHealth: objectRow.max_health,
@@ -533,9 +611,13 @@ export class ObjectService {
         canContain: objectRow.can_contain || false,
         containerCapacity: objectRow.container_capacity || 0,
         containedObjects: [], // Would need to be loaded separately
-        state: objectRow.state_data ? JSON.parse(objectRow.state_data) : undefined,
-        properties: objectRow.properties ? JSON.parse(objectRow.properties) : {},
-        gameId: objectRow.game_id
+        state: objectRow.state_data
+          ? JSON.parse(objectRow.state_data)
+          : undefined,
+        properties: objectRow.properties
+          ? JSON.parse(objectRow.properties)
+          : {},
+        gameId: objectRow.game_id,
       };
 
       // Add spatial relationship if exists
@@ -543,23 +625,29 @@ export class ObjectService {
         object.spatialRelationship = {
           targetId: relationshipRow.target_id,
           relationshipType: relationshipRow.relationship_type,
-          description: relationshipRow.description
+          description: relationshipRow.description,
         };
       }
 
       return object;
-
     } catch (error) {
-      this.logger.error(`Failed to load object ${objectId} from database:`, error);
+      this.logger.error(
+        `Failed to load object ${objectId} from database:`,
+        error,
+      );
       return undefined;
     }
   }
 
-  private async loadGameObjectsFromDatabase(gameId: string): Promise<IObject[]> {
+  private async loadGameObjectsFromDatabase(
+    gameId: string,
+  ): Promise<IObject[]> {
     if (!this.databaseService) return [];
 
     try {
-      const query = this.databaseService.prepare('SELECT * FROM objects WHERE game_id = ?');
+      const query = this.databaseService.prepare(
+        'SELECT * FROM objects WHERE game_id = ?',
+      );
       const rows = query.all(gameId) as any[];
 
       const objects: IObject[] = [];
@@ -572,9 +660,11 @@ export class ObjectService {
       }
 
       return objects;
-
     } catch (error) {
-      this.logger.error(`Failed to load objects for game ${gameId} from database:`, error);
+      this.logger.error(
+        `Failed to load objects for game ${gameId} from database:`,
+        error,
+      );
       return [];
     }
   }
@@ -596,7 +686,6 @@ export class ObjectService {
       }
 
       return objects;
-
     } catch (error) {
       this.logger.error('Failed to load all objects from database:', error);
       return [];
@@ -604,7 +693,10 @@ export class ObjectService {
   }
 
   // Missing methods for game service compatibility
-  updateObjectPosition(objectId: string, newPosition: { x: number; y: number; z: number }): boolean {
+  updateObjectPosition(
+    objectId: string,
+    newPosition: { x: number; y: number; z: number },
+  ): boolean {
     return this.updateObject(objectId, { position: newPosition });
   }
 
@@ -614,5 +706,4 @@ export class ObjectService {
 
     return [object.spatialRelationship];
   }
-
 }

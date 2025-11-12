@@ -8,10 +8,7 @@ describe('RoomService (Integration)', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RoomService,
-        EntityService
-      ],
+      providers: [RoomService, EntityService],
     }).compile();
 
     service = module.get<RoomService>(RoomService);
@@ -26,11 +23,11 @@ describe('RoomService (Integration)', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const result = service.createRoom(roomData);
-    
+
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
     expect(result.name).toBe('Test Room');
@@ -43,12 +40,12 @@ describe('RoomService (Integration)', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = service.createRoom(roomData);
     const retrievedRoom = service.getRoom(createdRoom.id);
-    
+
     expect(retrievedRoom).toBeDefined();
     expect(retrievedRoom?.id).toBe(createdRoom.id);
   });

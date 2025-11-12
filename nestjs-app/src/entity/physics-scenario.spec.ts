@@ -14,7 +14,13 @@ describe('Physics System Integration Tests', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EntityService, ObjectService, PlayerService, RoomService, PhysicsService],
+      providers: [
+        EntityService,
+        ObjectService,
+        PlayerService,
+        RoomService,
+        PhysicsService,
+      ],
     }).compile();
 
     entityService = module.get<EntityService>(EntityService);
@@ -37,7 +43,7 @@ describe('Physics System Integration Tests', () => {
         maxHealth: 20,
         health: 20,
         state: { isOpen: true },
-        materialProperties: PhysicsService.createMaterialPreset('wood')
+        materialProperties: PhysicsService.createMaterialPreset('wood'),
       });
 
       const potion = objectService.createObject({
@@ -48,14 +54,14 @@ describe('Physics System Integration Tests', () => {
         materialProperties: {
           material: 'organic',
           flammability: 5,
-          properties: { explosive: true }
-        }
+          properties: { explosive: true },
+        },
       });
 
       // Place potion in chest
       objectService.placeObject(potion.id, {
         relationshipType: 'inside',
-        targetId: chest.id
+        targetId: chest.id,
       });
 
       // Create player and cast fireball
@@ -86,7 +92,7 @@ describe('Physics System Integration Tests', () => {
         isPortable: false,
         maxHealth: 50,
         health: 50,
-        materialProperties: PhysicsService.createMaterialPreset('stone')
+        materialProperties: PhysicsService.createMaterialPreset('stone'),
       });
 
       const player = playerService.createPlayer({
@@ -94,7 +100,12 @@ describe('Physics System Integration Tests', () => {
         position: { x: 1, y: 1, z: 0 },
       });
 
-      const result = playerService.castSpell(player.id, 'fire', stoneDoor.id, 8);
+      const result = playerService.castSpell(
+        player.id,
+        'fire',
+        stoneDoor.id,
+        8,
+      );
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('resists the fire effect');
@@ -112,7 +123,7 @@ describe('Physics System Integration Tests', () => {
         name: 'Flooded Room',
         position: { x: 0, y: 0, z: 0 },
         width: 10,
-        height: 10
+        height: 10,
       });
 
       // Create water puddle
@@ -121,14 +132,14 @@ describe('Physics System Integration Tests', () => {
         position: { x: 5, y: 5, z: 0 },
         objectType: 'item',
         isPortable: false,
-        materialProperties: PhysicsService.createMaterialPreset('water')
+        materialProperties: PhysicsService.createMaterialPreset('water'),
       });
 
       // Create player standing in puddle
       const player1 = playerService.createPlayer({
         name: 'Victim',
         position: { x: 5, y: 5, z: 0 },
-        health: 100
+        health: 100,
       });
 
       // Create caster
@@ -146,7 +157,12 @@ describe('Physics System Integration Tests', () => {
       // In a real implementation, this would be more sophisticated
       // For now, we'll test lightning hitting the puddle directly
 
-      const result = playerService.castSpell(player2.id, 'lightning', puddle.id, 6);
+      const result = playerService.castSpell(
+        player2.id,
+        'lightning',
+        puddle.id,
+        6,
+      );
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('Lightning Bolt');
@@ -159,7 +175,7 @@ describe('Physics System Integration Tests', () => {
         position: { x: 5, y: 5, z: 0 },
         objectType: 'weapon',
         isPortable: true,
-        materialProperties: PhysicsService.createMaterialPreset('metal')
+        materialProperties: PhysicsService.createMaterialPreset('metal'),
       });
 
       const metalChest = objectService.createObject({
@@ -168,7 +184,7 @@ describe('Physics System Integration Tests', () => {
         objectType: 'container',
         isContainer: true,
         canContain: true,
-        materialProperties: PhysicsService.createMaterialPreset('metal')
+        materialProperties: PhysicsService.createMaterialPreset('metal'),
       });
 
       const stoneWall = objectService.createObject({
@@ -176,13 +192,13 @@ describe('Physics System Integration Tests', () => {
         position: { x: 7, y: 5, z: 0 },
         objectType: 'furniture',
         isPortable: false,
-        materialProperties: PhysicsService.createMaterialPreset('stone')
+        materialProperties: PhysicsService.createMaterialPreset('stone'),
       });
 
       // Place sword on chest (creates connection)
       objectService.placeObject(metalSword.id, {
         relationshipType: 'on_top_of',
-        targetId: metalChest.id
+        targetId: metalChest.id,
       });
 
       const player = playerService.createPlayer({
@@ -190,7 +206,12 @@ describe('Physics System Integration Tests', () => {
         position: { x: 1, y: 1, z: 0 },
       });
 
-      const result = playerService.castSpell(player.id, 'lightning', metalSword.id, 7);
+      const result = playerService.castSpell(
+        player.id,
+        'lightning',
+        metalSword.id,
+        7,
+      );
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('Lightning Bolt');
@@ -202,7 +223,7 @@ describe('Physics System Integration Tests', () => {
       const updatedWall = objectService.getObject(stoneWall.id);
 
       // Metal should conduct and take damage
-      expect(updatedSword?.health).toBeLessThan((updatedSword?.maxHealth || 10));
+      expect(updatedSword?.health).toBeLessThan(updatedSword?.maxHealth || 10);
       // Stone should be unaffected if not directly hit
     });
   });
@@ -216,7 +237,7 @@ describe('Physics System Integration Tests', () => {
         isPortable: true,
         maxHealth: 5,
         health: 5,
-        materialProperties: PhysicsService.createMaterialPreset('glass')
+        materialProperties: PhysicsService.createMaterialPreset('glass'),
       });
 
       const player = playerService.createPlayer({
@@ -224,7 +245,12 @@ describe('Physics System Integration Tests', () => {
         position: { x: 1, y: 1, z: 0 },
       });
 
-      const result = playerService.castSpell(player.id, 'force', glassBottle.id, 8);
+      const result = playerService.castSpell(
+        player.id,
+        'force',
+        glassBottle.id,
+        8,
+      );
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('Force Push');
@@ -251,8 +277,8 @@ describe('Physics System Integration Tests', () => {
           conductivity: 8,
           flammability: 0,
           brittleness: 10,
-          resistances: { fire: 9, lightning: 1 }
-        }
+          resistances: { fire: 9, lightning: 1 },
+        },
       });
 
       const player = playerService.createPlayer({
@@ -260,7 +286,12 @@ describe('Physics System Integration Tests', () => {
         position: { x: 1, y: 1, z: 0 },
       });
 
-      const result = playerService.castSpell(player.id, 'ice', waterBarrel.id, 6);
+      const result = playerService.castSpell(
+        player.id,
+        'ice',
+        waterBarrel.id,
+        6,
+      );
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('Ice Shard');
@@ -278,7 +309,7 @@ describe('Physics System Integration Tests', () => {
         name: 'Library',
         position: { x: 0, y: 0, z: 0 },
         width: 10,
-        height: 10
+        height: 10,
       });
 
       const bookshelf = objectService.createObject({
@@ -286,7 +317,7 @@ describe('Physics System Integration Tests', () => {
         position: { x: 2, y: 2, z: 0 },
         objectType: 'furniture',
         isPortable: false,
-        materialProperties: PhysicsService.createMaterialPreset('wood')
+        materialProperties: PhysicsService.createMaterialPreset('wood'),
       });
 
       const books = objectService.createObject({
@@ -294,7 +325,7 @@ describe('Physics System Integration Tests', () => {
         position: { x: 0, y: 0, z: 0 },
         objectType: 'item',
         isPortable: true,
-        materialProperties: PhysicsService.createMaterialPreset('paper')
+        materialProperties: PhysicsService.createMaterialPreset('paper'),
       });
 
       const metalShield = objectService.createObject({
@@ -302,13 +333,13 @@ describe('Physics System Integration Tests', () => {
         position: { x: 8, y: 8, z: 0 },
         objectType: 'item',
         isPortable: true,
-        materialProperties: PhysicsService.createMaterialPreset('metal')
+        materialProperties: PhysicsService.createMaterialPreset('metal'),
       });
 
       // Place books on shelf
       objectService.placeObject(books.id, {
         relationshipType: 'on_top_of',
-        targetId: bookshelf.id
+        targetId: bookshelf.id,
       });
 
       // Add objects to room
@@ -326,9 +357,10 @@ describe('Physics System Integration Tests', () => {
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('Fireball across the room');
-      
+
       // Should mention multiple objects burning
-      expect(result.message).toContain('bookshelf') || expect(result.message).toContain('books');
+      expect(result.message).toContain('bookshelf') ||
+        expect(result.message).toContain('books');
     });
   });
 
@@ -346,8 +378,8 @@ describe('Physics System Integration Tests', () => {
           conductivity: 9,
           flammability: 0,
           brittleness: 5,
-          resistances: { fire: 3 } // Lower fire resistance so effect gets through
-        }
+          resistances: { fire: 3 }, // Lower fire resistance so effect gets through
+        },
       });
 
       // Add explosive gas inside
@@ -356,18 +388,18 @@ describe('Physics System Integration Tests', () => {
         position: { x: 0, y: 0, z: 0 },
         objectType: 'item',
         isPortable: false,
-        materialProperties: PhysicsService.createMaterialPreset('gas')
+        materialProperties: PhysicsService.createMaterialPreset('gas'),
       });
 
       // Make sure container is open so we can place gas inside
       gasContainer.state = { isOpen: true };
       entityService.updateEntity(gasContainer.id, gasContainer);
-      
+
       const placeResult = objectService.placeObject(explosiveGas.id, {
         relationshipType: 'inside',
-        targetId: gasContainer.id
+        targetId: gasContainer.id,
       });
-      
+
       // Verify placement worked
       expect(placeResult).toBe(true);
       expect(gasContainer.containedObjects).toContain(explosiveGas.id);
@@ -378,11 +410,16 @@ describe('Physics System Integration Tests', () => {
       });
 
       // Shoot fireball at gas container
-      const result = playerService.castSpell(player.id, 'fire', gasContainer.id, 6);
+      const result = playerService.castSpell(
+        player.id,
+        'fire',
+        gasContainer.id,
+        6,
+      );
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('Fireball');
-      
+
       // The container should either explode due to explosive contents, or at least take some damage
       expect(result.message).toContain('gas canister');
       // For now, let's just verify the spell worked - we can improve explosion logic later

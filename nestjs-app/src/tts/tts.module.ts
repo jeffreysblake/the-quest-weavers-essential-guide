@@ -24,7 +24,11 @@ import { HttpTTSProvider } from './providers/http-tts.provider';
         const logger = new Logger('TTSModule');
 
         // Register available providers with priority
-        const providers: Array<{ provider: any; priority: number; name: string }> = [];
+        const providers: Array<{
+          provider: any;
+          priority: number;
+          name: string;
+        }> = [];
 
         // Check which providers should be enabled
         const enableKokoro = process.env.TTS_KOKORO_ENABLED !== 'false'; // Enabled by default
@@ -35,8 +39,14 @@ import { HttpTTSProvider } from './providers/http-tts.provider';
         if (enableKokoro) {
           const available = await kokoroProvider.isAvailable();
           if (available) {
-            providers.push({ provider: kokoroProvider, priority: 1, name: 'Kokoro' });
-            logger.log('Kokoro TTS provider is available (native Node.js, GPU-capable)');
+            providers.push({
+              provider: kokoroProvider,
+              priority: 1,
+              name: 'Kokoro',
+            });
+            logger.log(
+              'Kokoro TTS provider is available (native Node.js, GPU-capable)',
+            );
           } else {
             logger.warn('Kokoro TTS provider is not available');
             logger.warn('To enable: npm install kokoro-js --legacy-peer-deps');
@@ -47,7 +57,11 @@ import { HttpTTSProvider } from './providers/http-tts.provider';
         if (enablePython) {
           const available = await pythonProvider.isAvailable();
           if (available) {
-            providers.push({ provider: pythonProvider, priority: 2, name: 'Python' });
+            providers.push({
+              provider: pythonProvider,
+              priority: 2,
+              name: 'Python',
+            });
             logger.log('Python TTS provider is available');
           } else {
             logger.warn('Python TTS provider is not available');
@@ -58,7 +72,11 @@ import { HttpTTSProvider } from './providers/http-tts.provider';
         if (enableHttp) {
           const available = await httpProvider.isAvailable();
           if (available) {
-            providers.push({ provider: httpProvider, priority: 3, name: 'HTTP' });
+            providers.push({
+              provider: httpProvider,
+              priority: 3,
+              name: 'HTTP',
+            });
             logger.log('HTTP TTS provider is available');
           } else {
             logger.warn('HTTP TTS provider is not available');
@@ -66,11 +84,19 @@ import { HttpTTSProvider } from './providers/http-tts.provider';
         }
 
         if (providers.length === 0) {
-          logger.warn('No TTS providers available. TTS features will be disabled.');
+          logger.warn(
+            'No TTS providers available. TTS features will be disabled.',
+          );
           logger.warn('To enable TTS:');
-          logger.warn('  1. Native (recommended): npm install kokoro-js --legacy-peer-deps');
-          logger.warn('  2. Python: Set up Python with TTS library (Coqui, Piper, etc.)');
-          logger.warn('  3. HTTP: Configure TTS_API_URL for HTTP-based TTS service');
+          logger.warn(
+            '  1. Native (recommended): npm install kokoro-js --legacy-peer-deps',
+          );
+          logger.warn(
+            '  2. Python: Set up Python with TTS library (Coqui, Piper, etc.)',
+          );
+          logger.warn(
+            '  3. HTTP: Configure TTS_API_URL for HTTP-based TTS service',
+          );
           return ttsService;
         }
 
@@ -80,12 +106,19 @@ import { HttpTTSProvider } from './providers/http-tts.provider';
           ttsService.registerProvider(item.provider, index === 0);
         });
 
-        logger.log(`TTS Module initialized with ${providers.length} provider(s)`);
+        logger.log(
+          `TTS Module initialized with ${providers.length} provider(s)`,
+        );
         logger.log(`Primary provider: ${providers[0].name}`);
 
         return ttsService;
       },
-      inject: [TTSService, KokoroTTSProvider, PythonTTSProvider, HttpTTSProvider],
+      inject: [
+        TTSService,
+        KokoroTTSProvider,
+        PythonTTSProvider,
+        HttpTTSProvider,
+      ],
     },
   ],
   exports: [TTSService],

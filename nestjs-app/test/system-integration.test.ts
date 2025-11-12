@@ -22,7 +22,7 @@ describe('System Integration Tests', () => {
       .send({
         name: 'Test Room',
         width: 10,
-        height: 10
+        height: 10,
       })
       .expect(201);
 
@@ -33,7 +33,7 @@ describe('System Integration Tests', () => {
     const getRoomResponse = await request(app.getHttpServer())
       .get(`/rooms/${roomResponse.body.id}`)
       .expect(200);
-      
+
     expect(getRoomResponse.body).toBeDefined();
     expect(getRoomResponse.body.name).toBe('Test Room');
   });
@@ -45,7 +45,7 @@ describe('System Integration Tests', () => {
       .send({
         name: 'Test Player',
         health: 100,
-        level: 1
+        level: 1,
       })
       .expect(201);
 
@@ -56,7 +56,7 @@ describe('System Integration Tests', () => {
     const getPlayerResponse = await request(app.getHttpServer())
       .get(`/players/${playerResponse.body.id}`)
       .expect(200);
-      
+
     expect(getPlayerResponse.body).toBeDefined();
   });
 

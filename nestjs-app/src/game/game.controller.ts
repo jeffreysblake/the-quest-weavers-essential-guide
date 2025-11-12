@@ -1,11 +1,11 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Param, 
-  HttpException, 
-  HttpStatus 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { GameService } from './game.service';
 
@@ -21,7 +21,7 @@ export class GameController {
     } catch (error) {
       throw new HttpException(
         `Failed to create game: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -40,7 +40,7 @@ export class GameController {
       }
       throw new HttpException(
         `Failed to get game: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -48,7 +48,7 @@ export class GameController {
   @Post(':gameId/command')
   async processCommand(
     @Param('gameId') gameId: string,
-    @Body('command') command: string
+    @Body('command') command: string,
   ) {
     if (!command) {
       throw new HttpException('Command is required', HttpStatus.BAD_REQUEST);
@@ -60,7 +60,7 @@ export class GameController {
     } catch (error) {
       throw new HttpException(
         `Failed to process command: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -73,7 +73,7 @@ export class GameController {
     } catch (error) {
       throw new HttpException(
         `Failed to get inventory: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -86,7 +86,7 @@ export class GameController {
     } catch (error) {
       throw new HttpException(
         `Failed to get map: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -94,7 +94,7 @@ export class GameController {
   @Post(':gameId/save')
   async saveGame(
     @Param('gameId') gameId: string,
-    @Body('slotName') slotName: string = 'quicksave'
+    @Body('slotName') slotName: string = 'quicksave',
   ) {
     try {
       const result = await this.gameService.saveGame(gameId, slotName);
@@ -102,7 +102,7 @@ export class GameController {
     } catch (error) {
       throw new HttpException(
         `Failed to save game: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -110,7 +110,7 @@ export class GameController {
   @Post(':gameId/load')
   async loadGame(
     @Param('gameId') gameId: string,
-    @Body('slotName') slotName: string = 'quicksave'
+    @Body('slotName') slotName: string = 'quicksave',
   ) {
     try {
       const result = await this.gameService.loadGame(gameId, slotName);
@@ -118,7 +118,7 @@ export class GameController {
     } catch (error) {
       throw new HttpException(
         `Failed to load game: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

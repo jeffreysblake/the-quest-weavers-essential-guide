@@ -15,7 +15,7 @@ export class CLIService {
     private readonly gameManager: GameManagerService,
     private readonly databaseService: DatabaseService,
     private readonly fileScanner: FileScannerService,
-    private readonly gameFileService: GameFileService
+    private readonly gameFileService: GameFileService,
   ) {
     this.program = new Command();
     this.setupCommands();
@@ -24,7 +24,7 @@ export class CLIService {
   private setupCommands(): void {
     this.program
       .name('quest-weaver')
-      .description('The Quest Weaver\'s Essential Guide Game Engine CLI')
+      .description("The Quest Weaver's Essential Guide Game Engine CLI")
       .version('1.0.0');
 
     // Game management commands
@@ -63,7 +63,7 @@ export class CLIService {
         await this.syncGame(gameId);
       });
 
-    // Database management commands  
+    // Database management commands
     this.program
       .command('db:init')
       .description('Initialize database and run migrations')
@@ -96,7 +96,10 @@ export class CLIService {
     this.program
       .command('entity:list <gameId>')
       .description('List entities for a game')
-      .option('-t, --type <type>', 'Filter by entity type (room, object, player)')
+      .option(
+        '-t, --type <type>',
+        'Filter by entity type (room, object, player)',
+      )
       .action(async (gameId: string, options: { type?: string }) => {
         await this.listEntities(gameId, options.type);
       });
@@ -154,12 +157,11 @@ export class CLIService {
       // List from database
       const dbGames = await this.gameManager.listGames();
       console.log('\n💾 From Database:');
-      dbGames.forEach(game => {
+      dbGames.forEach((game) => {
         console.log(`  • ${game.id} - ${game.name}`);
         console.log(`    Created: ${game.createdAt}`);
         console.log(`    Version: ${game.version}`);
       });
-
     } catch (error) {
       console.error('❌ Failed to list games:', error.message);
     }
@@ -172,33 +174,37 @@ export class CLIService {
           type: 'input',
           name: 'name',
           message: 'Game name:',
-          validate: (input) => input.length > 0 ? true : 'Game name is required'
+          validate: (input) =>
+            input.length > 0 ? true : 'Game name is required',
         },
         {
-          type: 'input', 
+          type: 'input',
           name: 'description',
-          message: 'Game description:'
+          message: 'Game description:',
         },
         {
           type: 'input',
           name: 'gameId',
           message: 'Game ID (directory name):',
-          validate: (input) => /^[a-z0-9-_]+$/.test(input) ? true : 'Only lowercase letters, numbers, hyphens and underscores allowed'
+          validate: (input) =>
+            /^[a-z0-9-_]+$/.test(input)
+              ? true
+              : 'Only lowercase letters, numbers, hyphens and underscores allowed',
         },
         {
           type: 'confirm',
           name: 'createFiles',
           message: 'Create file structure?',
-          default: true
-        }
+          default: true,
+        },
       ]);
 
       console.log('\n🎮 Creating game...');
-      
+
       const game = await this.gameManager.createGame({
         name: answers.name,
         description: answers.description,
-        gameId: answers.gameId
+        gameId: answers.gameId,
       });
 
       if (answers.createFiles) {
@@ -209,7 +215,6 @@ export class CLIService {
       console.log(`✅ Game created successfully!`);
       console.log(`   ID: ${game.id}`);
       console.log(`   Name: ${game.name}`);
-
     } catch (error) {
       console.error('❌ Failed to create game:', error.message);
     }
@@ -218,9 +223,9 @@ export class CLIService {
   private async loadGame(gameId: string): Promise<void> {
     try {
       console.log(`🔄 Loading game: ${gameId}`);
-      
+
       const result = await this.gameFileService.loadGameFromFiles(gameId);
-      
+
       if (result.success) {
         console.log('✅ Game loaded successfully!');
         console.log(`   Rooms: ${result.loaded.rooms.length}`);
@@ -229,7 +234,6 @@ export class CLIService {
       } else {
         console.error('❌ Failed to load game:', result.message);
       }
-
     } catch (error) {
       console.error('❌ Failed to load game:', error.message);
     }
@@ -239,7 +243,6 @@ export class CLIService {
     try {
       console.log('🔍 Scanning games directory...');
       console.log('   (Full directory scanning not implemented yet)');
-
     } catch (error) {
       console.error('❌ Failed to scan games:', error.message);
     }
@@ -248,15 +251,14 @@ export class CLIService {
   private async syncGame(gameId: string): Promise<void> {
     try {
       console.log(`🔄 Syncing game: ${gameId}`);
-      
+
       // First load from files
       await this.loadGame(gameId);
-      
+
       // Then save current state
       await this.gameManager.persistGame(gameId);
-      
-      console.log('✅ Game synced successfully!');
 
+      console.log('✅ Game synced successfully!');
     } catch (error) {
       console.error('❌ Failed to sync game:', error.message);
     }
@@ -267,7 +269,6 @@ export class CLIService {
     try {
       console.log('🔧 Initializing database...');
       console.log('✅ Database initialized successfully!');
-
     } catch (error) {
       console.error('❌ Failed to initialize database:', error.message);
     }
@@ -277,7 +278,6 @@ export class CLIService {
     try {
       console.log('🔄 Running migrations...');
       console.log('✅ Migrations completed successfully!');
-
     } catch (error) {
       console.error('❌ Failed to run migrations:', error.message);
     }
@@ -290,16 +290,17 @@ export class CLIService {
 
       // Show table counts
       const tables = ['games', 'rooms', 'objects', 'npcs', 'version_history'];
-      
+
       for (const table of tables) {
         try {
-          const count = this.databaseService.prepare(`SELECT COUNT(*) as count FROM ${table}`).get() as any;
+          const count = this.databaseService
+            .prepare(`SELECT COUNT(*) as count FROM ${table}`)
+            .get() as any;
           console.log(`   ${table}: ${count.count} records`);
         } catch (error) {
           console.log(`   ${table}: table not found`);
         }
       }
-
     } catch (error) {
       console.error('❌ Failed to show database status:', error.message);
     }
@@ -309,7 +310,7 @@ export class CLIService {
   private async createEntityInteractive(): Promise<void> {
     try {
       const gamesList = await this.gameManager.listGames();
-      
+
       if (gamesList.length === 0) {
         console.log('❌ No games found. Create a game first.');
         return;
@@ -320,7 +321,10 @@ export class CLIService {
           type: 'list',
           name: 'gameId',
           message: 'Select game:',
-          choices: gamesList.map(game => ({ name: game.name, value: game.id }))
+          choices: gamesList.map((game) => ({
+            name: game.name,
+            value: game.id,
+          })),
         },
         {
           type: 'list',
@@ -329,37 +333,36 @@ export class CLIService {
           choices: [
             { name: 'Room', value: 'room' },
             { name: 'Object', value: 'object' },
-            { name: 'Player/NPC', value: 'player' }
-          ]
+            { name: 'Player/NPC', value: 'player' },
+          ],
         },
         {
           type: 'input',
           name: 'name',
           message: 'Entity name:',
-          validate: (input) => input.length > 0 ? true : 'Name is required'
+          validate: (input) => (input.length > 0 ? true : 'Name is required'),
         },
         {
           type: 'input',
           name: 'description',
-          message: 'Description:'
-        }
+          message: 'Description:',
+        },
       ]);
 
       console.log('\n🔧 Creating entity...');
-      
+
       const entity = await this.gameManager.createEntity(
         answers.gameId,
         answers.entityType,
         {
           name: answers.name,
-          description: answers.description
-        }
+          description: answers.description,
+        },
       );
 
       console.log(`✅ ${answers.entityType} created successfully!`);
       console.log(`   ID: ${entity.id}`);
       console.log(`   Name: ${entity.name}`);
-
     } catch (error) {
       console.error('❌ Failed to create entity:', error.message);
     }
@@ -378,34 +381,43 @@ export class CLIService {
         return;
       }
 
-      entities.forEach(entity => {
+      entities.forEach((entity) => {
         console.log(`\n${entity.type.toUpperCase()}: ${entity.name}`);
         console.log(`   ID: ${entity.id}`);
-        console.log(`   Description: ${entity.description || 'No description'}`);
+        console.log(
+          `   Description: ${entity.description || 'No description'}`,
+        );
         if (entity.position) {
-          console.log(`   Position: (${entity.position.x}, ${entity.position.y}, ${entity.position.z})`);
+          console.log(
+            `   Position: (${entity.position.x}, ${entity.position.y}, ${entity.position.z})`,
+          );
         }
       });
-
     } catch (error) {
       console.error('❌ Failed to list entities:', error.message);
     }
   }
 
   // Version management implementations
-  private async listVersions(entityType: string, entityId: string): Promise<void> {
+  private async listVersions(
+    entityType: string,
+    entityId: string,
+  ): Promise<void> {
     try {
       console.log(`📚 Versions for ${entityType}: ${entityId}`);
       console.log('===============================================');
 
-      const versions = await this.databaseService.listVersions(entityType, entityId);
+      const versions = await this.databaseService.listVersions(
+        entityType,
+        entityId,
+      );
 
       if (versions.length === 0) {
         console.log('   No versions found.');
         return;
       }
 
-      versions.forEach(version => {
+      versions.forEach((version) => {
         console.log(`\nVersion ${version.version}:`);
         console.log(`   Created: ${version.created_at}`);
         console.log(`   Author: ${version.created_by}`);
@@ -413,24 +425,32 @@ export class CLIService {
           console.log(`   Reason: ${version.reason}`);
         }
       });
-
     } catch (error) {
       console.error('❌ Failed to list versions:', error.message);
     }
   }
 
-  private async rollbackVersion(entityType: string, entityId: string, version: number): Promise<void> {
+  private async rollbackVersion(
+    entityType: string,
+    entityId: string,
+    version: number,
+  ): Promise<void> {
     try {
-      console.log(`⏪ Rolling back ${entityType} ${entityId} to version ${version}...`);
-      
-      const success = await this.databaseService.rollbackToVersion(entityType, entityId, version);
-      
+      console.log(
+        `⏪ Rolling back ${entityType} ${entityId} to version ${version}...`,
+      );
+
+      const success = await this.databaseService.rollbackToVersion(
+        entityType,
+        entityId,
+        version,
+      );
+
       if (success) {
         console.log('✅ Rollback completed successfully!');
       } else {
         console.log('❌ Rollback failed.');
       }
-
     } catch (error) {
       console.error('❌ Failed to rollback:', error.message);
     }
@@ -440,11 +460,10 @@ export class CLIService {
   private async clearCaches(): Promise<void> {
     try {
       console.log('🧹 Clearing caches...');
-      
-      await this.gameManager.clearAllCaches();
-      
-      console.log('✅ All caches cleared successfully!');
 
+      await this.gameManager.clearAllCaches();
+
+      console.log('✅ All caches cleared successfully!');
     } catch (error) {
       console.error('❌ Failed to clear caches:', error.message);
     }
@@ -458,10 +477,9 @@ export class CLIService {
       const stats = await this.gameManager.getCacheStats();
 
       console.log(`   Entity cache: ${stats.entities} items`);
-      console.log(`   Room cache: ${stats.rooms} items`);  
+      console.log(`   Room cache: ${stats.rooms} items`);
       console.log(`   Object cache: ${stats.objects} items`);
       console.log(`   Player cache: ${stats.players} items`);
-
     } catch (error) {
       console.error('❌ Failed to show cache stats:', error.message);
     }

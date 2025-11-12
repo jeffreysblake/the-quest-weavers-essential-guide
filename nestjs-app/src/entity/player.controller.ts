@@ -17,10 +17,7 @@ export class PlayerController {
   }
 
   @Patch(':id/inventory')
-  addInventoryItem(
-    @Param('id') playerId: string,
-    @Body() item: any
-  ) {
+  addInventoryItem(@Param('id') playerId: string, @Body() item: any) {
     const success = this.playerService.addInventoryItem(playerId, item);
     return { success };
   }

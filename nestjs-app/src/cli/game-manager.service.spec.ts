@@ -114,7 +114,7 @@ describe('GameManagerService', () => {
       const gameData = {
         name: 'Test Game',
         description: 'A test game',
-        gameId: 'test-game'
+        gameId: 'test-game',
       };
 
       const mockRun = jest.fn();
@@ -131,11 +131,13 @@ describe('GameManagerService', () => {
         name: 'Test Game',
         description: 'A test game',
         version: 1,
-        createdAt: expect.any(String)
+        createdAt: expect.any(String),
       });
 
       expect(mockDatabaseService.transaction).toHaveBeenCalled();
-      expect(mockPrepare).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO games'));
+      expect(mockPrepare).toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO games'),
+      );
     });
 
     it('should list games from database', async () => {
@@ -145,15 +147,15 @@ describe('GameManagerService', () => {
           name: 'Game 1',
           description: 'First game',
           version: 1,
-          created_at: '2023-01-01'
+          created_at: '2023-01-01',
         },
         {
-          id: 'game2', 
+          id: 'game2',
           name: 'Game 2',
           description: 'Second game',
           version: 1,
-          created_at: '2023-01-02'
-        }
+          created_at: '2023-01-02',
+        },
       ];
 
       const mockAll = jest.fn().mockReturnValue(mockGames);
@@ -168,10 +170,12 @@ describe('GameManagerService', () => {
         name: 'Game 1',
         description: 'First game',
         version: 1,
-        createdAt: '2023-01-01'
+        createdAt: '2023-01-01',
       });
 
-      expect(mockPrepare).toHaveBeenCalledWith(expect.stringContaining('SELECT * FROM games'));
+      expect(mockPrepare).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT * FROM games'),
+      );
     });
   });
 
@@ -181,14 +185,14 @@ describe('GameManagerService', () => {
         id: 'room-1',
         name: 'Test Room',
         type: 'room',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       };
 
       mockRoomService.createRoom.mockReturnValue(mockRoom);
 
       const result = await service.createEntity('test-game', 'room', {
         name: 'Test Room',
-        description: 'A test room'
+        description: 'A test room',
       });
 
       expect(result).toEqual(mockRoom);
@@ -201,7 +205,7 @@ describe('GameManagerService', () => {
         height: 10,
         size: { width: 10, height: 10, depth: 3 },
         objects: [],
-        players: []
+        players: [],
       });
     });
 
@@ -210,14 +214,14 @@ describe('GameManagerService', () => {
         id: 'obj-1',
         name: 'Test Object',
         type: 'object',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       };
 
       mockObjectService.createObject.mockReturnValue(mockObject);
 
       const result = await service.createEntity('test-game', 'object', {
         name: 'Test Object',
-        description: 'A test object'
+        description: 'A test object',
       });
 
       expect(result).toEqual(mockObject);
@@ -229,14 +233,14 @@ describe('GameManagerService', () => {
         id: 'player-1',
         name: 'Test Player',
         type: 'player',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       };
 
       mockPlayerService.createPlayer.mockReturnValue(mockPlayer);
 
       const result = await service.createEntity('test-game', 'player', {
         name: 'Test Player',
-        description: 'A test player'
+        description: 'A test player',
       });
 
       expect(result).toEqual(mockPlayer);
@@ -248,13 +252,14 @@ describe('GameManagerService', () => {
         health: 100,
         level: 1,
         experience: 0,
-        inventory: []
+        inventory: [],
       });
     });
 
     it('should throw error for unknown entity type', async () => {
-      await expect(service.createEntity('test-game', 'unknown', { name: 'Test' }))
-        .rejects.toThrow('Unknown entity type: unknown');
+      await expect(
+        service.createEntity('test-game', 'unknown', { name: 'Test' }),
+      ).rejects.toThrow('Unknown entity type: unknown');
     });
 
     it('should list entities for a game', async () => {
@@ -317,7 +322,7 @@ describe('GameManagerService', () => {
       const mockResult = {
         success: true,
         message: 'Success',
-        loaded: { rooms: [], objects: [], npcs: [], connections: [] }
+        loaded: { rooms: [], objects: [], npcs: [], connections: [] },
       };
 
       mockGameFileService.loadGameFromFiles.mockResolvedValue(mockResult);
@@ -327,7 +332,9 @@ describe('GameManagerService', () => {
 
       await service.syncGameWithFiles('test-game');
 
-      expect(mockGameFileService.loadGameFromFiles).toHaveBeenCalledWith('test-game');
+      expect(mockGameFileService.loadGameFromFiles).toHaveBeenCalledWith(
+        'test-game',
+      );
       expect(mockRoomService.persistRooms).toHaveBeenCalled();
     });
 
@@ -335,13 +342,14 @@ describe('GameManagerService', () => {
       const mockResult = {
         success: false,
         message: 'File not found',
-        loaded: { rooms: [], objects: [], npcs: [], connections: [] }
+        loaded: { rooms: [], objects: [], npcs: [], connections: [] },
       };
 
       mockGameFileService.loadGameFromFiles.mockResolvedValue(mockResult);
 
-      await expect(service.syncGameWithFiles('test-game'))
-        .rejects.toThrow('File not found');
+      await expect(service.syncGameWithFiles('test-game')).rejects.toThrow(
+        'File not found',
+      );
     });
   });
 
@@ -362,7 +370,7 @@ describe('GameManagerService', () => {
         entities: 10,
         rooms: 5,
         objects: 15,
-        players: 3
+        players: 3,
       });
 
       expect(mockEntityService.getCacheStats).toHaveBeenCalled();
@@ -377,12 +385,16 @@ describe('GameManagerService', () => {
       const mockEntities = [
         { id: 'room1', name: 'Room 1', type: 'room' },
         { id: 'obj1', name: 'Object 1', type: 'object' },
-        { id: 'player1', name: 'Player 1', type: 'player' }
+        { id: 'player1', name: 'Player 1', type: 'player' },
       ];
 
       mockRoomService.getAllRoomsForGame.mockResolvedValue([mockEntities[0]]);
-      mockObjectService.getAllObjectsForGame.mockResolvedValue([mockEntities[1]]);
-      mockPlayerService.getAllPlayersForGame.mockResolvedValue([mockEntities[2]]);
+      mockObjectService.getAllObjectsForGame.mockResolvedValue([
+        mockEntities[1],
+      ]);
+      mockPlayerService.getAllPlayersForGame.mockResolvedValue([
+        mockEntities[2],
+      ]);
 
       mockRoomService.saveRoomVersion.mockResolvedValue(1);
       mockObjectService.saveObjectVersion.mockResolvedValue(1);
@@ -399,15 +411,21 @@ describe('GameManagerService', () => {
     it('should restore game from backup', async () => {
       const mockEntities = [
         { id: 'room1', name: 'Room 1', type: 'room' },
-        { id: 'obj1', name: 'Object 1', type: 'object' }
+        { id: 'obj1', name: 'Object 1', type: 'object' },
       ];
 
       const mockVersions = [
-        { version: 1, reason: 'Full game backup - 2023-01-01T10-00-00', createdAt: '2023-01-01' }
+        {
+          version: 1,
+          reason: 'Full game backup - 2023-01-01T10-00-00',
+          createdAt: '2023-01-01',
+        },
       ];
 
       mockRoomService.getAllRoomsForGame.mockResolvedValue([mockEntities[0]]);
-      mockObjectService.getAllObjectsForGame.mockResolvedValue([mockEntities[1]]);
+      mockObjectService.getAllObjectsForGame.mockResolvedValue([
+        mockEntities[1],
+      ]);
       mockPlayerService.getAllPlayersForGame.mockResolvedValue([]);
 
       mockDatabaseService.listVersions.mockResolvedValue(mockVersions);
@@ -432,18 +450,26 @@ describe('GameManagerService', () => {
 
   describe('Error Handling', () => {
     it('should handle database errors in game creation', async () => {
-      mockDatabaseService.transaction.mockRejectedValue(new Error('Database error'));
+      mockDatabaseService.transaction.mockRejectedValue(
+        new Error('Database error'),
+      );
 
-      await expect(service.createGame({
-        name: 'Test Game',
-        gameId: 'test-game'
-      })).rejects.toThrow('Database error');
+      await expect(
+        service.createGame({
+          name: 'Test Game',
+          gameId: 'test-game',
+        }),
+      ).rejects.toThrow('Database error');
     });
 
     it('should handle service errors in entity listing', async () => {
-      mockRoomService.getAllRoomsForGame.mockRejectedValue(new Error('Service error'));
+      mockRoomService.getAllRoomsForGame.mockRejectedValue(
+        new Error('Service error'),
+      );
 
-      await expect(service.listEntities('test-game')).rejects.toThrow('Service error');
+      await expect(service.listEntities('test-game')).rejects.toThrow(
+        'Service error',
+      );
     });
   });
 });
