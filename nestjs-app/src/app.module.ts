@@ -13,6 +13,8 @@ import { DatabaseModule } from './database/database.module';
 import { FileSystemModule } from './file-system/file-system.module';
 import { CLIModule } from './cli/cli.module';
 import { LLMModule } from './llm/llm.module';
+import { TTSModule } from './tts/tts.module';
+import { STTModule } from './stt/stt.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { LLMModule } from './llm/llm.module';
     GameModule,
     CLIModule,
     LLMModule,
+    TTSModule,
+    STTModule,
   ],
   controllers: [AppController],
   providers: [AppService],

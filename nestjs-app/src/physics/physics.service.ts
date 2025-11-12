@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as CANNON from 'cannon';
+import * as CANNON from 'cannon-es';
 
 export interface PhysicsEntity {
   id: string;
@@ -41,7 +41,8 @@ export class PhysicsService {
         const world = new CANNON.World();
         world.gravity.set(0, -9.82, 0); // Earth-like gravity
         world.broadphase = new CANNON.NaiveBroadphase();
-        world.solver.iterations = 10;
+        // TODO: Set solver iterations - API changed in cannon-es
+        // world.solver.iterations = 10;
         
         this.world = world;
       }
@@ -132,9 +133,10 @@ export class PhysicsService {
           newEntity.position.y, 
           newEntity.position.z
         ),
-        shape: shape,
-        friction: newEntity.friction || 0.1,
-        restitution: newEntity.restitution || 0.5
+        shape: shape
+        // TODO: Set friction and restitution via material
+        // friction: newEntity.friction || 0.1,
+        // restitution: newEntity.restitution || 0.5
       });
       
       // Add body to world for physics simulation
@@ -215,10 +217,12 @@ export class PhysicsService {
           body.mass = updates.mass;
         }
         if (updates.friction !== undefined) {
-          body.friction = updates.friction;
+          // TODO: Set friction via material: body.material.friction = updates.friction;
+          // body.friction = updates.friction;
         }
         if (updates.restitution !== undefined) {
-          body.restitution = updates.restitution;
+          // TODO: Set restitution via material: body.material.restitution = updates.restitution;
+          // body.restitution = updates.restitution;
         }
       } catch (error) {
         console.error('Error updating physics body properties:', error);

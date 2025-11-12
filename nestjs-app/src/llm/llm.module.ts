@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, Logger } from '@nestjs/common';
 import { LLMService } from './services/llm.service';
 import { PromptTemplateService } from './services/prompt-template.service';
 import { ContextBuilderService } from './services/context-builder.service';
@@ -78,24 +78,26 @@ import { PlayerModule } from '../entity/player.module';
     {
       provide: 'LLM_INITIALIZER',
       useFactory: async (llmService: LLMService, providers: any[]) => {
+        const logger = new Logger('LLMModule');
+
         if (providers.length === 0) {
-          console.warn('No LLM providers configured. Set OPENAI_API_KEY or ANTHROPIC_API_KEY environment variables.');
+          logger.warn('No LLM providers configured. Set OPENAI_API_KEY or ANTHROPIC_API_KEY environment variables.');
           return;
         }
-        
+
         // Register providers with the LLM service
         for (let i = 0; i < providers.length; i++) {
           const provider = providers[i];
           const isPrimary = i === 0; // First provider is primary
           llmService.registerProvider(provider, isPrimary);
         }
-        
+
         // Test provider connectivity
         const available = await llmService.isAvailable();
         if (!available) {
-          console.warn('No LLM providers are currently available. Features requiring AI will be disabled.');
+          logger.warn('No LLM providers are currently available. Features requiring AI will be disabled.');
         } else {
-          console.log('LLM integration initialized successfully');
+          logger.log('LLM integration initialized successfully');
         }
         
         return llmService;
@@ -117,6 +119,8 @@ import { PlayerModule } from '../entity/player.module';
   ]
 })
 export class LLMModule {
+  private readonly logger = new Logger(LLMModule.name);
+
   constructor(
     private readonly llmService: LLMService,
     private readonly conflictResolver: ConflictResolverService
@@ -128,20 +132,20 @@ export class LLMModule {
   private async logInitializationStatus(): Promise<void> {
     try {
       const stats = this.llmService.getStats();
-      console.log(`LLM Module Status:
+      this.logger.log(`LLM Module Status:
         - Available Providers: ${stats.availableProviders.join(', ')}
         - Primary Provider: ${stats.primaryProvider}
         - Total Requests: ${stats.totalRequests}
         - Success Rate: ${(stats.successRate * 100).toFixed(1)}%
       `);
-      
+
       const conflictStats = this.conflictResolver.getResolutionStats();
-      console.log(`Conflict Resolution Status:
+      this.logger.log(`Conflict Resolution Status:
         - Total Conflicts Resolved: ${conflictStats.totalConflicts}
         - Success Rate: ${(conflictStats.successRate * 100).toFixed(1)}%
       `);
     } catch (error) {
-      console.error('Error logging LLM module status:', error.message);
+      this.logger.error('Error logging LLM module status:', error.message);
     }
   }
 }
