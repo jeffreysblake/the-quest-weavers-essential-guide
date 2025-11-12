@@ -1,14 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoomService } from './room.service';
 import { EntityService } from './entity.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('RoomService (Integration)', () => {
   let service: RoomService;
   let entityService: EntityService;
+  let mockDatabaseService: jest.Mocked<Partial<DatabaseService>>;
 
   beforeEach(async () => {
+    // Create mock database service
+    mockDatabaseService = {
+      saveEntity: jest.fn().mockResolvedValue(undefined),
+      getEntity: jest.fn().mockResolvedValue(null),
+      deleteEntity: jest.fn().mockResolvedValue(undefined),
+      getAllEntities: jest.fn().mockResolvedValue([]),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RoomService, EntityService],
+      providers: [
+        RoomService,
+        EntityService,
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
+        },
+      ],
     }).compile();
 
     service = module.get<RoomService>(RoomService);

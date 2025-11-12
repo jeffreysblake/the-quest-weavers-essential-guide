@@ -4,12 +4,22 @@ import { EntityService } from './entity.service';
 import { ObjectService } from './object.service';
 import { PhysicsService } from './physics.service';
 import { RoomService } from './room.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('PlayerService (Integration)', () => {
   let service: PlayerService;
   let entityService: EntityService;
+  let mockDatabaseService: jest.Mocked<Partial<DatabaseService>>;
 
   beforeEach(async () => {
+    // Create mock database service
+    mockDatabaseService = {
+      saveEntity: jest.fn().mockResolvedValue(undefined),
+      getEntity: jest.fn().mockResolvedValue(null),
+      deleteEntity: jest.fn().mockResolvedValue(undefined),
+      getAllEntities: jest.fn().mockResolvedValue([]),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PlayerService,
@@ -17,6 +27,10 @@ describe('PlayerService (Integration)', () => {
         ObjectService,
         PhysicsService,
         RoomService,
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
+        },
       ],
     }).compile();
 
