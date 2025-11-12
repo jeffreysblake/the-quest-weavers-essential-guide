@@ -7,10 +7,34 @@ describe('Persistence System Integration', () => {
   let databaseService: DatabaseService;
   let fileScannerService: FileScannerService;
   let gameFileService: GameFileService;
+  let mockDatabaseService: jest.Mocked<Partial<DatabaseService>>;
 
   beforeEach(async () => {
+    // Create mock database service
+    mockDatabaseService = {
+      onModuleInit: jest.fn().mockResolvedValue(undefined),
+      onModuleDestroy: jest.fn().mockResolvedValue(undefined),
+      healthCheck: jest.fn().mockResolvedValue(true),
+      saveVersion: jest.fn().mockReturnValue(1),
+      getVersion: jest.fn().mockResolvedValue({ name: 'Test Room', description: 'A test room' }),
+      listVersions: jest.fn().mockReturnValue([]),
+      saveEntity: jest.fn().mockResolvedValue(undefined),
+      getEntity: jest.fn().mockResolvedValue(null),
+      deleteEntity: jest.fn().mockResolvedValue(undefined),
+      getAllEntities: jest.fn().mockResolvedValue([]),
+      prepare: jest.fn(),
+      transaction: jest.fn((callback) => callback()),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DatabaseService, FileScannerService, GameFileService],
+      providers: [
+        FileScannerService,
+        GameFileService,
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
+        },
+      ],
     }).compile();
 
     databaseService = module.get<DatabaseService>(DatabaseService);

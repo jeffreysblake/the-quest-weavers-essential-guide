@@ -37,17 +37,28 @@ describe('Persistence System Integration', () => {
       fs.unlinkSync(testDbPath);
     }
 
+    // Create mock database service
+    const mockDatabaseService = {
+      onModuleInit: jest.fn().mockResolvedValue(undefined),
+      disconnect: jest.fn().mockResolvedValue(undefined),
+      setDatabasePath: jest.fn(),
+      saveEntity: jest.fn().mockResolvedValue(undefined),
+      getEntity: jest.fn().mockResolvedValue(null),
+      deleteEntity: jest.fn().mockResolvedValue(undefined),
+      getAllEntities: jest.fn().mockResolvedValue([]),
+      saveVersion: jest.fn().mockReturnValue(1),
+      getVersion: jest.fn().mockResolvedValue(null),
+      listVersions: jest.fn().mockReturnValue([]),
+      prepare: jest.fn(),
+      transaction: jest.fn((callback) => callback()),
+      healthCheck: jest.fn().mockResolvedValue(true),
+    };
+
     module = await Test.createTestingModule({
       imports: [CLIModule],
     })
       .overrideProvider(DatabaseService)
-      .useFactory({
-        factory: () => {
-          const service = new DatabaseService();
-          service.setDatabasePath(testDbPath);
-          return service;
-        },
-      })
+      .useValue(mockDatabaseService)
       .compile();
 
     cliService = module.get<CLIService>(CLIService);
