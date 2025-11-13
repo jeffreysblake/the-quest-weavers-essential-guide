@@ -6,6 +6,9 @@ import { FileSystemModule } from '../file-system/file-system.module';
 import { AssetModule } from '../asset/asset.module';
 import { EventsModule } from '../events/events.module';
 import { CommandsModule } from '../commands/commands.module';
+import { ComponentsModule } from '../components/components.module';
+import { PoolingModule } from '../pooling/pooling.module';
+import { StateMachineModule } from '../state-machine/state-machine.module';
 import { EntityModule } from '../entity/entity.module';
 import { RoomModule } from '../entity/room.module';
 import { ObjectModule } from '../entity/object.module';
@@ -18,6 +21,9 @@ import { PlayerModule } from '../entity/player.module';
     AssetModule,
     EventsModule,
     CommandsModule,
+    ComponentsModule,
+    PoolingModule,
+    StateMachineModule,
     EntityModule,
     RoomModule,
     ObjectModule,
