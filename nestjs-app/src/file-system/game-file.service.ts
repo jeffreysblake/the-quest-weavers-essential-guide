@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { FileScannerService } from './file-scanner.service';
 import { DatabaseService } from '../database/database.service';
 import { ValidationService } from '../validation/validation.service';
+import { GameLogicValidatorService } from '../validation/game-logic-validator.service';
 import {
   GameData,
   RoomData,
@@ -24,6 +25,7 @@ export class GameFileService {
     private readonly fileScannerService: FileScannerService,
     private readonly databaseService: DatabaseService,
     private readonly validationService: ValidationService,
+    private readonly gameLogicValidator: GameLogicValidatorService,
   ) {}
 
   async loadGameFromFiles(gameId: string): Promise<{
@@ -921,9 +923,26 @@ export class GameFileService {
         });
       }
 
-      // Additional validation logic could go here
-      // - Check for orphaned references
-      // - Check for circular dependencies in connections
+      // Perform game logic validation
+      const logicValidation =
+        await this.gameLogicValidator.validateGameLogic(gameId);
+
+      if (!logicValidation.isValid) {
+        logicValidation.errors.forEach((error) => {
+          errors.push({
+            type: 'invalid_data',
+            message: error,
+          });
+        });
+      }
+
+      // Add logic validation warnings
+      logicValidation.warnings.forEach((warning) => {
+        warnings.push({
+          type: 'best_practice',
+          message: warning,
+        });
+      });
     } catch (error) {
       errors.push({
         type: 'invalid_data',
