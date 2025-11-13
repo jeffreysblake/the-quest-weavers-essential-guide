@@ -6,6 +6,8 @@ import { ObjectService } from '../entity/object.service';
 import { PlayerService } from '../entity/player.service';
 import { GameFileService } from '../file-system/game-file.service';
 import { FileScannerService } from '../file-system/file-scanner.service';
+import { EventEmitterService } from '../events/event-emitter.service';
+import { GameEventType } from '../events/event.interfaces';
 import { GameData } from '../database/database.interfaces';
 import { IBaseEntity } from '../entity/entity.interface';
 import { IRoom } from '../entity/room.interface';
@@ -45,6 +47,7 @@ export class GameManagerService {
     private readonly playerService: PlayerService,
     private readonly gameFileService: GameFileService,
     private readonly fileScanner: FileScannerService,
+    private readonly eventEmitter: EventEmitterService,
   ) {}
 
   async createGame(gameData: CreateGameData): Promise<GameData> {
@@ -81,6 +84,18 @@ export class GameManagerService {
 
       // Auto-export to files
       await this.exportGameToFiles(game.id);
+
+      // Emit event
+      await this.eventEmitter.emit(
+        GameEventType.GAME_CREATED,
+        {
+          gameId: game.id,
+          gameName: game.name,
+          action: 'created',
+          details: { version: game.version },
+        },
+        game.id,
+      );
 
       return game;
     } catch (error) {
