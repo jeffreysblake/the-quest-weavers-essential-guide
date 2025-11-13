@@ -17,12 +17,16 @@ describe('DatabaseService', () => {
     }
 
     // Create service directly for testing
-    service = new DatabaseService(testDbPath);
+    service = new DatabaseService();
+    // Set custom database path for testing
+    service.setDatabasePath(testDbPath);
+    // Initialize the database connection
+    await service.onModuleInit();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     // Clean up test database
-    service.close();
+    await service.disconnect();
     if (fs.existsSync(testDbPath)) {
       fs.unlinkSync(testDbPath);
     }
@@ -63,7 +67,7 @@ describe('DatabaseService', () => {
       service
         .prepare(
           `
-        CREATE TABLE test_table (
+        CREATE TABLE IF NOT EXISTS test_table (
           id INTEGER PRIMARY KEY,
           value TEXT
         )
@@ -102,23 +106,8 @@ describe('DatabaseService', () => {
 
   describe('Version Management', () => {
     beforeEach(() => {
-      // Create version_history table
-      service
-        .prepare(
-          `
-        CREATE TABLE version_history (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          entity_type TEXT NOT NULL,
-          entity_id TEXT NOT NULL,
-          version INTEGER NOT NULL,
-          data TEXT NOT NULL,
-          created_by TEXT NOT NULL,
-          reason TEXT,
-          created_at TEXT NOT NULL
-        )
-      `,
-        )
-        .run();
+      // Version history table is already created by migrations
+      // No need to create it again
     });
 
     it('should save entity versions', () => {
@@ -138,8 +127,8 @@ describe('DatabaseService', () => {
       const saved = service
         .prepare(
           `
-        SELECT * FROM version_history 
-        WHERE entity_type = ? AND entity_id = ? AND version = ?
+        SELECT * FROM version_history
+        WHERE entity_type = ? AND entity_id = ? AND version_number = ?
       `,
         )
         .get('test', 'test-1', 1) as any;
@@ -147,9 +136,9 @@ describe('DatabaseService', () => {
       expect(saved).toBeDefined();
       expect(saved.entity_type).toBe('test');
       expect(saved.entity_id).toBe('test-1');
-      expect(saved.created_by).toBe('test-author');
-      expect(saved.reason).toBe('Test save');
-      expect(JSON.parse(saved.data)).toEqual(testEntity);
+      expect(saved.changed_by).toBe('test-author');
+      expect(saved.change_reason).toBe('Test save');
+      expect(JSON.parse(saved.data_snapshot)).toEqual(testEntity);
     });
 
     it('should increment version numbers', async () => {
@@ -216,7 +205,7 @@ describe('DatabaseService', () => {
       service
         .prepare(
           `
-        CREATE TABLE test_entities (
+        CREATE TABLE IF NOT EXISTS test_entities (
           id TEXT PRIMARY KEY,
           data TEXT
         )
@@ -254,7 +243,7 @@ describe('DatabaseService', () => {
       service
         .prepare(
           `
-        CREATE TABLE test_items (
+        CREATE TABLE IF NOT EXISTS test_items (
           id TEXT PRIMARY KEY,
           name TEXT,
           value INTEGER
@@ -294,7 +283,7 @@ describe('DatabaseService', () => {
       service
         .prepare(
           `
-        CREATE TABLE schema_test (
+        CREATE TABLE IF NOT EXISTS schema_test (
           id INTEGER PRIMARY KEY
         )
       `,
@@ -320,7 +309,7 @@ describe('DatabaseService', () => {
       service
         .prepare(
           `
-        CREATE TABLE migration_test (
+        CREATE TABLE IF NOT EXISTS migration_test (
           id INTEGER PRIMARY KEY,
           name TEXT
         )

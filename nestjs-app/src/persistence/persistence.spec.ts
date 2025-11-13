@@ -26,10 +26,64 @@ describe('Persistence System Integration', () => {
       transaction: jest.fn((callback) => callback()),
     };
 
+    const mockFileScannerService = {
+      scanAllGames: jest.fn().mockResolvedValue([
+        {
+          gameId: 'dragon-lair',
+          hasConfig: true,
+          roomCount: 3,
+          objectCount: 5,
+        },
+      ]),
+      scanGameDirectory: jest.fn().mockResolvedValue([
+        {
+          gameId: 'dragon-lair',
+          hasConfig: true,
+          roomCount: 3,
+          objectCount: 5,
+        },
+      ]),
+      detectChanges: jest.fn().mockResolvedValue({
+        gameId: 'dragon-lair',
+        hasChanges: true,
+        addedFiles: [],
+        modifiedFiles: [],
+        deletedFiles: [],
+      }),
+      validateGameDirectory: jest.fn().mockResolvedValue({
+        isValid: true,
+        errors: [],
+      }),
+    };
+
+    const mockGameFileService = {
+      loadGameFromFiles: jest.fn().mockResolvedValue({
+        success: true,
+        message: 'Game loaded successfully',
+        loaded: {
+          game: { id: 'dragon-lair', name: 'Dragon Lair' },
+          rooms: [{ id: 'room1', name: 'Entrance' }],
+          objects: [{ id: 'obj1', name: 'Torch' }],
+          npcs: [{ id: 'npc1', name: 'Guard' }],
+          connections: [{ from: 'room1', to: 'room2' }],
+        },
+      }),
+      validateGameFiles: jest.fn().mockResolvedValue({
+        isValid: true,
+        errors: [],
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FileScannerService,
-        GameFileService,
+        {
+          provide: FileScannerService,
+          useValue: mockFileScannerService,
+        },
+        {
+          provide: GameFileService,
+          useValue: mockGameFileService,
+        },
         {
           provide: DatabaseService,
           useValue: mockDatabaseService,
