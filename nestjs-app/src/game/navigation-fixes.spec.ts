@@ -106,6 +106,10 @@ describe('CommandProcessorService - Navigation Fixes', () => {
   });
 
   describe('Room Boundary Detection', () => {
+    beforeEach(() => {
+      jest.spyOn(roomService, 'getObjectsInRoom').mockReturnValue([]);
+    });
+
     it('should correctly detect player in Entry Hall', async () => {
       const result = await service.processCommand('look', 'player-1', 'game-1');
 

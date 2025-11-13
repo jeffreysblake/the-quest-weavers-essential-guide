@@ -4,6 +4,7 @@ import { ObjectService } from './object.service';
 import { PlayerService } from './player.service';
 import { RoomService } from './room.service';
 import { PhysicsService } from './physics.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('Game Scenario Integration Tests', () => {
   let entityService: EntityService;
@@ -19,6 +20,15 @@ describe('Game Scenario Integration Tests', () => {
         PlayerService,
         RoomService,
         PhysicsService,
+        {
+          provide: DatabaseService,
+          useValue: {
+            saveEntity: jest.fn().mockResolvedValue(undefined),
+            getEntity: jest.fn().mockResolvedValue(null),
+            deleteEntity: jest.fn().mockResolvedValue(undefined),
+            getAllEntities: jest.fn().mockResolvedValue([]),
+          },
+        },
       ],
     }).compile();
 

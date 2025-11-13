@@ -6,6 +6,7 @@ import { EntityService } from '../entity/entity.service';
 import { RoomService } from '../entity/room.service';
 import { PlayerService } from '../entity/player.service';
 import { ObjectService } from '../entity/object.service';
+import { PhysicsService } from '../entity/physics.service';
 import { DatabaseService } from '../database/database.service';
 
 describe('Game Integration - End-to-End Flow', () => {
@@ -48,6 +49,19 @@ describe('Game Integration - End-to-End Flow', () => {
               all: jest.fn().mockReturnValue([]),
             }),
             exec: jest.fn(),
+          },
+        },
+        {
+          provide: PhysicsService,
+          useValue: {
+            createEntity: jest.fn(),
+            findAll: jest.fn().mockReturnValue([]),
+            findOne: jest.fn(),
+            updateEntity: jest.fn(),
+            removeEntity: jest.fn(),
+            applyForce: jest.fn(),
+            setVelocity: jest.fn(),
+            step: jest.fn(),
           },
         },
       ],
@@ -246,11 +260,13 @@ describe('Game Integration - End-to-End Flow', () => {
 
     it('should handle database errors gracefully', async () => {
       const mockError = new Error('Database connection failed');
-      jest.spyOn(databaseService, 'transaction').mockImplementation(() => {
+      jest.spyOn(databaseService, 'prepare').mockImplementation(() => {
         throw mockError;
       });
 
-      await expect(gameService.createGame()).rejects.toThrow();
+      await expect(gameService.createGame()).rejects.toThrow(
+        'Failed to save game',
+      );
     });
   });
 

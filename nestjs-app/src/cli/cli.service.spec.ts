@@ -91,7 +91,7 @@ describe('CLIService', () => {
 
       expect(mockGameManagerService.listGames).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith('📂 Available Games:');
-      expect(consoleSpy).toHaveBeenCalledWith('💾 From Database:');
+      expect(consoleSpy).toHaveBeenCalledWith('\n💾 From Database:');
 
       consoleSpy.mockRestore();
     });

@@ -20,7 +20,7 @@ describe('GameManagerService', () => {
 
   // Mock implementations
   const mockDatabaseService = {
-    transaction: jest.fn(),
+    transaction: jest.fn().mockResolvedValue(undefined),
     prepare: jest.fn(),
     saveVersion: jest.fn(),
     getVersion: jest.fn(),
