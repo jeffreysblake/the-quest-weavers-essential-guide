@@ -132,6 +132,8 @@ describe('GameManagerService', () => {
         description: 'A test game',
         version: 1,
         createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        isActive: true,
       });
 
       expect(mockDatabaseService.transaction).toHaveBeenCalled();
@@ -171,6 +173,8 @@ describe('GameManagerService', () => {
         description: 'First game',
         version: 1,
         createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
+        isActive: true,
       });
 
       expect(mockPrepare).toHaveBeenCalledWith(
@@ -450,9 +454,9 @@ describe('GameManagerService', () => {
 
   describe('Error Handling', () => {
     it('should handle database errors in game creation', async () => {
-      mockDatabaseService.transaction.mockRejectedValue(
-        new Error('Database error'),
-      );
+      mockDatabaseService.transaction.mockImplementationOnce(() => {
+        throw new Error('Database error');
+      });
 
       await expect(
         service.createGame({
@@ -463,9 +467,9 @@ describe('GameManagerService', () => {
     });
 
     it('should handle service errors in entity listing', async () => {
-      mockRoomService.getAllRoomsForGame.mockRejectedValue(
-        new Error('Service error'),
-      );
+      mockRoomService.getAllRoomsForGame.mockImplementationOnce(async () => {
+        throw new Error('Service error');
+      });
 
       await expect(service.listEntities('test-game')).rejects.toThrow(
         'Service error',

@@ -38,6 +38,12 @@ describe('Persistence System Integration', () => {
     }
 
     // Create mock database service
+    const mockPrepare = jest.fn().mockReturnValue({
+      run: jest.fn(),
+      get: jest.fn().mockReturnValue({ count: 1 }),
+      all: jest.fn().mockReturnValue([]),
+    });
+
     const mockDatabaseService = {
       onModuleInit: jest.fn().mockResolvedValue(undefined),
       disconnect: jest.fn().mockResolvedValue(undefined),
@@ -49,8 +55,13 @@ describe('Persistence System Integration', () => {
       saveVersion: jest.fn().mockReturnValue(1),
       getVersion: jest.fn().mockResolvedValue(null),
       listVersions: jest.fn().mockReturnValue([]),
-      prepare: jest.fn(),
-      transaction: jest.fn((callback) => callback()),
+      prepare: mockPrepare,
+      transaction: jest.fn((callback) => {
+        const mockDb = {
+          prepare: mockPrepare,
+        };
+        return callback(mockDb);
+      }),
       healthCheck: jest.fn().mockResolvedValue(true),
     };
 

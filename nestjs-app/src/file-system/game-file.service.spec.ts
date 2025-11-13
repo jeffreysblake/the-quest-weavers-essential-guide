@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GameFileService } from './game-file.service';
+import { FileScannerService } from './file-scanner.service';
 import { DatabaseService } from '../database/database.service';
 import { EntityService } from '../entity/entity.service';
 import { RoomService } from '../entity/room.service';
@@ -42,10 +43,17 @@ describe('GameFileService', () => {
     createPlayer: jest.fn(),
   };
 
+  const mockFileScannerService = {
+    scanGameDirectory: jest.fn(),
+    detectChanges: jest.fn(),
+    validateGameDirectory: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GameFileService,
+        { provide: FileScannerService, useValue: mockFileScannerService },
         { provide: DatabaseService, useValue: mockDatabaseService },
         { provide: EntityService, useValue: mockEntityService },
         { provide: RoomService, useValue: mockRoomService },

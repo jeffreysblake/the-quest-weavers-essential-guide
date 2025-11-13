@@ -73,6 +73,7 @@ describe('PromptTemplateService', () => {
         room_name: 'Ancient Library',
         room_type: 'study',
         game_theme: 'fantasy',
+        room_theme: 'scholarly',
       };
 
       const compiled = service.compileTemplate('room_description', variables);
@@ -89,6 +90,7 @@ describe('PromptTemplateService', () => {
         room_name: 'Test Room',
         room_type: 'generic',
         game_theme: 'fantasy',
+        room_theme: 'plain',
       };
 
       const compiled = service.compileTemplate('room_description', variables);
@@ -207,6 +209,9 @@ describe('PromptTemplateService', () => {
       const compiled = service.compileWithContext(
         'npc_generation',
         mockGameContext,
+        {
+          npc_role: 'merchant',
+        },
       );
 
       expect(compiled.variables.game_theme).toBe('medieval fantasy');
@@ -222,6 +227,7 @@ describe('PromptTemplateService', () => {
         room_name: 'Magic Shop',
         room_type: 'store',
         game_theme: 'fantasy',
+        room_theme: 'mystical',
       };
 
       const rendered = await service.renderTemplate(

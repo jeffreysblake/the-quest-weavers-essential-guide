@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityController } from './entity.controller';
 import { EntityService } from './entity.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('EntityController', () => {
   let controller: EntityController;
@@ -9,7 +10,18 @@ describe('EntityController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EntityController],
-      providers: [EntityService],
+      providers: [
+        EntityService,
+        {
+          provide: DatabaseService,
+          useValue: {
+            saveEntity: jest.fn().mockResolvedValue(undefined),
+            getEntity: jest.fn().mockResolvedValue(null),
+            deleteEntity: jest.fn().mockResolvedValue(undefined),
+            getAllEntities: jest.fn().mockResolvedValue([]),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<EntityController>(EntityController);
