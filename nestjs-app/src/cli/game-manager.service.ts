@@ -78,6 +78,10 @@ export class GameManagerService {
       });
 
       this.logger.log(`Created game: ${game.name} (${game.id})`);
+
+      // Auto-export to files
+      await this.exportGameToFiles(game.id);
+
       return game;
     } catch (error) {
       this.logger.error(`Failed to create game: ${error.message}`);
@@ -224,6 +228,10 @@ export class GameManagerService {
       }
 
       this.logger.log(`Created ${entityType}: ${entity.name} (${entity.id})`);
+
+      // Auto-export to files after entity creation
+      await this.exportGameToFiles(gameId);
+
       return entity;
     } catch (error) {
       this.logger.error(`Failed to create ${entityType}: ${error.message}`);
@@ -269,6 +277,9 @@ export class GameManagerService {
       ]);
 
       this.logger.log(`Successfully persisted game: ${gameId}`);
+
+      // Auto-export to files after persisting
+      await this.exportGameToFiles(gameId);
     } catch (error) {
       this.logger.error(`Failed to persist game ${gameId}: ${error.message}`);
       throw error;
@@ -337,7 +348,7 @@ export class GameManagerService {
         throw new Error(result.message);
       }
 
-      // Then persist to database
+      // Then persist to database (this will auto-export)
       await this.persistGame(gameId);
 
       this.logger.log(`Successfully synced game ${gameId}`);
@@ -391,6 +402,10 @@ export class GameManagerService {
       await Promise.all(versionPromises);
 
       this.logger.log(`Created backup for game ${gameId} at ${timestamp}`);
+
+      // Auto-export to files after backup
+      await this.exportGameToFiles(gameId);
+
       return timestamp;
     } catch (error) {
       this.logger.error(`Failed to backup game ${gameId}: ${error.message}`);
@@ -452,9 +467,195 @@ export class GameManagerService {
       this.logger.log(
         `Restored game ${gameId} from backup: ${backupTimestamp}`,
       );
+
+      // Auto-export after restore
+      await this.exportGameToFiles(gameId);
     } catch (error) {
       this.logger.error(`Failed to restore game ${gameId}: ${error.message}`);
       throw error;
+    }
+  }
+
+  /**
+   * Helper method to export game to files
+   * Automatically called after game modifications
+   */
+  private async exportGameToFiles(gameId: string): Promise<void> {
+    try {
+      const result = await this.gameFileService.exportGameToFiles(gameId);
+      if (result.success) {
+        this.logger.log(`Auto-exported game ${gameId} to files`);
+      } else {
+        this.logger.warn(`Auto-export failed for game ${gameId}: ${result.message}`);
+      }
+    } catch (error) {
+      this.logger.warn(`Auto-export error for game ${gameId}: ${error.message}`);
+      // Don't throw - export failure shouldn't break the main operation
+    }
+  }
+
+  /**
+   * Create a named checkpoint for game state
+   * Useful for tracking design iterations during agent-assisted game creation
+   */
+  async createCheckpoint(
+    gameId: string,
+    description: string,
+    author: string = 'ai-agent',
+  ): Promise<{
+    success: boolean;
+    checkpoint: string;
+    message: string;
+  }> {
+    try {
+      this.logger.log(`Creating checkpoint for ${gameId}: ${description}`);
+
+      // Get all entities for the game
+      const entities = await this.listEntities(gameId);
+
+      if (entities.length === 0) {
+        return {
+          success: false,
+          checkpoint: '',
+          message: 'No entities found to checkpoint',
+        };
+      }
+
+      // Create timestamp for this checkpoint
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const checkpointReason = `${description} - ${timestamp}`;
+
+      // Save versions for all entities with the same timestamp
+      // Note: Include author in the checkpoint reason
+      const fullReason = `${description} [by ${author}] - ${timestamp}`;
+      let savedCount = 0;
+      for (const entity of entities) {
+        try {
+          switch (entity.type) {
+            case 'room':
+              await this.roomService.saveRoomVersion(
+                entity.id,
+                fullReason,
+              );
+              savedCount++;
+              break;
+            case 'object':
+              await this.objectService.saveObjectVersion(
+                entity.id,
+                fullReason,
+              );
+              savedCount++;
+              break;
+            case 'player':
+              await this.playerService.savePlayerVersion(
+                entity.id,
+                fullReason,
+              );
+              savedCount++;
+              break;
+          }
+        } catch (error) {
+          this.logger.warn(
+            `Failed to checkpoint entity ${entity.id}: ${error.message}`,
+          );
+        }
+      }
+
+      // Auto-export to files
+      await this.exportGameToFiles(gameId);
+
+      const message = `Checkpoint created: "${description}" (${savedCount} entities saved)`;
+      this.logger.log(message);
+
+      return {
+        success: true,
+        checkpoint: timestamp,
+        message,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Failed to create checkpoint for ${gameId}: ${error.message}`,
+      );
+      return {
+        success: false,
+        checkpoint: '',
+        message: `Checkpoint failed: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * List all checkpoints for a game
+   * Returns chronologically sorted checkpoints with metadata
+   */
+  async listCheckpoints(gameId: string): Promise<
+    Array<{
+      timestamp: string;
+      description: string;
+      entityCount: number;
+      author?: string;
+      createdAt: string;
+    }>
+  > {
+    try {
+      const entities = await this.listEntities(gameId);
+      const checkpointMap = new Map<
+        string,
+        {
+          timestamp: string;
+          description: string;
+          entities: Set<string>;
+          author?: string;
+          createdAt: string;
+        }
+      >();
+
+      // Collect all checkpoints from entity versions
+      for (const entity of entities) {
+        const versions = await this.databaseService.listVersions(
+          entity.type,
+          entity.id,
+        );
+
+        versions.forEach((version) => {
+          if (version.reason) {
+            // Extract timestamp from reason (format: "description - timestamp")
+            const parts = version.reason.split(' - ');
+            if (parts.length >= 2) {
+              const timestamp = parts[parts.length - 1];
+              const description = parts.slice(0, -1).join(' - ');
+
+              if (!checkpointMap.has(timestamp)) {
+                checkpointMap.set(timestamp, {
+                  timestamp,
+                  description,
+                  entities: new Set(),
+                  author: version.changedBy,
+                  createdAt: version.createdAt,
+                });
+              }
+
+              checkpointMap.get(timestamp)!.entities.add(entity.id);
+            }
+          }
+        });
+      }
+
+      // Convert to array and sort by timestamp (newest first)
+      return Array.from(checkpointMap.values())
+        .map((checkpoint) => ({
+          timestamp: checkpoint.timestamp,
+          description: checkpoint.description,
+          entityCount: checkpoint.entities.size,
+          author: checkpoint.author,
+          createdAt: checkpoint.createdAt,
+        }))
+        .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    } catch (error) {
+      this.logger.error(
+        `Failed to list checkpoints for ${gameId}: ${error.message}`,
+      );
+      return [];
     }
   }
 }

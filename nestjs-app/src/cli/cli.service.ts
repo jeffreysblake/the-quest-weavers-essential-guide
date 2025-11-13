@@ -63,6 +63,34 @@ export class CLIService {
         await this.syncGame(gameId);
       });
 
+    this.program
+      .command('game:export <gameId> [outputDir]')
+      .description('Export game from database to files')
+      .action(async (gameId: string, outputDir?: string) => {
+        await this.exportGame(gameId, outputDir);
+      });
+
+    this.program
+      .command('game:backup <gameId>')
+      .description('Create a backup/checkpoint of the entire game')
+      .action(async (gameId: string) => {
+        await this.backupGame(gameId);
+      });
+
+    this.program
+      .command('game:versions <gameId>')
+      .description('List all version checkpoints for a game')
+      .action(async (gameId: string) => {
+        await this.listGameVersions(gameId);
+      });
+
+    this.program
+      .command('game:restore <gameId> <timestamp>')
+      .description('Restore game to a previous checkpoint')
+      .action(async (gameId: string, timestamp: string) => {
+        await this.restoreGameVersion(gameId, timestamp);
+      });
+
     // Database management commands
     this.program
       .command('db:init')
@@ -482,6 +510,142 @@ export class CLIService {
       console.log(`   Player cache: ${stats.players} items`);
     } catch (error) {
       console.error('❌ Failed to show cache stats:', error.message);
+    }
+  }
+
+  // Game version management implementations
+  private async exportGame(gameId: string, outputDir?: string): Promise<void> {
+    try {
+      console.log(`📤 Exporting game ${gameId}...`);
+
+      const result = await this.gameFileService.exportGameToFiles(
+        gameId,
+        outputDir,
+      );
+
+      if (result.success) {
+        console.log(`✅ ${result.message}`);
+        console.log(`📁 Exported to: ${result.exportPath}`);
+      } else {
+        console.log(`❌ Export failed: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('❌ Failed to export game:', error.message);
+    }
+  }
+
+  private async backupGame(gameId: string): Promise<void> {
+    try {
+      console.log(`💾 Creating backup checkpoint for ${gameId}...`);
+
+      const timestamp = await this.gameManager.backupGame(gameId);
+
+      console.log(`✅ Backup created successfully!`);
+      console.log(`📅 Checkpoint: ${timestamp}`);
+      console.log(
+        `💡 To restore: quest-weaver game:restore ${gameId} ${timestamp}`,
+      );
+    } catch (error) {
+      console.error('❌ Failed to create backup:', error.message);
+    }
+  }
+
+  private async listGameVersions(gameId: string): Promise<void> {
+    try {
+      console.log(`📜 Version History for ${gameId}:`);
+      console.log('='.repeat(60));
+
+      const entities = await this.gameManager.listEntities(gameId);
+
+      if (entities.length === 0) {
+        console.log('⚠️  No entities found for this game.');
+        return;
+      }
+
+      // Group versions by timestamp (backup checkpoints)
+      const checkpoints = new Map<string, any[]>();
+
+      for (const entity of entities) {
+        const versions = await this.databaseService.listVersions(
+          entity.type,
+          entity.id,
+        );
+
+        versions.forEach((v) => {
+          if (v.reason && v.reason.includes('Full game backup')) {
+            const timestamp = v.reason.split(' - ')[1];
+            if (timestamp) {
+              if (!checkpoints.has(timestamp)) {
+                checkpoints.set(timestamp, []);
+              }
+              checkpoints.get(timestamp)!.push({
+                ...v,
+                entityName: entity.name,
+                entityType: entity.type,
+              });
+            }
+          }
+        });
+      }
+
+      if (checkpoints.size === 0) {
+        console.log('⚠️  No backup checkpoints found.');
+        console.log(
+          `💡 Create one with: quest-weaver game:backup ${gameId}`,
+        );
+        return;
+      }
+
+      const sortedCheckpoints = Array.from(checkpoints.entries()).sort(
+        (a, b) => b[0].localeCompare(a[0]),
+      );
+
+      sortedCheckpoints.forEach(([timestamp, versions], index) => {
+        console.log(
+          `\n${index + 1}. 📅 Checkpoint: ${timestamp.replace(/-/g, ':').replace('T', ' ')}`,
+        );
+        console.log(`   Entities in backup: ${versions.length}`);
+        console.log(`   Types: ${[...new Set(versions.map((v) => v.entityType))].join(', ')}`);
+      });
+
+      console.log(
+        `\n💡 To restore: quest-weaver game:restore ${gameId} <timestamp>`,
+      );
+    } catch (error) {
+      console.error('❌ Failed to list game versions:', error.message);
+    }
+  }
+
+  private async restoreGameVersion(
+    gameId: string,
+    timestamp: string,
+  ): Promise<void> {
+    try {
+      console.log(
+        `⏪ Restoring ${gameId} to checkpoint ${timestamp}...`,
+      );
+
+      const { confirm } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'confirm',
+          message:
+            '⚠️  This will overwrite current game state. Continue?',
+          default: false,
+        },
+      ]);
+
+      if (!confirm) {
+        console.log('❌ Restore cancelled.');
+        return;
+      }
+
+      await this.gameManager.restoreGame(gameId, timestamp);
+
+      console.log(`✅ Game restored successfully!`);
+      console.log(`📁 Files have been updated in /games/${gameId}/`);
+    } catch (error) {
+      console.error('❌ Failed to restore game:', error.message);
     }
   }
 }

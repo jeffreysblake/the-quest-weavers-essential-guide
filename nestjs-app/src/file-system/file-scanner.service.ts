@@ -268,6 +268,40 @@ export class FileScannerService {
       }
     }
 
+    // Create assets directory structure
+    const assetsDir = path.join(gameDir, 'assets');
+    if (!fs.existsSync(assetsDir)) {
+      fs.mkdirSync(assetsDir);
+    }
+
+    const assetSubdirs = [
+      'images/rooms',
+      'images/npcs',
+      'images/objects',
+      'audio/dialogue',
+      'audio/ambient',
+      'audio/sfx',
+    ];
+
+    for (const assetSubdir of assetSubdirs) {
+      const assetPath = path.join(assetsDir, assetSubdir);
+      if (!fs.existsSync(assetPath)) {
+        fs.mkdirSync(assetPath, { recursive: true });
+      }
+    }
+
+    // Create asset metadata file if it doesn't exist
+    const metadataPath = path.join(assetsDir, 'metadata.json');
+    if (!fs.existsSync(metadataPath)) {
+      const defaultMetadata = {
+        gameId,
+        assets: [],
+        created: new Date().toISOString(),
+        updated: new Date().toISOString(),
+      };
+      fs.writeFileSync(metadataPath, JSON.stringify(defaultMetadata, null, 2));
+    }
+
     return gameDir;
   }
 
