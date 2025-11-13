@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "object.schema.json",
+  "title": "Object",
+  "description": "Schema for game object/item entity",
+  "type": "object",
+  "required": ["id", "name", "description", "object_type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Unique object identifier"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Object name"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "description": "Object description"
+    },
+    "object_type": {
+      "type": "string",
+      "enum": ["weapon", "armor", "consumable", "key", "quest-item", "container", "furniture", "decoration", "tool", "misc"],
+      "description": "Type of object"
+    },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "material": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Material the object is made of"
+    },
+    "weight": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Object weight in appropriate units"
+    },
+    "value": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Object monetary value"
+    },
+    "is_portable": {
+      "type": "boolean",
+      "description": "Whether object can be picked up"
+    },
+    "is_container": {
+      "type": "boolean",
+      "description": "Whether object can contain other objects"
+    },
+    "can_contain": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of items this container can hold"
+    },
+    "container_capacity": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Weight capacity if container"
+    },
+    "properties": {
+      "type": "object",
+      "description": "Additional object properties"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Object tags for categorization"
+    }
+  },
+  "additionalProperties": false
+}

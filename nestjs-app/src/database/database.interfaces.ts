@@ -287,7 +287,8 @@ export interface ValidationError {
     | 'invalid_json'
     | 'missing_reference'
     | 'duplicate_id'
-    | 'invalid_data';
+    | 'invalid_data'
+    | 'schema_validation';
   file?: string;
   line?: number;
   message: string;

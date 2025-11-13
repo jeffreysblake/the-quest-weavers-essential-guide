@@ -64,6 +64,13 @@ export class CLIService {
       });
 
     this.program
+      .command('game:validate <gameId>')
+      .description('Validate game files against JSON schemas')
+      .action(async (gameId: string) => {
+        await this.validateGame(gameId);
+      });
+
+    this.program
       .command('game:export <gameId> [outputDir]')
       .description('Export game from database to files')
       .action(async (gameId: string, outputDir?: string) => {
@@ -289,6 +296,53 @@ export class CLIService {
       console.log('✅ Game synced successfully!');
     } catch (error) {
       console.error('❌ Failed to sync game:', error.message);
+    }
+  }
+
+  private async validateGame(gameId: string): Promise<void> {
+    try {
+      console.log(`🔍 Validating game: ${gameId}`);
+      console.log('='.repeat(60));
+
+      const result = await this.gameFileService.validateGameFiles(gameId);
+
+      if (result.isValid) {
+        console.log('✅ Validation passed! Game files are valid.');
+      } else {
+        console.log(`❌ Validation failed with ${result.errors.length} error(s):`);
+        console.log();
+
+        // Group errors by type
+        const errorsByType = new Map<string, string[]>();
+        result.errors.forEach((error) => {
+          const type = error.type || 'unknown';
+          if (!errorsByType.has(type)) {
+            errorsByType.set(type, []);
+          }
+          errorsByType.get(type)!.push(error.message);
+        });
+
+        // Display errors by type
+        errorsByType.forEach((messages, type) => {
+          console.log(`\n${type.toUpperCase()}:`);
+          messages.forEach((msg, index) => {
+            console.log(`  ${index + 1}. ${msg}`);
+          });
+        });
+      }
+
+      // Display warnings if any
+      if (result.warnings && result.warnings.length > 0) {
+        console.log();
+        console.log(`⚠️  ${result.warnings.length} warning(s):`);
+        result.warnings.forEach((warning, index) => {
+          console.log(`  ${index + 1}. ${warning.message}`);
+        });
+      }
+
+      console.log();
+    } catch (error) {
+      console.error('❌ Validation failed:', error.message);
     }
   }
 

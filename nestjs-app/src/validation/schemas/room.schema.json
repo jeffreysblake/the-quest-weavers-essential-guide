@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "room.schema.json",
+  "title": "Room",
+  "description": "Schema for game room/location entity",
+  "type": "object",
+  "required": ["id", "name", "description", "position", "size"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Unique room identifier"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Room name"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "description": "Short room description"
+    },
+    "long_description": {
+      "type": "string",
+      "maxLength": 5000,
+      "description": "Detailed room description"
+    },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": {
+          "type": "number",
+          "description": "X coordinate"
+        },
+        "y": {
+          "type": "number",
+          "description": "Y coordinate"
+        },
+        "z": {
+          "type": "number",
+          "description": "Z coordinate (floor/elevation)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "size": {
+      "type": "object",
+      "required": ["width", "height", "depth"],
+      "properties": {
+        "width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Room width"
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Room height"
+        },
+        "depth": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Room depth"
+        }
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "object",
+      "description": "Environmental properties (lighting, temperature, etc.)"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Room tags for categorization"
+    }
+  },
+  "additionalProperties": false
+}

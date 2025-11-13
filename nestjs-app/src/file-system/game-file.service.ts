@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FileScannerService } from './file-scanner.service';
 import { DatabaseService } from '../database/database.service';
+import { ValidationService } from '../validation/validation.service';
 import {
   GameData,
   RoomData,
@@ -22,6 +23,7 @@ export class GameFileService {
   constructor(
     private readonly fileScannerService: FileScannerService,
     private readonly databaseService: DatabaseService,
+    private readonly validationService: ValidationService,
   ) {}
 
   async loadGameFromFiles(gameId: string): Promise<{
@@ -97,6 +99,14 @@ export class GameFileService {
 
     const rawConfig = JSON.parse(content);
 
+    // Validate against JSON schema
+    const validationResult = this.validationService.validateGameConfig(rawConfig);
+    if (!validationResult.isValid) {
+      throw new Error(
+        `Game config validation failed: ${validationResult.errors.join(', ')}`,
+      );
+    }
+
     return {
       id: rawConfig.id,
       name: rawConfig.name,
@@ -129,6 +139,15 @@ export class GameFileService {
           const content =
             await this.fileScannerService.getFileContent(roomPath);
           const rawRoom = JSON.parse(content);
+
+          // Validate against JSON schema
+          const validationResult = this.validationService.validateRoom(rawRoom);
+          if (!validationResult.isValid) {
+            this.logger.error(
+              `Room validation failed for ${roomFile}: ${validationResult.errors.join(', ')}`,
+            );
+            continue; // Skip invalid room
+          }
 
           const roomData: RoomData = {
             id: rawRoom.id,
@@ -177,6 +196,15 @@ export class GameFileService {
           const content =
             await this.fileScannerService.getFileContent(objectPath);
           const rawObject = JSON.parse(content);
+
+          // Validate against JSON schema
+          const validationResult = this.validationService.validateObject(rawObject);
+          if (!validationResult.isValid) {
+            this.logger.error(
+              `Object validation failed for ${objectFile}: ${validationResult.errors.join(', ')}`,
+            );
+            continue; // Skip invalid object
+          }
 
           const objectData: ObjectData = {
             id: rawObject.id,
@@ -235,6 +263,15 @@ export class GameFileService {
           const content = await this.fileScannerService.getFileContent(npcPath);
           const rawNpc = JSON.parse(content);
 
+          // Validate against JSON schema
+          const validationResult = this.validationService.validateNPC(rawNpc);
+          if (!validationResult.isValid) {
+            this.logger.error(
+              `NPC validation failed for ${npcFile}: ${validationResult.errors.join(', ')}`,
+            );
+            continue; // Skip invalid NPC
+          }
+
           const npcData: NPCData = {
             id: rawNpc.id,
             gameId: gameId,
@@ -273,6 +310,16 @@ export class GameFileService {
       const content =
         await this.fileScannerService.getFileContent(connectionsPath);
       const rawConnections = JSON.parse(content);
+
+      // Validate against JSON schema
+      const validationResult =
+        this.validationService.validateConnections(rawConnections);
+      if (!validationResult.isValid) {
+        this.logger.error(
+          `Connections validation failed: ${validationResult.errors.join(', ')}`,
+        );
+        return [];
+      }
 
       if (
         !rawConnections.connections ||
@@ -860,9 +907,22 @@ export class GameFileService {
         });
       });
 
+      // Perform JSON Schema validation
+      const gameDir = `${this.fileScannerService.getGamesDirectory()}/${gameId}`;
+      const schemaValidation =
+        await this.validationService.validateGameFiles(gameId, gameDir);
+
+      if (!schemaValidation.isValid) {
+        schemaValidation.errors.forEach((error) => {
+          errors.push({
+            type: 'schema_validation',
+            message: error,
+          });
+        });
+      }
+
       // Additional validation logic could go here
       // - Check for orphaned references
-      // - Validate JSON schemas
       // - Check for circular dependencies in connections
     } catch (error) {
       errors.push({
