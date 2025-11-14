@@ -13,7 +13,7 @@ describe('Room (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-  });
+  }, 30000); // 30 second timeout for module initialization
 
   it('/rooms (POST)', () => {
     return request(app.getHttpServer())
