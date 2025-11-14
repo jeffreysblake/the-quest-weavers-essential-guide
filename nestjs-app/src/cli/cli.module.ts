@@ -14,6 +14,8 @@ import { DialogueModule } from '../dialogue/dialogue.module';
 import { QuestModule } from '../quest/quest.module';
 import { InventoryModule } from '../inventory/inventory.module';
 import { TriggerModule } from '../trigger/trigger.module';
+import { EffectsModule } from '../effects/effects.module';
+import { WorldStateModule } from '../world-state/world-state.module';
 import { EntityModule } from '../entity/entity.module';
 import { RoomModule } from '../entity/room.module';
 import { ObjectModule } from '../entity/object.module';
@@ -34,6 +36,8 @@ import { PlayerModule } from '../entity/player.module';
     QuestModule,
     InventoryModule,
     TriggerModule,
+    EffectsModule,
+    WorldStateModule,
     EntityModule,
     RoomModule,
     ObjectModule,
