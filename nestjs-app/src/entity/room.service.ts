@@ -658,6 +658,76 @@ export class RoomService {
     return uuidv4();
   }
 
+  // Priority 1: Alias methods for stress test compatibility
+
+  /**
+   * Alias for addPlayerToRoom - places a player in a room
+   * Compatibility wrapper for naming consistency
+   * @param roomId - The room's ID
+   * @param playerId - The player's ID
+   * @returns Result object with success property
+   */
+  placePlayerInRoom(
+    roomId: string,
+    playerId: string,
+  ): { success: boolean; message?: string } {
+    const room = this.getRoom(roomId);
+    if (!room) {
+      return {
+        success: false,
+        message: 'Room not found',
+      };
+    }
+
+    const player = this.entityService.getEntity(playerId);
+    if (!player) {
+      return {
+        success: false,
+        message: 'Player not found',
+      };
+    }
+
+    const result = this.addPlayerToRoom(roomId, playerId);
+    return {
+      success: result,
+      message: result ? 'Player placed in room' : 'Failed to place player in room',
+    };
+  }
+
+  /**
+   * Alias for addObjectToRoom - places an object in a room
+   * Compatibility wrapper for naming consistency
+   * @param roomId - The room's ID
+   * @param objectId - The object's ID
+   * @returns Result object with success property
+   */
+  placeObjectInRoom(
+    roomId: string,
+    objectId: string,
+  ): { success: boolean; message?: string } {
+    const room = this.getRoom(roomId);
+    if (!room) {
+      return {
+        success: false,
+        message: 'Room not found',
+      };
+    }
+
+    const object = this.entityService.getEntity(objectId);
+    if (!object) {
+      return {
+        success: false,
+        message: 'Object not found',
+      };
+    }
+
+    const result = this.addObjectToRoom(roomId, objectId);
+    return {
+      success: result,
+      message: result ? 'Object placed in room' : 'Failed to place object in room',
+    };
+  }
+
   // Priority 2: Spatial Utilities
 
   /**

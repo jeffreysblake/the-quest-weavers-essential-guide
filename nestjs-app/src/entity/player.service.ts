@@ -200,16 +200,16 @@ export class PlayerService {
 
     switch (action) {
       case 'examine':
-        return this.examineObject(player, object);
+        return this.examineObjectInternal(player, object);
       case 'take':
       case 'pickup':
-        return this.takeObject(player, object);
+        return this.takeObjectInternal(player, object);
       case 'open':
         return this.openContainer(player, object);
       case 'close':
         return this.closeContainer(player, object);
       case 'use':
-        return this.useObject(player, object);
+        return this.useObjectInternal(player, object);
       default:
         return {
           success: false,
@@ -218,7 +218,7 @@ export class PlayerService {
     }
   }
 
-  private examineObject(player: IPlayer, object: IObject): IInteractionResult {
+  private examineObjectInternal(player: IPlayer, object: IObject): IInteractionResult {
     let description = `You examine the ${object.name}.`;
 
     if (object.spatialRelationship) {
@@ -242,7 +242,7 @@ export class PlayerService {
     };
   }
 
-  private takeObject(player: IPlayer, object: IObject): IInteractionResult {
+  private takeObjectInternal(player: IPlayer, object: IObject): IInteractionResult {
     if (!object.isPortable) {
       return {
         success: false,
@@ -335,7 +335,7 @@ export class PlayerService {
     };
   }
 
-  private useObject(player: IPlayer, object: IObject): IInteractionResult {
+  private useObjectInternal(player: IPlayer, object: IObject): IInteractionResult {
     // Basic use implementation - can be extended based on object type
     switch (object.objectType) {
       case 'weapon':
@@ -823,6 +823,130 @@ export class PlayerService {
       size: this.players.size,
       players: Array.from(this.players.keys()),
     };
+  }
+
+  // Priority 1: Wrapper methods for stress test compatibility
+
+  /**
+   * Public wrapper for examining an object
+   * Compatibility wrapper that accepts IDs instead of entity objects
+   * @param playerId - The player's ID
+   * @param objectId - The object's ID
+   * @returns Interaction result with examination description
+   */
+  examineObject(playerId: string, objectId: string): IInteractionResult {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      return {
+        success: false,
+        message: 'Player not found',
+      };
+    }
+
+    const object = this.objectService.getObject(objectId);
+    if (!object) {
+      return {
+        success: false,
+        message: 'Object not found',
+      };
+    }
+
+    return this.examineObjectInternal(player, object);
+  }
+
+  /**
+   * Public wrapper for taking an object
+   * Compatibility wrapper that accepts IDs instead of entity objects
+   * @param playerId - The player's ID
+   * @param objectId - The object's ID
+   * @returns Interaction result with success/failure message
+   */
+  takeObject(playerId: string, objectId: string): IInteractionResult {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      return {
+        success: false,
+        message: 'Player not found',
+      };
+    }
+
+    const object = this.objectService.getObject(objectId);
+    if (!object) {
+      return {
+        success: false,
+        message: 'Object not found',
+      };
+    }
+
+    return this.takeObjectInternal(player, object);
+  }
+
+  /**
+   * Public wrapper for using an object
+   * Compatibility wrapper that accepts IDs instead of entity objects
+   * @param playerId - The player's ID
+   * @param objectId - The object's ID
+   * @returns Interaction result with usage effects
+   */
+  useObject(playerId: string, objectId: string): IInteractionResult {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      return {
+        success: false,
+        message: 'Player not found',
+      };
+    }
+
+    const object = this.objectService.getObject(objectId);
+    if (!object) {
+      return {
+        success: false,
+        message: 'Object not found',
+      };
+    }
+
+    return this.useObjectInternal(player, object);
+  }
+
+  /**
+   * Alias for addToInventory that returns IInteractionResult
+   * Compatibility wrapper for stress tests
+   * @param playerId - The player's ID
+   * @param objectId - The object's ID
+   * @returns Interaction result with success/failure message
+   */
+  giveObjectToPlayer(playerId: string, objectId: string): IInteractionResult {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      return {
+        success: false,
+        message: 'Player not found',
+      };
+    }
+
+    const object = this.objectService.getObject(objectId);
+    if (!object) {
+      return {
+        success: false,
+        message: 'Object not found',
+      };
+    }
+
+    const success = this.addToInventory(playerId, objectId);
+    if (success) {
+      return {
+        success: true,
+        message: `${object.name} added to inventory.`,
+        effects: {
+          itemAdded: objectId,
+        },
+      };
+    } else {
+      return {
+        success: false,
+        message: `Failed to add ${object.name} to inventory.`,
+      };
+    }
   }
 
   // Priority 2: Inventory Management Features
