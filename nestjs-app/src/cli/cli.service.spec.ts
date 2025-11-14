@@ -4,6 +4,7 @@ import { GameManagerService } from './game-manager.service';
 import { DatabaseService } from '../database/database.service';
 import { FileScannerService } from '../file-system/file-scanner.service';
 import { GameFileService } from '../file-system/game-file.service';
+import { AssetService } from '../asset/asset.service';
 
 describe('CLIService', () => {
   let service: CLIService;
@@ -42,6 +43,12 @@ describe('CLIService', () => {
     loadGameFromFiles: jest.fn(),
   };
 
+  const mockAssetService = {
+    loadAsset: jest.fn(),
+    saveAsset: jest.fn(),
+    listAssets: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -50,6 +57,7 @@ describe('CLIService', () => {
         { provide: DatabaseService, useValue: mockDatabaseService },
         { provide: FileScannerService, useValue: mockFileScannerService },
         { provide: GameFileService, useValue: mockGameFileService },
+        { provide: AssetService, useValue: mockAssetService },
       ],
     }).compile();
 

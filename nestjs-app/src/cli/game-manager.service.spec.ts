@@ -7,6 +7,7 @@ import { ObjectService } from '../entity/object.service';
 import { PlayerService } from '../entity/player.service';
 import { GameFileService } from '../file-system/game-file.service';
 import { FileScannerService } from '../file-system/file-scanner.service';
+import { EventEmitterService } from '../events/event-emitter.service';
 import { GameData } from '../database/database.interfaces';
 
 describe('GameManagerService', () => {
@@ -76,6 +77,12 @@ describe('GameManagerService', () => {
     detectChanges: jest.fn(),
   };
 
+  const mockEventEmitterService = {
+    emit: jest.fn(),
+    on: jest.fn(),
+    off: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -87,6 +94,7 @@ describe('GameManagerService', () => {
         { provide: PlayerService, useValue: mockPlayerService },
         { provide: GameFileService, useValue: mockGameFileService },
         { provide: FileScannerService, useValue: mockFileScannerService },
+        { provide: EventEmitterService, useValue: mockEventEmitterService },
       ],
     }).compile();
 

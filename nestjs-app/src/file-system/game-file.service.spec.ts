@@ -6,6 +6,8 @@ import { EntityService } from '../entity/entity.service';
 import { RoomService } from '../entity/room.service';
 import { ObjectService } from '../entity/object.service';
 import { PlayerService } from '../entity/player.service';
+import { ValidationService } from '../validation/validation.service';
+import { GameLogicValidatorService } from '../validation/game-logic-validator.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -44,9 +46,49 @@ describe('GameFileService', () => {
   };
 
   const mockFileScannerService = {
+
+  const mockValidationService = {
+    validateData: jest.fn(),
+  };
+
+  const mockGameLogicValidatorService = {
+    validateGameLogic: jest.fn(),
+  };
     scanGameDirectory: jest.fn(),
+
+  const mockValidationService = {
+    validateData: jest.fn(),
+  };
+
+  const mockGameLogicValidatorService = {
+    validateGameLogic: jest.fn(),
+  };
     detectChanges: jest.fn(),
+
+  const mockValidationService = {
+    validateData: jest.fn(),
+  };
+
+  const mockGameLogicValidatorService = {
+    validateGameLogic: jest.fn(),
+  };
     validateGameDirectory: jest.fn(),
+
+  const mockValidationService = {
+    validateData: jest.fn(),
+  };
+
+  const mockGameLogicValidatorService = {
+    validateGameLogic: jest.fn(),
+  };
+  };
+
+  const mockValidationService = {
+    validateData: jest.fn(),
+  };
+
+  const mockGameLogicValidatorService = {
+    validateGameLogic: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -59,6 +101,8 @@ describe('GameFileService', () => {
         { provide: RoomService, useValue: mockRoomService },
         { provide: ObjectService, useValue: mockObjectService },
         { provide: PlayerService, useValue: mockPlayerService },
+        { provide: ValidationService, useValue: mockValidationService },
+        { provide: GameLogicValidatorService, useValue: mockGameLogicValidatorService },
       ],
     }).compile();
 

@@ -3,7 +3,7 @@ import { ConflictResolverService } from './conflict-resolver.service';
 import { LLMService } from './llm.service';
 import { PromptTemplateService } from './prompt-template.service';
 import { ContextBuilderService } from './context-builder.service';
-import { PhysicsService } from '../../physics/physics.service';
+import { PhysicsService } from '../../entity/physics.service';
 import { RoomService } from '../../entity/room.service';
 import { PlayerService } from '../../entity/player.service';
 import { ObjectService } from '../../entity/object.service';
