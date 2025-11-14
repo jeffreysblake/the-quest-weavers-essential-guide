@@ -181,3 +181,6 @@ nestjs-app/data/
 *.sqlite3
 *.db-wal
 *.db-shm
+
+# Integration test artifacts - temporary game directories created during testing
+games/

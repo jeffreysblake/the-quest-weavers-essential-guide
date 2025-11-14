@@ -21,7 +21,7 @@ describe('Physics Persistence Tests', () => {
         ObjectService,
         PlayerService,
         RoomService,
-        PhysicsService
+        PhysicsService,
       ],
     }).compile();
 
@@ -44,9 +44,9 @@ describe('Physics Persistence Tests', () => {
       maxHealth: 20,
       health: 20,
       state: { isOpen: true },
-      materialProperties: PhysicsService.createMaterialPreset('wood')
+      materialProperties: PhysicsService.createMaterialPreset('wood'),
     };
-    
+
     const chest = objectService.createObject(chestData);
     expect(chest).toBeDefined();
     expect(chest.id).toBeDefined();
@@ -58,9 +58,9 @@ describe('Physics Persistence Tests', () => {
       health: 100,
       inventory: [],
       level: 5,
-      experience: 0
+      experience: 0,
     };
-    
+
     const player = playerService.createPlayer(playerData);
     expect(player).toBeDefined();
 
@@ -69,16 +69,16 @@ describe('Physics Persistence Tests', () => {
       type: 'fire',
       intensity: 7,
       sourceId: player.id,
-      description: 'Fireball'
+      description: 'Fireball',
     });
 
     expect(result.success).toBe(true);
-    
+
     // Verify that the chest is affected by fire
     if (result.objectsAffected && result.objectsAffected.length > 0) {
       const affectedObject = result.objectsAffected[0];
       expect(affectedObject.objectId).toBe(chest.id);
-      
+
       // Check that it's on fire or damaged
       const updatedChest = objectService.getObject(chest.id);
       if (updatedChest && updatedChest.state) {
@@ -98,9 +98,9 @@ describe('Physics Persistence Tests', () => {
       isPortable: true,
       maxHealth: 15,
       health: 15,
-      materialProperties: PhysicsService.createMaterialPreset('metal')
+      materialProperties: PhysicsService.createMaterialPreset('metal'),
     };
-    
+
     const sword = objectService.createObject(swordData);
     expect(sword).toBeDefined();
     expect(sword.id).toBeDefined();
@@ -112,9 +112,9 @@ describe('Physics Persistence Tests', () => {
       health: 100,
       inventory: [],
       level: 5,
-      experience: 0
+      experience: 0,
     };
-    
+
     const player = playerService.createPlayer(playerData);
     expect(player).toBeDefined();
 
@@ -123,16 +123,16 @@ describe('Physics Persistence Tests', () => {
       type: 'lightning',
       intensity: 6,
       sourceId: player.id,
-      description: 'Lightning Bolt'
+      description: 'Lightning Bolt',
     });
 
     expect(result.success).toBe(true);
-    
+
     // Verify that the sword is affected by lightning
     if (result.objectsAffected && result.objectsAffected.length > 0) {
       const affectedObject = result.objectsAffected[0];
       expect(affectedObject.objectId).toBe(sword.id);
-      
+
       // Check that it's conducting electricity or damaged
       const updatedSword = objectService.getObject(sword.id);
       if (updatedSword && updatedSword.materialProperties) {
@@ -152,9 +152,9 @@ describe('Physics Persistence Tests', () => {
       isPortable: false,
       maxHealth: 20,
       health: 20,
-      materialProperties: PhysicsService.createMaterialPreset('water')
+      materialProperties: PhysicsService.createMaterialPreset('water'),
     };
-    
+
     const barrel = objectService.createObject(barrelData);
     expect(barrel).toBeDefined();
     expect(barrel.id).toBeDefined();
@@ -166,9 +166,9 @@ describe('Physics Persistence Tests', () => {
       health: 100,
       inventory: [],
       level: 5,
-      experience: 0
+      experience: 0,
     };
-    
+
     const player = playerService.createPlayer(playerData);
     expect(player).toBeDefined();
 
@@ -177,16 +177,16 @@ describe('Physics Persistence Tests', () => {
       type: 'ice',
       intensity: 6,
       sourceId: player.id,
-      description: 'Ice Shard'
+      description: 'Ice Shard',
     });
 
     expect(result.success).toBe(true);
-    
+
     // Verify that the barrel is affected by ice
     if (result.objectsAffected && result.objectsAffected.length > 0) {
       const affectedObject = result.objectsAffected[0];
       expect(affectedObject.objectId).toBe(barrel.id);
-      
+
       // Check that it's frozen or damaged
       const updatedBarrel = objectService.getObject(barrel.id);
       if (updatedBarrel && updatedBarrel.state) {
@@ -206,9 +206,9 @@ describe('Physics Persistence Tests', () => {
       isPortable: true,
       maxHealth: 5,
       health: 5,
-      materialProperties: PhysicsService.createMaterialPreset('glass')
+      materialProperties: PhysicsService.createMaterialPreset('glass'),
     };
-    
+
     const bottle = objectService.createObject(bottleData);
     expect(bottle).toBeDefined();
     expect(bottle.id).toBeDefined();
@@ -220,9 +220,9 @@ describe('Physics Persistence Tests', () => {
       health: 100,
       inventory: [],
       level: 5,
-      experience: 0
+      experience: 0,
     };
-    
+
     const player = playerService.createPlayer(playerData);
     expect(player).toBeDefined();
 
@@ -231,16 +231,16 @@ describe('Physics Persistence Tests', () => {
       type: 'force',
       intensity: 8,
       sourceId: player.id,
-      description: 'Force Push'
+      description: 'Force Push',
     });
 
     expect(result.success).toBe(true);
-    
+
     // Verify that the bottle is affected by force
     if (result.objectsAffected && result.objectsAffected.length > 0) {
       const affectedObject = result.objectsAffected[0];
       expect(affectedObject.objectId).toBe(bottle.id);
-      
+
       // Check that it's shattered or damaged
       const updatedBottle = objectService.getObject(bottle.id);
       if (updatedBottle && updatedBottle.health) {
@@ -267,10 +267,10 @@ describe('Physics Persistence Tests', () => {
         conductivity: 9,
         flammability: 0,
         brittleness: 5,
-        resistances: { fire: 3 }
-      }
+        resistances: { fire: 3 },
+      },
     };
-    
+
     const container = objectService.createObject(containerData);
     expect(container).toBeDefined();
     expect(container.id).toBeDefined();
@@ -285,9 +285,9 @@ describe('Physics Persistence Tests', () => {
       isPortable: false,
       maxHealth: 5,
       health: 5,
-      materialProperties: PhysicsService.createMaterialPreset('gas')
+      materialProperties: PhysicsService.createMaterialPreset('gas'),
     };
-    
+
     const gas = objectService.createObject(gasData);
     expect(gas).toBeDefined();
     expect(gas.id).toBeDefined();
@@ -295,9 +295,9 @@ describe('Physics Persistence Tests', () => {
     // Place the gas inside container
     const placeResult = objectService.placeObject(gas.id, {
       relationshipType: 'inside' as const,
-      targetId: container.id
+      targetId: container.id,
     });
-    
+
     expect(placeResult).toBe(true);
 
     // Cast fire spell on the container (simulating explosion)
@@ -307,9 +307,9 @@ describe('Physics Persistence Tests', () => {
       health: 100,
       inventory: [],
       level: 5,
-      experience: 0
+      experience: 0,
     };
-    
+
     const player = playerService.createPlayer(playerData);
     expect(player).toBeDefined();
 
@@ -318,11 +318,11 @@ describe('Physics Persistence Tests', () => {
       type: 'fire',
       intensity: 6,
       sourceId: player.id,
-      description: 'Fireball'
+      description: 'Fireball',
     });
 
     expect(result.success).toBe(true);
-    
+
     // Verify that the chain reaction occurred
     if (result.chainReactions && result.chainReactions.length > 0) {
       const chainReaction = result.chainReactions[0];

@@ -4,6 +4,7 @@ import { ObjectService } from './object.service';
 import { PlayerService } from './player.service';
 import { RoomService } from './room.service';
 import { PhysicsService } from './physics.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('Player-Room Integration Tests', () => {
   let entityService: EntityService;
@@ -13,13 +14,34 @@ describe('Player-Room Integration Tests', () => {
   let physicsService: PhysicsService;
 
   beforeEach(async () => {
+    // Create mock DatabaseService
+    const mockDatabaseService = {
+      transaction: jest.fn((callback) => callback({
+        prepare: jest.fn(() => ({
+          run: jest.fn(),
+          get: jest.fn(),
+          all: jest.fn(() => [])
+        }))
+      })),
+      prepare: jest.fn(() => ({
+        run: jest.fn(),
+        get: jest.fn(),
+        all: jest.fn(() => [])
+      })),
+      exec: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EntityService,
         ObjectService,
         PlayerService,
         RoomService,
-        PhysicsService
+        PhysicsService,
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
+        },
       ],
     }).compile();
 
@@ -35,9 +57,9 @@ describe('Player-Room Integration Tests', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = roomService.createRoom(roomData);
     expect(createdRoom).toBeDefined();
     expect(createdRoom.id).toBeDefined();
@@ -49,15 +71,18 @@ describe('Player-Room Integration Tests', () => {
       health: 100,
       inventory: [],
       level: 1,
-      experience: 0
+      experience: 0,
     };
-    
+
     const createdPlayer = playerService.createPlayer(playerData);
     expect(createdPlayer).toBeDefined();
     expect(createdPlayer.id).toBeDefined();
 
     // Add player to room
-    const result = roomService.addPlayerToRoom(createdRoom.id, createdPlayer.id);
+    const result = roomService.addPlayerToRoom(
+      createdRoom.id,
+      createdPlayer.id,
+    );
     expect(result).toBe(true);
 
     // Verify player is in room
@@ -70,9 +95,9 @@ describe('Player-Room Integration Tests', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = roomService.createRoom(roomData);
     expect(createdRoom).toBeDefined();
 
@@ -86,15 +111,18 @@ describe('Player-Room Integration Tests', () => {
       isPortable: false,
       maxHealth: 20,
       health: 20,
-      state: { isOpen: true }
+      state: { isOpen: true },
     };
-    
+
     const createdObject = objectService.createObject(objectData);
     expect(createdObject).toBeDefined();
     expect(createdObject.id).toBeDefined();
 
     // Add object to room
-    const result = roomService.addObjectToRoom(createdRoom.id, createdObject.id);
+    const result = roomService.addObjectToRoom(
+      createdRoom.id,
+      createdObject.id,
+    );
     expect(result).toBe(true);
 
     // Verify object is in room
@@ -107,18 +135,18 @@ describe('Player-Room Integration Tests', () => {
     const room1Data = {
       name: 'Living Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const room2Data = {
       name: 'Kitchen',
       width: 8,
-      height: 8
+      height: 8,
     };
-    
+
     const createdRoom1 = roomService.createRoom(room1Data);
     const createdRoom2 = roomService.createRoom(room2Data);
-    
+
     expect(createdRoom1).toBeDefined();
     expect(createdRoom2).toBeDefined();
 
@@ -129,25 +157,31 @@ describe('Player-Room Integration Tests', () => {
       health: 100,
       inventory: [],
       level: 1,
-      experience: 0
+      experience: 0,
     };
-    
+
     const createdPlayer = playerService.createPlayer(playerData);
     expect(createdPlayer).toBeDefined();
 
     // Add player to first room
-    const result1 = roomService.addPlayerToRoom(createdRoom1.id, createdPlayer.id);
+    const result1 = roomService.addPlayerToRoom(
+      createdRoom1.id,
+      createdPlayer.id,
+    );
     expect(result1).toBe(true);
 
     // Move player from room 1 to room 2
     // In a real implementation, this would involve more complex logic
     // For now, we'll just verify the player is in room 1
-    
+
     const entitiesInRoom1 = roomService.getRoomEntities(createdRoom1.id);
     expect(entitiesInRoom1.players).toContain(createdPlayer.id);
-    
+
     // Add player to second room (simulating movement)
-    const result2 = roomService.addPlayerToRoom(createdRoom2.id, createdPlayer.id);
+    const result2 = roomService.addPlayerToRoom(
+      createdRoom2.id,
+      createdPlayer.id,
+    );
     expect(result2).toBe(true);
   });
 
@@ -156,9 +190,9 @@ describe('Player-Room Integration Tests', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = roomService.createRoom(roomData);
 
     // Create a container object with initial state
@@ -171,9 +205,9 @@ describe('Player-Room Integration Tests', () => {
       isPortable: false,
       maxHealth: 20,
       health: 20,
-      state: { isOpen: true, isLocked: false }
+      state: { isOpen: true, isLocked: false },
     };
-    
+
     const container = objectService.createObject(containerData);
     expect(container).toBeDefined();
     expect(container.id).toBeDefined();
@@ -184,11 +218,11 @@ describe('Player-Room Integration Tests', () => {
 
     // Verify initial state
     expect(container.state?.isOpen).toBe(true);
-    
+
     // Modify the container's state (simulating player interaction)
     container.state = { ...container.state, isOpen: false };
-    const updateResult = objectService.updateObject(container.id, { 
-      state: container.state 
+    const updateResult = objectService.updateObject(container.id, {
+      state: container.state,
     });
     expect(updateResult).toBe(true);
 
@@ -202,9 +236,9 @@ describe('Player-Room Integration Tests', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = roomService.createRoom(roomData);
 
     // Create a player with initial inventory
@@ -214,15 +248,18 @@ describe('Player-Room Integration Tests', () => {
       health: 100,
       inventory: ['item1', 'item2'],
       level: 1,
-      experience: 0
+      experience: 0,
     };
-    
+
     const createdPlayer = playerService.createPlayer(playerData);
     expect(createdPlayer).toBeDefined();
     expect(createdPlayer.id).toBeDefined();
 
     // Add player to room
-    const result = roomService.addPlayerToRoom(createdRoom.id, createdPlayer.id);
+    const result = roomService.addPlayerToRoom(
+      createdRoom.id,
+      createdPlayer.id,
+    );
     expect(result).toBe(true);
 
     // Verify initial inventory
@@ -231,7 +268,7 @@ describe('Player-Room Integration Tests', () => {
     // Modify the player's inventory (simulating item pickup)
     const newItem = 'newItem';
     playerService.addInventoryItem(createdPlayer.id, newItem);
-    
+
     // Verify that the inventory was updated
     const updatedPlayer = playerService.getPlayer(createdPlayer.id);
     expect(updatedPlayer?.inventory).toContain(newItem);
@@ -242,9 +279,9 @@ describe('Player-Room Integration Tests', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = roomService.createRoom(roomData);
 
     // Create an object to be placed inside another container
@@ -257,9 +294,9 @@ describe('Player-Room Integration Tests', () => {
       isPortable: false,
       maxHealth: 20,
       health: 20,
-      state: { isOpen: true }
+      state: { isOpen: true },
     };
-    
+
     const container = objectService.createObject(containerData);
     expect(container).toBeDefined();
     expect(container.id).toBeDefined();
@@ -273,9 +310,9 @@ describe('Player-Room Integration Tests', () => {
       canContain: false,
       isPortable: true,
       maxHealth: 15,
-      health: 15
+      health: 15,
     };
-    
+
     const item = objectService.createObject(itemData);
     expect(item).toBeDefined();
     expect(item.id).toBeDefined();
@@ -287,9 +324,9 @@ describe('Player-Room Integration Tests', () => {
     // Place the item inside the container (simulating player interaction)
     const relationship = {
       relationshipType: 'inside' as const,
-      targetId: container.id
+      targetId: container.id,
     };
-    
+
     const placeResult = objectService.placeObject(item.id, relationship);
     expect(placeResult).toBe(true);
 

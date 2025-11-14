@@ -13,10 +13,9 @@ async function bootstrap() {
   try {
     // Get CLI service
     const cliService = app.get(CLIService);
-    
+
     // Run CLI with command line arguments
     await cliService.run(process.argv);
-    
   } catch (error) {
     console.error('CLI Error:', error.message);
     process.exit(1);

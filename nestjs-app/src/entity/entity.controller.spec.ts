@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityController } from './entity.controller';
 import { EntityService } from './entity.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('EntityController', () => {
   let controller: EntityController;
@@ -9,7 +10,18 @@ describe('EntityController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EntityController],
-      providers: [EntityService],
+      providers: [
+        EntityService,
+        {
+          provide: DatabaseService,
+          useValue: {
+            saveEntity: jest.fn().mockResolvedValue(undefined),
+            getEntity: jest.fn().mockResolvedValue(null),
+            deleteEntity: jest.fn().mockResolvedValue(undefined),
+            getAllEntities: jest.fn().mockResolvedValue([]),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<EntityController>(EntityController);
@@ -22,12 +34,12 @@ describe('EntityController', () => {
 
   describe('create', () => {
     it('should create an entity', async () => {
-      const dto = { 
+      const dto = {
         name: 'Test Entity',
         position: { x: 0, y: 0, z: 0 },
-        type: 'object' as const
+        type: 'object' as const,
       };
-      
+
       const result = await controller.create(dto);
       expect(result).toBeDefined();
     });
@@ -42,12 +54,12 @@ describe('EntityController', () => {
 
   describe('findOne', () => {
     it('should find an entity by ID', async () => {
-      const dto = { 
+      const dto = {
         name: 'Test Entity',
         position: { x: 0, y: 0, z: 0 },
-        type: 'object' as const
+        type: 'object' as const,
       };
-      
+
       const result = await controller.create(dto);
       expect(result).toBeDefined();
     });

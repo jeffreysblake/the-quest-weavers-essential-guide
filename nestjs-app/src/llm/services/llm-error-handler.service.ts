@@ -1,7 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 export interface LLMError {
-  type: 'provider' | 'validation' | 'timeout' | 'rate_limit' | 'quota' | 'network' | 'parsing' | 'internal';
+  type:
+    | 'provider'
+    | 'validation'
+    | 'timeout'
+    | 'rate_limit'
+    | 'quota'
+    | 'network'
+    | 'parsing'
+    | 'internal';
   message: string;
   code?: string;
   retryable: boolean;
@@ -33,13 +41,13 @@ export class LLMErrorHandlerService {
   private readonly logger = new Logger(LLMErrorHandlerService.name);
   private errorHistory: LLMError[] = [];
   private readonly MAX_ERROR_HISTORY = 1000;
-  
+
   private stats = {
     totalErrors: 0,
     errorsByType: {} as Record<string, number>,
     successfulRetries: 0,
     failedRetries: 0,
-    resolutionTimes: [] as number[]
+    resolutionTimes: [] as number[],
   };
 
   private readonly defaultRetryConfig: RetryConfig = {
@@ -52,8 +60,8 @@ export class LLMErrorHandlerService {
       'timeout',
       'rate_limit',
       'temporary_unavailable',
-      'server_error'
-    ]
+      'server_error',
+    ],
   };
 
   /**
@@ -62,13 +70,13 @@ export class LLMErrorHandlerService {
   handleError(error: Error, context?: any): LLMError {
     const startTime = Date.now();
     const llmError = this.classifyError(error, context);
-    
+
     this.recordError(llmError);
     this.logError(llmError);
-    
+
     const resolutionTime = Date.now() - startTime;
     this.stats.resolutionTimes.push(resolutionTime);
-    
+
     return llmError;
   }
 
@@ -77,39 +85,42 @@ export class LLMErrorHandlerService {
    */
   async withRetry<T>(
     operation: () => Promise<T>,
-    config: Partial<RetryConfig> = {}
+    config: Partial<RetryConfig> = {},
   ): Promise<T> {
     const retryConfig = { ...this.defaultRetryConfig, ...config };
     let lastError: Error;
-    
+
     for (let attempt = 1; attempt <= retryConfig.maxRetries + 1; attempt++) {
       try {
         const result = await operation();
-        
+
         if (attempt > 1) {
           this.stats.successfulRetries++;
           this.logger.log(`Operation succeeded on attempt ${attempt}`);
         }
-        
+
         return result;
       } catch (error) {
         lastError = error as Error;
         const llmError = this.classifyError(lastError);
-        
-        if (attempt === retryConfig.maxRetries + 1 || !this.isRetryable(llmError, retryConfig)) {
+
+        if (
+          attempt === retryConfig.maxRetries + 1 ||
+          !this.isRetryable(llmError, retryConfig)
+        ) {
           this.stats.failedRetries++;
           throw this.enhanceError(lastError, llmError, attempt - 1);
         }
-        
+
         const delay = this.calculateDelay(attempt - 1, retryConfig);
         this.logger.warn(
-          `Attempt ${attempt} failed: ${llmError.message}. Retrying in ${delay}ms...`
+          `Attempt ${attempt} failed: ${llmError.message}. Retrying in ${delay}ms...`,
         );
-        
+
         await this.sleep(delay);
       }
     }
-    
+
     throw lastError!;
   }
 
@@ -125,8 +136,8 @@ export class LLMErrorHandlerService {
     } = {
       failureThreshold: 5,
       resetTimeout: 60000,
-      monitoringPeriod: 300000
-    }
+      monitoringPeriod: 300000,
+    },
   ) {
     let state: 'closed' | 'open' | 'half-open' = 'closed';
     let failureCount = 0;
@@ -156,28 +167,31 @@ export class LLMErrorHandlerService {
 
       try {
         const result = await operation();
-        
+
         if (state === 'half-open') {
           successCount++;
-          if (successCount >= 3) { // Require 3 successes to close
+          if (successCount >= 3) {
+            // Require 3 successes to close
             state = 'closed';
             failureCount = 0;
             successCount = 0;
             this.logger.log('Circuit breaker closed - service recovered');
           }
         }
-        
+
         return result;
       } catch (error) {
         failureCount++;
         lastFailureTime = now;
         successCount = 0;
-        
+
         if (failureCount >= options.failureThreshold && state === 'closed') {
           state = 'open';
-          this.logger.error(`Circuit breaker opened after ${failureCount} failures`);
+          this.logger.error(
+            `Circuit breaker opened after ${failureCount} failures`,
+          );
         }
-        
+
         throw error;
       }
     };
@@ -188,9 +202,11 @@ export class LLMErrorHandlerService {
    */
   getErrorStats(): ErrorStats {
     const recentErrors = this.errorHistory.slice(-10);
-    const avgResolutionTime = this.stats.resolutionTimes.length > 0
-      ? this.stats.resolutionTimes.reduce((a, b) => a + b, 0) / this.stats.resolutionTimes.length
-      : 0;
+    const avgResolutionTime =
+      this.stats.resolutionTimes.length > 0
+        ? this.stats.resolutionTimes.reduce((a, b) => a + b, 0) /
+          this.stats.resolutionTimes.length
+        : 0;
 
     return {
       totalErrors: this.stats.totalErrors,
@@ -198,7 +214,7 @@ export class LLMErrorHandlerService {
       recentErrors,
       avgResolutionTime,
       successfulRetries: this.stats.successfulRetries,
-      failedRetries: this.stats.failedRetries
+      failedRetries: this.stats.failedRetries,
     };
   }
 
@@ -256,7 +272,9 @@ export class LLMErrorHandlerService {
       case 'network':
         suggestions.push('Check your internet connection');
         suggestions.push('Try again in a few moments');
-        suggestions.push('Contact your network administrator if the problem persists');
+        suggestions.push(
+          'Contact your network administrator if the problem persists',
+        );
         break;
       default:
         suggestions.push('Try again in a few moments');
@@ -273,7 +291,7 @@ export class LLMErrorHandlerService {
   isSystemHealthy(): boolean {
     const recentErrors = this.getRecentErrors(300000); // Last 5 minutes
     const errorRate = recentErrors.length / 5; // Errors per minute
-    
+
     // System is unhealthy if more than 10 errors per minute
     return errorRate < 10;
   }
@@ -288,7 +306,7 @@ export class LLMErrorHandlerService {
     this.stats.successfulRetries = 0;
     this.stats.failedRetries = 0;
     this.stats.resolutionTimes = [];
-    
+
     this.logger.log('Error history cleared');
   }
 
@@ -323,11 +341,18 @@ export class LLMErrorHandlerService {
       type = 'parsing';
       retryable = true;
       suggestedAction = 'Retry or adjust prompt for better structure';
-    } else if (message.includes('provider') || message.includes('unavailable')) {
+    } else if (
+      message.includes('provider') ||
+      message.includes('unavailable')
+    ) {
       type = 'provider';
       retryable = true;
       suggestedAction = 'Try again later or use fallback provider';
-    } else if (message.includes('500') || message.includes('502') || message.includes('503')) {
+    } else if (
+      message.includes('500') ||
+      message.includes('502') ||
+      message.includes('503')
+    ) {
       type = 'provider';
       retryable = true;
       suggestedAction = 'Server error - retry after delay';
@@ -340,31 +365,32 @@ export class LLMErrorHandlerService {
       suggestedAction,
       originalError: error,
       context,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
   private recordError(error: LLMError): void {
     this.errorHistory.push(error);
-    
+
     // Maintain history size limit
     if (this.errorHistory.length > this.MAX_ERROR_HISTORY) {
       this.errorHistory.shift();
     }
-    
+
     this.stats.totalErrors++;
-    this.stats.errorsByType[error.type] = (this.stats.errorsByType[error.type] || 0) + 1;
+    this.stats.errorsByType[error.type] =
+      (this.stats.errorsByType[error.type] || 0) + 1;
   }
 
   private logError(error: LLMError): void {
     const logMessage = `LLM Error [${error.type}]: ${error.message}`;
-    
+
     if (error.retryable) {
       this.logger.warn(logMessage);
     } else {
       this.logger.error(logMessage);
     }
-    
+
     if (error.suggestedAction) {
       this.logger.debug(`Suggested action: ${error.suggestedAction}`);
     }
@@ -375,30 +401,35 @@ export class LLMErrorHandlerService {
   }
 
   private calculateDelay(attempt: number, config: RetryConfig): number {
-    const baseDelay = config.baseDelay * Math.pow(config.backoffFactor, attempt);
+    const baseDelay =
+      config.baseDelay * Math.pow(config.backoffFactor, attempt);
     const jitter = Math.random() * 0.1 * baseDelay; // Add 10% jitter
     return Math.min(baseDelay + jitter, config.maxDelay);
   }
 
-  private enhanceError(originalError: Error, llmError: LLMError, attempts: number): Error {
+  private enhanceError(
+    originalError: Error,
+    llmError: LLMError,
+    attempts: number,
+  ): Error {
     const enhancedMessage = `${originalError.message} (Failed after ${attempts} attempts)`;
     const enhancedError = new Error(enhancedMessage);
-    
+
     // Add additional properties
     (enhancedError as any).llmError = llmError;
     (enhancedError as any).attempts = attempts;
-    
+
     return enhancedError;
   }
 
   private getRecentErrors(timeWindow: number): LLMError[] {
     const cutoff = Date.now() - timeWindow;
-    return this.errorHistory.filter(error => 
-      new Date(error.timestamp).getTime() > cutoff
+    return this.errorHistory.filter(
+      (error) => new Date(error.timestamp).getTime() > cutoff,
     );
   }
 
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

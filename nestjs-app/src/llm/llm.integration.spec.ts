@@ -11,16 +11,13 @@ describe('LLM Integration Tests', () => {
     // Set up test environment variables
     process.env.OPENAI_API_KEY = 'test_key';
     process.env.ANTHROPIC_API_KEY = 'test_key';
-    
+
     app = await Test.createTestingModule({
-      imports: [
-        EntityModule,
-        LLMModule
-      ]
+      imports: [EntityModule, LLMModule],
     }).compile();
 
     controller = app.get<LLMController>(LLMController);
-  });
+  }, 30000); // Increase timeout to 30 seconds for module compilation
 
   afterEach(async () => {
     await app.close();
@@ -33,7 +30,7 @@ describe('LLM Integration Tests', () => {
 
     it('should provide status endpoint', async () => {
       const status = await controller.getStatus();
-      
+
       expect(status.available).toBeDefined();
       expect(status.llmStats).toBeDefined();
       expect(status.conflictStats).toBeDefined();
@@ -45,11 +42,11 @@ describe('LLM Integration Tests', () => {
   describe('Text Generation API', () => {
     it('should handle text generation requests', async () => {
       const response = await controller.generateText({
-        prompt: 'Generate a simple test response'
+        prompt: 'Generate a simple test response',
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.content).toBeDefined();
         expect(response.usage).toBeDefined();
@@ -65,18 +62,18 @@ describe('LLM Integration Tests', () => {
         type: 'object',
         properties: {
           name: { type: 'string' },
-          description: { type: 'string' }
+          description: { type: 'string' },
         },
-        required: ['name', 'description']
+        required: ['name', 'description'],
       };
 
       const response = await controller.generateStructured({
         prompt: 'Generate a fantasy character',
-        schema
+        schema,
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.parsedContent).toBeDefined();
         expect(response.parsedContent.name).toBeDefined();
@@ -91,11 +88,11 @@ describe('LLM Integration Tests', () => {
         theme: 'ancient library',
         style: 'fantasy',
         size: 'medium',
-        purpose: 'study and research'
+        purpose: 'study and research',
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.room).toBeDefined();
         expect(response.room.name).toBeDefined();
@@ -108,11 +105,11 @@ describe('LLM Integration Tests', () => {
         name: 'Test Librarian',
         role: 'villager',
         personality: ['wise', 'helpful'],
-        backstory: 'An ancient keeper of knowledge'
+        backstory: 'An ancient keeper of knowledge',
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.npc).toBeDefined();
         expect(response.npc.name).toBeDefined();
@@ -124,11 +121,11 @@ describe('LLM Integration Tests', () => {
       const response = await controller.generateQuest({
         type: 'side',
         difficulty: 5,
-        objectives: ['Find the lost tome', 'Return it to the librarian']
+        objectives: ['Find the lost tome', 'Return it to the librarian'],
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.quest).toBeDefined();
         expect(response.quest.name).toBeDefined();
@@ -147,12 +144,12 @@ describe('LLM Integration Tests', () => {
         preferences: {
           complexity: 'moderate',
           length: 'short',
-          focusAreas: ['mystery', 'exploration']
-        }
+          focusAreas: ['mystery', 'exploration'],
+        },
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.sessionId).toBeDefined();
         expect(response.firstDecision).toBeDefined();
@@ -166,14 +163,16 @@ describe('LLM Integration Tests', () => {
       const createResponse = await controller.createStory({
         theme: 'Test story',
         genre: 'adventure',
-        playerLevel: 1
+        playerLevel: 1,
       });
 
       if (createResponse.success) {
-        const statusResponse = await controller.getStoryStatus(createResponse.sessionId);
-        
+        const statusResponse = await controller.getStoryStatus(
+          createResponse.sessionId,
+        );
+
         expect(statusResponse.success).toBeDefined();
-        
+
         if (statusResponse.success) {
           expect(statusResponse.phase).toBeDefined();
           expect(statusResponse.progress).toBeDefined();
@@ -190,11 +189,11 @@ describe('LLM Integration Tests', () => {
         affectedEntities: ['test_object_1', 'test_object_2'],
         location: 'test_room',
         description: 'Objects are overlapping impossibly',
-        originalAction: 'move_object'
+        originalAction: 'move_object',
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.resolution).toBeDefined();
         expect(response.resolution.conflictType).toBe('physics');
@@ -208,11 +207,11 @@ describe('LLM Integration Tests', () => {
       const response = await controller.resolvePhysicsConflict({
         objects: ['falling_object'],
         physicsError: 'Object floating in mid-air without support',
-        location: 'test_chamber'
+        location: 'test_chamber',
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.resolution).toBeDefined();
         expect(response.resolution.conflictType).toBe('physics');
@@ -224,11 +223,11 @@ describe('LLM Integration Tests', () => {
         npcId: 'test_npc',
         conflictDescription: 'NPC trying to walk through walls',
         attemptedAction: 'walk_through_wall',
-        location: 'test_room'
+        location: 'test_room',
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.resolution).toBeDefined();
         expect(response.resolution.conflictType).toBe('npc_behavior');
@@ -239,7 +238,7 @@ describe('LLM Integration Tests', () => {
   describe('Template Management API', () => {
     it('should provide template statistics', async () => {
       const response = await controller.getTemplates();
-      
+
       expect(response.totalTemplates).toBeGreaterThan(0);
       expect(response.categoryCounts).toBeDefined();
       expect(response.templateIds).toBeDefined();
@@ -248,10 +247,10 @@ describe('LLM Integration Tests', () => {
 
     it('should retrieve templates by category', async () => {
       const response = await controller.getTemplates('generation');
-      
+
       expect(response.templates).toBeDefined();
       expect(Array.isArray(response.templates)).toBe(true);
-      
+
       if (response.templates.length > 0) {
         expect(response.templates[0].category).toBe('generation');
       }
@@ -259,9 +258,9 @@ describe('LLM Integration Tests', () => {
 
     it('should retrieve individual templates', async () => {
       const response = await controller.getTemplate('room_description');
-      
+
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.template).toBeDefined();
         expect(response.template.id).toBe('room_description');
@@ -275,12 +274,12 @@ describe('LLM Integration Tests', () => {
         variables: {
           room_name: 'Test Chamber',
           room_type: 'laboratory',
-          game_theme: 'sci-fi'
-        }
+          game_theme: 'sci-fi',
+        },
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.compiled).toBeDefined();
         expect(response.compiled.prompt).toContain('Test Chamber');
@@ -293,9 +292,9 @@ describe('LLM Integration Tests', () => {
   describe('Provider Testing API', () => {
     it('should test provider availability', async () => {
       const response = await controller.testProviders();
-      
+
       expect(response.success).toBeDefined();
-      
+
       if (response.success) {
         expect(response.providers).toBeDefined();
         expect(typeof response.providers).toBe('object');
@@ -304,12 +303,12 @@ describe('LLM Integration Tests', () => {
 
     it('should perform simple generation tests', async () => {
       const response = await controller.testSimpleGeneration({
-        prompt: 'Describe a magical forest in one sentence.'
+        prompt: 'Describe a magical forest in one sentence.',
       });
 
       expect(response.success).toBeDefined();
       expect(response.prompt).toBeDefined();
-      
+
       if (response.success) {
         expect(response.response).toBeDefined();
         expect(response.usage).toBeDefined();
@@ -324,11 +323,11 @@ describe('LLM Integration Tests', () => {
     it('should handle malformed requests gracefully', async () => {
       const response = await controller.generateText({
         prompt: '', // Empty prompt
-        temperature: 999 // Invalid temperature
+        temperature: 999, // Invalid temperature
       });
 
       expect(response.success).toBeDefined();
-      
+
       if (!response.success) {
         expect(response.error).toBeDefined();
       }
@@ -336,7 +335,7 @@ describe('LLM Integration Tests', () => {
 
     it('should handle nonexistent template requests', async () => {
       const response = await controller.getTemplate('nonexistent_template');
-      
+
       expect(response.success).toBe(false);
       expect(response.error).toBeDefined();
     });
@@ -345,8 +344,8 @@ describe('LLM Integration Tests', () => {
       const response = await controller.compileTemplate('room_description', {
         variables: {
           // Missing required variables
-          room_name: 'Test Room'
-        }
+          room_name: 'Test Room',
+        },
       });
 
       expect(response.success).toBe(false);
@@ -360,29 +359,29 @@ describe('LLM Integration Tests', () => {
       const roomResponse = await controller.generateRoom({
         theme: 'wizard tower',
         style: 'fantasy',
-        size: 'large'
+        size: 'large',
       });
 
       if (roomResponse.success) {
         const roomId = roomResponse.room.id;
-        
-        // Step 2: Generate NPC for the room  
+
+        // Step 2: Generate NPC for the room
         const npcResponse = await controller.generateNPC({
           role: 'wizard',
           roomId: roomId,
-          personality: ['wise', 'mysterious']
+          personality: ['wise', 'mysterious'],
         });
 
         if (npcResponse.success) {
           const npcId = npcResponse.npc.id;
-          
+
           // Step 3: Generate dialogue for the NPC
           const dialogueResponse = await controller.generateDialogue(npcId, {
             topic: 'greeting',
             context: {
               roomId: roomId,
-              situation: 'player_enters'
-            }
+              situation: 'player_enters',
+            },
           });
 
           if (dialogueResponse.success) {
@@ -399,23 +398,26 @@ describe('LLM Integration Tests', () => {
         theme: 'Ancient ruins mystery',
         genre: 'mystery',
         playerLevel: 2,
-        preferences: { length: 'short', complexity: 'simple' }
+        preferences: { length: 'short', complexity: 'simple' },
       });
 
       if (createResponse.success) {
         const sessionId = createResponse.sessionId;
-        
+
         // Step 2: Make a decision
-        const decisionResponse = await controller.processStoryDecision(sessionId, {
-          decisionId: 'planning_decision',
-          choice: 'world_first',
-          feedback: 'I prefer to start with world building'
-        });
+        const decisionResponse = await controller.processStoryDecision(
+          sessionId,
+          {
+            decisionId: 'planning_decision',
+            choice: 'world_first',
+            feedback: 'I prefer to start with world building',
+          },
+        );
 
         if (decisionResponse.success) {
           // Step 3: Check status
           const statusResponse = await controller.getStoryStatus(sessionId);
-          
+
           if (statusResponse.success) {
             expect(statusResponse.progress).toBeGreaterThan(0);
             expect(statusResponse.phase).toBeDefined();
@@ -427,17 +429,17 @@ describe('LLM Integration Tests', () => {
 
   describe('Performance and Scalability', () => {
     it('should handle multiple concurrent requests', async () => {
-      const promises = Array.from({ length: 5 }, (_, i) => 
+      const promises = Array.from({ length: 5 }, (_, i) =>
         controller.generateText({
-          prompt: `Test prompt ${i + 1}`
-        })
+          prompt: `Test prompt ${i + 1}`,
+        }),
       );
 
       const responses = await Promise.all(promises);
-      
+
       responses.forEach((response, index) => {
         expect(response.success).toBeDefined();
-        
+
         if (response.success) {
           expect(response.content).toBeDefined();
         }
@@ -446,12 +448,12 @@ describe('LLM Integration Tests', () => {
 
     it('should maintain performance under load', async () => {
       const startTime = Date.now();
-      
+
       const response = await controller.generateRoom({
         theme: 'performance test',
-        style: 'fantasy'
+        style: 'fantasy',
       });
-      
+
       const endTime = Date.now();
       const duration = endTime - startTime;
 

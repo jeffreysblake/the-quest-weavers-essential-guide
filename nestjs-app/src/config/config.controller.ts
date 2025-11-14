@@ -15,7 +15,9 @@ export class ConfigController {
     return {
       status: 'OK',
       timestamp: new Date().toISOString(),
-      environment: this.configService.isDevelopment() ? 'development' : 'production'
+      environment: this.configService.isDevelopment()
+        ? 'development'
+        : 'production',
     };
   }
 }

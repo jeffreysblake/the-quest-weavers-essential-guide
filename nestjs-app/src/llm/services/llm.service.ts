@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { 
-  LLMProvider, 
-  LLMResponse, 
-  LLMRequestOptions, 
+import {
+  LLMProvider,
+  LLMResponse,
+  LLMRequestOptions,
   StructuredLLMResponse,
   LLMError,
-  ConversationTurn 
+  ConversationTurn,
 } from '../interfaces/llm.interface';
 import { LLMCacheService } from './llm-cache.service';
 import { LLMErrorHandlerService } from './llm-error-handler.service';
@@ -21,7 +21,7 @@ export class LLMService {
 
   constructor(
     private readonly cacheService?: LLMCacheService,
-    private readonly errorHandler?: LLMErrorHandlerService
+    private readonly errorHandler?: LLMErrorHandlerService,
   ) {
     this.logger.log('Initializing LLM Service with caching and error handling');
   }
@@ -31,29 +31,34 @@ export class LLMService {
    */
   registerProvider(provider: LLMProvider, isPrimary = false): void {
     this.providers.set(provider.name, provider);
-    
+
     if (isPrimary) {
       this.primaryProvider = provider.name;
     } else {
       this.fallbackProviders.push(provider.name);
     }
-    
-    this.logger.log(`Registered LLM provider: ${provider.name}${isPrimary ? ' (primary)' : ''}`);
+
+    this.logger.log(
+      `Registered LLM provider: ${provider.name}${isPrimary ? ' (primary)' : ''}`,
+    );
   }
 
   /**
    * Generate a text response using the best available provider
    */
   async generateResponse(
-    prompt: string, 
-    options: LLMRequestOptions = {}
+    prompt: string,
+    options: LLMRequestOptions = {},
   ): Promise<LLMResponse> {
     this.requestCount++;
     const startTime = Date.now();
 
     // Check cache first
     if (this.cacheService) {
-      const cached = await this.cacheService.getCachedPromptResponse(prompt, options);
+      const cached = await this.cacheService.getCachedPromptResponse(
+        prompt,
+        options,
+      );
       if (cached) {
         this.logger.debug('Returning cached response');
         return cached as LLMResponse;
@@ -65,19 +70,25 @@ export class LLMService {
       if (this.primaryProvider) {
         try {
           const provider = this.providers.get(this.primaryProvider);
-          if (provider && await provider.isAvailable()) {
+          if (provider && (await provider.isAvailable())) {
             const response = await provider.generateResponse(prompt, options);
             this.logSuccess(this.primaryProvider, startTime);
-            
+
             // Cache the response
             if (this.cacheService) {
-              await this.cacheService.cachePromptResponse(prompt, response, options);
+              await this.cacheService.cachePromptResponse(
+                prompt,
+                response,
+                options,
+              );
             }
-            
+
             return response;
           }
         } catch (error) {
-          this.logger.warn(`Primary provider ${this.primaryProvider} failed: ${error.message}`);
+          this.logger.warn(
+            `Primary provider ${this.primaryProvider} failed: ${error.message}`,
+          );
           this.errorCount++;
           throw error;
         }
@@ -87,19 +98,25 @@ export class LLMService {
       for (const providerName of this.fallbackProviders) {
         try {
           const provider = this.providers.get(providerName);
-          if (provider && await provider.isAvailable()) {
+          if (provider && (await provider.isAvailable())) {
             const response = await provider.generateResponse(prompt, options);
             this.logFallbackSuccess(providerName, startTime);
-            
+
             // Cache the response
             if (this.cacheService) {
-              await this.cacheService.cachePromptResponse(prompt, response, options);
+              await this.cacheService.cachePromptResponse(
+                prompt,
+                response,
+                options,
+              );
             }
-            
+
             return response;
           }
         } catch (error) {
-          this.logger.warn(`Fallback provider ${providerName} failed: ${error.message}`);
+          this.logger.warn(
+            `Fallback provider ${providerName} failed: ${error.message}`,
+          );
           this.errorCount++;
           throw error;
         }
@@ -118,7 +135,10 @@ export class LLMService {
       }
     } catch (error) {
       if (this.errorHandler) {
-        const llmError = this.errorHandler.handleError(error as Error, { prompt, options });
+        const llmError = this.errorHandler.handleError(error as Error, {
+          prompt,
+          options,
+        });
         throw new Error(this.errorHandler.getUserFriendlyMessage(llmError));
       } else {
         throw error;
@@ -132,23 +152,29 @@ export class LLMService {
   async generateStructuredResponse<T>(
     prompt: string,
     schema: any,
-    options: LLMRequestOptions = {}
+    options: LLMRequestOptions = {},
   ): Promise<StructuredLLMResponse<T>> {
     // Add JSON formatting instructions to prompt
-    const structuredPrompt = this.formatPromptForStructuredOutput(prompt, schema);
-    
+    const structuredPrompt = this.formatPromptForStructuredOutput(
+      prompt,
+      schema,
+    );
+
     // Modify options to encourage structured output
     const structuredOptions: LLMRequestOptions = {
       ...options,
       temperature: Math.min(options.temperature || 0.7, 0.3), // Lower temperature for structured output
       systemPrompt: this.combineSystemPrompts(
         options.systemPrompt,
-        'You must respond with valid JSON that matches the provided schema exactly.'
-      )
+        'You must respond with valid JSON that matches the provided schema exactly.',
+      ),
     };
 
-    const response = await this.generateResponse(structuredPrompt, structuredOptions);
-    
+    const response = await this.generateResponse(
+      structuredPrompt,
+      structuredOptions,
+    );
+
     // Parse and validate the structured response
     return this.parseStructuredResponse<T>(response, schema);
   }
@@ -159,11 +185,11 @@ export class LLMService {
   async generateConversationResponse(
     message: string,
     conversationHistory: ConversationTurn[],
-    options: LLMRequestOptions = {}
+    options: LLMRequestOptions = {},
   ): Promise<LLMResponse> {
     const contextualOptions: LLMRequestOptions = {
       ...options,
-      conversationHistory
+      conversationHistory,
     };
 
     return this.generateResponse(message, contextualOptions);
@@ -176,7 +202,7 @@ export class LLMService {
     // Check primary provider
     if (this.primaryProvider) {
       const provider = this.providers.get(this.primaryProvider);
-      if (provider && await provider.isAvailable()) {
+      if (provider && (await provider.isAvailable())) {
         return true;
       }
     }
@@ -184,7 +210,7 @@ export class LLMService {
     // Check fallback providers
     for (const providerName of this.fallbackProviders) {
       const provider = this.providers.get(providerName);
-      if (provider && await provider.isAvailable()) {
+      if (provider && (await provider.isAvailable())) {
         return true;
       }
     }
@@ -205,9 +231,12 @@ export class LLMService {
     return {
       totalRequests: this.requestCount,
       errorCount: this.errorCount,
-      successRate: this.requestCount > 0 ? (this.requestCount - this.errorCount) / this.requestCount : 0,
+      successRate:
+        this.requestCount > 0
+          ? (this.requestCount - this.errorCount) / this.requestCount
+          : 0,
       availableProviders: Array.from(this.providers.keys()),
-      primaryProvider: this.primaryProvider
+      primaryProvider: this.primaryProvider,
     };
   }
 
@@ -216,18 +245,20 @@ export class LLMService {
    */
   async testProviders(): Promise<Map<string, boolean>> {
     const results = new Map<string, boolean>();
-    
+
     for (const [name, provider] of this.providers) {
       try {
         const isAvailable = await provider.isAvailable();
         results.set(name, isAvailable);
-        this.logger.log(`Provider ${name}: ${isAvailable ? 'Available' : 'Unavailable'}`);
+        this.logger.log(
+          `Provider ${name}: ${isAvailable ? 'Available' : 'Unavailable'}`,
+        );
       } catch (error) {
         results.set(name, false);
         this.logger.error(`Provider ${name} test failed: ${error.message}`);
       }
     }
-    
+
     return results;
   }
 
@@ -235,7 +266,7 @@ export class LLMService {
 
   private formatPromptForStructuredOutput(prompt: string, schema: any): string {
     const schemaDescription = this.generateSchemaDescription(schema);
-    
+
     return `${prompt}
 
 Please respond with a valid JSON object that matches this schema:
@@ -251,58 +282,66 @@ Ensure your response is valid JSON with no additional text or formatting.`;
     if (schema.type === 'object') {
       const props = Object.entries(schema.properties || {})
         .map(([key, prop]: [string, any]) => {
-          const required = schema.required?.includes(key) ? ' (required)' : ' (optional)';
+          const required = schema.required?.includes(key)
+            ? ' (required)'
+            : ' (optional)';
           return `- ${key}: ${prop.type}${required}${prop.description ? ` - ${prop.description}` : ''}`;
         })
         .join('\n');
-      
+
       return `Object with properties:\n${props}`;
     }
-    
+
     return `Type: ${schema.type}`;
   }
 
   private combineSystemPrompts(...prompts: (string | undefined)[]): string {
-    return prompts.filter(p => p && p.trim()).join('\n\n');
+    return prompts.filter((p) => p && p.trim()).join('\n\n');
   }
 
   private async parseStructuredResponse<T>(
-    response: LLMResponse, 
-    schema: any
+    response: LLMResponse,
+    schema: any,
   ): Promise<StructuredLLMResponse<T>> {
     const structuredResponse: StructuredLLMResponse<T> = {
       ...response,
       parsedContent: null as any,
-      validationErrors: []
+      validationErrors: [],
     };
 
     try {
       // Extract JSON from response content
       const jsonMatch = response.content.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        structuredResponse.validationErrors!.push('No JSON object found in response');
+        structuredResponse.validationErrors!.push(
+          'No JSON object found in response',
+        );
         return structuredResponse;
       }
 
       // Parse JSON
       const parsedContent = JSON.parse(jsonMatch[0]);
-      
+
       // Basic validation against schema
       const validation = this.validateAgainstSchema(parsedContent, schema);
       if (validation.errors.length > 0) {
         structuredResponse.validationErrors = validation.errors;
       }
-      
+
       structuredResponse.parsedContent = parsedContent;
-      
     } catch (error) {
-      structuredResponse.validationErrors!.push(`JSON parsing failed: ${error.message}`);
+      structuredResponse.validationErrors!.push(
+        `JSON parsing failed: ${error.message}`,
+      );
     }
 
     return structuredResponse;
   }
 
-  private validateAgainstSchema(data: any, schema: any): { valid: boolean; errors: string[] } {
+  private validateAgainstSchema(
+    data: any,
+    schema: any,
+  ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
     if (schema.type === 'object') {
@@ -322,10 +361,17 @@ Ensure your response is valid JSON with no additional text or formatting.`;
 
       // Check property types
       if (schema.properties) {
-        for (const [propName, propSchema] of Object.entries(schema.properties as any)) {
+        for (const [propName, propSchema] of Object.entries(
+          schema.properties,
+        )) {
           if (propName in data) {
-            const propValidation = this.validateAgainstSchema(data[propName], propSchema);
-            errors.push(...propValidation.errors.map(e => `${propName}.${e}`));
+            const propValidation = this.validateAgainstSchema(
+              data[propName],
+              propSchema,
+            );
+            errors.push(
+              ...propValidation.errors.map((e) => `${propName}.${e}`),
+            );
           }
         }
       }
@@ -352,11 +398,15 @@ Ensure your response is valid JSON with no additional text or formatting.`;
 
   private logSuccess(providerName: string, startTime: number): void {
     const duration = Date.now() - startTime;
-    this.logger.log(`Successfully generated response using ${providerName} in ${duration}ms`);
+    this.logger.log(
+      `Successfully generated response using ${providerName} in ${duration}ms`,
+    );
   }
 
   private logFallbackSuccess(providerName: string, startTime: number): void {
     const duration = Date.now() - startTime;
-    this.logger.warn(`Used fallback provider ${providerName} for response in ${duration}ms`);
+    this.logger.warn(
+      `Used fallback provider ${providerName} for response in ${duration}ms`,
+    );
   }
 }

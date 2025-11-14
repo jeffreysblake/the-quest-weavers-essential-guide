@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "npc.schema.json",
+  "title": "NPC",
+  "description": "Schema for non-player character entity",
+  "type": "object",
+  "required": ["id", "name", "description", "npc_type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Unique NPC identifier"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "NPC name"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "description": "NPC description"
+    },
+    "npc_type": {
+      "type": "string",
+      "enum": ["npc", "enemy", "friendly", "neutral", "merchant", "quest-giver", "guard", "companion"],
+      "description": "Type of NPC"
+    },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "health": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Current health points"
+    },
+    "max_health": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum health points"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "NPC level"
+    },
+    "experience": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Experience points"
+    },
+    "dialogue": {
+      "type": "object",
+      "description": "Dialogue tree or conversation data"
+    },
+    "inventory": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of object IDs in NPC inventory"
+    },
+    "behavior": {
+      "type": "object",
+      "description": "AI behavior configuration"
+    },
+    "faction": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Faction or group affiliation"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "NPC tags for categorization"
+    }
+  },
+  "additionalProperties": false
+}

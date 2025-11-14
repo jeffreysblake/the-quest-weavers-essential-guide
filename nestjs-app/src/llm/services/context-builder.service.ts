@@ -3,16 +3,16 @@ import { EntityService } from '../../entity/entity.service';
 import { RoomService } from '../../entity/room.service';
 import { ObjectService } from '../../entity/object.service';
 import { PlayerService } from '../../entity/player.service';
-import { 
-  GameContext, 
-  GameInfo, 
-  SceneContext, 
-  RoomContext, 
-  ObjectContext, 
+import {
+  GameContext,
+  GameInfo,
+  SceneContext,
+  RoomContext,
+  ObjectContext,
   NPCContext,
   PlayerContext,
   WorldState,
-  GameConstraints 
+  GameConstraints,
 } from '../interfaces/llm.interface';
 
 export interface ContextBuilderOptions {
@@ -37,7 +37,7 @@ export class ContextBuilderService {
     private readonly entityService: EntityService,
     private readonly roomService: RoomService,
     private readonly objectService: ObjectService,
-    private readonly playerService: PlayerService
+    private readonly playerService: PlayerService,
   ) {}
 
   /**
@@ -47,7 +47,7 @@ export class ContextBuilderService {
     gameId: string,
     playerId?: string,
     roomId?: string,
-    options: ContextBuilderOptions = {}
+    options: ContextBuilderOptions = {},
   ): Promise<GameContext> {
     const defaultOptions: ContextBuilderOptions = {
       includeNearbyRooms: true,
@@ -59,25 +59,30 @@ export class ContextBuilderService {
       maxHistoryItems: 20,
       proximityRadius: 2,
       compressionLevel: 'light',
-      ...options
+      ...options,
     };
 
-    this.logger.log(`Building context for game ${gameId}, player ${playerId}, room ${roomId}`);
+    this.logger.log(
+      `Building context for game ${gameId}, player ${playerId}, room ${roomId}`,
+    );
 
-    const [gameInfo, sceneContext, playerContext, worldState, constraints] = await Promise.all([
-      this.buildGameInfo(gameId),
-      this.buildSceneContext(gameId, roomId, defaultOptions),
-      playerId ? this.buildPlayerContext(playerId, defaultOptions) : this.buildDefaultPlayerContext(),
-      this.buildWorldState(gameId, defaultOptions),
-      this.buildGameConstraints(gameId)
-    ]);
+    const [gameInfo, sceneContext, playerContext, worldState, constraints] =
+      await Promise.all([
+        this.buildGameInfo(gameId),
+        this.buildSceneContext(gameId, roomId, defaultOptions),
+        playerId
+          ? this.buildPlayerContext(playerId, defaultOptions)
+          : this.buildDefaultPlayerContext(),
+        this.buildWorldState(gameId, defaultOptions),
+        this.buildGameConstraints(gameId),
+      ]);
 
     const context: GameContext = {
       gameInfo,
       currentScene: sceneContext,
       playerContext,
       worldState,
-      constraints
+      constraints,
     };
 
     // Apply compression if requested
@@ -95,7 +100,7 @@ export class ContextBuilderService {
     gameId: string,
     focusType: 'room' | 'object' | 'npc' | 'conflict',
     focusId: string,
-    options: ContextBuilderOptions = {}
+    options: ContextBuilderOptions = {},
   ): Promise<GameContext> {
     switch (focusType) {
       case 'room':
@@ -116,23 +121,23 @@ export class ContextBuilderService {
    */
   async updateContext(
     baseContext: GameContext,
-    updates: Partial<GameContext>
+    updates: Partial<GameContext>,
   ): Promise<GameContext> {
     return {
       ...baseContext,
       ...updates,
       currentScene: {
         ...baseContext.currentScene,
-        ...updates.currentScene
+        ...updates.currentScene,
       },
       playerContext: {
         ...baseContext.playerContext,
-        ...updates.playerContext
+        ...updates.playerContext,
       },
       worldState: {
         ...baseContext.worldState,
-        ...updates.worldState
-      }
+        ...updates.worldState,
+      },
     };
   }
 
@@ -147,29 +152,33 @@ export class ContextBuilderService {
       genre: 'RPG',
       description: 'An epic adventure game',
       createdAt: new Date().toISOString(),
-      lastModified: new Date().toISOString()
+      lastModified: new Date().toISOString(),
     };
   }
 
   private async buildSceneContext(
     gameId: string,
     roomId?: string,
-    options: ContextBuilderOptions = {}
+    options: ContextBuilderOptions = {},
   ): Promise<SceneContext> {
     let activeRoom: RoomContext | undefined;
     let nearbyRooms: RoomContext[] = [];
 
     if (roomId) {
       activeRoom = await this.buildRoomContext(roomId, options);
-      
+
       if (options.includeNearbyRooms) {
-        nearbyRooms = await this.buildNearbyRooms(roomId, options.maxNearbyRooms || 3);
+        nearbyRooms = await this.buildNearbyRooms(
+          roomId,
+          options.maxNearbyRooms || 3,
+        );
       }
     }
 
     // Build recent events (placeholder - would integrate with event system)
-    const recentEvents = options.includeRecentEvents ? 
-      await this.buildRecentEvents(gameId, options.maxRecentEvents || 10) : [];
+    const recentEvents = options.includeRecentEvents
+      ? await this.buildRecentEvents(gameId, options.maxRecentEvents || 10)
+      : [];
 
     return {
       activeRoom: activeRoom!,
@@ -177,11 +186,17 @@ export class ContextBuilderService {
       recentEvents,
       timeOfDay: this.getCurrentTimeOfDay(),
       weather: 'clear',
-      atmosphere: 'calm'
+      atmosphere: 'calm',
     };
   }
 
-  async buildRoomContext(roomId: string, options: ContextBuilderOptions = { includeHistory: true, maxHistoryEntries: 10 }): Promise<RoomContext> {
+  async buildRoomContext(
+    roomId: string,
+    options: ContextBuilderOptions = {
+      includeHistory: true,
+      maxHistoryEntries: 10,
+    },
+  ): Promise<RoomContext> {
     const room = this.roomService.getRoom(roomId);
     if (!room) {
       throw new Error(`Room not found: ${roomId}`);
@@ -223,41 +238,56 @@ export class ContextBuilderService {
         lighting: 'natural light',
         sounds: ['ambient room sounds'],
         smells: ['neutral'],
-        temperature: 'comfortable'
-      }
+        temperature: 'comfortable',
+      },
     };
   }
 
-  async buildObjectContext(objectId: string, options: ContextBuilderOptions = { includeHistory: true, maxHistoryEntries: 10 }): Promise<ObjectContext | null> {
+  async buildObjectContext(
+    objectId: string,
+    options: ContextBuilderOptions = {
+      includeHistory: true,
+      maxHistoryEntries: 10,
+    },
+  ): Promise<ObjectContext | null> {
     const object = this.objectService.getObject(objectId);
     if (!object) {
       return null;
     }
 
     // Get spatial relationships
-    const spatialRelationships = await this.objectService.getSpatialRelationships(objectId);
+    const spatialRelationships =
+      await this.objectService.getSpatialRelationships(objectId);
 
     // Build interaction history (placeholder)
-    const interactionHistory = options.includePlayerHistory ? 
-      await this.buildObjectInteractionHistory(objectId) : [];
+    const interactionHistory = options.includePlayerHistory
+      ? await this.buildObjectInteractionHistory(objectId)
+      : [];
 
     // Determine significance
     const significance = this.determineObjectSignificance(object);
 
     return {
       object,
-      spatialRelationships: spatialRelationships?.map(rel => ({
-        type: rel.relationshipType,
-        targetId: rel.targetId,
-        description: rel.description || '',
-        stability: 80 // Default stability
-      })) || [],
+      spatialRelationships:
+        spatialRelationships?.map((rel) => ({
+          type: rel.relationshipType,
+          targetId: rel.targetId,
+          description: rel.description || '',
+          stability: 80, // Default stability
+        })) || [],
       interactionHistory,
-      significance
+      significance,
     };
   }
 
-  async buildNPCContext(npcId: string, options: ContextBuilderOptions = { includeHistory: true, maxHistoryEntries: 10 }): Promise<NPCContext | null> {
+  async buildNPCContext(
+    npcId: string,
+    options: ContextBuilderOptions = {
+      includeHistory: true,
+      maxHistoryEntries: 10,
+    },
+  ): Promise<NPCContext | null> {
     const npc = this.playerService.getPlayer(npcId);
     if (!npc) {
       return null;
@@ -270,8 +300,9 @@ export class ContextBuilderService {
     const relationships = await this.buildNPCRelationships(npcId);
 
     // Get conversation history
-    const conversationHistory = options.includePlayerHistory ?
-      await this.buildConversationHistory(npcId) : [];
+    const conversationHistory = options.includePlayerHistory
+      ? await this.buildConversationHistory(npcId)
+      : [];
 
     return {
       npc,
@@ -279,19 +310,23 @@ export class ContextBuilderService {
       relationships,
       currentMood: 'neutral',
       recentActions: [],
-      conversationHistory
+      conversationHistory,
     };
   }
 
-  private async buildPlayerContext(playerId: string, options: ContextBuilderOptions): Promise<PlayerContext> {
+  private async buildPlayerContext(
+    playerId: string,
+    options: ContextBuilderOptions,
+  ): Promise<PlayerContext> {
     const player = this.playerService.getPlayer(playerId);
     if (!player) {
       throw new Error(`Player not found: ${playerId}`);
     }
 
     // Build recent actions
-    const recentActions = options.includePlayerHistory ?
-      await this.buildPlayerActions(playerId, options.maxHistoryItems || 20) : [];
+    const recentActions = options.includePlayerHistory
+      ? await this.buildPlayerActions(playerId, options.maxHistoryItems || 20)
+      : [];
 
     // Build preferences (would be stored in player profile)
     const preferences = this.buildPlayerPreferences(player);
@@ -300,8 +335,9 @@ export class ContextBuilderService {
     const currentObjectives = await this.buildPlayerObjectives(playerId);
 
     // Build conversation history
-    const conversationHistory = options.includePlayerHistory ?
-      await this.buildConversationHistory(playerId) : [];
+    const conversationHistory = options.includePlayerHistory
+      ? await this.buildConversationHistory(playerId)
+      : [];
 
     // Build play style
     const playStyle = this.analyzePlayStyle(player);
@@ -312,7 +348,7 @@ export class ContextBuilderService {
       preferences,
       currentObjectives,
       conversationHistory,
-      playStyle
+      playStyle,
     };
   }
 
@@ -326,7 +362,7 @@ export class ContextBuilderService {
         health: 100,
         level: 1,
         experience: 0,
-        inventory: []
+        inventory: [],
       },
       recentActions: [],
       preferences: {
@@ -335,10 +371,10 @@ export class ContextBuilderService {
           violence: 'mild',
           romance: 'none',
           horror: 'none',
-          humor: 'occasional'
+          humor: 'occasional',
         },
         interactionStyle: 'explorer',
-        pacing: 'moderate'
+        pacing: 'moderate',
       },
       currentObjectives: [],
       conversationHistory: [],
@@ -348,12 +384,15 @@ export class ContextBuilderService {
         social: 50,
         puzzle: 40,
         story: 80,
-        creation: 30
-      }
+        creation: 30,
+      },
     };
   }
 
-  private async buildWorldState(gameId: string, options: ContextBuilderOptions): Promise<WorldState> {
+  private async buildWorldState(
+    gameId: string,
+    options: ContextBuilderOptions,
+  ): Promise<WorldState> {
     // This would integrate with a world state management system
     return {
       keyLocations: [],
@@ -361,7 +400,7 @@ export class ContextBuilderService {
       majorItems: [],
       ongoingQuests: [],
       worldEvents: [],
-      factions: []
+      factions: [],
     };
   }
 
@@ -373,8 +412,8 @@ export class ContextBuilderService {
           type: 'gravity',
           description: 'Objects fall when not supported',
           flexibility: 'moderate',
-          exceptions: ['magical items', 'flying creatures']
-        }
+          exceptions: ['magical items', 'flying creatures'],
+        },
       ],
       culturalSettings: {
         era: 'medieval fantasy',
@@ -383,40 +422,46 @@ export class ContextBuilderService {
         religion: ['pantheon of gods'],
         values: ['honor', 'courage', 'loyalty'],
         taboos: ['necromancy', 'betrayal'],
-        languages: ['Common', 'Elvish', 'Dwarvish']
+        languages: ['Common', 'Elvish', 'Dwarvish'],
       },
       narrativeGuidelines: {
         tense: 'second',
         perspective: 'limited',
         tone: 'epic',
         complexity: 'moderate',
-        descriptiveness: 'rich'
+        descriptiveness: 'rich',
       },
       contentRatings: [
         {
           category: 'violence',
           level: 'moderate',
-          guidelines: ['fantasy combat allowed', 'no graphic descriptions']
-        }
+          guidelines: ['fantasy combat allowed', 'no graphic descriptions'],
+        },
       ],
       technicalLimitations: [
         {
           type: 'performance',
           limit: '2000 tokens per context',
-          description: 'Maximum context size for LLM requests'
-        }
-      ]
+          description: 'Maximum context size for LLM requests',
+        },
+      ],
     };
   }
 
   // Helper methods
 
-  private async buildNearbyRooms(roomId: string, maxRooms: number): Promise<RoomContext[]> {
+  private async buildNearbyRooms(
+    roomId: string,
+    maxRooms: number,
+  ): Promise<RoomContext[]> {
     // This would use the room connection system to find nearby rooms
     return [];
   }
 
-  private async buildRecentEvents(gameId: string, maxEvents: number): Promise<any[]> {
+  private async buildRecentEvents(
+    gameId: string,
+    maxEvents: number,
+  ): Promise<any[]> {
     // This would integrate with an event logging system
     return [];
   }
@@ -434,12 +479,16 @@ export class ContextBuilderService {
     return [];
   }
 
-  private async buildObjectInteractionHistory(objectId: string): Promise<any[]> {
+  private async buildObjectInteractionHistory(
+    objectId: string,
+  ): Promise<any[]> {
     // This would fetch interaction history
     return [];
   }
 
-  private determineObjectSignificance(object: any): 'background' | 'notable' | 'important' | 'quest_critical' {
+  private determineObjectSignificance(
+    object: any,
+  ): 'background' | 'notable' | 'important' | 'quest_critical' {
     // Logic to determine object importance
     if (object.properties?.questItem) return 'quest_critical';
     if (object.properties?.magical) return 'important';
@@ -459,9 +508,9 @@ export class ContextBuilderService {
         verbosity: 'normal',
         emotiveness: 'balanced',
         vocabulary: ['common words'],
-        commonPhrases: ['How can I help?']
+        commonPhrases: ['How can I help?'],
       },
-      background: 'A helpful character'
+      background: 'A helpful character',
     };
   }
 
@@ -475,7 +524,10 @@ export class ContextBuilderService {
     return [];
   }
 
-  private async buildPlayerActions(playerId: string, maxActions: number): Promise<any[]> {
+  private async buildPlayerActions(
+    playerId: string,
+    maxActions: number,
+  ): Promise<any[]> {
     // Fetch recent player actions
     return [];
   }
@@ -488,10 +540,10 @@ export class ContextBuilderService {
         violence: 'moderate',
         romance: 'mild',
         horror: 'mild',
-        humor: 'frequent'
+        humor: 'frequent',
       },
       interactionStyle: 'explorer',
-      pacing: 'moderate'
+      pacing: 'moderate',
     };
   }
 
@@ -508,11 +560,14 @@ export class ContextBuilderService {
       social: 60,
       puzzle: 40,
       story: 80,
-      creation: 20
+      creation: 20,
     };
   }
 
-  private compressContext(context: GameContext, level: 'light' | 'moderate' | 'aggressive'): GameContext {
+  private compressContext(
+    context: GameContext,
+    level: 'light' | 'moderate' | 'aggressive',
+  ): GameContext {
     // Implement context compression strategies
     switch (level) {
       case 'light':
@@ -533,8 +588,8 @@ export class ContextBuilderService {
       currentScene: {
         ...context.currentScene,
         nearbyRooms: context.currentScene.nearbyRooms.slice(0, 2), // Limit nearby rooms
-        recentEvents: context.currentScene.recentEvents.slice(0, 5) // Limit recent events
-      }
+        recentEvents: context.currentScene.recentEvents.slice(0, 5), // Limit recent events
+      },
     };
   }
 
@@ -548,10 +603,10 @@ export class ContextBuilderService {
         activeRoom: {
           ...lightCompressed.currentScene.activeRoom,
           objects: lightCompressed.currentScene.activeRoom.objects
-            .filter(obj => obj.significance !== 'background')
-            .slice(0, 10) // Limit objects
-        }
-      }
+            .filter((obj) => obj.significance !== 'background')
+            .slice(0, 10), // Limit objects
+        },
+      },
     };
   }
 
@@ -566,16 +621,20 @@ export class ContextBuilderService {
         activeRoom: {
           ...moderateCompressed.currentScene.activeRoom,
           objects: moderateCompressed.currentScene.activeRoom.objects
-            .filter(obj => obj.significance === 'quest_critical' || obj.significance === 'important')
+            .filter(
+              (obj) =>
+                obj.significance === 'quest_critical' ||
+                obj.significance === 'important',
+            )
             .slice(0, 5),
-          npcs: moderateCompressed.currentScene.activeRoom.npcs.slice(0, 3) // Limit NPCs
-        }
+          npcs: moderateCompressed.currentScene.activeRoom.npcs.slice(0, 3), // Limit NPCs
+        },
       },
       worldState: {
         ...moderateCompressed.worldState,
         keyLocations: moderateCompressed.worldState.keyLocations.slice(0, 3),
-        importantNPCs: moderateCompressed.worldState.importantNPCs.slice(0, 3)
-      }
+        importantNPCs: moderateCompressed.worldState.importantNPCs.slice(0, 3),
+      },
     };
   }
 
@@ -583,9 +642,13 @@ export class ContextBuilderService {
   private async buildRoomFocusedContext(
     gameId: string,
     roomId: string,
-    options: ContextBuilderOptions
+    options: ContextBuilderOptions,
   ): Promise<GameContext> {
-    const enhancedOptions = { ...options, includeNearbyRooms: true, includeDetailedObjects: true };
+    const enhancedOptions = {
+      ...options,
+      includeNearbyRooms: true,
+      includeDetailedObjects: true,
+    };
     return this.buildGameContext(gameId, undefined, roomId, enhancedOptions);
   }
 
@@ -593,7 +656,7 @@ export class ContextBuilderService {
   private async buildObjectFocusedContext(
     gameId: string,
     objectId: string,
-    options: ContextBuilderOptions
+    options: ContextBuilderOptions,
   ): Promise<GameContext> {
     const object = this.objectService.getObject(objectId);
     if (!object) {
@@ -606,7 +669,7 @@ export class ContextBuilderService {
 
     for (const room of allRooms) {
       const roomObjects = await this.roomService.getObjectsInRoom(room.id);
-      if (roomObjects.some(obj => obj.id === objectId)) {
+      if (roomObjects.some((obj) => obj.id === objectId)) {
         roomId = room.id;
         break;
       }
@@ -620,7 +683,7 @@ export class ContextBuilderService {
   private async buildNPCFocusedContext(
     gameId: string,
     npcId: string,
-    options: ContextBuilderOptions
+    options: ContextBuilderOptions,
   ): Promise<GameContext> {
     const npc = this.playerService.getPlayer(npcId);
     if (!npc) {
@@ -633,7 +696,7 @@ export class ContextBuilderService {
 
     for (const room of allRooms) {
       const roomNPCs = await this.roomService.getPlayersInRoom(room.id);
-      if (roomNPCs.some(player => player.id === npcId)) {
+      if (roomNPCs.some((player) => player.id === npcId)) {
         roomId = room.id;
         break;
       }
@@ -647,17 +710,17 @@ export class ContextBuilderService {
   private async buildConflictFocusedContext(
     gameId: string,
     conflictId: string,
-    options: ContextBuilderOptions
+    options: ContextBuilderOptions,
   ): Promise<GameContext> {
     // For conflict resolution, we need comprehensive context
-    const enhancedOptions = { 
-      ...options, 
+    const enhancedOptions = {
+      ...options,
       includeNearbyRooms: true,
       includeDetailedObjects: true,
       includeRecentEvents: true,
-      compressionLevel: 'light' as const // Keep more detail for conflicts
+      compressionLevel: 'light' as const, // Keep more detail for conflicts
     };
-    
+
     return this.buildGameContext(gameId, undefined, undefined, enhancedOptions);
   }
 
@@ -666,12 +729,12 @@ export class ContextBuilderService {
     return {
       gameInfo: {
         id: gameId || 'default',
-        name: 'The Quest Weaver\'s Essential Guide Game',
+        name: "The Quest Weaver's Essential Guide Game",
         theme: 'fantasy',
         genre: 'adventure',
         description: 'A dynamic text-based adventure game',
         createdAt: new Date().toISOString(),
-        lastModified: new Date().toISOString()
+        lastModified: new Date().toISOString(),
       },
       currentScene: {
         activeRoom: await this.buildRoomContext('default', {}),
@@ -679,7 +742,7 @@ export class ContextBuilderService {
         recentEvents: [],
         timeOfDay: 'day',
         weather: 'clear',
-        atmosphere: 'calm'
+        atmosphere: 'calm',
       },
       playerContext: {
         player: {} as any,
@@ -687,7 +750,7 @@ export class ContextBuilderService {
         preferences: {} as any,
         currentObjectives: [],
         conversationHistory: [],
-        playStyle: {} as any
+        playStyle: {} as any,
       },
       worldState: {
         keyLocations: [],
@@ -695,15 +758,15 @@ export class ContextBuilderService {
         majorItems: [],
         ongoingQuests: [],
         worldEvents: [],
-        factions: []
+        factions: [],
       },
       constraints: {
         physicsRules: [],
         culturalSettings: {} as any,
         narrativeGuidelines: {} as any,
         contentRatings: [],
-        technicalLimitations: []
-      }
+        technicalLimitations: [],
+      },
     };
   }
 }

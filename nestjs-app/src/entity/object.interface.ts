@@ -2,7 +2,12 @@ import { IEntity } from './entity.interface';
 import { IMaterialProperties, IPhysicsEffect } from './physics.interface';
 
 export interface ISpatialRelationship {
-  relationshipType: 'on_top_of' | 'inside' | 'next_to' | 'underneath' | 'attached_to';
+  relationshipType:
+    | 'on_top_of'
+    | 'inside'
+    | 'next_to'
+    | 'underneath'
+    | 'attached_to';
   targetId: string;
   description?: string;
 }

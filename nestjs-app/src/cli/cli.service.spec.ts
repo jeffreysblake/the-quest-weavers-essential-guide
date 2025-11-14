@@ -4,6 +4,7 @@ import { GameManagerService } from './game-manager.service';
 import { DatabaseService } from '../database/database.service';
 import { FileScannerService } from '../file-system/file-scanner.service';
 import { GameFileService } from '../file-system/game-file.service';
+import { AssetService } from '../asset/asset.service';
 
 describe('CLIService', () => {
   let service: CLIService;
@@ -42,6 +43,12 @@ describe('CLIService', () => {
     loadGameFromFiles: jest.fn(),
   };
 
+  const mockAssetService = {
+    loadAsset: jest.fn(),
+    saveAsset: jest.fn(),
+    listAssets: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -50,6 +57,7 @@ describe('CLIService', () => {
         { provide: DatabaseService, useValue: mockDatabaseService },
         { provide: FileScannerService, useValue: mockFileScannerService },
         { provide: GameFileService, useValue: mockGameFileService },
+        { provide: AssetService, useValue: mockAssetService },
       ],
     }).compile();
 
@@ -91,7 +99,7 @@ describe('CLIService', () => {
 
       expect(mockGameManagerService.listGames).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith('📂 Available Games:');
-      expect(consoleSpy).toHaveBeenCalledWith('💾 From Database:');
+      expect(consoleSpy).toHaveBeenCalledWith('\n💾 From Database:');
 
       consoleSpy.mockRestore();
     });
@@ -114,7 +122,9 @@ describe('CLIService', () => {
 
       await service['loadGame']('test-game');
 
-      expect(mockGameFileService.loadGameFromFiles).toHaveBeenCalledWith('test-game');
+      expect(mockGameFileService.loadGameFromFiles).toHaveBeenCalledWith(
+        'test-game',
+      );
       expect(consoleSpy).toHaveBeenCalledWith('✅ Game loaded successfully!');
       expect(consoleSpy).toHaveBeenCalledWith('   Rooms: 2');
       expect(consoleSpy).toHaveBeenCalledWith('   Objects: 1');
@@ -136,7 +146,10 @@ describe('CLIService', () => {
 
       await service['loadGame']('nonexistent-game');
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('❌ Failed to load game:', 'Game not found');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '❌ Failed to load game:',
+        'Game not found',
+      );
 
       consoleErrorSpy.mockRestore();
     });
@@ -155,8 +168,12 @@ describe('CLIService', () => {
 
       await service['syncGame']('test-game');
 
-      expect(mockGameFileService.loadGameFromFiles).toHaveBeenCalledWith('test-game');
-      expect(mockGameManagerService.persistGame).toHaveBeenCalledWith('test-game');
+      expect(mockGameFileService.loadGameFromFiles).toHaveBeenCalledWith(
+        'test-game',
+      );
+      expect(mockGameManagerService.persistGame).toHaveBeenCalledWith(
+        'test-game',
+      );
       expect(consoleSpy).toHaveBeenCalledWith('✅ Game synced successfully!');
 
       consoleSpy.mockRestore();
@@ -167,13 +184,15 @@ describe('CLIService', () => {
     it('should show database status', async () => {
       const mockQuery = jest.fn();
       mockQuery
-        .mockReturnValueOnce({ get: () => ({ count: 5 }) })  // games
+        .mockReturnValueOnce({ get: () => ({ count: 5 }) }) // games
         .mockReturnValueOnce({ get: () => ({ count: 10 }) }) // rooms
         .mockReturnValueOnce({ get: () => ({ count: 15 }) }) // objects
-        .mockReturnValueOnce({ get: () => ({ count: 3 }) })  // npcs
+        .mockReturnValueOnce({ get: () => ({ count: 3 }) }) // npcs
         .mockReturnValueOnce({ get: () => ({ count: 20 }) }); // version_history
 
-      mockDatabaseService.prepare.mockImplementation(() => ({ get: mockQuery }));
+      mockDatabaseService.prepare.mockImplementation(() => ({
+        get: mockQuery,
+      }));
 
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
@@ -191,7 +210,9 @@ describe('CLIService', () => {
       await service['initDatabase']();
 
       expect(consoleSpy).toHaveBeenCalledWith('🔧 Initializing database...');
-      expect(consoleSpy).toHaveBeenCalledWith('✅ Database initialized successfully!');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '✅ Database initialized successfully!',
+      );
 
       consoleSpy.mockRestore();
     });
@@ -200,9 +221,24 @@ describe('CLIService', () => {
   describe('Entity Management Commands', () => {
     it('should list entities for a game', async () => {
       const mockEntities = [
-        { id: 'room1', name: 'Test Room', type: 'room', description: 'A test room' },
-        { id: 'obj1', name: 'Test Object', type: 'object', description: 'A test object' },
-        { id: 'player1', name: 'Test Player', type: 'player', description: 'A test player' },
+        {
+          id: 'room1',
+          name: 'Test Room',
+          type: 'room',
+          description: 'A test room',
+        },
+        {
+          id: 'obj1',
+          name: 'Test Object',
+          type: 'object',
+          description: 'A test object',
+        },
+        {
+          id: 'player1',
+          name: 'Test Player',
+          type: 'player',
+          description: 'A test player',
+        },
       ];
 
       mockGameManagerService.listEntities.mockResolvedValue(mockEntities);
@@ -211,15 +247,25 @@ describe('CLIService', () => {
 
       await service['listEntities']('test-game');
 
-      expect(mockGameManagerService.listEntities).toHaveBeenCalledWith('test-game', undefined);
-      expect(consoleSpy).toHaveBeenCalledWith('📋 Entities for game: test-game');
+      expect(mockGameManagerService.listEntities).toHaveBeenCalledWith(
+        'test-game',
+        undefined,
+      );
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '📋 Entities for game: test-game',
+      );
 
       consoleSpy.mockRestore();
     });
 
     it('should filter entities by type', async () => {
       const mockRooms = [
-        { id: 'room1', name: 'Test Room', type: 'room', description: 'A test room' },
+        {
+          id: 'room1',
+          name: 'Test Room',
+          type: 'room',
+          description: 'A test room',
+        },
       ];
 
       mockGameManagerService.listEntities.mockResolvedValue(mockRooms);
@@ -228,7 +274,10 @@ describe('CLIService', () => {
 
       await service['listEntities']('test-game', 'room');
 
-      expect(mockGameManagerService.listEntities).toHaveBeenCalledWith('test-game', 'room');
+      expect(mockGameManagerService.listEntities).toHaveBeenCalledWith(
+        'test-game',
+        'room',
+      );
       expect(consoleSpy).toHaveBeenCalledWith('   Filtered by type: room');
 
       consoleSpy.mockRestore();
@@ -250,17 +299,17 @@ describe('CLIService', () => {
   describe('Version Management Commands', () => {
     it('should list versions for an entity', async () => {
       const mockVersions = [
-        { 
-          version: 2, 
-          createdAt: '2023-01-02', 
-          createdBy: 'user', 
-          reason: 'Updated entity' 
+        {
+          version: 2,
+          createdAt: '2023-01-02',
+          createdBy: 'user',
+          reason: 'Updated entity',
         },
-        { 
-          version: 1, 
-          createdAt: '2023-01-01', 
-          createdBy: 'user', 
-          reason: 'Created entity' 
+        {
+          version: 1,
+          createdAt: '2023-01-01',
+          createdBy: 'user',
+          reason: 'Created entity',
         },
       ];
 
@@ -270,7 +319,10 @@ describe('CLIService', () => {
 
       await service['listVersions']('room', 'room-1');
 
-      expect(mockDatabaseService.listVersions).toHaveBeenCalledWith('room', 'room-1');
+      expect(mockDatabaseService.listVersions).toHaveBeenCalledWith(
+        'room',
+        'room-1',
+      );
       expect(consoleSpy).toHaveBeenCalledWith('📚 Versions for room: room-1');
 
       consoleSpy.mockRestore();
@@ -283,8 +335,14 @@ describe('CLIService', () => {
 
       await service['rollbackVersion']('room', 'room-1', 1);
 
-      expect(mockDatabaseService.rollbackToVersion).toHaveBeenCalledWith('room', 'room-1', 1);
-      expect(consoleSpy).toHaveBeenCalledWith('✅ Rollback completed successfully!');
+      expect(mockDatabaseService.rollbackToVersion).toHaveBeenCalledWith(
+        'room',
+        'room-1',
+        1,
+      );
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '✅ Rollback completed successfully!',
+      );
 
       consoleSpy.mockRestore();
     });
@@ -311,7 +369,9 @@ describe('CLIService', () => {
       await service['clearCaches']();
 
       expect(mockGameManagerService.clearAllCaches).toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalledWith('✅ All caches cleared successfully!');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '✅ All caches cleared successfully!',
+      );
 
       consoleSpy.mockRestore();
     });
@@ -350,7 +410,10 @@ describe('CLIService', () => {
 
       await service['listGames']();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('❌ Failed to list games:', 'Service unavailable');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '❌ Failed to list games:',
+        'Service unavailable',
+      );
 
       consoleErrorSpy.mockRestore();
     });
@@ -363,7 +426,10 @@ describe('CLIService', () => {
 
       await service['listVersions']('room', 'room-1');
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('❌ Failed to list versions:', 'Database connection failed');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '❌ Failed to list versions:',
+        'Database connection failed',
+      );
 
       consoleErrorSpy.mockRestore();
     });
@@ -371,11 +437,11 @@ describe('CLIService', () => {
 
   describe('Command Registration', () => {
     it('should register all expected commands', () => {
-      const commands = service['program'].commands.map(cmd => cmd.name());
-      
+      const commands = service['program'].commands.map((cmd) => cmd.name());
+
       const expectedCommands = [
         'game:list',
-        'game:create', 
+        'game:create',
         'game:load',
         'game:scan',
         'game:sync',
@@ -387,20 +453,26 @@ describe('CLIService', () => {
         'version:list',
         'version:rollback',
         'cache:clear',
-        'cache:stats'
+        'cache:stats',
       ];
 
-      expectedCommands.forEach(command => {
+      expectedCommands.forEach((command) => {
         expect(commands).toContain(command);
       });
     });
 
     it('should have proper command descriptions', () => {
-      const gameListCmd = service['program'].commands.find(cmd => cmd.name() === 'game:list');
+      const gameListCmd = service['program'].commands.find(
+        (cmd) => cmd.name() === 'game:list',
+      );
       expect(gameListCmd?.description()).toBe('List all available games');
 
-      const dbInitCmd = service['program'].commands.find(cmd => cmd.name() === 'db:init');
-      expect(dbInitCmd?.description()).toBe('Initialize database and run migrations');
+      const dbInitCmd = service['program'].commands.find(
+        (cmd) => cmd.name() === 'db:init',
+      );
+      expect(dbInitCmd?.description()).toBe(
+        'Initialize database and run migrations',
+      );
     });
   });
 });

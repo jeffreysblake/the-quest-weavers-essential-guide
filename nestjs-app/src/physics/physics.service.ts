@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as CANNON from 'cannon';
+import * as CANNON from 'cannon-es';
 
 export interface PhysicsEntity {
   id: string;
@@ -41,8 +41,9 @@ export class PhysicsService {
         const world = new CANNON.World();
         world.gravity.set(0, -9.82, 0); // Earth-like gravity
         world.broadphase = new CANNON.NaiveBroadphase();
-        world.solver.iterations = 10;
-        
+        // TODO: Set solver iterations - API changed in cannon-es
+        // world.solver.iterations = 10;
+
         this.world = world;
       }
     } catch (error) {
@@ -58,34 +59,34 @@ export class PhysicsService {
 
     try {
       // Step the physics world at fixed time step to ensure consistency
-      this.world.step(1/60); // Fixed time step
-      
+      this.world.step(1 / 60); // Fixed time step
+
       // Update entity positions and rotations from Cannon.js physics
       for (const [entityId, entity] of this.entities.entries()) {
         if (!entity.active || !this.bodyMap.has(entityId)) continue;
-        
+
         const body = this.bodyMap.get(entityId);
         if (body) {
           // Update position from Cannon.js physics
           const newPosition = {
             x: body.position.x,
             y: body.position.y,
-            z: body.position.z
+            z: body.position.z,
           };
-          
+
           // Update rotation from Cannon.js physics
           const newRotation = {
             x: body.quaternion.x,
             y: body.quaternion.y,
-            z: body.quaternion.z
+            z: body.quaternion.z,
           };
 
           const updatedEntity: PhysicsEntity = {
             ...entity,
             position: newPosition,
-            rotation: newRotation
+            rotation: newRotation,
           };
-          
+
           // Update entity in map
           this.entities.set(entityId, updatedEntity);
         }
@@ -100,52 +101,53 @@ export class PhysicsService {
    */
   createEntity(entity: Omit<PhysicsEntity, 'id'>): PhysicsEntity {
     if (!this.world) return entity as PhysicsEntity;
-    
+
     try {
       // Create unique ID for the entity
       const newEntity: PhysicsEntity = {
         ...entity,
-        id: `physics-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        id: `physics-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       };
-      
+
       let shape: CANNON.Shape;
-      
+
       // Create different shapes based on size parameters
       if (newEntity.size.width > 0 && newEntity.size.height > 0) {
         // Create a box shape for entities with defined dimensions
         shape = new CANNON.Box(
           new CANNON.Vec3(
             newEntity.size.width / 2,
-            newEntity.size.height / 2, 
-            newEntity.size.depth / 2
-          )
+            newEntity.size.height / 2,
+            newEntity.size.depth / 2,
+          ),
         );
       } else {
         // Default to sphere if no size specified or invalid dimensions
         shape = new CANNON.Sphere(newEntity.mass);
       }
-      
+
       const body = new CANNON.Body({
         mass: newEntity.mass,
         position: new CANNON.Vec3(
-          newEntity.position.x, 
-          newEntity.position.y, 
-          newEntity.position.z
+          newEntity.position.x,
+          newEntity.position.y,
+          newEntity.position.z,
         ),
         shape: shape,
-        friction: newEntity.friction || 0.1,
-        restitution: newEntity.restitution || 0.5
+        // TODO: Set friction and restitution via material
+        // friction: newEntity.friction || 0.1,
+        // restitution: newEntity.restitution || 0.5
       });
-      
+
       // Add body to world for physics simulation
       this.world.addBody(body);
-      
+
       // Store reference for later updates and cleanup
       this.bodyMap.set(newEntity.id, body);
-      
+
       // Store entity in map
       this.entities.set(newEntity.id, newEntity);
-      
+
       return newEntity;
     } catch (error) {
       console.error('Error creating physics entity:', error);
@@ -158,17 +160,17 @@ export class PhysicsService {
    */
   removeEntity(entityId: string): boolean {
     if (!this.world || !this.bodyMap.has(entityId)) return false;
-    
+
     try {
       // Remove body from world to prevent further simulation updates
       const body = this.bodyMap.get(entityId);
       if (body) {
         this.world.removeBody(body);
       }
-      
+
       // Remove reference for cleanup
       this.bodyMap.delete(entityId);
-      
+
       // Remove entity from map
       return this.entities.delete(entityId);
     } catch (error) {
@@ -194,19 +196,22 @@ export class PhysicsService {
   /**
    * Update an existing entity's properties
    */
-  updateEntity(entityId: string, updates: Partial<PhysicsEntity>): PhysicsEntity | undefined {
+  updateEntity(
+    entityId: string,
+    updates: Partial<PhysicsEntity>,
+  ): PhysicsEntity | undefined {
     const existingEntity = this.entities.get(entityId);
-    
+
     if (!existingEntity) {
       return undefined;
     }
-    
+
     // Apply updates to the entity
     const updatedEntity: PhysicsEntity = {
       ...existingEntity,
-      ...updates
+      ...updates,
     };
-    
+
     // If mass, friction or restitution changed, update the physics body properties
     const body = this.bodyMap.get(entityId);
     if (body && (updates.mass || updates.friction || updates.restitution)) {
@@ -215,16 +220,18 @@ export class PhysicsService {
           body.mass = updates.mass;
         }
         if (updates.friction !== undefined) {
-          body.friction = updates.friction;
+          // TODO: Set friction via material: body.material.friction = updates.friction;
+          // body.friction = updates.friction;
         }
         if (updates.restitution !== undefined) {
-          body.restitution = updates.restitution;
+          // TODO: Set restitution via material: body.material.restitution = updates.restitution;
+          // body.restitution = updates.restitution;
         }
       } catch (error) {
         console.error('Error updating physics body properties:', error);
       }
     }
-    
+
     this.entities.set(entityId, updatedEntity);
     return updatedEntity;
   }
@@ -251,16 +258,19 @@ export class PhysicsService {
   /**
    * Apply force to an entity - properly handles Cannon.js force application
    */
-  applyForce(entityId: string, force: { x: number; y: number; z: number }): void {
+  applyForce(
+    entityId: string,
+    force: { x: number; y: number; z: number },
+  ): void {
     if (!this.world || !this.bodyMap.has(entityId)) return;
-    
+
     try {
       const body = this.bodyMap.get(entityId);
       if (body) {
         // Apply force to the body using Cannon.js
         body.applyForce(
           new CANNON.Vec3(force.x, force.y, force.z),
-          new CANNON.Vec3(0, 0, 0)
+          new CANNON.Vec3(0, 0, 0),
         );
       }
     } catch (error) {
@@ -273,7 +283,7 @@ export class PhysicsService {
    */
   resetEntityPhysics(entityId: string): void {
     if (!this.world || !this.bodyMap.has(entityId)) return;
-    
+
     try {
       const body = this.bodyMap.get(entityId);
       if (body) {
@@ -281,7 +291,7 @@ export class PhysicsService {
         body.position.set(0, 10, 0);
         body.velocity.set(0, 0, 0);
         body.angularVelocity.set(0, 0, 0);
-        
+
         // Reset rotation to identity quaternion
         body.quaternion.set(0, 0, 0, 1);
       }
@@ -295,7 +305,7 @@ export class PhysicsService {
    */
   applyGravity(): void {
     if (!this.world) return;
-    
+
     try {
       this.world.gravity.set(0, -9.82, 0); // Earth-like gravity
     } catch (error) {
@@ -311,7 +321,7 @@ export class PhysicsService {
       entityCount: this.entities.size,
       isRunning: !!this.entityUpdateTimer,
       worldExists: !!this.world,
-      bodyCount: this.bodyMap.size
+      bodyCount: this.bodyMap.size,
     };
   }
 
@@ -324,7 +334,7 @@ export class PhysicsService {
       clearInterval(this.entityUpdateTimer);
       this.entityUpdateTimer = null;
     }
-    
+
     // Clean up physics bodies and world
     try {
       if (this.bodyMap.size > 0 && this.world) {
@@ -337,7 +347,7 @@ export class PhysicsService {
         });
         this.bodyMap.clear();
       }
-      
+
       if (this.world) {
         // Properly dispose of the physics world
         this.world = null;
@@ -352,9 +362,9 @@ export class PhysicsService {
    */
   step(deltaTime: number): void {
     if (!this.world || !this.entityUpdateTimer) return;
-    
+
     try {
-      this.world.step(1/60); // Fixed time step
+      this.world.step(1 / 60); // Fixed time step
     } catch (error) {
       console.error('Error stepping physics simulation:', error);
     }

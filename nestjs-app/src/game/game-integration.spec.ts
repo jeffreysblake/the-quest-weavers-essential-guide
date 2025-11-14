@@ -6,6 +6,7 @@ import { EntityService } from '../entity/entity.service';
 import { RoomService } from '../entity/room.service';
 import { PlayerService } from '../entity/player.service';
 import { ObjectService } from '../entity/object.service';
+import { PhysicsService } from '../entity/physics.service';
 import { DatabaseService } from '../database/database.service';
 
 describe('Game Integration - End-to-End Flow', () => {
@@ -36,8 +37,8 @@ describe('Game Integration - End-to-End Flow', () => {
                 prepare: jest.fn().mockReturnValue({
                   run: jest.fn(),
                   get: jest.fn().mockReturnValue({ count: 1 }),
-                  all: jest.fn().mockReturnValue([])
-                })
+                  all: jest.fn().mockReturnValue([]),
+                }),
               };
               return callback(mockDb);
             }),
@@ -45,16 +46,31 @@ describe('Game Integration - End-to-End Flow', () => {
             prepare: jest.fn().mockReturnValue({
               run: jest.fn(),
               get: jest.fn(),
-              all: jest.fn().mockReturnValue([])
+              all: jest.fn().mockReturnValue([]),
             }),
-            exec: jest.fn()
-          }
-        }
-      ]
+            exec: jest.fn(),
+          },
+        },
+        {
+          provide: PhysicsService,
+          useValue: {
+            createEntity: jest.fn(),
+            findAll: jest.fn().mockReturnValue([]),
+            findOne: jest.fn(),
+            updateEntity: jest.fn(),
+            removeEntity: jest.fn(),
+            applyForce: jest.fn(),
+            setVelocity: jest.fn(),
+            step: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     gameService = module.get<GameService>(GameService);
-    commandProcessor = module.get<CommandProcessorService>(CommandProcessorService);
+    commandProcessor = module.get<CommandProcessorService>(
+      CommandProcessorService,
+    );
     databaseService = module.get<DatabaseService>(DatabaseService);
   });
 
@@ -82,12 +98,18 @@ describe('Game Integration - End-to-End Flow', () => {
       expect(lookResult.items).toContain('Flickering Torch');
 
       // 3. Examine the brass key
-      const examineResult = await gameService.processCommand(testGameId, 'examine key');
+      const examineResult = await gameService.processCommand(
+        testGameId,
+        'examine key',
+      );
       expect(examineResult.success).toBe(true);
       expect(examineResult.type).toBe('examination');
 
       // 4. Take the brass key
-      const takeResult = await gameService.processCommand(testGameId, 'take key');
+      const takeResult = await gameService.processCommand(
+        testGameId,
+        'take key',
+      );
       expect(takeResult.success).toBe(true);
       expect(takeResult.type).toBe('action_success');
       expect(takeResult.message).toContain('Brass Key');
@@ -96,26 +118,40 @@ describe('Game Integration - End-to-End Flow', () => {
       const inventoryResult = await gameService.getInventory(testGameId);
       expect(inventoryResult.success).toBe(true);
       expect(inventoryResult.items).toBeDefined();
-      expect(inventoryResult.items?.some(item => item.name === 'Brass Key')).toBe(true);
+      expect(
+        inventoryResult.items?.some((item) => item.name === 'Brass Key'),
+      ).toBe(true);
 
       // 6. Move north to Garden
-      const moveNorthResult = await gameService.processCommand(testGameId, 'go north');
+      const moveNorthResult = await gameService.processCommand(
+        testGameId,
+        'go north',
+      );
       expect(moveNorthResult.success).toBe(true);
       expect(moveNorthResult.type).toBe('movement_success');
       expect(moveNorthResult.playerStatus?.location).toBe('Garden');
       expect(moveNorthResult.items).toContain('Glowing Flower');
 
       // 7. Take the glowing flower
-      const takeFlowerResult = await gameService.processCommand(testGameId, 'take flower');
+      const takeFlowerResult = await gameService.processCommand(
+        testGameId,
+        'take flower',
+      );
       expect(takeFlowerResult.success).toBe(true);
       expect(takeFlowerResult.message).toContain('Glowing Flower');
 
       // 8. Return south and go east to Library
-      const moveSouthResult = await gameService.processCommand(testGameId, 'go south');
+      const moveSouthResult = await gameService.processCommand(
+        testGameId,
+        'go south',
+      );
       expect(moveSouthResult.success).toBe(true);
       expect(moveSouthResult.playerStatus?.location).toBe('Entry Hall');
 
-      const moveEastResult = await gameService.processCommand(testGameId, 'go east');
+      const moveEastResult = await gameService.processCommand(
+        testGameId,
+        'go east',
+      );
       expect(moveEastResult.success).toBe(true);
       expect(moveEastResult.playerStatus?.location).toBe('Library');
 
@@ -126,7 +162,10 @@ describe('Game Integration - End-to-End Flow', () => {
       expect(castResult.message).toContain('spell');
 
       // 10. Test dialogue system
-      const talkResult = await gameService.processCommand(testGameId, 'talk librarian');
+      const talkResult = await gameService.processCommand(
+        testGameId,
+        'talk librarian',
+      );
       expect(talkResult.success).toBe(true);
       expect(talkResult.type).toBe('dialogue');
       expect(talkResult.dialogue?.npcName).toBe('librarian');
@@ -138,7 +177,10 @@ describe('Game Integration - End-to-End Flow', () => {
       expect(mapResult.map?.ascii).toContain('[X]'); // Player marker
 
       // 12. Save game
-      const saveResult = await gameService.saveGame(testGameId, 'integration_test');
+      const saveResult = await gameService.saveGame(
+        testGameId,
+        'integration_test',
+      );
       expect(saveResult.success).toBe(true);
       expect(saveResult.message).toContain('integration_test');
 
@@ -151,7 +193,10 @@ describe('Game Integration - End-to-End Flow', () => {
       const gameResult = await gameService.createGame();
       testGameId = gameResult.gameId;
 
-      const invalidResult = await gameService.processCommand(testGameId, 'invalid command');
+      const invalidResult = await gameService.processCommand(
+        testGameId,
+        'invalid command',
+      );
       expect(invalidResult.success).toBe(false);
       expect(invalidResult.type).toBe('error');
       expect(invalidResult.message).toContain("don't understand");
@@ -165,7 +210,10 @@ describe('Game Integration - End-to-End Flow', () => {
       await gameService.processCommand(testGameId, 'go north');
 
       // Try to go east from Garden (should fail)
-      const invalidMoveResult = await gameService.processCommand(testGameId, 'go east');
+      const invalidMoveResult = await gameService.processCommand(
+        testGameId,
+        'go east',
+      );
       expect(invalidMoveResult.success).toBe(false);
       expect(invalidMoveResult.type).toBe('movement_blocked');
       expect(invalidMoveResult.message).toContain('cannot go east');
@@ -183,7 +231,9 @@ describe('Game Integration - End-to-End Flow', () => {
 
       // Verify we still have the key
       const inventoryResult = await gameService.getInventory(testGameId);
-      expect(inventoryResult.items?.some(item => item.name === 'Brass Key')).toBe(true);
+      expect(
+        inventoryResult.items?.some((item) => item.name === 'Brass Key'),
+      ).toBe(true);
 
       // Look around - key should not be in Garden
       const lookResult = await gameService.processCommand(testGameId, 'look');
@@ -210,11 +260,13 @@ describe('Game Integration - End-to-End Flow', () => {
 
     it('should handle database errors gracefully', async () => {
       const mockError = new Error('Database connection failed');
-      jest.spyOn(databaseService, 'transaction').mockImplementation(() => {
+      jest.spyOn(databaseService, 'prepare').mockImplementation(() => {
         throw mockError;
       });
 
-      await expect(gameService.createGame()).rejects.toThrow();
+      await expect(gameService.createGame()).rejects.toThrow(
+        'Failed to save game',
+      );
     });
   });
 
@@ -223,7 +275,13 @@ describe('Game Integration - End-to-End Flow', () => {
       const gameResult = await gameService.createGame();
       testGameId = gameResult.gameId;
 
-      const commands = ['look', 'take key', 'go north', 'take flower', 'go south'];
+      const commands = [
+        'look',
+        'take key',
+        'go north',
+        'take flower',
+        'go south',
+      ];
       const results = [];
 
       for (const command of commands) {
@@ -232,7 +290,7 @@ describe('Game Integration - End-to-End Flow', () => {
       }
 
       // All commands should succeed
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
 
       // Final state should be consistent
       const finalInventory = await gameService.getInventory(testGameId);
@@ -248,13 +306,13 @@ describe('Game Integration - End-to-End Flow', () => {
         gameService.processCommand(testGameId, 'look'),
         gameService.processCommand(testGameId, 'take key'),
         gameService.getInventory(testGameId),
-        gameService.getMap(testGameId)
+        gameService.getMap(testGameId),
       ];
 
       const results = await Promise.all(promises);
 
       // All operations should complete without errors
-      expect(results.every(r => r.success !== false)).toBe(true);
+      expect(results.every((r) => r.success !== false)).toBe(true);
     });
   });
 });

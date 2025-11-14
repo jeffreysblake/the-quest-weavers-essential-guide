@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { 
-  LLMProvider, 
-  LLMResponse, 
-  LLMRequestOptions, 
+import {
+  LLMProvider,
+  LLMResponse,
+  LLMRequestOptions,
   StructuredLLMResponse,
-  ConversationTurn 
+  ConversationTurn,
 } from '../interfaces/llm.interface';
 
 interface AnthropicConfig {
@@ -48,15 +48,17 @@ export class AnthropicProvider implements LLMProvider {
       timeout: 30000,
       maxRetries: 3,
       baseUrl: 'https://api.anthropic.com/v1',
-      ...config
+      ...config,
     };
-    
-    this.logger.log(`Anthropic provider initialized with model: ${this.config.defaultModel}`);
+
+    this.logger.log(
+      `Anthropic provider initialized with model: ${this.config.defaultModel}`,
+    );
   }
 
   async isAvailable(): Promise<boolean> {
     const now = Date.now();
-    
+
     // Use cached health status if recent
     if (now - this.lastHealthCheck < this.HEALTH_CHECK_INTERVAL) {
       return this.isHealthy;
@@ -67,12 +69,12 @@ export class AnthropicProvider implements LLMProvider {
       const response = await this.makeRequest({
         model: this.config.defaultModel!,
         messages: [{ role: 'user', content: 'test' }],
-        max_tokens: 1
+        max_tokens: 1,
       });
-      
+
       this.isHealthy = response.content?.length > 0;
       this.lastHealthCheck = now;
-      
+
       return this.isHealthy;
     } catch (error) {
       this.logger.warn(`Anthropic health check failed: ${error.message}`);
@@ -83,18 +85,18 @@ export class AnthropicProvider implements LLMProvider {
   }
 
   async generateResponse(
-    prompt: string, 
-    options: LLMRequestOptions = {}
+    prompt: string,
+    options: LLMRequestOptions = {},
   ): Promise<LLMResponse> {
     const messages = this.buildMessages(prompt, options);
-    
+
     const requestBody = {
       model: options.model || this.config.defaultModel!,
       messages,
       max_tokens: options.maxTokens || 2000,
       temperature: options.temperature ?? 0.7,
       top_p: options.topP ?? 1.0,
-      system: options.systemPrompt
+      system: options.systemPrompt,
     };
 
     const startTime = Date.now();
@@ -111,21 +113,21 @@ export class AnthropicProvider implements LLMProvider {
       usage: {
         promptTokens: response.usage.input_tokens,
         completionTokens: response.usage.output_tokens,
-        totalTokens: response.usage.input_tokens + response.usage.output_tokens
+        totalTokens: response.usage.input_tokens + response.usage.output_tokens,
       },
       model: response.model,
       finishReason: this.mapStopReason(response.stop_reason),
       metadata: {
         processingTime,
-        provider: this.name
-      }
+        provider: this.name,
+      },
     };
   }
 
   async generateStructuredResponse<T>(
     prompt: string,
     schema: any,
-    options: LLMRequestOptions = {}
+    options: LLMRequestOptions = {},
   ): Promise<StructuredLLMResponse<T>> {
     // Enhance prompt for structured output
     const structuredPrompt = `${prompt}
@@ -140,11 +142,14 @@ Respond with only the JSON object, no additional text.`;
       temperature: Math.min(options.temperature ?? 0.7, 0.3), // Lower temp for structured
       systemPrompt: this.combineSystemPrompts(
         options.systemPrompt,
-        'You are a precise assistant that responds with valid JSON only. Do not include any text outside the JSON object.'
-      )
+        'You are a precise assistant that responds with valid JSON only. Do not include any text outside the JSON object.',
+      ),
     };
 
-    const baseResponse = await this.generateResponse(structuredPrompt, structuredOptions);
+    const baseResponse = await this.generateResponse(
+      structuredPrompt,
+      structuredOptions,
+    );
 
     // Parse the structured response
     let parsedContent: T;
@@ -158,7 +163,7 @@ Respond with only the JSON object, no additional text.`;
         parsedContent = null as any;
       } else {
         parsedContent = JSON.parse(jsonMatch[0]);
-        
+
         // Basic validation against schema
         const validation = this.validateSchema(parsedContent, schema);
         if (!validation.valid) {
@@ -173,20 +178,25 @@ Respond with only the JSON object, no additional text.`;
     return {
       ...baseResponse,
       parsedContent,
-      validationErrors: validationErrors.length > 0 ? validationErrors : undefined
+      validationErrors:
+        validationErrors.length > 0 ? validationErrors : undefined,
     };
   }
 
-  private buildMessages(prompt: string, options: LLMRequestOptions): AnthropicMessage[] {
+  private buildMessages(
+    prompt: string,
+    options: LLMRequestOptions,
+  ): AnthropicMessage[] {
     const messages: AnthropicMessage[] = [];
 
     // Add conversation history if provided
     if (options.conversationHistory) {
       for (const turn of options.conversationHistory) {
-        if (turn.role !== 'system') { // Anthropic handles system prompts separately
+        if (turn.role !== 'system') {
+          // Anthropic handles system prompts separately
           messages.push({
-            role: turn.role as 'user' | 'assistant',
-            content: turn.content
+            role: turn.role,
+            content: turn.content,
           });
         }
       }
@@ -195,7 +205,7 @@ Respond with only the JSON object, no additional text.`;
     // Add the current prompt
     messages.push({
       role: 'user',
-      content: prompt
+      content: prompt,
     });
 
     return messages;
@@ -203,12 +213,15 @@ Respond with only the JSON object, no additional text.`;
 
   private async makeRequest(requestBody: any): Promise<AnthropicResponse> {
     const url = `${this.config.baseUrl}/messages`;
-    
+
     let lastError: Error;
     for (let attempt = 1; attempt <= this.config.maxRetries!; attempt++) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+        const timeoutId = setTimeout(
+          () => controller.abort(),
+          this.config.timeout,
+        );
 
         const response = await fetch(url, {
           method: 'POST',
@@ -216,37 +229,44 @@ Respond with only the JSON object, no additional text.`;
             'Content-Type': 'application/json',
             'x-api-key': this.config.apiKey,
             'anthropic-version': '2023-06-01',
-            'User-Agent': 'Quest-Weaver-Engine/1.0'
+            'User-Agent': 'Quest-Weaver-Engine/1.0',
           },
           body: JSON.stringify(requestBody),
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         clearTimeout(timeoutId);
 
         if (!response.ok) {
           const errorData = await response.text();
-          throw new Error(`Anthropic API error (${response.status}): ${errorData}`);
+          throw new Error(
+            `Anthropic API error (${response.status}): ${errorData}`,
+          );
         }
 
         const data = await response.json();
         return data;
-
       } catch (error) {
         lastError = error as Error;
-        
+
         if (attempt < this.config.maxRetries!) {
           const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000); // Exponential backoff
-          this.logger.warn(`Anthropic request attempt ${attempt} failed, retrying in ${delay}ms: ${error.message}`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          this.logger.warn(
+            `Anthropic request attempt ${attempt} failed, retrying in ${delay}ms: ${error.message}`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
 
-    throw new Error(`Anthropic request failed after ${this.config.maxRetries} attempts: ${lastError!.message}`);
+    throw new Error(
+      `Anthropic request failed after ${this.config.maxRetries} attempts: ${lastError!.message}`,
+    );
   }
 
-  private mapStopReason(reason: string): 'stop' | 'length' | 'content_filter' | 'error' {
+  private mapStopReason(
+    reason: string,
+  ): 'stop' | 'length' | 'content_filter' | 'error' {
     switch (reason) {
       case 'end_turn':
         return 'stop';
@@ -260,14 +280,20 @@ Respond with only the JSON object, no additional text.`;
   }
 
   private combineSystemPrompts(...prompts: (string | undefined)[]): string {
-    return prompts.filter(p => p && p.trim()).join('\n\n');
+    return prompts.filter((p) => p && p.trim()).join('\n\n');
   }
 
-  private validateSchema(data: any, schema: any): { valid: boolean; errors: string[] } {
+  private validateSchema(
+    data: any,
+    schema: any,
+  ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
     // Basic type checking
-    if (schema.type === 'object' && (typeof data !== 'object' || data === null)) {
+    if (
+      schema.type === 'object' &&
+      (typeof data !== 'object' || data === null)
+    ) {
       errors.push('Expected object type');
     } else if (schema.type === 'array' && !Array.isArray(data)) {
       errors.push('Expected array type');
@@ -280,7 +306,11 @@ Respond with only the JSON object, no additional text.`;
     }
 
     // Check required properties for objects
-    if (schema.type === 'object' && schema.required && Array.isArray(schema.required)) {
+    if (
+      schema.type === 'object' &&
+      schema.required &&
+      Array.isArray(schema.required)
+    ) {
       for (const prop of schema.required) {
         if (!(prop in data)) {
           errors.push(`Missing required property: ${prop}`);
@@ -292,10 +322,13 @@ Respond with only the JSON object, no additional text.`;
   }
 
   // Static factory method for easy configuration
-  static create(apiKey: string, config: Partial<AnthropicConfig> = {}): AnthropicProvider {
+  static create(
+    apiKey: string,
+    config: Partial<AnthropicConfig> = {},
+  ): AnthropicProvider {
     return new AnthropicProvider({
       apiKey,
-      ...config
+      ...config,
     });
   }
 }

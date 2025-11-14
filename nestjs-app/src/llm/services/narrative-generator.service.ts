@@ -94,16 +94,18 @@ export class NarrativeGeneratorService {
     private promptTemplateService: PromptTemplateService,
     private contextBuilderService: ContextBuilderService,
     private roomGeneratorService: RoomGeneratorService,
-    private npcGeneratorService: NPCGeneratorService
+    private npcGeneratorService: NPCGeneratorService,
   ) {}
 
-  async generateStory(request: StoryGenerationRequest): Promise<GeneratedStory> {
+  async generateStory(
+    request: StoryGenerationRequest,
+  ): Promise<GeneratedStory> {
     this.logger.log(`Generating ${request.genre} story: ${request.theme}`);
 
     try {
       const context = await this.buildStoryContext(request);
       const story = await this.generateStoryContent(request, context);
-      
+
       this.logger.log(`Successfully generated story: ${story.title}`);
       return story;
     } catch (error) {
@@ -118,11 +120,11 @@ export class NarrativeGeneratorService {
     quests: GeneratedQuest[];
   }> {
     this.logger.log(`Implementing story: ${story.title}`);
-    
+
     const results = {
       rooms: [] as any[],
       npcs: [] as any[],
-      quests: [] as GeneratedQuest[]
+      quests: [] as GeneratedQuest[],
     };
 
     try {
@@ -131,7 +133,7 @@ export class NarrativeGeneratorService {
         const room = await this.roomGeneratorService.generateRoom({
           theme: location.name,
           purpose: location.significance,
-          style: this.mapGenreToStyle(story.acts[0]?.title || 'fantasy')
+          style: this.mapGenreToStyle(story.acts[0]?.title || 'fantasy'),
         });
         results.rooms.push(room);
       }
@@ -142,7 +144,7 @@ export class NarrativeGeneratorService {
           name: character.name,
           role: this.mapRoleToNPCRole(character.role),
           backstory: `${character.description} Motivation: ${character.motivation}`,
-          roomId: results.rooms[0]?.id
+          roomId: results.rooms[0]?.id,
         });
         results.npcs.push(npc);
       }
@@ -153,42 +155,56 @@ export class NarrativeGeneratorService {
           type: questLine.difficulty > 7 ? 'main' : 'side',
           difficulty: questLine.difficulty,
           objectives: [questLine.description],
-          npcsInvolved: results.npcs.slice(0, 2).map(npc => npc.id)
+          npcsInvolved: results.npcs.slice(0, 2).map((npc) => npc.id),
         });
         results.quests.push(quest);
       }
 
-      this.logger.log(`Story implementation complete: ${results.rooms.length} rooms, ${results.npcs.length} NPCs, ${results.quests.length} quests`);
+      this.logger.log(
+        `Story implementation complete: ${results.rooms.length} rooms, ${results.npcs.length} NPCs, ${results.quests.length} quests`,
+      );
       return results;
-
     } catch (error) {
       this.logger.error(`Story implementation failed: ${error.message}`);
       throw new Error(`Failed to implement story: ${error.message}`);
     }
   }
 
-  async generateQuest(request: QuestGenerationRequest): Promise<GeneratedQuest> {
-    this.logger.log(`Generating ${request.type} quest with difficulty ${request.difficulty}`);
-
-    const context = await this.buildQuestContext(request);
-    const questPrompt = await this.promptTemplateService.renderTemplate('quest_generation', {
-      type: request.type,
-      difficulty: request.difficulty.toString(),
-      objectives: request.objectives.join(', '),
-      npcsInvolved: context.npcs?.map((npc: any) => npc.name).join(', ') || 'none',
-      locationsInvolved: context.locations?.map((loc: any) => loc.name).join(', ') || 'current area',
-      prerequisites: request.prerequisites?.join(', ') || 'none'
-    });
-
-    const schema = this.getQuestSchema();
-    const response = await this.llmService.generateStructuredResponse<GeneratedQuest>(
-      questPrompt,
-      schema,
-      { temperature: 0.7 }
+  async generateQuest(
+    request: QuestGenerationRequest,
+  ): Promise<GeneratedQuest> {
+    this.logger.log(
+      `Generating ${request.type} quest with difficulty ${request.difficulty}`,
     );
 
+    const context = await this.buildQuestContext(request);
+    const questPrompt = await this.promptTemplateService.renderTemplate(
+      'quest_generation',
+      {
+        type: request.type,
+        difficulty: request.difficulty.toString(),
+        objectives: request.objectives.join(', '),
+        npcsInvolved:
+          context.npcs?.map((npc: any) => npc.name).join(', ') || 'none',
+        locationsInvolved:
+          context.locations?.map((loc: any) => loc.name).join(', ') ||
+          'current area',
+        prerequisites: request.prerequisites?.join(', ') || 'none',
+      },
+    );
+
+    const schema = this.getQuestSchema();
+    const response =
+      await this.llmService.generateStructuredResponse<GeneratedQuest>(
+        questPrompt,
+        schema,
+        { temperature: 0.7 },
+      );
+
     if (response.validationErrors?.length) {
-      this.logger.warn(`Quest generation validation errors: ${response.validationErrors.join(', ')}`);
+      this.logger.warn(
+        `Quest generation validation errors: ${response.validationErrors.join(', ')}`,
+      );
     }
 
     return response.parsedContent;
@@ -200,10 +216,13 @@ export class NarrativeGeneratorService {
     newObjectives: string[];
     affectedCharacters: string[];
   }> {
-    const twistPrompt = await this.promptTemplateService.renderTemplate('plot_twist', {
-      currentState: JSON.stringify(currentStoryState, null, 2),
-      storyProgress: '50%' // Could be calculated dynamically
-    });
+    const twistPrompt = await this.promptTemplateService.renderTemplate(
+      'plot_twist',
+      {
+        currentState: JSON.stringify(currentStoryState, null, 2),
+        storyProgress: '50%', // Could be calculated dynamically
+      },
+    );
 
     const schema = {
       type: 'object',
@@ -211,99 +230,115 @@ export class NarrativeGeneratorService {
       properties: {
         twist: { type: 'string', description: 'The plot twist description' },
         impact: { type: 'string', description: 'How this affects the story' },
-        newObjectives: { 
-          type: 'array', 
+        newObjectives: {
+          type: 'array',
           items: { type: 'string' },
-          description: 'New objectives created by this twist'
+          description: 'New objectives created by this twist',
         },
         affectedCharacters: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Characters affected by this twist'
-        }
-      }
+          description: 'Characters affected by this twist',
+        },
+      },
     };
 
     const response = await this.llmService.generateStructuredResponse(
       twistPrompt,
       schema,
-      { temperature: 0.9 }
+      { temperature: 0.9 },
     );
 
-    return response.parsedContent as { twist: string; impact: string; newObjectives: string[]; affectedCharacters: string[]; };
+    return response.parsedContent as {
+      twist: string;
+      impact: string;
+      newObjectives: string[];
+      affectedCharacters: string[];
+    };
   }
 
   async generateAdaptiveNarrative(
     playerActions: string[],
     currentGameState: any,
-    storyContext: any
+    storyContext: any,
   ): Promise<{
     narrativeResponse: string;
     consequences: string[];
     newStoryElements: any[];
   }> {
-    const adaptivePrompt = await this.promptTemplateService.renderTemplate('adaptive_narrative', {
-      playerActions: playerActions.join(', '),
-      gameState: JSON.stringify(currentGameState, null, 2),
-      storyContext: JSON.stringify(storyContext, null, 2)
-    });
+    const adaptivePrompt = await this.promptTemplateService.renderTemplate(
+      'adaptive_narrative',
+      {
+        playerActions: playerActions.join(', '),
+        gameState: JSON.stringify(currentGameState, null, 2),
+        storyContext: JSON.stringify(storyContext, null, 2),
+      },
+    );
 
     const schema = {
       type: 'object',
       required: ['narrativeResponse', 'consequences', 'newStoryElements'],
       properties: {
-        narrativeResponse: { 
+        narrativeResponse: {
           type: 'string',
-          description: 'The narrative response to player actions'
+          description: 'The narrative response to player actions',
         },
         consequences: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Consequences of the player actions'
+          description: 'Consequences of the player actions',
         },
         newStoryElements: {
           type: 'array',
           items: { type: 'object' },
-          description: 'New story elements introduced'
-        }
-      }
+          description: 'New story elements introduced',
+        },
+      },
     };
 
     const response = await this.llmService.generateStructuredResponse(
       adaptivePrompt,
       schema,
-      { temperature: 0.8 }
+      { temperature: 0.8 },
     );
 
-    return response.parsedContent as { narrativeResponse: string; consequences: string[]; newStoryElements: any[]; };
+    return response.parsedContent as {
+      narrativeResponse: string;
+      consequences: string[];
+      newStoryElements: any[];
+    };
   }
 
-  private async buildStoryContext(request: StoryGenerationRequest): Promise<any> {
+  private async buildStoryContext(
+    request: StoryGenerationRequest,
+  ): Promise<any> {
     return {
       request,
       worldState: await this.contextBuilderService.buildFullContext(),
       storyConstraints: {
         maxRooms: this.getMaxRoomsByLength(request.targetLength),
         maxNPCs: this.getMaxNPCsByLength(request.targetLength),
-        complexityLevel: request.playerLevel
-      }
+        complexityLevel: request.playerLevel,
+      },
     };
   }
 
-  private async buildQuestContext(request: QuestGenerationRequest): Promise<any> {
+  private async buildQuestContext(
+    request: QuestGenerationRequest,
+  ): Promise<any> {
     const context: any = { request };
 
     if (request.npcsInvolved?.length) {
-      context.npcs = request.npcsInvolved.map(id => 
+      context.npcs = request.npcsInvolved.map((id) =>
         // Would fetch NPC data here
-        ({ id, name: `NPC_${id}` })
+        ({ id, name: `NPC_${id}` }),
       );
     }
 
     if (request.locationsInvolved?.length) {
-      context.locations = request.locationsInvolved.map(id => 
+      context.locations = request.locationsInvolved.map((id) =>
         // Would fetch room data here
-        ({ id, name: `Location_${id}` })
+        ({ id, name: `Location_${id}` }),
       );
     }
 
@@ -312,32 +347,39 @@ export class NarrativeGeneratorService {
 
   private async generateStoryContent(
     request: StoryGenerationRequest,
-    context: any
+    context: any,
   ): Promise<GeneratedStory> {
-    const storyPrompt = await this.promptTemplateService.renderTemplate('story_generation', {
-      genre: request.genre,
-      theme: request.theme,
-      targetLength: request.targetLength,
-      playerLevel: request.playerLevel.toString(),
-      keyElements: request.keyElements?.join(', ') || 'adventure, discovery, challenge',
-      conflicts: request.conflicts?.join(', ') || 'overcome obstacles',
-      desiredOutcome: request.desiredOutcome || 'open',
-      maxRooms: context.storyConstraints.maxRooms.toString(),
-      maxNPCs: context.storyConstraints.maxNPCs.toString()
-    });
-
-    const schema = this.getStorySchema();
-    const response = await this.llmService.generateStructuredResponse<GeneratedStory>(
-      storyPrompt,
-      schema,
+    const storyPrompt = await this.promptTemplateService.renderTemplate(
+      'story_generation',
       {
-        temperature: 0.8,
-        maxTokens: 6000
-      }
+        genre: request.genre,
+        theme: request.theme,
+        targetLength: request.targetLength,
+        playerLevel: request.playerLevel.toString(),
+        keyElements:
+          request.keyElements?.join(', ') || 'adventure, discovery, challenge',
+        conflicts: request.conflicts?.join(', ') || 'overcome obstacles',
+        desiredOutcome: request.desiredOutcome || 'open',
+        maxRooms: context.storyConstraints.maxRooms.toString(),
+        maxNPCs: context.storyConstraints.maxNPCs.toString(),
+      },
     );
 
+    const schema = this.getStorySchema();
+    const response =
+      await this.llmService.generateStructuredResponse<GeneratedStory>(
+        storyPrompt,
+        schema,
+        {
+          temperature: 0.8,
+          maxTokens: 6000,
+        },
+      );
+
     if (response.validationErrors?.length) {
-      this.logger.warn(`Story generation validation errors: ${response.validationErrors.join(', ')}`);
+      this.logger.warn(
+        `Story generation validation errors: ${response.validationErrors.join(', ')}`,
+      );
     }
 
     return response.parsedContent;
@@ -346,7 +388,14 @@ export class NarrativeGeneratorService {
   private getStorySchema() {
     return {
       type: 'object',
-      required: ['title', 'synopsis', 'acts', 'characters', 'locations', 'questLines'],
+      required: [
+        'title',
+        'synopsis',
+        'acts',
+        'characters',
+        'locations',
+        'questLines',
+      ],
       properties: {
         title: { type: 'string' },
         synopsis: { type: 'string' },
@@ -361,9 +410,9 @@ export class NarrativeGeneratorService {
               objectives: { type: 'array', items: { type: 'string' } },
               locations: { type: 'array', items: { type: 'string' } },
               characters: { type: 'array', items: { type: 'string' } },
-              keyEvents: { type: 'array', items: { type: 'string' } }
-            }
-          }
+              keyEvents: { type: 'array', items: { type: 'string' } },
+            },
+          },
         },
         characters: {
           type: 'array',
@@ -372,11 +421,20 @@ export class NarrativeGeneratorService {
             required: ['name', 'role', 'description', 'motivation'],
             properties: {
               name: { type: 'string' },
-              role: { type: 'string', enum: ['protagonist', 'antagonist', 'ally', 'mentor', 'neutral'] },
+              role: {
+                type: 'string',
+                enum: [
+                  'protagonist',
+                  'antagonist',
+                  'ally',
+                  'mentor',
+                  'neutral',
+                ],
+              },
               description: { type: 'string' },
-              motivation: { type: 'string' }
-            }
-          }
+              motivation: { type: 'string' },
+            },
+          },
         },
         locations: {
           type: 'array',
@@ -387,9 +445,9 @@ export class NarrativeGeneratorService {
               name: { type: 'string' },
               description: { type: 'string' },
               significance: { type: 'string' },
-              connections: { type: 'array', items: { type: 'string' } }
-            }
-          }
+              connections: { type: 'array', items: { type: 'string' } },
+            },
+          },
         },
         plotHooks: {
           type: 'array',
@@ -399,9 +457,9 @@ export class NarrativeGeneratorService {
             properties: {
               trigger: { type: 'string' },
               description: { type: 'string' },
-              consequences: { type: 'array', items: { type: 'string' } }
-            }
-          }
+              consequences: { type: 'array', items: { type: 'string' } },
+            },
+          },
         },
         questLines: {
           type: 'array',
@@ -413,11 +471,11 @@ export class NarrativeGeneratorService {
               description: { type: 'string' },
               prerequisites: { type: 'array', items: { type: 'string' } },
               rewards: { type: 'array', items: { type: 'string' } },
-              difficulty: { type: 'number', minimum: 1, maximum: 10 }
-            }
-          }
-        }
-      }
+              difficulty: { type: 'number', minimum: 1, maximum: 10 },
+            },
+          },
+        },
+      },
     };
   }
 
@@ -435,12 +493,15 @@ export class NarrativeGeneratorService {
             required: ['description', 'type', 'target'],
             properties: {
               description: { type: 'string' },
-              type: { type: 'string', enum: ['collect', 'defeat', 'explore', 'deliver', 'interact'] },
+              type: {
+                type: 'string',
+                enum: ['collect', 'defeat', 'explore', 'deliver', 'interact'],
+              },
               target: { type: 'string' },
               quantity: { type: 'number' },
-              location: { type: 'string' }
-            }
-          }
+              location: { type: 'string' },
+            },
+          },
         },
         rewards: {
           type: 'array',
@@ -448,11 +509,14 @@ export class NarrativeGeneratorService {
             type: 'object',
             required: ['type', 'amount', 'description'],
             properties: {
-              type: { type: 'string', enum: ['experience', 'item', 'gold', 'reputation'] },
+              type: {
+                type: 'string',
+                enum: ['experience', 'item', 'gold', 'reputation'],
+              },
               amount: { type: 'number' },
-              description: { type: 'string' }
-            }
-          }
+              description: { type: 'string' },
+            },
+          },
         },
         dialogue: {
           type: 'object',
@@ -460,50 +524,69 @@ export class NarrativeGeneratorService {
           properties: {
             questGiver: { type: 'array', items: { type: 'string' } },
             completion: { type: 'array', items: { type: 'string' } },
-            failure: { type: 'array', items: { type: 'string' } }
-          }
-        }
-      }
+            failure: { type: 'array', items: { type: 'string' } },
+          },
+        },
+      },
     };
   }
 
   private getMaxRoomsByLength(length: string): number {
     switch (length) {
-      case 'short': return 5;
-      case 'medium': return 15;
-      case 'long': return 30;
-      default: return 10;
+      case 'short':
+        return 5;
+      case 'medium':
+        return 15;
+      case 'long':
+        return 30;
+      default:
+        return 10;
     }
   }
 
   private getMaxNPCsByLength(length: string): number {
     switch (length) {
-      case 'short': return 3;
-      case 'medium': return 8;
-      case 'long': return 15;
-      default: return 5;
+      case 'short':
+        return 3;
+      case 'medium':
+        return 8;
+      case 'long':
+        return 15;
+      default:
+        return 5;
     }
   }
 
-  private mapGenreToStyle(genre: string): 'medieval' | 'modern' | 'fantasy' | 'sci-fi' | 'horror' | 'mystery' {
+  private mapGenreToStyle(
+    genre: string,
+  ): 'medieval' | 'modern' | 'fantasy' | 'sci-fi' | 'horror' | 'mystery' {
     const mapping: { [key: string]: any } = {
-      'fantasy': 'fantasy',
+      fantasy: 'fantasy',
       'sci-fi': 'sci-fi',
-      'horror': 'horror',
-      'mystery': 'mystery',
-      'adventure': 'fantasy',
-      'drama': 'modern'
+      horror: 'horror',
+      mystery: 'mystery',
+      adventure: 'fantasy',
+      drama: 'modern',
     };
     return mapping[genre.toLowerCase()] || 'fantasy';
   }
 
-  private mapRoleToNPCRole(role: string): 'merchant' | 'guard' | 'wizard' | 'villager' | 'enemy' | 'ally' | 'quest_giver' {
+  private mapRoleToNPCRole(
+    role: string,
+  ):
+    | 'merchant'
+    | 'guard'
+    | 'wizard'
+    | 'villager'
+    | 'enemy'
+    | 'ally'
+    | 'quest_giver' {
     const mapping: { [key: string]: any } = {
-      'protagonist': 'ally',
-      'antagonist': 'enemy',
-      'ally': 'ally',
-      'mentor': 'wizard',
-      'neutral': 'villager'
+      protagonist: 'ally',
+      antagonist: 'enemy',
+      ally: 'ally',
+      mentor: 'wizard',
+      neutral: 'villager',
     };
     return mapping[role] || 'villager';
   }

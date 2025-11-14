@@ -22,18 +22,18 @@ describe('Basic Functionality Tests', () => {
       .send({
         name: 'Test Room',
         width: 10,
-        height: 10
+        height: 10,
       })
       .expect(201);
 
     expect(roomResponse.body).toBeDefined();
     expect(roomResponse.body.id).toBeDefined();
-    
+
     // Verify we can retrieve it
     const getRoomResponse = await request(app.getHttpServer())
       .get(`/rooms/${roomResponse.body.id}`)
       .expect(200);
-      
+
     expect(getRoomResponse.body).toBeDefined();
   });
 

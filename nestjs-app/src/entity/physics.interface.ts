@@ -1,6 +1,25 @@
-export type MaterialType = 'wood' | 'metal' | 'stone' | 'water' | 'cloth' | 'glass' | 'leather' | 'paper' | 'organic' | 'crystal' | 'ice' | 'gas';
+export type MaterialType =
+  | 'wood'
+  | 'metal'
+  | 'stone'
+  | 'water'
+  | 'cloth'
+  | 'glass'
+  | 'leather'
+  | 'paper'
+  | 'organic'
+  | 'crystal'
+  | 'ice'
+  | 'gas';
 
-export type EffectType = 'fire' | 'lightning' | 'ice' | 'force' | 'poison' | 'acid' | 'magic';
+export type EffectType =
+  | 'fire'
+  | 'lightning'
+  | 'ice'
+  | 'force'
+  | 'poison'
+  | 'acid'
+  | 'magic';
 
 export interface IMaterialProperties {
   material: MaterialType;

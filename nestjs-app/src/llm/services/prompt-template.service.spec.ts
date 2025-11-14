@@ -1,5 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PromptTemplateService, PromptTemplate } from './prompt-template.service';
+import {
+  PromptTemplateService,
+  PromptTemplate,
+} from './prompt-template.service';
 import { GameContext } from '../interfaces/llm.interface';
 
 describe('PromptTemplateService', () => {
@@ -7,7 +10,7 @@ describe('PromptTemplateService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PromptTemplateService]
+      providers: [PromptTemplateService],
     }).compile();
 
     service = module.get<PromptTemplateService>(PromptTemplateService);
@@ -30,15 +33,26 @@ describe('PromptTemplateService', () => {
         category: 'generation',
         template: 'Generate a {{item_type}} with {{properties}}',
         variables: [
-          { name: 'item_type', type: 'string', required: true, description: 'Type of item' },
-          { name: 'properties', type: 'string', required: false, description: 'Item properties', defaultValue: 'basic properties' }
+          {
+            name: 'item_type',
+            type: 'string',
+            required: true,
+            description: 'Type of item',
+          },
+          {
+            name: 'properties',
+            type: 'string',
+            required: false,
+            description: 'Item properties',
+            defaultValue: 'basic properties',
+          },
         ],
         outputFormat: 'text',
-        version: '1.0'
+        version: '1.0',
       };
 
       service.registerTemplate(customTemplate);
-      
+
       const retrieved = service.getTemplate('test_template');
       expect(retrieved).toBeDefined();
       expect(retrieved?.name).toBe('Test Template');
@@ -47,7 +61,9 @@ describe('PromptTemplateService', () => {
     it('should retrieve templates by category', () => {
       const generationTemplates = service.getTemplatesByCategory('generation');
       expect(generationTemplates.length).toBeGreaterThan(0);
-      expect(generationTemplates.every(t => t.category === 'generation')).toBe(true);
+      expect(
+        generationTemplates.every((t) => t.category === 'generation'),
+      ).toBe(true);
     });
   });
 
@@ -56,11 +72,12 @@ describe('PromptTemplateService', () => {
       const variables = {
         room_name: 'Ancient Library',
         room_type: 'study',
-        game_theme: 'fantasy'
+        game_theme: 'fantasy',
+        room_theme: 'scholarly',
       };
 
       const compiled = service.compileTemplate('room_description', variables);
-      
+
       expect(compiled.prompt).toContain('Ancient Library');
       expect(compiled.prompt).toContain('study');
       expect(compiled.prompt).toContain('fantasy');
@@ -72,11 +89,12 @@ describe('PromptTemplateService', () => {
       const variables = {
         room_name: 'Test Room',
         room_type: 'generic',
-        game_theme: 'fantasy'
+        game_theme: 'fantasy',
+        room_theme: 'plain',
       };
 
       const compiled = service.compileTemplate('room_description', variables);
-      
+
       // Should use default values for missing optional variables
       expect(compiled.prompt).toBeDefined();
       expect(compiled.variables.room_size).toBe('medium'); // default value
@@ -84,7 +102,7 @@ describe('PromptTemplateService', () => {
 
     it('should throw error for missing required variables', () => {
       const variables = {
-        room_name: 'Test Room'
+        room_name: 'Test Room',
         // Missing required variables
       };
 
@@ -97,7 +115,7 @@ describe('PromptTemplateService', () => {
       const variables = {
         room_name: 123, // Should be string
         room_type: 'study',
-        game_theme: 'fantasy'
+        game_theme: 'fantasy',
       };
 
       expect(() => {
@@ -111,7 +129,7 @@ describe('PromptTemplateService', () => {
       gameInfo: {
         name: 'Test Adventure',
         theme: 'medieval fantasy',
-        genre: 'rpg'
+        genre: 'rpg',
       },
       currentScene: {
         activeRoom: {
@@ -119,7 +137,7 @@ describe('PromptTemplateService', () => {
             id: 'room1',
             name: 'Throne Room',
             description: 'A grand throne room with golden decorations',
-            position: { x: 0, y: 0, z: 0 }
+            position: { x: 0, y: 0, z: 0 },
           },
           objects: [
             {
@@ -127,51 +145,59 @@ describe('PromptTemplateService', () => {
                 id: 'throne1',
                 name: 'Golden Throne',
                 description: 'An ornate golden throne',
-                position: { x: 0, y: 0, z: 0 }
+                position: { x: 0, y: 0, z: 0 },
               },
-              spatialRelationships: []
-            }
+              spatialRelationships: [],
+            },
           ],
           connections: [
-            { direction: 'north', targetRoomId: 'room2', description: 'North to hallway' }
+            {
+              direction: 'north',
+              targetRoomId: 'room2',
+              description: 'North to hallway',
+            },
           ],
           ambiance: {
             lighting: 'bright torch light',
             sounds: 'echoing footsteps',
-            temperature: 'cool'
-          }
+            temperature: 'cool',
+          },
         },
-        timeOfDay: 'afternoon'
+        timeOfDay: 'afternoon',
       },
       playerContext: {
         player: {
           id: 'player1',
           name: 'Hero',
           position: { x: 0, y: 0, z: 0 },
-          level: 5
+          level: 5,
         },
         recentActions: ['entered room'],
-        inventory: []
+        inventory: [],
       },
       constraints: {
         physicsRules: [
-          { description: 'Objects fall due to gravity', severity: 'high' }
+          { description: 'Objects fall due to gravity', severity: 'high' },
         ],
         culturalSettings: {
           era: 'medieval',
-          technology: 'pre-industrial'
+          technology: 'pre-industrial',
         },
         narrativeGuidelines: {
           tone: 'heroic',
-          complexity: 'moderate'
-        }
-      }
+          complexity: 'moderate',
+        },
+      },
     };
 
     it('should compile with game context', () => {
-      const compiled = service.compileWithContext('room_description', mockGameContext, {
-        room_theme: 'royal'
-      });
+      const compiled = service.compileWithContext(
+        'room_description',
+        mockGameContext,
+        {
+          room_theme: 'royal',
+        },
+      );
 
       expect(compiled.variables.game_name).toBe('Test Adventure');
       expect(compiled.variables.location).toBe('Throne Room');
@@ -180,7 +206,13 @@ describe('PromptTemplateService', () => {
     });
 
     it('should extract context variables correctly', () => {
-      const compiled = service.compileWithContext('npc_generation', mockGameContext);
+      const compiled = service.compileWithContext(
+        'npc_generation',
+        mockGameContext,
+        {
+          npc_role: 'merchant',
+        },
+      );
 
       expect(compiled.variables.game_theme).toBe('medieval fantasy');
       expect(compiled.variables.location).toBe('Throne Room');
@@ -194,11 +226,15 @@ describe('PromptTemplateService', () => {
       const variables = {
         room_name: 'Magic Shop',
         room_type: 'store',
-        game_theme: 'fantasy'
+        game_theme: 'fantasy',
+        room_theme: 'mystical',
       };
 
-      const rendered = await service.renderTemplate('room_description', variables);
-      
+      const rendered = await service.renderTemplate(
+        'room_description',
+        variables,
+      );
+
       expect(typeof rendered).toBe('string');
       expect(rendered).toContain('Magic Shop');
       expect(rendered).toContain('store');
@@ -206,7 +242,7 @@ describe('PromptTemplateService', () => {
 
     it('should handle template rendering errors gracefully', async () => {
       await expect(
-        service.renderTemplate('nonexistent_template', {})
+        service.renderTemplate('nonexistent_template', {}),
       ).rejects.toThrow('Template not found');
     });
   });
@@ -224,18 +260,18 @@ describe('PromptTemplateService', () => {
           type: 'string',
           required: true,
           description: 'Name field',
-          validation: { minLength: 2, maxLength: 50 }
+          validation: { minLength: 2, maxLength: 50 },
         },
         {
           name: 'count',
           type: 'number',
           required: true,
           description: 'Count field',
-          validation: { min: 1, max: 100 }
-        }
+          validation: { min: 1, max: 100 },
+        },
       ],
       outputFormat: 'text',
-      version: '1.0'
+      version: '1.0',
     };
 
     beforeEach(() => {
@@ -246,14 +282,14 @@ describe('PromptTemplateService', () => {
       expect(() => {
         service.compileTemplate('validation_test', {
           name: 'X', // Too short
-          count: 5
+          count: 5,
         });
       }).toThrow('too short');
 
       expect(() => {
         service.compileTemplate('validation_test', {
           name: 'X'.repeat(51), // Too long
-          count: 5
+          count: 5,
         });
       }).toThrow('too long');
     });
@@ -262,14 +298,14 @@ describe('PromptTemplateService', () => {
       expect(() => {
         service.compileTemplate('validation_test', {
           name: 'Valid Name',
-          count: 0 // Too small
+          count: 0, // Too small
         });
       }).toThrow('too small');
 
       expect(() => {
         service.compileTemplate('validation_test', {
           name: 'Valid Name',
-          count: 101 // Too large
+          count: 101, // Too large
         });
       }).toThrow('too large');
     });
@@ -277,7 +313,7 @@ describe('PromptTemplateService', () => {
     it('should accept valid values', () => {
       const compiled = service.compileTemplate('validation_test', {
         name: 'Valid Name',
-        count: 50
+        count: 50,
       });
 
       expect(compiled.prompt).toContain('Valid Name');
@@ -288,7 +324,7 @@ describe('PromptTemplateService', () => {
   describe('Template Statistics', () => {
     it('should provide accurate statistics', () => {
       const stats = service.getStats();
-      
+
       expect(stats.totalTemplates).toBeGreaterThan(0);
       expect(stats.categoryCounts).toBeDefined();
       expect(stats.categoryCounts.generation).toBeGreaterThan(0);
@@ -298,7 +334,7 @@ describe('PromptTemplateService', () => {
 
     it('should update statistics when templates are added', () => {
       const initialStats = service.getStats();
-      
+
       const newTemplate: PromptTemplate = {
         id: 'stats_test',
         name: 'Stats Test',
@@ -307,15 +343,15 @@ describe('PromptTemplateService', () => {
         template: 'Test template',
         variables: [],
         outputFormat: 'text',
-        version: '1.0'
+        version: '1.0',
       };
 
       service.registerTemplate(newTemplate);
-      
+
       const finalStats = service.getStats();
       expect(finalStats.totalTemplates).toBe(initialStats.totalTemplates + 1);
       expect(finalStats.categoryCounts.validation).toBe(
-        (initialStats.categoryCounts.validation || 0) + 1
+        (initialStats.categoryCounts.validation || 0) + 1,
       );
       expect(finalStats.templateIds).toContain('stats_test');
     });
@@ -340,16 +376,21 @@ describe('PromptTemplateService', () => {
         category: 'generation',
         template: 'Test {{missing_var}} and {{existing_var}}',
         variables: [
-          { name: 'existing_var', type: 'string', required: true, description: 'Existing variable' }
+          {
+            name: 'existing_var',
+            type: 'string',
+            required: true,
+            description: 'Existing variable',
+          },
         ],
         outputFormat: 'text',
-        version: '1.0'
+        version: '1.0',
       };
 
       service.registerTemplate(testTemplate);
-      
+
       const compiled = service.compileTemplate('malformed_test', {
-        existing_var: 'test'
+        existing_var: 'test',
       });
 
       expect(compiled.prompt).toContain('test');

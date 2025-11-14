@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, Logger } from '@nestjs/common';
 import { LLMService } from './services/llm.service';
 import { PromptTemplateService } from './services/prompt-template.service';
 import { ContextBuilderService } from './services/context-builder.service';
@@ -19,89 +19,96 @@ import { PlayerModule } from '../entity/player.module';
 
 @Global()
 @Module({
-  imports: [
-    EntityModule,
-    RoomModule,
-    ObjectModule,
-    PlayerModule
-  ],
+  imports: [EntityModule, RoomModule, ObjectModule, PlayerModule],
   controllers: [LLMController],
   providers: [
     // Performance and Reliability Services
     LLMCacheService,
     LLMErrorHandlerService,
-    
+
     // Core LLM Services
     LLMService,
     PromptTemplateService,
     ContextBuilderService,
-    
-    // Content Generation Services  
+
+    // Content Generation Services
     NarrativeGeneratorService,
     RoomGeneratorService,
     NPCGeneratorService,
-    
+
     // Advanced AI Services
     StoryAgentService,
     ConflictResolverService,
-    
+
     // Provider Configuration Factory
     {
       provide: 'LLM_PROVIDERS',
       useFactory: () => {
         const providers: any[] = [];
-        
+
         // Configure OpenAI if API key is available
         if (process.env.OPENAI_API_KEY) {
-          providers.push(OpenAIProvider.create(process.env.OPENAI_API_KEY, {
-            baseUrl: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
-            defaultModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-            timeout: parseInt(process.env.LLM_TIMEOUT || '30000'),
-            maxRetries: parseInt(process.env.LLM_MAX_RETRIES || '3')
-          }));
+          providers.push(
+            OpenAIProvider.create(process.env.OPENAI_API_KEY, {
+              baseUrl:
+                process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
+              defaultModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+              timeout: parseInt(process.env.LLM_TIMEOUT || '30000'),
+              maxRetries: parseInt(process.env.LLM_MAX_RETRIES || '3'),
+            }),
+          );
         }
-        
+
         // Configure Anthropic if API key is available
         if (process.env.ANTHROPIC_API_KEY) {
-          providers.push(AnthropicProvider.create(process.env.ANTHROPIC_API_KEY, {
-            defaultModel: process.env.ANTHROPIC_MODEL || 'claude-3-haiku-20240307',
-            timeout: parseInt(process.env.LLM_TIMEOUT || '30000'),
-            maxRetries: parseInt(process.env.LLM_MAX_RETRIES || '3')
-          }));
+          providers.push(
+            AnthropicProvider.create(process.env.ANTHROPIC_API_KEY, {
+              defaultModel:
+                process.env.ANTHROPIC_MODEL || 'claude-3-haiku-20240307',
+              timeout: parseInt(process.env.LLM_TIMEOUT || '30000'),
+              maxRetries: parseInt(process.env.LLM_MAX_RETRIES || '3'),
+            }),
+          );
         }
-        
+
         return providers;
-      }
+      },
     },
-    
+
     // Provider Registration Service
     {
       provide: 'LLM_INITIALIZER',
       useFactory: async (llmService: LLMService, providers: any[]) => {
+        const logger = new Logger('LLMModule');
+
         if (providers.length === 0) {
-          console.warn('No LLM providers configured. Set OPENAI_API_KEY or ANTHROPIC_API_KEY environment variables.');
+          logger.warn(
+            'No LLM providers configured. Set OPENAI_API_KEY or ANTHROPIC_API_KEY environment variables.',
+          );
           return;
         }
-        
+
         // Register providers with the LLM service
         for (let i = 0; i < providers.length; i++) {
           const provider = providers[i];
           const isPrimary = i === 0; // First provider is primary
           llmService.registerProvider(provider, isPrimary);
         }
-        
+
         // Test provider connectivity
         const available = await llmService.isAvailable();
         if (!available) {
-          console.warn('No LLM providers are currently available. Features requiring AI will be disabled.');
+          logger.warn(
+            'No LLM providers are currently available. Features requiring AI will be disabled.',
+          );
         } else {
-          console.log('LLM integration initialized successfully');
+          logger.log('LLM integration initialized successfully');
         }
-        
+
         return llmService;
       },
-      inject: [LLMService, 'LLM_PROVIDERS']
-    }
+      inject: [LLMService, 'LLM_PROVIDERS'],
+    },
   ],
   exports: [
     LLMService,
@@ -113,13 +120,15 @@ import { PlayerModule } from '../entity/player.module';
     StoryAgentService,
     ConflictResolverService,
     LLMCacheService,
-    LLMErrorHandlerService
-  ]
+    LLMErrorHandlerService,
+  ],
 })
 export class LLMModule {
+  private readonly logger = new Logger(LLMModule.name);
+
   constructor(
     private readonly llmService: LLMService,
-    private readonly conflictResolver: ConflictResolverService
+    private readonly conflictResolver: ConflictResolverService,
   ) {
     // Module is initialized via the factory providers above
     this.logInitializationStatus();
@@ -128,20 +137,20 @@ export class LLMModule {
   private async logInitializationStatus(): Promise<void> {
     try {
       const stats = this.llmService.getStats();
-      console.log(`LLM Module Status:
+      this.logger.log(`LLM Module Status:
         - Available Providers: ${stats.availableProviders.join(', ')}
         - Primary Provider: ${stats.primaryProvider}
         - Total Requests: ${stats.totalRequests}
         - Success Rate: ${(stats.successRate * 100).toFixed(1)}%
       `);
-      
+
       const conflictStats = this.conflictResolver.getResolutionStats();
-      console.log(`Conflict Resolution Status:
+      this.logger.log(`Conflict Resolution Status:
         - Total Conflicts Resolved: ${conflictStats.totalConflicts}
         - Success Rate: ${(conflictStats.successRate * 100).toFixed(1)}%
       `);
     } catch (error) {
-      console.error('Error logging LLM module status:', error.message);
+      this.logger.error('Error logging LLM module status:', error.message);
     }
   }
 }

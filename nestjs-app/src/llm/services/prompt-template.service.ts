@@ -61,7 +61,9 @@ export class PromptTemplateService {
    */
   registerTemplate(template: PromptTemplate): void {
     this.templates.set(template.id, template);
-    this.logger.log(`Registered prompt template: ${template.id} (${template.category})`);
+    this.logger.log(
+      `Registered prompt template: ${template.id} (${template.category})`,
+    );
   }
 
   /**
@@ -75,14 +77,18 @@ export class PromptTemplateService {
    * List templates by category
    */
   getTemplatesByCategory(category: string): PromptTemplate[] {
-    return Array.from(this.templates.values())
-      .filter(template => template.category === category);
+    return Array.from(this.templates.values()).filter(
+      (template) => template.category === category,
+    );
   }
 
   /**
    * Compile a template with provided variables
    */
-  compileTemplate(templateId: string, variables: Record<string, any>): CompiledPrompt {
+  compileTemplate(
+    templateId: string,
+    variables: Record<string, any>,
+  ): CompiledPrompt {
     const template = this.templates.get(templateId);
     if (!template) {
       throw new Error(`Template not found: ${templateId}`);
@@ -93,8 +99,9 @@ export class PromptTemplateService {
 
     // Compile the prompt
     const prompt = this.replaceVariables(template.template, variables);
-    const systemPrompt = template.systemPrompt ? 
-      this.replaceVariables(template.systemPrompt, variables) : undefined;
+    const systemPrompt = template.systemPrompt
+      ? this.replaceVariables(template.systemPrompt, variables)
+      : undefined;
 
     return {
       prompt,
@@ -103,25 +110,32 @@ export class PromptTemplateService {
       metadata: {
         templateId,
         compiledAt: new Date().toISOString(),
-        variables: Object.keys(variables)
-      }
+        variables: Object.keys(variables),
+      },
     };
   }
 
   /**
    * Compile template with game context
    */
-  compileWithContext(templateId: string, context: GameContext, additionalVariables: Record<string, any> = {}): CompiledPrompt {
+  compileWithContext(
+    templateId: string,
+    context: GameContext,
+    additionalVariables: Record<string, any> = {},
+  ): CompiledPrompt {
     const contextVariables = this.extractContextVariables(context);
     const allVariables = { ...contextVariables, ...additionalVariables };
-    
+
     return this.compileTemplate(templateId, allVariables);
   }
 
   /**
    * Render template directly to string (convenience method)
    */
-  async renderTemplate(templateId: string, variables: Record<string, any>): Promise<string> {
+  async renderTemplate(
+    templateId: string,
+    variables: Record<string, any>,
+  ): Promise<string> {
     const compiled = this.compileTemplate(templateId, variables);
     return compiled.prompt;
   }
@@ -158,20 +172,83 @@ The description should:
 
 Write an immersive description that draws the reader into the space:`,
       variables: [
-        { name: 'room_name', type: 'string', required: true, description: 'Name of the room' },
-        { name: 'room_type', type: 'string', required: true, description: 'Type/purpose of the room' },
-        { name: 'room_size', type: 'string', required: false, description: 'Size description', defaultValue: 'medium' },
-        { name: 'room_theme', type: 'string', required: true, description: 'Room theme/style' },
-        { name: 'game_theme', type: 'string', required: true, description: 'Overall game theme' },
-        { name: 'objects_list', type: 'string', required: false, description: 'List of objects in room', defaultValue: 'various items' },
-        { name: 'connected_rooms', type: 'string', required: false, description: 'Connected rooms', defaultValue: 'other areas' },
-        { name: 'time_of_day', type: 'string', required: false, description: 'Current time', defaultValue: 'day' },
-        { name: 'lighting', type: 'string', required: false, description: 'Lighting conditions', defaultValue: 'well-lit' },
-        { name: 'narrative_style', type: 'string', required: false, description: 'Writing style', defaultValue: 'descriptive' },
-        { name: 'description_length', type: 'string', required: false, description: 'Length preference', defaultValue: 'detailed' }
+        {
+          name: 'room_name',
+          type: 'string',
+          required: true,
+          description: 'Name of the room',
+        },
+        {
+          name: 'room_type',
+          type: 'string',
+          required: true,
+          description: 'Type/purpose of the room',
+        },
+        {
+          name: 'room_size',
+          type: 'string',
+          required: false,
+          description: 'Size description',
+          defaultValue: 'medium',
+        },
+        {
+          name: 'room_theme',
+          type: 'string',
+          required: true,
+          description: 'Room theme/style',
+        },
+        {
+          name: 'game_theme',
+          type: 'string',
+          required: true,
+          description: 'Overall game theme',
+        },
+        {
+          name: 'objects_list',
+          type: 'string',
+          required: false,
+          description: 'List of objects in room',
+          defaultValue: 'various items',
+        },
+        {
+          name: 'connected_rooms',
+          type: 'string',
+          required: false,
+          description: 'Connected rooms',
+          defaultValue: 'other areas',
+        },
+        {
+          name: 'time_of_day',
+          type: 'string',
+          required: false,
+          description: 'Current time',
+          defaultValue: 'day',
+        },
+        {
+          name: 'lighting',
+          type: 'string',
+          required: false,
+          description: 'Lighting conditions',
+          defaultValue: 'well-lit',
+        },
+        {
+          name: 'narrative_style',
+          type: 'string',
+          required: false,
+          description: 'Writing style',
+          defaultValue: 'descriptive',
+        },
+        {
+          name: 'description_length',
+          type: 'string',
+          required: false,
+          description: 'Length preference',
+          defaultValue: 'detailed',
+        },
       ],
-      systemPrompt: 'You are a master storyteller creating immersive game environments. Focus on creating atmospheric descriptions that enhance player engagement.',
-      outputFormat: 'text'
+      systemPrompt:
+        'You are a master storyteller creating immersive game environments. Focus on creating atmospheric descriptions that enhance player engagement.',
+      outputFormat: 'text',
     });
 
     // NPC Generation Template
@@ -225,22 +302,57 @@ Generate a complete NPC with the following JSON structure:
   "goals": ["short", "term", "objectives"]
 }`,
       variables: [
-        { name: 'location', type: 'string', required: true, description: 'Where the NPC is located' },
-        { name: 'game_theme', type: 'string', required: true, description: 'Game setting/theme' },
-        { name: 'npc_role', type: 'string', required: true, description: 'NPC function/job' },
-        { name: 'importance_level', type: 'string', required: false, description: 'Story importance', defaultValue: 'minor' },
-        { name: 'cultural_setting', type: 'string', required: false, description: 'Cultural context', defaultValue: 'standard fantasy' },
-        { name: 'existing_npcs', type: 'string', required: false, description: 'Other NPCs to relate to', defaultValue: 'none specified' }
+        {
+          name: 'location',
+          type: 'string',
+          required: true,
+          description: 'Where the NPC is located',
+        },
+        {
+          name: 'game_theme',
+          type: 'string',
+          required: true,
+          description: 'Game setting/theme',
+        },
+        {
+          name: 'npc_role',
+          type: 'string',
+          required: true,
+          description: 'NPC function/job',
+        },
+        {
+          name: 'importance_level',
+          type: 'string',
+          required: false,
+          description: 'Story importance',
+          defaultValue: 'minor',
+        },
+        {
+          name: 'cultural_setting',
+          type: 'string',
+          required: false,
+          description: 'Cultural context',
+          defaultValue: 'standard fantasy',
+        },
+        {
+          name: 'existing_npcs',
+          type: 'string',
+          required: false,
+          description: 'Other NPCs to relate to',
+          defaultValue: 'none specified',
+        },
       ],
-      systemPrompt: 'You are a character creation expert. Create believable, three-dimensional NPCs with consistent personalities and clear motivations.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are a character creation expert. Create believable, three-dimensional NPCs with consistent personalities and clear motivations.',
+      outputFormat: 'json',
     });
 
     // Conflict Resolution Template
     this.registerTemplate({
       id: 'physics_conflict_resolution',
       name: 'Physics Conflict Resolver',
-      description: 'Resolve impossible physics scenarios with narrative explanations',
+      description:
+        'Resolve impossible physics scenarios with narrative explanations',
       category: 'conflict_resolution',
       version: '1.0.0',
       template: `A physics conflict has occurred in {{game_name}}:
@@ -286,19 +398,72 @@ Respond with JSON:
   "consistency_notes": "How this maintains world logic"
 }`,
       variables: [
-        { name: 'game_name', type: 'string', required: true, description: 'Name of the game' },
-        { name: 'conflict_type', type: 'string', required: true, description: 'Type of physics conflict' },
-        { name: 'affected_objects', type: 'string', required: true, description: 'Objects involved in conflict' },
-        { name: 'location', type: 'string', required: true, description: 'Where conflict occurred' },
-        { name: 'conflict_description', type: 'string', required: true, description: 'Detailed conflict description' },
-        { name: 'physics_rules', type: 'string', required: true, description: 'Established physics rules' },
-        { name: 'current_situation', type: 'string', required: true, description: 'Current game state' },
-        { name: 'game_theme', type: 'string', required: true, description: 'Game world theme' },
-        { name: 'magic_system', type: 'string', required: false, description: 'Magic system rules', defaultValue: 'none' },
-        { name: 'tech_level', type: 'string', required: false, description: 'Technology level', defaultValue: 'medieval' }
+        {
+          name: 'game_name',
+          type: 'string',
+          required: true,
+          description: 'Name of the game',
+        },
+        {
+          name: 'conflict_type',
+          type: 'string',
+          required: true,
+          description: 'Type of physics conflict',
+        },
+        {
+          name: 'affected_objects',
+          type: 'string',
+          required: true,
+          description: 'Objects involved in conflict',
+        },
+        {
+          name: 'location',
+          type: 'string',
+          required: true,
+          description: 'Where conflict occurred',
+        },
+        {
+          name: 'conflict_description',
+          type: 'string',
+          required: true,
+          description: 'Detailed conflict description',
+        },
+        {
+          name: 'physics_rules',
+          type: 'string',
+          required: true,
+          description: 'Established physics rules',
+        },
+        {
+          name: 'current_situation',
+          type: 'string',
+          required: true,
+          description: 'Current game state',
+        },
+        {
+          name: 'game_theme',
+          type: 'string',
+          required: true,
+          description: 'Game world theme',
+        },
+        {
+          name: 'magic_system',
+          type: 'string',
+          required: false,
+          description: 'Magic system rules',
+          defaultValue: 'none',
+        },
+        {
+          name: 'tech_level',
+          type: 'string',
+          required: false,
+          description: 'Technology level',
+          defaultValue: 'medieval',
+        },
       ],
-      systemPrompt: 'You are a game master expert at maintaining world consistency while resolving impossible situations. Prioritize player immersion and believable explanations.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are a game master expert at maintaining world consistency while resolving impossible situations. Prioritize player immersion and believable explanations.',
+      outputFormat: 'json',
     });
 
     // Dialogue Generation Template
@@ -346,22 +511,93 @@ Response format:
   "follow_up_options": ["possible", "conversation", "directions"]
 }`,
       variables: [
-        { name: 'npc_name', type: 'string', required: true, description: 'NPC name' },
-        { name: 'npc_role', type: 'string', required: true, description: 'NPC role/job' },
-        { name: 'personality_traits', type: 'string', required: true, description: 'Key personality traits' },
-        { name: 'current_mood', type: 'string', required: true, description: 'Current emotional state' },
-        { name: 'speech_pattern', type: 'string', required: true, description: 'How they speak' },
-        { name: 'player_relationship', type: 'string', required: true, description: 'Relationship to player' },
-        { name: 'dialogue_context', type: 'string', required: true, description: 'Current situation context' },
-        { name: 'player_action', type: 'string', required: false, description: 'What player just did', defaultValue: 'approached' },
-        { name: 'location', type: 'string', required: true, description: 'Current location' },
-        { name: 'recent_events', type: 'string', required: false, description: 'Recent significant events', defaultValue: 'nothing notable' },
-        { name: 'npc_goals', type: 'string', required: false, description: 'NPC current objectives', defaultValue: 'daily routine' },
-        { name: 'conversation_history', type: 'string', required: false, description: 'Previous conversation', defaultValue: 'first meeting' },
-        { name: 'dialogue_tone', type: 'string', required: false, description: 'Desired tone', defaultValue: 'natural' }
+        {
+          name: 'npc_name',
+          type: 'string',
+          required: true,
+          description: 'NPC name',
+        },
+        {
+          name: 'npc_role',
+          type: 'string',
+          required: true,
+          description: 'NPC role/job',
+        },
+        {
+          name: 'personality_traits',
+          type: 'string',
+          required: true,
+          description: 'Key personality traits',
+        },
+        {
+          name: 'current_mood',
+          type: 'string',
+          required: true,
+          description: 'Current emotional state',
+        },
+        {
+          name: 'speech_pattern',
+          type: 'string',
+          required: true,
+          description: 'How they speak',
+        },
+        {
+          name: 'player_relationship',
+          type: 'string',
+          required: true,
+          description: 'Relationship to player',
+        },
+        {
+          name: 'dialogue_context',
+          type: 'string',
+          required: true,
+          description: 'Current situation context',
+        },
+        {
+          name: 'player_action',
+          type: 'string',
+          required: false,
+          description: 'What player just did',
+          defaultValue: 'approached',
+        },
+        {
+          name: 'location',
+          type: 'string',
+          required: true,
+          description: 'Current location',
+        },
+        {
+          name: 'recent_events',
+          type: 'string',
+          required: false,
+          description: 'Recent significant events',
+          defaultValue: 'nothing notable',
+        },
+        {
+          name: 'npc_goals',
+          type: 'string',
+          required: false,
+          description: 'NPC current objectives',
+          defaultValue: 'daily routine',
+        },
+        {
+          name: 'conversation_history',
+          type: 'string',
+          required: false,
+          description: 'Previous conversation',
+          defaultValue: 'first meeting',
+        },
+        {
+          name: 'dialogue_tone',
+          type: 'string',
+          required: false,
+          description: 'Desired tone',
+          defaultValue: 'natural',
+        },
       ],
-      systemPrompt: 'You are an expert at creating believable NPC dialogue. Make each character feel unique and authentic while advancing the story.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are an expert at creating believable NPC dialogue. Make each character feel unique and authentic while advancing the story.',
+      outputFormat: 'json',
     });
 
     // Object Generation Template
@@ -426,17 +662,63 @@ Generate object with JSON structure:
   "location_placement": "Suggested placement within the location"
 }`,
       variables: [
-        { name: 'location', type: 'string', required: true, description: 'Where object will be placed' },
-        { name: 'game_theme', type: 'string', required: true, description: 'Overall game theme' },
-        { name: 'object_purpose', type: 'string', required: true, description: 'Why object is needed' },
-        { name: 'available_materials', type: 'string', required: false, description: 'Available materials', defaultValue: 'common materials' },
-        { name: 'cultural_setting', type: 'string', required: false, description: 'Cultural context', defaultValue: 'standard fantasy' },
-        { name: 'tech_level', type: 'string', required: false, description: 'Technology level', defaultValue: 'medieval' },
-        { name: 'existing_objects', type: 'string', required: false, description: 'Objects already present', defaultValue: 'none specified' },
-        { name: 'player_level', type: 'string', required: false, description: 'Player progression level', defaultValue: 'beginner' }
+        {
+          name: 'location',
+          type: 'string',
+          required: true,
+          description: 'Where object will be placed',
+        },
+        {
+          name: 'game_theme',
+          type: 'string',
+          required: true,
+          description: 'Overall game theme',
+        },
+        {
+          name: 'object_purpose',
+          type: 'string',
+          required: true,
+          description: 'Why object is needed',
+        },
+        {
+          name: 'available_materials',
+          type: 'string',
+          required: false,
+          description: 'Available materials',
+          defaultValue: 'common materials',
+        },
+        {
+          name: 'cultural_setting',
+          type: 'string',
+          required: false,
+          description: 'Cultural context',
+          defaultValue: 'standard fantasy',
+        },
+        {
+          name: 'tech_level',
+          type: 'string',
+          required: false,
+          description: 'Technology level',
+          defaultValue: 'medieval',
+        },
+        {
+          name: 'existing_objects',
+          type: 'string',
+          required: false,
+          description: 'Objects already present',
+          defaultValue: 'none specified',
+        },
+        {
+          name: 'player_level',
+          type: 'string',
+          required: false,
+          description: 'Player progression level',
+          defaultValue: 'beginner',
+        },
       ],
-      systemPrompt: 'You are a creative game designer who creates objects that enhance both gameplay and storytelling. Every object should feel like it belongs in the world.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are a creative game designer who creates objects that enhance both gameplay and storytelling. Every object should feel like it belongs in the world.',
+      outputFormat: 'json',
     });
 
     // Room Enhancement Template
@@ -465,12 +747,29 @@ Create enhancements that:
 
 Generate the enhancements using the room content JSON schema, focusing only on the new additions.`,
       variables: [
-        { name: 'existingRoom', type: 'string', required: true, description: 'Current room data' },
-        { name: 'enhancements', type: 'string', required: true, description: 'Requested enhancements' },
-        { name: 'currentObjects', type: 'string', required: false, description: 'Current objects', defaultValue: 'none' }
+        {
+          name: 'existingRoom',
+          type: 'string',
+          required: true,
+          description: 'Current room data',
+        },
+        {
+          name: 'enhancements',
+          type: 'string',
+          required: true,
+          description: 'Requested enhancements',
+        },
+        {
+          name: 'currentObjects',
+          type: 'string',
+          required: false,
+          description: 'Current objects',
+          defaultValue: 'none',
+        },
       ],
-      systemPrompt: 'You are enhancing existing game content. Maintain consistency while adding meaningful improvements.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are enhancing existing game content. Maintain consistency while adding meaningful improvements.',
+      outputFormat: 'json',
     });
 
     // NPC Enhancement Template
@@ -496,18 +795,30 @@ Create enhancements that:
 
 Generate the enhanced NPC using the full NPC JSON schema.`,
       variables: [
-        { name: 'existingNPC', type: 'string', required: true, description: 'Current NPC data' },
-        { name: 'enhancements', type: 'string', required: true, description: 'Requested enhancements' }
+        {
+          name: 'existingNPC',
+          type: 'string',
+          required: true,
+          description: 'Current NPC data',
+        },
+        {
+          name: 'enhancements',
+          type: 'string',
+          required: true,
+          description: 'Requested enhancements',
+        },
       ],
-      systemPrompt: 'You are enhancing existing NPCs. Build upon their established character while adding meaningful depth.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are enhancing existing NPCs. Build upon their established character while adding meaningful depth.',
+      outputFormat: 'json',
     });
 
     // Story Generation Template
     this.registerTemplate({
       id: 'story_generation',
       name: 'Comprehensive Story Generator',
-      description: 'Generate complete story structures with acts, characters, and quests',
+      description:
+        'Generate complete story structures with acts, characters, and quests',
       category: 'generation',
       version: '1.0.0',
       template: `Create a comprehensive {{genre}} story with the theme "{{theme}}".
@@ -536,18 +847,67 @@ Create a complete story structure with:
 
 Generate using the story JSON schema.`,
       variables: [
-        { name: 'genre', type: 'string', required: true, description: 'Story genre' },
-        { name: 'theme', type: 'string', required: true, description: 'Story theme' },
-        { name: 'targetLength', type: 'string', required: true, description: 'Story length' },
-        { name: 'playerLevel', type: 'string', required: true, description: 'Player level' },
-        { name: 'keyElements', type: 'string', required: false, description: 'Key story elements', defaultValue: 'adventure' },
-        { name: 'conflicts', type: 'string', required: false, description: 'Story conflicts', defaultValue: 'challenges' },
-        { name: 'desiredOutcome', type: 'string', required: false, description: 'Story outcome', defaultValue: 'open' },
-        { name: 'maxRooms', type: 'string', required: true, description: 'Maximum locations' },
-        { name: 'maxNPCs', type: 'string', required: true, description: 'Maximum characters' }
+        {
+          name: 'genre',
+          type: 'string',
+          required: true,
+          description: 'Story genre',
+        },
+        {
+          name: 'theme',
+          type: 'string',
+          required: true,
+          description: 'Story theme',
+        },
+        {
+          name: 'targetLength',
+          type: 'string',
+          required: true,
+          description: 'Story length',
+        },
+        {
+          name: 'playerLevel',
+          type: 'string',
+          required: true,
+          description: 'Player level',
+        },
+        {
+          name: 'keyElements',
+          type: 'string',
+          required: false,
+          description: 'Key story elements',
+          defaultValue: 'adventure',
+        },
+        {
+          name: 'conflicts',
+          type: 'string',
+          required: false,
+          description: 'Story conflicts',
+          defaultValue: 'challenges',
+        },
+        {
+          name: 'desiredOutcome',
+          type: 'string',
+          required: false,
+          description: 'Story outcome',
+          defaultValue: 'open',
+        },
+        {
+          name: 'maxRooms',
+          type: 'string',
+          required: true,
+          description: 'Maximum locations',
+        },
+        {
+          name: 'maxNPCs',
+          type: 'string',
+          required: true,
+          description: 'Maximum characters',
+        },
       ],
-      systemPrompt: 'You are a master storyteller creating engaging narrative adventures. Focus on compelling characters, interesting conflicts, and meaningful choices.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are a master storyteller creating engaging narrative adventures. Focus on compelling characters, interesting conflicts, and meaningful choices.',
+      outputFormat: 'json',
     });
 
     // Quest Generation Template
@@ -576,15 +936,49 @@ Create a quest that:
 
 Generate using the quest JSON schema with complete objectives, rewards, and dialogue.`,
       variables: [
-        { name: 'type', type: 'string', required: true, description: 'Quest type' },
-        { name: 'difficulty', type: 'string', required: true, description: 'Difficulty level' },
-        { name: 'objectives', type: 'string', required: true, description: 'Quest objectives' },
-        { name: 'npcsInvolved', type: 'string', required: false, description: 'NPCs involved', defaultValue: 'none' },
-        { name: 'locationsInvolved', type: 'string', required: false, description: 'Locations involved', defaultValue: 'current area' },
-        { name: 'prerequisites', type: 'string', required: false, description: 'Prerequisites', defaultValue: 'none' }
+        {
+          name: 'type',
+          type: 'string',
+          required: true,
+          description: 'Quest type',
+        },
+        {
+          name: 'difficulty',
+          type: 'string',
+          required: true,
+          description: 'Difficulty level',
+        },
+        {
+          name: 'objectives',
+          type: 'string',
+          required: true,
+          description: 'Quest objectives',
+        },
+        {
+          name: 'npcsInvolved',
+          type: 'string',
+          required: false,
+          description: 'NPCs involved',
+          defaultValue: 'none',
+        },
+        {
+          name: 'locationsInvolved',
+          type: 'string',
+          required: false,
+          description: 'Locations involved',
+          defaultValue: 'current area',
+        },
+        {
+          name: 'prerequisites',
+          type: 'string',
+          required: false,
+          description: 'Prerequisites',
+          defaultValue: 'none',
+        },
       ],
-      systemPrompt: 'You are designing engaging quests. Create clear objectives, fair rewards, and interesting challenges that enhance gameplay.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are designing engaging quests. Create clear objectives, fair rewards, and interesting challenges that enhance gameplay.',
+      outputFormat: 'json',
     });
 
     // Plot Twist Template
@@ -610,11 +1004,23 @@ Create a plot twist that:
 
 The twist should be impactful but not story-breaking.`,
       variables: [
-        { name: 'currentState', type: 'string', required: true, description: 'Current story situation' },
-        { name: 'storyProgress', type: 'string', required: false, description: 'Story completion percentage', defaultValue: '50%' }
+        {
+          name: 'currentState',
+          type: 'string',
+          required: true,
+          description: 'Current story situation',
+        },
+        {
+          name: 'storyProgress',
+          type: 'string',
+          required: false,
+          description: 'Story completion percentage',
+          defaultValue: '50%',
+        },
       ],
-      systemPrompt: 'You are a master of dramatic storytelling. Create plot twists that surprise and delight while maintaining narrative integrity.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are a master of dramatic storytelling. Create plot twists that surprise and delight while maintaining narrative integrity.',
+      outputFormat: 'json',
     });
 
     // Adaptive Narrative Template
@@ -644,19 +1050,36 @@ Create a response that:
 
 The response should feel reactive and personalized to the player's actions.`,
       variables: [
-        { name: 'playerActions', type: 'string', required: true, description: 'Recent player actions' },
-        { name: 'gameState', type: 'string', required: true, description: 'Current game state' },
-        { name: 'storyContext', type: 'string', required: true, description: 'Story context' }
+        {
+          name: 'playerActions',
+          type: 'string',
+          required: true,
+          description: 'Recent player actions',
+        },
+        {
+          name: 'gameState',
+          type: 'string',
+          required: true,
+          description: 'Current game state',
+        },
+        {
+          name: 'storyContext',
+          type: 'string',
+          required: true,
+          description: 'Story context',
+        },
       ],
-      systemPrompt: 'You are adapting the story in real-time based on player choices. Create responsive, engaging narrative that feels personal.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are adapting the story in real-time based on player choices. Create responsive, engaging narrative that feels personal.',
+      outputFormat: 'json',
     });
 
     // Story Validation Template
     this.registerTemplate({
       id: 'story_validation',
       name: 'Story Content Validator',
-      description: 'Validate generated story content for quality and consistency',
+      description:
+        'Validate generated story content for quality and consistency',
       category: 'validation',
       version: '1.0.0',
       template: `Validate the generated story content for quality, consistency, and gameplay value.
@@ -681,16 +1104,52 @@ Evaluate the story for:
 
 Provide validation results with specific issues and quality assessment.`,
       variables: [
-        { name: 'story', type: 'string', required: true, description: 'Story content to validate' },
-        { name: 'rooms', type: 'string', required: true, description: 'Number of rooms' },
-        { name: 'npcs', type: 'string', required: true, description: 'Number of NPCs' },
-        { name: 'quests', type: 'string', required: true, description: 'Number of quests' },
-        { name: 'theme', type: 'string', required: true, description: 'Story theme' },
-        { name: 'genre', type: 'string', required: true, description: 'Story genre' },
-        { name: 'playerLevel', type: 'string', required: true, description: 'Target player level' }
+        {
+          name: 'story',
+          type: 'string',
+          required: true,
+          description: 'Story content to validate',
+        },
+        {
+          name: 'rooms',
+          type: 'string',
+          required: true,
+          description: 'Number of rooms',
+        },
+        {
+          name: 'npcs',
+          type: 'string',
+          required: true,
+          description: 'Number of NPCs',
+        },
+        {
+          name: 'quests',
+          type: 'string',
+          required: true,
+          description: 'Number of quests',
+        },
+        {
+          name: 'theme',
+          type: 'string',
+          required: true,
+          description: 'Story theme',
+        },
+        {
+          name: 'genre',
+          type: 'string',
+          required: true,
+          description: 'Story genre',
+        },
+        {
+          name: 'playerLevel',
+          type: 'string',
+          required: true,
+          description: 'Target player level',
+        },
       ],
-      systemPrompt: 'You are a quality assurance expert for game content. Provide thorough, actionable validation feedback.',
-      outputFormat: 'json'
+      systemPrompt:
+        'You are a quality assurance expert for game content. Provide thorough, actionable validation feedback.',
+      outputFormat: 'json',
     });
 
     // Story Summary Template
@@ -718,14 +1177,40 @@ Create a summary that:
 
 Write an engaging summary that would excite players to explore this story.`,
       variables: [
-        { name: 'theme', type: 'string', required: true, description: 'Story theme' },
-        { name: 'genre', type: 'string', required: true, description: 'Story genre' },
-        { name: 'roomCount', type: 'string', required: true, description: 'Number of rooms created' },
-        { name: 'npcCount', type: 'string', required: true, description: 'Number of NPCs created' },
-        { name: 'questCount', type: 'string', required: true, description: 'Number of quests created' }
+        {
+          name: 'theme',
+          type: 'string',
+          required: true,
+          description: 'Story theme',
+        },
+        {
+          name: 'genre',
+          type: 'string',
+          required: true,
+          description: 'Story genre',
+        },
+        {
+          name: 'roomCount',
+          type: 'string',
+          required: true,
+          description: 'Number of rooms created',
+        },
+        {
+          name: 'npcCount',
+          type: 'string',
+          required: true,
+          description: 'Number of NPCs created',
+        },
+        {
+          name: 'questCount',
+          type: 'string',
+          required: true,
+          description: 'Number of quests created',
+        },
       ],
-      systemPrompt: 'You are a marketing copywriter who creates compelling game content descriptions that excite and engage players.',
-      outputFormat: 'text'
+      systemPrompt:
+        'You are a marketing copywriter who creates compelling game content descriptions that excite and engage players.',
+      outputFormat: 'text',
     });
 
     this.logger.log(`Loaded ${this.templates.size} default prompt templates`);
@@ -746,17 +1231,22 @@ Write an engaging summary that would excite players to explore this story.`,
     if (context.currentScene.activeRoom) {
       variables.location = context.currentScene.activeRoom.room.name;
       variables.room_name = context.currentScene.activeRoom.room.name;
-      variables.room_type = context.currentScene.activeRoom.room.type || 'unknown';
-      variables.room_theme = context.currentScene.activeRoom.room.description || '';
-      
+      variables.room_type =
+        context.currentScene.activeRoom.room.type || 'unknown';
+      variables.room_theme =
+        context.currentScene.activeRoom.room.description || '';
+
       // Objects in room
-      const objectNames = context.currentScene.activeRoom.objects.map(obj => obj.object.name);
-      variables.objects_list = objectNames.length > 0 ? objectNames.join(', ') : 'none';
+      const objectNames = context.currentScene.activeRoom.objects.map(
+        (obj) => obj.object.name,
+      );
+      variables.objects_list =
+        objectNames.length > 0 ? objectNames.join(', ') : 'none';
       variables.existing_objects = objectNames.join(', ');
 
       // Room connections
-      const connections = context.currentScene.activeRoom.connections.map(conn => 
-        `${conn.direction} to ${conn.targetRoomId}`
+      const connections = context.currentScene.activeRoom.connections.map(
+        (conn) => `${conn.direction} to ${conn.targetRoomId}`,
       );
       variables.connected_rooms = connections.join(', ');
 
@@ -767,18 +1257,23 @@ Write an engaging summary that would excite players to explore this story.`,
 
     // World constraints
     if (context.constraints) {
-      variables.cultural_setting = context.constraints.culturalSettings?.era || 'fantasy';
-      variables.tech_level = context.constraints.culturalSettings?.technology || 'medieval';
-      variables.narrative_style = context.constraints.narrativeGuidelines?.tone || 'balanced';
-      
+      variables.cultural_setting =
+        context.constraints.culturalSettings?.era || 'fantasy';
+      variables.tech_level =
+        context.constraints.culturalSettings?.technology || 'medieval';
+      variables.narrative_style =
+        context.constraints.narrativeGuidelines?.tone || 'balanced';
+
       // Physics rules
-      const physicsRules = context.constraints.physicsRules?.map(rule => rule.description) || [];
+      const physicsRules =
+        context.constraints.physicsRules?.map((rule) => rule.description) || [];
       variables.physics_rules = physicsRules.join(', ');
     }
 
     // Player context
     if (context.playerContext) {
-      variables.player_level = context.playerContext.player.level?.toString() || '1';
+      variables.player_level =
+        context.playerContext.player.level?.toString() || '1';
       variables.player_relationship = 'neutral'; // Default
     }
 
@@ -788,7 +1283,10 @@ Write an engaging summary that would excite players to explore this story.`,
   /**
    * Validate template variables
    */
-  private validateVariables(template: PromptTemplate, variables: Record<string, any>): void {
+  private validateVariables(
+    template: PromptTemplate,
+    variables: Record<string, any>,
+  ): void {
     for (const variable of template.variables) {
       const value = variables[variable.name];
 
@@ -806,12 +1304,18 @@ Write an engaging summary that would excite players to explore this story.`,
       if (value !== undefined) {
         // Type validation
         if (!this.validateVariableType(value, variable.type)) {
-          throw new Error(`Variable ${variable.name} has invalid type. Expected ${variable.type}, got ${typeof value}`);
+          throw new Error(
+            `Variable ${variable.name} has invalid type. Expected ${variable.type}, got ${typeof value}`,
+          );
         }
 
         // Additional validation
         if (variable.validation) {
-          this.validateVariableConstraints(variable.name, value, variable.validation);
+          this.validateVariableConstraints(
+            variable.name,
+            value,
+            variable.validation,
+          );
         }
       }
     }
@@ -829,7 +1333,9 @@ Write an engaging summary that would excite players to explore this story.`,
       case 'boolean':
         return typeof value === 'boolean';
       case 'object':
-        return typeof value === 'object' && value !== null && !Array.isArray(value);
+        return (
+          typeof value === 'object' && value !== null && !Array.isArray(value)
+        );
       case 'array':
         return Array.isArray(value);
       default:
@@ -840,13 +1346,21 @@ Write an engaging summary that would excite players to explore this story.`,
   /**
    * Validate variable constraints
    */
-  private validateVariableConstraints(name: string, value: any, validation: any): void {
+  private validateVariableConstraints(
+    name: string,
+    value: any,
+    validation: any,
+  ): void {
     if (typeof value === 'string') {
       if (validation.minLength && value.length < validation.minLength) {
-        throw new Error(`Variable ${name} is too short. Minimum length: ${validation.minLength}`);
+        throw new Error(
+          `Variable ${name} is too short. Minimum length: ${validation.minLength}`,
+        );
       }
       if (validation.maxLength && value.length > validation.maxLength) {
-        throw new Error(`Variable ${name} is too long. Maximum length: ${validation.maxLength}`);
+        throw new Error(
+          `Variable ${name} is too long. Maximum length: ${validation.maxLength}`,
+        );
       }
       if (validation.pattern && !new RegExp(validation.pattern).test(value)) {
         throw new Error(`Variable ${name} does not match required pattern`);
@@ -855,10 +1369,14 @@ Write an engaging summary that would excite players to explore this story.`,
 
     if (typeof value === 'number') {
       if (validation.min && value < validation.min) {
-        throw new Error(`Variable ${name} is too small. Minimum: ${validation.min}`);
+        throw new Error(
+          `Variable ${name} is too small. Minimum: ${validation.min}`,
+        );
       }
       if (validation.max && value > validation.max) {
-        throw new Error(`Variable ${name} is too large. Maximum: ${validation.max}`);
+        throw new Error(
+          `Variable ${name} is too large. Maximum: ${validation.max}`,
+        );
       }
     }
   }
@@ -866,7 +1384,10 @@ Write an engaging summary that would excite players to explore this story.`,
   /**
    * Replace variables in template string
    */
-  private replaceVariables(template: string, variables: Record<string, any>): string {
+  private replaceVariables(
+    template: string,
+    variables: Record<string, any>,
+  ): string {
     return template.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
       const value = variables[variableName];
       if (value === undefined) {
@@ -886,15 +1407,16 @@ Write an engaging summary that would excite players to explore this story.`,
     templateIds: string[];
   } {
     const categoryCounts: Record<string, number> = {};
-    
+
     for (const template of this.templates.values()) {
-      categoryCounts[template.category] = (categoryCounts[template.category] || 0) + 1;
+      categoryCounts[template.category] =
+        (categoryCounts[template.category] || 0) + 1;
     }
 
     return {
       totalTemplates: this.templates.size,
       categoryCounts,
-      templateIds: Array.from(this.templates.keys())
+      templateIds: Array.from(this.templates.keys()),
     };
   }
 }

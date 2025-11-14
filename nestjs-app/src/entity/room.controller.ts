@@ -24,7 +24,7 @@ export class RoomController {
   @Patch(':id/players/:playerId')
   addPlayerToRoom(
     @Param('id') roomId: string,
-    @Param('playerId') playerId: string
+    @Param('playerId') playerId: string,
   ) {
     const success = this.roomService.addPlayerToRoom(roomId, playerId);
     return { success };
@@ -33,7 +33,7 @@ export class RoomController {
   @Patch(':id/objects/:objectId')
   addObjectToRoom(
     @Param('id') roomId: string,
-    @Param('objectId') objectId: string
+    @Param('objectId') objectId: string,
   ) {
     const success = this.roomService.addObjectToRoom(roomId, objectId);
     return { success };

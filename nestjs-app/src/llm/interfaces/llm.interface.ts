@@ -3,17 +3,29 @@ import { IObject } from '../../entity/object.interface';
 import { IPlayer } from '../../entity/player.interface';
 
 // Conflict resolution types
-export type ConflictType = 'physics' | 'narrative' | 'balance' | 'logic' | 'gameplay' | 'player_action' | 'npc_behavior' | 'object_state' | 'world_consistency';
+export type ConflictType =
+  | 'physics'
+  | 'narrative'
+  | 'balance'
+  | 'logic'
+  | 'gameplay'
+  | 'player_action'
+  | 'npc_behavior'
+  | 'object_state'
+  | 'world_consistency';
 
 // Core LLM interfaces
 export interface LLMProvider {
   name: string;
   isAvailable(): Promise<boolean>;
-  generateResponse(prompt: string, options?: LLMRequestOptions): Promise<LLMResponse>;
+  generateResponse(
+    prompt: string,
+    options?: LLMRequestOptions,
+  ): Promise<LLMResponse>;
   generateStructuredResponse<T>(
-    prompt: string, 
-    schema: any, 
-    options?: LLMRequestOptions
+    prompt: string,
+    schema: any,
+    options?: LLMRequestOptions,
   ): Promise<StructuredLLMResponse<T>>;
 }
 

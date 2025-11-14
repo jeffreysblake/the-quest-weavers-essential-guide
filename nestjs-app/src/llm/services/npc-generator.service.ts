@@ -8,7 +8,14 @@ import { IPlayer } from '../../entity/player.interface';
 
 interface NPCGenerationRequest {
   name?: string;
-  role?: 'merchant' | 'guard' | 'wizard' | 'villager' | 'enemy' | 'ally' | 'quest_giver';
+  role?:
+    | 'merchant'
+    | 'guard'
+    | 'wizard'
+    | 'villager'
+    | 'enemy'
+    | 'ally'
+    | 'quest_giver';
   personality?: string[];
   backstory?: string;
   roomId?: string;
@@ -16,7 +23,9 @@ interface NPCGenerationRequest {
   alignment?: 'good' | 'neutral' | 'evil';
   skills?: string[];
   inventory?: string[];
-  relationships?: { [npcId: string]: 'friend' | 'enemy' | 'neutral' | 'family' };
+  relationships?: {
+    [npcId: string]: 'friend' | 'enemy' | 'neutral' | 'family';
+  };
 }
 
 interface GeneratedNPCContent {
@@ -65,13 +74,13 @@ interface GeneratedNPCContent {
 @Injectable()
 export class NPCGeneratorService {
   private readonly logger = new Logger(NPCGeneratorService.name);
-  
+
   constructor(
     private llmService: LLMService,
     private promptTemplateService: PromptTemplateService,
     private contextBuilderService: ContextBuilderService,
     private playerService: PlayerService,
-    private roomService: RoomService
+    private roomService: RoomService,
   ) {}
 
   async generateNPC(request: NPCGenerationRequest): Promise<IPlayer> {
@@ -81,7 +90,7 @@ export class NPCGeneratorService {
       const context = await this.buildNPCGenerationContext(request);
       const npcContent = await this.generateNPCContent(request, context);
       const npc = await this.createNPCFromContent(npcContent, request);
-      
+
       this.logger.log(`Successfully generated NPC: ${npc.name} (${npc.id})`);
       return npc;
     } catch (error) {
@@ -90,23 +99,24 @@ export class NPCGeneratorService {
     }
   }
 
-  async generateNPCGroup(
-    groupRequest: {
-      size: number;
-      theme: string;
-      relationships?: 'family' | 'guild' | 'enemies' | 'random';
-      roomId?: string;
-    }
-  ): Promise<IPlayer[]> {
+  async generateNPCGroup(groupRequest: {
+    size: number;
+    theme: string;
+    relationships?: 'family' | 'guild' | 'enemies' | 'random';
+    roomId?: string;
+  }): Promise<IPlayer[]> {
     const npcs: IPlayer[] = [];
     const baseRequest: NPCGenerationRequest = {
-      roomId: groupRequest.roomId
+      roomId: groupRequest.roomId,
     };
 
     for (let i = 0; i < groupRequest.size; i++) {
       const npcRequest = {
         ...baseRequest,
-        relationships: this.buildGroupRelationships(npcs, groupRequest.relationships)
+        relationships: this.buildGroupRelationships(
+          npcs,
+          groupRequest.relationships,
+        ),
       };
 
       const npc = await this.generateNPC(npcRequest);
@@ -117,9 +127,9 @@ export class NPCGeneratorService {
   }
 
   async generateDialogue(
-    npcId: string, 
-    topic: string, 
-    context: { playerId?: string; roomId?: string; situation?: string }
+    npcId: string,
+    topic: string,
+    context: { playerId?: string; roomId?: string; situation?: string },
   ): Promise<string[]> {
     const npc = this.playerService.findById(npcId);
     if (!npc) {
@@ -134,8 +144,10 @@ export class NPCGeneratorService {
         npcPersonality: gameContext?.npc?.type || 'friendly',
         topic,
         situation: context.situation || 'casual conversation',
-        roomDescription: context.roomId ? this.roomService.findById(context.roomId)?.description : 'unknown location'
-      }
+        roomDescription: context.roomId
+          ? this.roomService.findById(context.roomId)?.description
+          : 'unknown location',
+      },
     );
 
     const schema = {
@@ -145,28 +157,32 @@ export class NPCGeneratorService {
         responses: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Array of possible dialogue responses'
-        }
-      }
+          description: 'Array of possible dialogue responses',
+        },
+      },
     };
 
-    const response = await this.llmService.generateStructuredResponse<{responses: string[]}>(
-      dialoguePrompt,
-      schema,
-      { temperature: 0.9 }
-    );
+    const response = await this.llmService.generateStructuredResponse<{
+      responses: string[];
+    }>(dialoguePrompt, schema, { temperature: 0.9 });
 
-    return response.parsedContent?.responses || [`${npc.name} looks at you thoughtfully but says nothing.`];
+    return (
+      response.parsedContent?.responses || [
+        `${npc.name} looks at you thoughtfully but says nothing.`,
+      ]
+    );
   }
 
   async enhanceNPC(
-    npcId: string, 
+    npcId: string,
     enhancements: {
       newPersonalityTraits?: string[];
       newSkills?: { [skill: string]: number };
       newInventory?: string[];
-      relationshipChanges?: { [otherId: string]: 'friend' | 'enemy' | 'neutral' };
-    }
+      relationshipChanges?: {
+        [otherId: string]: 'friend' | 'enemy' | 'neutral';
+      };
+    },
   ): Promise<IPlayer> {
     const npc = this.playerService.findById(npcId);
     if (!npc) {
@@ -182,44 +198,59 @@ export class NPCGeneratorService {
       'npc_enhancement',
       {
         existingNPC: JSON.stringify(context.npc, null, 2),
-        enhancements: JSON.stringify(enhancements, null, 2)
-      }
+        enhancements: JSON.stringify(enhancements, null, 2),
+      },
     );
 
     const schema = this.getNPCContentSchema();
-    const response = await this.llmService.generateStructuredResponse<GeneratedNPCContent>(
-      enhancementPrompt,
-      schema
-    );
+    const response =
+      await this.llmService.generateStructuredResponse<GeneratedNPCContent>(
+        enhancementPrompt,
+        schema,
+      );
 
-    const enhancedNPC = await this.applyNPCEnhancements(npc, response.parsedContent, enhancements);
+    const enhancedNPC = await this.applyNPCEnhancements(
+      npc,
+      response.parsedContent,
+      enhancements,
+    );
     return enhancedNPC;
   }
 
-  private async buildNPCGenerationContext(request: NPCGenerationRequest): Promise<any> {
+  private async buildNPCGenerationContext(
+    request: NPCGenerationRequest,
+  ): Promise<any> {
     const context: any = {
       request,
       worldState: {
-        totalNPCs: this.playerService.findAll().filter(p => p.type !== 'player').length,
-        totalRooms: this.roomService.findAll().length
-      }
+        totalNPCs: this.playerService
+          .findAll()
+          .filter((p) => p.type !== 'player').length,
+        totalRooms: this.roomService.findAll().length,
+      },
     };
 
     if (request.roomId) {
-      const roomContext = await this.contextBuilderService.buildRoomContext(request.roomId);
+      const roomContext = await this.contextBuilderService.buildRoomContext(
+        request.roomId,
+      );
       context.room = roomContext.room;
       context.existingNPCs = roomContext.npcs || [];
     }
 
     if (request.relationships) {
-      context.relatedNPCs = Object.keys(request.relationships).map(npcId => {
-        const npc = this.playerService.findById(npcId);
-        return npc ? {
-          id: npc.id,
-          name: npc.name,
-          relationship: request.relationships![npcId]
-        } : null;
-      }).filter(Boolean);
+      context.relatedNPCs = Object.keys(request.relationships)
+        .map((npcId) => {
+          const npc = this.playerService.findById(npcId);
+          return npc
+            ? {
+                id: npc.id,
+                name: npc.name,
+                relationship: request.relationships![npcId],
+              }
+            : null;
+        })
+        .filter(Boolean);
     }
 
     return context;
@@ -227,7 +258,7 @@ export class NPCGeneratorService {
 
   private async generateNPCContent(
     request: NPCGenerationRequest,
-    context: any
+    context: any,
   ): Promise<GeneratedNPCContent> {
     // Handle personality as either string or array
     let personalityStr = 'generate appropriate personality';
@@ -249,32 +280,43 @@ export class NPCGeneratorService {
       }
     }
 
-    const prompt = await this.promptTemplateService.renderTemplate('npc_generation', {
-      name: request.name || 'generate appropriate name',
-      role: request.role || 'villager',
-      personality: personalityStr,
-      backstory: request.backstory || 'create interesting backstory',
-      level: (request.level || 1).toString(),
-      alignment: request.alignment || 'neutral',
-      skills: skillsStr,
-      roomDescription: context.room?.description || 'unknown location',
-      existingNPCs: context.existingNPCs?.map((npc: any) => npc.name).join(', ') || 'none',
-      relationships: context.relatedNPCs?.map((npc: any) => `${npc.name} (${npc.relationship})`).join(', ') || 'none'
-    });
-
-    const schema = this.getNPCContentSchema();
-    
-    const response = await this.llmService.generateStructuredResponse<GeneratedNPCContent>(
-      prompt,
-      schema,
+    const prompt = await this.promptTemplateService.renderTemplate(
+      'npc_generation',
       {
-        temperature: 0.8,
-        maxTokens: 4000
-      }
+        name: request.name || 'generate appropriate name',
+        role: request.role || 'villager',
+        personality: personalityStr,
+        backstory: request.backstory || 'create interesting backstory',
+        level: (request.level || 1).toString(),
+        alignment: request.alignment || 'neutral',
+        skills: skillsStr,
+        roomDescription: context.room?.description || 'unknown location',
+        existingNPCs:
+          context.existingNPCs?.map((npc: any) => npc.name).join(', ') ||
+          'none',
+        relationships:
+          context.relatedNPCs
+            ?.map((npc: any) => `${npc.name} (${npc.relationship})`)
+            .join(', ') || 'none',
+      },
     );
 
+    const schema = this.getNPCContentSchema();
+
+    const response =
+      await this.llmService.generateStructuredResponse<GeneratedNPCContent>(
+        prompt,
+        schema,
+        {
+          temperature: 0.8,
+          maxTokens: 4000,
+        },
+      );
+
     if (response.validationErrors?.length) {
-      this.logger.warn(`NPC generation validation errors: ${response.validationErrors.join(', ')}`);
+      this.logger.warn(
+        `NPC generation validation errors: ${response.validationErrors.join(', ')}`,
+      );
     }
 
     return response.parsedContent;
@@ -282,10 +324,14 @@ export class NPCGeneratorService {
 
   private async createNPCFromContent(
     content: GeneratedNPCContent,
-    request: NPCGenerationRequest
+    request: NPCGenerationRequest,
   ): Promise<IPlayer> {
-    const position = request.roomId 
-      ? this.roomService.findById(request.roomId)?.position || { x: 0, y: 0, z: 0 }
+    const position = request.roomId
+      ? this.roomService.findById(request.roomId)?.position || {
+          x: 0,
+          y: 0,
+          z: 0,
+        }
       : { x: 0, y: 0, z: 0 };
 
     const npc = this.playerService.create({
@@ -296,7 +342,7 @@ export class NPCGeneratorService {
       maxHealth: content.stats.health,
       level: 1,
       experience: 0,
-      inventory: []
+      inventory: [],
     });
 
     if (request.roomId) {
@@ -308,9 +354,11 @@ export class NPCGeneratorService {
 
   private buildGroupRelationships(
     existingNPCs: IPlayer[],
-    relationshipType?: 'family' | 'guild' | 'enemies' | 'random'
+    relationshipType?: 'family' | 'guild' | 'enemies' | 'random',
   ): { [npcId: string]: 'friend' | 'enemy' | 'neutral' | 'family' } {
-    const relationships: { [npcId: string]: 'friend' | 'enemy' | 'neutral' | 'family' } = {};
+    const relationships: {
+      [npcId: string]: 'friend' | 'enemy' | 'neutral' | 'family';
+    } = {};
 
     if (!relationshipType || existingNPCs.length === 0) {
       return relationships;
@@ -328,8 +376,13 @@ export class NPCGeneratorService {
           relationships[npc.id] = 'enemy';
           break;
         case 'random':
-          const options: ('friend' | 'enemy' | 'neutral')[] = ['friend', 'enemy', 'neutral'];
-          relationships[npc.id] = options[Math.floor(Math.random() * options.length)];
+          const options: ('friend' | 'enemy' | 'neutral')[] = [
+            'friend',
+            'enemy',
+            'neutral',
+          ];
+          relationships[npc.id] =
+            options[Math.floor(Math.random() * options.length)];
           break;
       }
     }
@@ -340,14 +393,17 @@ export class NPCGeneratorService {
   private async applyNPCEnhancements(
     npc: IPlayer,
     enhancements: GeneratedNPCContent,
-    originalEnhancements: any
+    originalEnhancements: any,
   ): Promise<IPlayer> {
     if (enhancements.description) {
       npc.description = enhancements.description;
     }
 
     if (enhancements.stats.health && enhancements.stats.health !== npc.health) {
-      npc.health = Math.min(enhancements.stats.health, npc.maxHealth || enhancements.stats.health);
+      npc.health = Math.min(
+        enhancements.stats.health,
+        npc.maxHealth || enhancements.stats.health,
+      );
       npc.maxHealth = enhancements.stats.health;
     }
 
@@ -358,7 +414,15 @@ export class NPCGeneratorService {
   private getNPCContentSchema() {
     return {
       type: 'object',
-      required: ['name', 'description', 'personality', 'backstory', 'stats', 'dialogue', 'behavior'],
+      required: [
+        'name',
+        'description',
+        'personality',
+        'backstory',
+        'stats',
+        'dialogue',
+        'behavior',
+      ],
       properties: {
         name: { type: 'string' },
         description: { type: 'string' },
@@ -368,8 +432,8 @@ export class NPCGeneratorService {
           properties: {
             traits: { type: 'array', items: { type: 'string' } },
             mannerisms: { type: 'array', items: { type: 'string' } },
-            speechPatterns: { type: 'array', items: { type: 'string' } }
-          }
+            speechPatterns: { type: 'array', items: { type: 'string' } },
+          },
         },
         backstory: {
           type: 'object',
@@ -378,8 +442,8 @@ export class NPCGeneratorService {
             origin: { type: 'string' },
             motivation: { type: 'string' },
             secrets: { type: 'array', items: { type: 'string' } },
-            fears: { type: 'array', items: { type: 'string' } }
-          }
+            fears: { type: 'array', items: { type: 'string' } },
+          },
         },
         stats: {
           type: 'object',
@@ -387,11 +451,11 @@ export class NPCGeneratorService {
           properties: {
             health: { type: 'number' },
             level: { type: 'number' },
-            skills: { 
+            skills: {
               type: 'object',
-              additionalProperties: { type: 'number' }
-            }
-          }
+              additionalProperties: { type: 'number' },
+            },
+          },
         },
         inventory: {
           type: 'array',
@@ -402,9 +466,9 @@ export class NPCGeneratorService {
               name: { type: 'string' },
               description: { type: 'string' },
               material: { type: 'string' },
-              value: { type: 'number' }
-            }
-          }
+              value: { type: 'number' },
+            },
+          },
         },
         dialogue: {
           type: 'object',
@@ -416,18 +480,18 @@ export class NPCGeneratorService {
               type: 'object',
               additionalProperties: {
                 type: 'array',
-                items: { type: 'string' }
-              }
+                items: { type: 'string' },
+              },
             },
             questDialogue: {
               type: 'object',
               properties: {
                 questOffer: { type: 'string' },
                 questAccepted: { type: 'string' },
-                questCompleted: { type: 'string' }
-              }
-            }
-          }
+                questCompleted: { type: 'string' },
+              },
+            },
+          },
         },
         behavior: {
           type: 'object',
@@ -436,10 +500,10 @@ export class NPCGeneratorService {
             defaultAction: { type: 'string' },
             combatStyle: { type: 'string' },
             tradeItems: { type: 'array', items: { type: 'string' } },
-            wanderPattern: { type: 'string' }
-          }
-        }
-      }
+            wanderPattern: { type: 'string' },
+          },
+        },
+      },
     };
   }
 }

@@ -6,7 +6,11 @@ import { PhysicsService } from '../../entity/physics.service';
 import { RoomService } from '../../entity/room.service';
 import { PlayerService } from '../../entity/player.service';
 import { ObjectService } from '../../entity/object.service';
-import { ConflictResolution, ConflictType, GameContext } from '../interfaces/llm.interface';
+import {
+  ConflictResolution,
+  ConflictType,
+  GameContext,
+} from '../interfaces/llm.interface';
 
 interface ConflictContext {
   type: ConflictType;
@@ -70,7 +74,7 @@ export class ConflictResolverService {
     private physicsService: PhysicsService,
     private roomService: RoomService,
     private playerService: PlayerService,
-    private objectService: ObjectService
+    private objectService: ObjectService,
   ) {
     this.initializeDefaultStrategies();
     this.registerDefaultHooks();
@@ -87,7 +91,7 @@ export class ConflictResolverService {
       description: string;
       originalAction: string;
       errorDetails?: any;
-    }
+    },
   ): Promise<ConflictResolution> {
     const conflictContext: ConflictContext = {
       type: conflictType,
@@ -99,10 +103,12 @@ export class ConflictResolverService {
       errorDetails: context.errorDetails,
       gameState: await this.captureGameState(),
       attemptCount: 0,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
-    this.logger.log(`Resolving ${conflictType} conflict: ${context.description}`);
+    this.logger.log(
+      `Resolving ${conflictType} conflict: ${context.description}`,
+    );
 
     try {
       // Try registered hooks first
@@ -116,7 +122,6 @@ export class ConflictResolverService {
       const llmResolution = await this.resolveBWithLLM(conflictContext);
       this.recordResolution(conflictContext, llmResolution);
       return llmResolution;
-
     } catch (error) {
       this.logger.error(`Failed to resolve conflict: ${error.message}`);
       return this.createFailsafeResolution(conflictContext);
@@ -144,7 +149,7 @@ export class ConflictResolverService {
       location: context.location,
       description: `Physics conflict: ${context.physicsError}`,
       originalAction: 'physics_simulation',
-      errorDetails: { physicsError: context.physicsError }
+      errorDetails: { physicsError: context.physicsError },
     });
   }
 
@@ -161,7 +166,7 @@ export class ConflictResolverService {
       affectedEntities: [context.npcId],
       location: context.location,
       description: context.conflictDescription,
-      originalAction: context.attemptedAction
+      originalAction: context.attemptedAction,
     });
   }
 
@@ -180,8 +185,8 @@ export class ConflictResolverService {
       originalAction: 'state_change',
       errorDetails: {
         currentState: context.currentState,
-        desiredState: context.desiredState
-      }
+        desiredState: context.desiredState,
+      },
     });
   }
 
@@ -198,7 +203,7 @@ export class ConflictResolverService {
       affectedEntities: [context.playerId],
       location: context.location,
       description: `Player action conflict: ${context.reason}`,
-      originalAction: context.action
+      originalAction: context.action,
     });
   }
 
@@ -214,7 +219,7 @@ export class ConflictResolverService {
       affectedEntities: context.entities,
       location: context.location,
       description: `World consistency conflict: ${context.inconsistency}`,
-      originalAction: 'world_state_validation'
+      originalAction: 'world_state_validation',
     });
   }
 
@@ -233,11 +238,11 @@ export class ConflictResolverService {
 
     for (const [entityId, resolutions] of this.resolutionHistory) {
       totalConflicts += resolutions.length;
-      
+
       for (const resolution of resolutions) {
         const type = resolution.conflictType;
         resolutionsByType[type] = (resolutionsByType[type] || 0) + 1;
-        
+
         if (resolution.success) {
           successfulResolutions++;
         }
@@ -247,14 +252,17 @@ export class ConflictResolverService {
     return {
       totalConflicts,
       resolutionsByType,
-      successRate: totalConflicts > 0 ? successfulResolutions / totalConflicts : 1,
-      averageResolutionTime: 0 // Would track timing in production
+      successRate:
+        totalConflicts > 0 ? successfulResolutions / totalConflicts : 1,
+      averageResolutionTime: 0, // Would track timing in production
     };
   }
 
-  private async tryConflictHooks(context: ConflictContext): Promise<ConflictResolution | null> {
+  private async tryConflictHooks(
+    context: ConflictContext,
+  ): Promise<ConflictResolution | null> {
     const applicableHooks = Array.from(this.hooks.values())
-      .filter(hook => this.isHookApplicable(hook, context))
+      .filter((hook) => this.isHookApplicable(hook, context))
       .sort((a, b) => b.priority - a.priority);
 
     for (const hook of applicableHooks) {
@@ -272,22 +280,27 @@ export class ConflictResolverService {
     return null;
   }
 
-  private async resolveBWithLLM(context: ConflictContext): Promise<ConflictResolution> {
+  private async resolveBWithLLM(
+    context: ConflictContext,
+  ): Promise<ConflictResolution> {
     context.attemptCount++;
 
     const gameContext = await this.buildGameContext(context);
-    const prompt = await this.promptTemplateService.renderTemplate('physics_conflict_resolution', {
-      game_name: 'The Quest Weaver\'s Essential Guide',
-      conflict_type: context.type,
-      affected_objects: context.affectedEntities.join(', '),
-      location: context.location,
-      conflict_description: context.description,
-      physics_rules: this.getPhysicsRules(),
-      current_situation: JSON.stringify(gameContext, null, 2),
-      game_theme: 'fantasy adventure',
-      magic_system: 'elemental magic with physical effects',
-      tech_level: 'medieval with magical elements'
-    });
+    const prompt = await this.promptTemplateService.renderTemplate(
+      'physics_conflict_resolution',
+      {
+        game_name: "The Quest Weaver's Essential Guide",
+        conflict_type: context.type,
+        affected_objects: context.affectedEntities.join(', '),
+        location: context.location,
+        conflict_description: context.description,
+        physics_rules: this.getPhysicsRules(),
+        current_situation: JSON.stringify(gameContext, null, 2),
+        game_theme: 'fantasy adventure',
+        magic_system: 'elemental magic with physical effects',
+        tech_level: 'medieval with magical elements',
+      },
+    );
 
     const schema = {
       type: 'object',
@@ -300,8 +313,8 @@ export class ConflictResolverService {
             action: { type: 'string' },
             explanation: { type: 'string' },
             side_effects: { type: 'array', items: { type: 'string' } },
-            reversible: { type: 'boolean' }
-          }
+            reversible: { type: 'boolean' },
+          },
         },
         alternative_solutions: {
           type: 'array',
@@ -312,23 +325,25 @@ export class ConflictResolverService {
               action: { type: 'string' },
               explanation: { type: 'string' },
               pros: { type: 'array', items: { type: 'string' } },
-              cons: { type: 'array', items: { type: 'string' } }
-            }
-          }
+              cons: { type: 'array', items: { type: 'string' } },
+            },
+          },
         },
         narrative_description: { type: 'string' },
-        consistency_notes: { type: 'string' }
-      }
+        consistency_notes: { type: 'string' },
+      },
     };
 
     const response = await this.llmService.generateStructuredResponse(
       prompt,
       schema,
-      { temperature: 0.6, maxTokens: 2000 }
+      { temperature: 0.6, maxTokens: 2000 },
     );
 
     if (response.validationErrors?.length) {
-      this.logger.warn(`LLM resolution validation errors: ${response.validationErrors.join(', ')}`);
+      this.logger.warn(
+        `LLM resolution validation errors: ${response.validationErrors.join(', ')}`,
+      );
     }
 
     // Convert LLM response to ConflictResolution
@@ -340,12 +355,13 @@ export class ConflictResolverService {
       explanation: llmResponse.primary_solution.explanation,
       appliedChanges: [llmResponse.primary_solution.action],
       sideEffects: llmResponse.primary_solution.side_effects || [],
-      alternativeSolutions: llmResponse.alternative_solutions?.map(alt => ({
-        description: alt.action,
-        explanation: alt.explanation,
-        pros: alt.pros,
-        cons: alt.cons
-      })) || [],
+      alternativeSolutions:
+        llmResponse.alternative_solutions?.map((alt) => ({
+          description: alt.action,
+          explanation: alt.explanation,
+          pros: alt.pros,
+          cons: alt.cons,
+        })) || [],
       narrativeDescription: llmResponse.narrative_description,
       confidence: 0.8,
       processingTime: 0,
@@ -354,8 +370,8 @@ export class ConflictResolverService {
         resolverType: 'llm',
         attemptCount: context.attemptCount,
         timestamp: new Date().toISOString(),
-        reversible: llmResponse.primary_solution.reversible
-      }
+        reversible: llmResponse.primary_solution.reversible,
+      },
     };
 
     // Apply the resolution
@@ -369,15 +385,18 @@ export class ConflictResolverService {
       conflictType: context.type,
       location: context.location,
       affectedEntities: context.affectedEntities,
-      gameState: context.gameState
+      gameState: context.gameState,
     };
 
     // Add location details if available
     if (context.location !== 'unknown') {
       try {
-        gameContext.roomContext = await this.contextBuilderService.buildRoomContext(context.location);
+        gameContext.roomContext =
+          await this.contextBuilderService.buildRoomContext(context.location);
       } catch (error) {
-        this.logger.warn(`Could not build room context for ${context.location}: ${error.message}`);
+        this.logger.warn(
+          `Could not build room context for ${context.location}: ${error.message}`,
+        );
       }
     }
 
@@ -386,19 +405,26 @@ export class ConflictResolverService {
       try {
         // Try to identify entity type and get context
         if (this.playerService.findById(entityId)) {
-          gameContext[`player_${entityId}`] = await this.contextBuilderService.buildNPCContext(entityId);
+          gameContext[`player_${entityId}`] =
+            await this.contextBuilderService.buildNPCContext(entityId);
         } else if (this.objectService.findById(entityId)) {
-          gameContext[`object_${entityId}`] = await this.contextBuilderService.buildObjectContext(entityId);
+          gameContext[`object_${entityId}`] =
+            await this.contextBuilderService.buildObjectContext(entityId);
         }
       } catch (error) {
-        this.logger.warn(`Could not build entity context for ${entityId}: ${error.message}`);
+        this.logger.warn(
+          `Could not build entity context for ${entityId}: ${error.message}`,
+        );
       }
     }
 
     return gameContext;
   }
 
-  private async applyResolution(context: ConflictContext, resolution: ConflictResolution): Promise<void> {
+  private async applyResolution(
+    context: ConflictContext,
+    resolution: ConflictResolution,
+  ): Promise<void> {
     try {
       // Apply the resolution based on conflict type
       switch (context.type) {
@@ -423,11 +449,16 @@ export class ConflictResolverService {
     } catch (error) {
       this.logger.error(`Failed to apply resolution: ${error.message}`);
       resolution.success = false;
-      resolution.sideEffects.push(`Resolution application failed: ${error.message}`);
+      resolution.sideEffects.push(
+        `Resolution application failed: ${error.message}`,
+      );
     }
   }
 
-  private async applyPhysicsResolution(context: ConflictContext, resolution: ConflictResolution): Promise<void> {
+  private async applyPhysicsResolution(
+    context: ConflictContext,
+    resolution: ConflictResolution,
+  ): Promise<void> {
     // Physics-specific resolution application
     for (const entityId of context.affectedEntities) {
       const object = this.objectService.findById(entityId);
@@ -435,13 +466,16 @@ export class ConflictResolverService {
         // Reset object to a safe state
         this.objectService.update(entityId, {
           ...object,
-          position: object.position // Keep current position as safe fallback
+          position: object.position, // Keep current position as safe fallback
         });
       }
     }
   }
 
-  private async applyNPCResolution(context: ConflictContext, resolution: ConflictResolution): Promise<void> {
+  private async applyNPCResolution(
+    context: ConflictContext,
+    resolution: ConflictResolution,
+  ): Promise<void> {
     // NPC-specific resolution application
     const npcId = context.affectedEntities[0];
     const npc = this.playerService.findById(npcId);
@@ -451,7 +485,10 @@ export class ConflictResolverService {
     }
   }
 
-  private async applyObjectStateResolution(context: ConflictContext, resolution: ConflictResolution): Promise<void> {
+  private async applyObjectStateResolution(
+    context: ConflictContext,
+    resolution: ConflictResolution,
+  ): Promise<void> {
     // Object state resolution application
     const objectId = context.affectedEntities[0];
     const object = this.objectService.findById(objectId);
@@ -461,40 +498,53 @@ export class ConflictResolverService {
     }
   }
 
-  private async applyPlayerActionResolution(context: ConflictContext, resolution: ConflictResolution): Promise<void> {
+  private async applyPlayerActionResolution(
+    context: ConflictContext,
+    resolution: ConflictResolution,
+  ): Promise<void> {
     // Player action resolution - usually just validation/correction
     // The resolution explanation serves as feedback to the player
   }
 
-  private async applyWorldConsistencyResolution(context: ConflictContext, resolution: ConflictResolution): Promise<void> {
+  private async applyWorldConsistencyResolution(
+    context: ConflictContext,
+    resolution: ConflictResolution,
+  ): Promise<void> {
     // World consistency resolution - may affect multiple entities
     for (const entityId of context.affectedEntities) {
       // Apply consistency corrections as needed
     }
   }
 
-  private createFailsafeResolution(context: ConflictContext): ConflictResolution {
+  private createFailsafeResolution(
+    context: ConflictContext,
+  ): ConflictResolution {
     return {
       conflictType: context.type,
       success: false,
       resolution: 'Reset to safe state',
-      explanation: 'Automatic failsafe resolution applied due to resolution failure',
+      explanation:
+        'Automatic failsafe resolution applied due to resolution failure',
       appliedChanges: ['reset_to_safe_state'],
       sideEffects: ['Some game state may have been reset'],
       alternativeSolutions: [],
-      narrativeDescription: 'The world seems to shimmer for a moment as reality reasserts itself.',
+      narrativeDescription:
+        'The world seems to shimmer for a moment as reality reasserts itself.',
       confidence: 1.0,
       processingTime: 0,
       requiresPlayerConfirmation: false,
       metadata: {
         resolverType: 'failsafe',
         attemptCount: context.attemptCount,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     };
   }
 
-  private determineSeverity(conflictType: ConflictType, context: any): 'low' | 'medium' | 'high' | 'critical' {
+  private determineSeverity(
+    conflictType: ConflictType,
+    context: any,
+  ): 'low' | 'medium' | 'high' | 'critical' {
     // Determine conflict severity based on type and context
     switch (conflictType) {
       case 'physics':
@@ -517,7 +567,7 @@ export class ConflictResolverService {
       totalRooms: this.roomService.findAll().length,
       totalPlayers: this.playerService.findAll().length,
       totalObjects: this.objectService.findAll().length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -525,16 +575,24 @@ export class ConflictResolverService {
     return 'Standard physics with magical elements, object material properties affect interactions, effects can chain through connected objects';
   }
 
-  private isHookApplicable(hook: ConflictHook, context: ConflictContext): boolean {
+  private isHookApplicable(
+    hook: ConflictHook,
+    context: ConflictContext,
+  ): boolean {
     // Check if hook conditions match the conflict context
-    return hook.triggerConditions.some(condition => {
+    return hook.triggerConditions.some((condition) => {
       // Simple string matching for now - could be more sophisticated
-      return context.description.toLowerCase().includes(condition.toLowerCase()) ||
-             context.type.includes(condition.toLowerCase() as any);
+      return (
+        context.description.toLowerCase().includes(condition.toLowerCase()) ||
+        context.type.includes(condition.toLowerCase() as any)
+      );
     });
   }
 
-  private recordResolution(context: ConflictContext, resolution: ConflictResolution): void {
+  private recordResolution(
+    context: ConflictContext,
+    resolution: ConflictResolution,
+  ): void {
     const key = context.affectedEntities.join(',');
     const existing = this.resolutionHistory.get(key) || [];
     existing.push(resolution);
@@ -549,7 +607,7 @@ export class ConflictResolverService {
       applicableConflicts: ['physics'],
       priority: 1,
       requiresLLM: false,
-      autoExecutable: true
+      autoExecutable: true,
     });
 
     this.strategies.set('npc_behavior_correction', {
@@ -559,7 +617,7 @@ export class ConflictResolverService {
       applicableConflicts: ['npc_behavior'],
       priority: 2,
       requiresLLM: true,
-      autoExecutable: false
+      autoExecutable: false,
     });
 
     this.strategies.set('world_consistency_repair', {
@@ -569,7 +627,7 @@ export class ConflictResolverService {
       applicableConflicts: ['world_consistency'],
       priority: 3,
       requiresLLM: true,
-      autoExecutable: false
+      autoExecutable: false,
     });
   }
 
@@ -577,57 +635,74 @@ export class ConflictResolverService {
     // Physics conflict hook - handles simple physics violations
     this.registerHook({
       name: 'simple_physics_reset',
-      triggerConditions: ['object_overlap', 'invalid_position', 'impossible_state'],
+      triggerConditions: [
+        'object_overlap',
+        'invalid_position',
+        'impossible_state',
+      ],
       priority: 10,
-      handler: async (context: ConflictContext): Promise<ConflictResolution | null> => {
+      handler: async (
+        context: ConflictContext,
+      ): Promise<ConflictResolution | null> => {
         if (context.type === 'physics' && context.severity === 'low') {
           // Simple reset for low-severity physics conflicts
           return {
             conflictType: 'physics',
             success: true,
             resolution: 'Reset object positions to valid coordinates',
-            explanation: 'Objects were moved to nearby valid positions to resolve the physics conflict.',
+            explanation:
+              'Objects were moved to nearby valid positions to resolve the physics conflict.',
             appliedChanges: ['position_reset'],
             sideEffects: [],
             alternativeSolutions: [],
-            narrativeDescription: 'Items shift slightly to more stable positions.',
+            narrativeDescription:
+              'Items shift slightly to more stable positions.',
             confidence: 0.9,
             processingTime: 0,
             requiresPlayerConfirmation: false,
             metadata: {
               resolverType: 'hook',
               hookName: 'simple_physics_reset',
-              timestamp: new Date().toISOString()
-            }
+              timestamp: new Date().toISOString(),
+            },
           };
         }
         return null;
-      }
+      },
     });
 
     // Player action validation hook
     this.registerHook({
       name: 'player_action_validation',
-      triggerConditions: ['impossible_action', 'invalid_target', 'missing_requirements'],
+      triggerConditions: [
+        'impossible_action',
+        'invalid_target',
+        'missing_requirements',
+      ],
       priority: 5,
-      handler: async (context: ConflictContext): Promise<ConflictResolution | null> => {
+      handler: async (
+        context: ConflictContext,
+      ): Promise<ConflictResolution | null> => {
         if (context.type === 'player_action') {
           return {
             conflictType: 'player_action',
             success: true,
             resolution: 'Provide alternative action suggestions',
-            explanation: 'The attempted action is not possible in the current context. Here are some alternatives.',
+            explanation:
+              'The attempted action is not possible in the current context. Here are some alternatives.',
             appliedChanges: ['suggested_alternatives'],
             sideEffects: [],
             alternativeSolutions: [
               {
                 description: 'Try examining the object first',
-                explanation: 'Understanding the object better might reveal new possibilities'
+                explanation:
+                  'Understanding the object better might reveal new possibilities',
               },
               {
                 description: 'Look for tools or items that might help',
-                explanation: 'Some actions require specific items or conditions'
-              }
+                explanation:
+                  'Some actions require specific items or conditions',
+              },
             ],
             narrativeDescription: 'You consider your options carefully.',
             confidence: 0.7,
@@ -636,12 +711,12 @@ export class ConflictResolverService {
             metadata: {
               resolverType: 'hook',
               hookName: 'player_action_validation',
-              timestamp: new Date().toISOString()
-            }
+              timestamp: new Date().toISOString(),
+            },
           };
         }
         return null;
-      }
+      },
     });
   }
 }

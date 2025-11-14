@@ -1,16 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoomService } from './room.service';
 import { EntityService } from './entity.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('RoomService (Integration)', () => {
   let service: RoomService;
   let entityService: EntityService;
+  let mockDatabaseService: jest.Mocked<Partial<DatabaseService>>;
 
   beforeEach(async () => {
+    // Create mock database service
+    mockDatabaseService = {
+      saveEntity: jest.fn().mockResolvedValue(undefined),
+      getEntity: jest.fn().mockResolvedValue(null),
+      deleteEntity: jest.fn().mockResolvedValue(undefined),
+      getAllEntities: jest.fn().mockResolvedValue([]),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RoomService,
-        EntityService
+        EntityService,
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
+        },
       ],
     }).compile();
 
@@ -26,11 +40,11 @@ describe('RoomService (Integration)', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const result = service.createRoom(roomData);
-    
+
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
     expect(result.name).toBe('Test Room');
@@ -43,12 +57,12 @@ describe('RoomService (Integration)', () => {
     const roomData = {
       name: 'Test Room',
       width: 10,
-      height: 10
+      height: 10,
     };
-    
+
     const createdRoom = service.createRoom(roomData);
     const retrievedRoom = service.getRoom(createdRoom.id);
-    
+
     expect(retrievedRoom).toBeDefined();
     expect(retrievedRoom?.id).toBe(createdRoom.id);
   });

@@ -4,19 +4,33 @@ import { EntityService } from './entity.service';
 import { ObjectService } from './object.service';
 import { PhysicsService } from './physics.service';
 import { RoomService } from './room.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('PlayerService (Integration)', () => {
   let service: PlayerService;
   let entityService: EntityService;
+  let mockDatabaseService: jest.Mocked<Partial<DatabaseService>>;
 
   beforeEach(async () => {
+    // Create mock database service
+    mockDatabaseService = {
+      saveEntity: jest.fn().mockResolvedValue(undefined),
+      getEntity: jest.fn().mockResolvedValue(null),
+      deleteEntity: jest.fn().mockResolvedValue(undefined),
+      getAllEntities: jest.fn().mockResolvedValue([]),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PlayerService,
         EntityService,
         ObjectService,
         PhysicsService,
-        RoomService
+        RoomService,
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
+        },
       ],
     }).compile();
 
@@ -35,11 +49,11 @@ describe('PlayerService (Integration)', () => {
       health: 100,
       inventory: [],
       level: 1,
-      experience: 0
+      experience: 0,
     };
-    
+
     const result = service.createPlayer(playerData);
-    
+
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
     expect(result.name).toBe('Test Player');

@@ -18,7 +18,14 @@ describe('Game Logic Stress Tests', () => {
   let testDbPath: string;
 
   beforeEach(async () => {
-    testDbPath = path.join(__dirname, '../../game-logic-stress-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9) + '.db');
+    testDbPath = path.join(
+      __dirname,
+      '../../game-logic-stress-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9) +
+        '.db',
+    );
     if (fs.existsSync(testDbPath)) {
       fs.unlinkSync(testDbPath);
     }
@@ -55,11 +62,19 @@ describe('Game Logic Stress Tests', () => {
 
   describe('Player Interaction Stress Tests', () => {
     it('should handle rapid action sequences (100+ actions per second)', async () => {
-      const gameId = 'rapid-actions-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'rapid-actions-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -69,14 +84,22 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create test environment
       const room = roomService.createRoom({
         gameId,
         name: 'Action Test Room',
         description: 'Room for rapid action testing',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       const player = playerService.createPlayer({
@@ -84,7 +107,7 @@ describe('Game Logic Stress Tests', () => {
         name: 'Speed Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
-        level: 10
+        level: 10,
       });
 
       // Create many interactable objects
@@ -97,7 +120,7 @@ describe('Game Logic Stress Tests', () => {
           position: { x: i % 10, y: Math.floor(i / 10), z: 0 },
           material: 'wood',
           isPortable: true,
-          properties: { canExamine: true, canTake: true }
+          properties: { canExamine: true, canTake: true },
         });
         objects.push(obj);
         await roomService.placeObjectInRoom(room.id, obj.id);
@@ -109,7 +132,7 @@ describe('Game Logic Stress Tests', () => {
       const actionsPerSecond = 100;
       const durationMs = 2000; // 2 seconds
       const totalActions = (actionsPerSecond * durationMs) / 1000;
-      
+
       const actionTypes = ['examine', 'take', 'drop', 'use'];
       let successfulActions = 0;
       let failedActions = 0;
@@ -126,18 +149,30 @@ describe('Game Logic Stress Tests', () => {
             let result;
             switch (actionType) {
               case 'examine':
-                result = await playerService.examineObject(player.id, targetObject.id);
+                result = await playerService.examineObject(
+                  player.id,
+                  targetObject.id,
+                );
                 break;
               case 'take':
-                result = await playerService.takeObject(player.id, targetObject.id);
+                result = await playerService.takeObject(
+                  player.id,
+                  targetObject.id,
+                );
                 break;
               case 'drop':
                 if (player.inventory?.includes(targetObject.id)) {
-                  result = await playerService.dropObject(player.id, targetObject.id);
+                  result = await playerService.dropObject(
+                    player.id,
+                    targetObject.id,
+                  );
                 }
                 break;
               case 'use':
-                result = await playerService.useObject(player.id, targetObject.id);
+                result = await playerService.useObject(
+                  player.id,
+                  targetObject.id,
+                );
                 break;
             }
 
@@ -155,28 +190,41 @@ describe('Game Logic Stress Tests', () => {
 
         // Add small delay to control rate
         if (i % 10 === 0) {
-          await new Promise(resolve => setTimeout(resolve, 1));
+          await new Promise((resolve) => setTimeout(resolve, 1));
         }
       }
 
       await Promise.all(promises);
       const totalTime = Date.now() - startTime;
-      const actualRate = (successfulActions + failedActions) / (totalTime / 1000);
+      const actualRate =
+        (successfulActions + failedActions) / (totalTime / 1000);
 
-      console.log(`Processed ${successfulActions + failedActions} actions in ${totalTime}ms`);
+      console.log(
+        `Processed ${successfulActions + failedActions} actions in ${totalTime}ms`,
+      );
       console.log(`Actual rate: ${actualRate.toFixed(1)} actions/second`);
-      console.log(`Success rate: ${(successfulActions / (successfulActions + failedActions) * 100).toFixed(1)}%`);
+      console.log(
+        `Success rate: ${((successfulActions / (successfulActions + failedActions)) * 100).toFixed(1)}%`,
+      );
 
       expect(successfulActions).toBeGreaterThan(totalActions * 0.7); // At least 70% success rate
       expect(actualRate).toBeGreaterThan(50); // Should process at least 50 actions/second
     }, 10000);
 
     it('should handle complex magic spell chains and cascading effects', async () => {
-      const gameId = 'magic-chains-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'magic-chains-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -186,14 +234,22 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create magical test environment
       const room = roomService.createRoom({
         gameId,
         name: 'Magic Laboratory',
         description: 'A room filled with magical objects',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       const wizard = playerService.createPlayer({
@@ -202,7 +258,7 @@ describe('Game Logic Stress Tests', () => {
         position: { x: 5, y: 5, z: 0 },
         health: 100,
         level: 20,
-        magicLevel: 10
+        magicLevel: 10,
       });
 
       // Create objects with different materials for effect testing
@@ -214,14 +270,14 @@ describe('Game Logic Stress Tests', () => {
           gameId,
           name: `${materials[i % materials.length]} Object ${i}`,
           description: `A ${materials[i % materials.length]} object for magic testing`,
-          position: { 
-            x: (i % 6) * 2, 
-            y: Math.floor(i / 6) * 2, 
-            z: 0 
+          position: {
+            x: (i % 6) * 2,
+            y: Math.floor(i / 6) * 2,
+            z: 0,
           },
           material: materials[i % materials.length],
           health: 100,
-          maxHealth: 100
+          maxHealth: 100,
         });
         objects.push(obj);
         await roomService.placeObjectInRoom(room.id, obj.id);
@@ -245,7 +301,7 @@ describe('Game Logic Stress Tests', () => {
             wizard.id,
             effectType as any,
             targetObject.id,
-            { intensity: 50, duration: 1000 }
+            { intensity: 50, duration: 1000 },
           );
 
           if (spellResult.success) {
@@ -253,7 +309,10 @@ describe('Game Logic Stress Tests', () => {
             totalEffects += spellResult.effectsTriggered || 1;
 
             // Check for chain reactions
-            if (spellResult.chainReactions && spellResult.chainReactions.length > 0) {
+            if (
+              spellResult.chainReactions &&
+              spellResult.chainReactions.length > 0
+            ) {
               totalEffects += spellResult.chainReactions.length;
             }
           }
@@ -262,11 +321,13 @@ describe('Game Logic Stress Tests', () => {
         }
 
         // Small delay between spells
-        await new Promise(resolve => setTimeout(resolve, 20));
+        await new Promise((resolve) => setTimeout(resolve, 20));
       }
 
       const spellTime = Date.now() - spellStart;
-      console.log(`Cast ${successfulSpells} spells with ${totalEffects} total effects in ${spellTime}ms`);
+      console.log(
+        `Cast ${successfulSpells} spells with ${totalEffects} total effects in ${spellTime}ms`,
+      );
 
       expect(successfulSpells).toBeGreaterThan(40); // Most spells should succeed
       expect(totalEffects).toBeGreaterThan(successfulSpells); // Should have chain reactions
@@ -274,11 +335,19 @@ describe('Game Logic Stress Tests', () => {
     }, 15000);
 
     it('should handle massive inventory management (1000+ items)', async () => {
-      const gameId = 'inventory-stress-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'inventory-stress-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -288,7 +357,15 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       const player = playerService.createPlayer({
         gameId,
@@ -296,13 +373,13 @@ describe('Game Logic Stress Tests', () => {
         position: { x: 0, y: 0, z: 0 },
         health: 100,
         level: 1,
-        inventory: []
+        inventory: [],
       });
 
       // Create many items
       const items = [];
       const itemTypes = ['weapon', 'armor', 'consumable', 'misc', 'quest'];
-      
+
       const creationStart = Date.now();
       for (let i = 0; i < 1000; i++) {
         const item = objectService.createObject({
@@ -317,8 +394,8 @@ describe('Game Logic Stress Tests', () => {
           properties: {
             type: itemTypes[i % itemTypes.length],
             rarity: Math.floor(Math.random() * 5) + 1,
-            stackable: i % 10 === 0
-          }
+            stackable: i % 10 === 0,
+          },
         });
         items.push(item);
       }
@@ -330,28 +407,39 @@ describe('Game Logic Stress Tests', () => {
       let successfulAdds = 0;
 
       for (const item of items) {
-        const result = await playerService.giveObjectToPlayer(player.id, item.id);
+        const result = await playerService.giveObjectToPlayer(
+          player.id,
+          item.id,
+        );
         if (result.success) {
           successfulAdds++;
         }
       }
       const addTime = Date.now() - addStart;
-      console.log(`Added ${successfulAdds}/1000 items to inventory in ${addTime}ms`);
+      console.log(
+        `Added ${successfulAdds}/1000 items to inventory in ${addTime}ms`,
+      );
 
       // Test inventory operations
       const operationsStart = Date.now();
-      
+
       // Sort inventory by type
       const sortResult = await playerService.sortInventory(player.id, 'type');
-      
+
       // Find items by criteria
-      const weapons = await playerService.findInventoryItems(player.id, { type: 'weapon' });
-      const rareItems = await playerService.findInventoryItems(player.id, { rarity: { min: 4 } });
-      const heavyItems = await playerService.findInventoryItems(player.id, { weight: { min: 8 } });
-      
+      const weapons = await playerService.findInventoryItems(player.id, {
+        type: 'weapon',
+      });
+      const rareItems = await playerService.findInventoryItems(player.id, {
+        rarity: { min: 4 },
+      });
+      const heavyItems = await playerService.findInventoryItems(player.id, {
+        weight: { min: 8 },
+      });
+
       // Calculate total weight and value
       const stats = await playerService.getInventoryStats(player.id);
-      
+
       const operationsTime = Date.now() - operationsStart;
       console.log(`Completed inventory operations in ${operationsTime}ms`);
 
@@ -366,11 +454,19 @@ describe('Game Logic Stress Tests', () => {
     }, 20000);
 
     it('should handle complex physics interactions under load', async () => {
-      const gameId = 'physics-stress-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'physics-stress-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -380,14 +476,22 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create physics world with many objects
       const room = roomService.createRoom({
         gameId,
         name: 'Physics Test Chamber',
         description: 'Room for physics stress testing',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       // Create many physics-enabled objects
@@ -397,21 +501,21 @@ describe('Game Logic Stress Tests', () => {
           gameId,
           name: `Physics Object ${i}`,
           description: `Object with physics properties`,
-          position: { 
-            x: (i % 10) * 2, 
+          position: {
+            x: (i % 10) * 2,
             y: Math.floor(i / 10) * 2 + 10, // Start elevated
-            z: 0 
+            z: 0,
           },
           material: ['wood', 'metal', 'stone'][i % 3],
           weight: Math.random() * 5 + 1,
-          size: { 
-            width: Math.random() * 2 + 0.5, 
-            height: Math.random() * 2 + 0.5, 
-            depth: Math.random() * 2 + 0.5 
-          }
+          size: {
+            width: Math.random() * 2 + 0.5,
+            height: Math.random() * 2 + 0.5,
+            depth: Math.random() * 2 + 0.5,
+          },
         });
         objects.push(obj);
-        
+
         // Add to physics simulation
         physicsService.addEntity({
           id: obj.id,
@@ -420,7 +524,7 @@ describe('Game Logic Stress Tests', () => {
           rotation: { x: 0, y: 0, z: 0 },
           size: obj.size || { width: 1, height: 1, depth: 1 },
           mass: obj.weight || 1,
-          active: true
+          active: true,
         });
       }
 
@@ -429,20 +533,21 @@ describe('Game Logic Stress Tests', () => {
       physicsService.startSimulation();
 
       // Run simulation for a period
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // Apply forces to test interaction
       for (let i = 0; i < 20; i++) {
-        const randomObject = objects[Math.floor(Math.random() * objects.length)];
+        const randomObject =
+          objects[Math.floor(Math.random() * objects.length)];
         physicsService.applyForce(randomObject.id, {
           x: (Math.random() - 0.5) * 100,
           y: Math.random() * 50,
-          z: (Math.random() - 0.5) * 100
+          z: (Math.random() - 0.5) * 100,
         });
       }
 
       // Continue simulation
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       physicsService.stopSimulation();
       const simulationTime = Date.now() - simulationStart;
@@ -451,11 +556,12 @@ describe('Game Logic Stress Tests', () => {
       let objectsMoved = 0;
       for (const obj of objects) {
         const currentPos = physicsService.getEntityPosition(obj.id);
-        if (currentPos && (
-          Math.abs(currentPos.x - obj.position.x) > 0.1 ||
-          Math.abs(currentPos.y - obj.position.y) > 0.1 ||
-          Math.abs(currentPos.z - obj.position.z) > 0.1
-        )) {
+        if (
+          currentPos &&
+          (Math.abs(currentPos.x - obj.position.x) > 0.1 ||
+            Math.abs(currentPos.y - obj.position.y) > 0.1 ||
+            Math.abs(currentPos.z - obj.position.z) > 0.1)
+        ) {
           objectsMoved++;
         }
       }
@@ -470,11 +576,19 @@ describe('Game Logic Stress Tests', () => {
 
   describe('Spatial System Stress Tests', () => {
     it('should handle dense entity placement (500+ entities per coordinate)', async () => {
-      const gameId = 'dense-placement-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'dense-placement-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -484,13 +598,21 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       const room = roomService.createRoom({
         gameId,
         name: 'Crowded Room',
         description: 'A room with many entities at same coordinates',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       const targetCoord = { x: 10, y: 10, z: 0 };
@@ -507,7 +629,7 @@ describe('Game Logic Stress Tests', () => {
             description: `Object ${i} in dense area`,
             position: targetCoord,
             material: 'wood',
-            size: { width: 0.1, height: 0.1, depth: 0.1 } // Very small
+            size: { width: 0.1, height: 0.1, depth: 0.1 }, // Very small
           });
           entities.push({ type: 'object', entity: obj });
           await roomService.placeObjectInRoom(room.id, obj.id);
@@ -518,28 +640,30 @@ describe('Game Logic Stress Tests', () => {
             name: `Dense Player ${i}`,
             position: targetCoord,
             health: 100,
-            level: 1
+            level: 1,
           });
           entities.push({ type: 'player', entity: player });
           await roomService.placePlayerInRoom(room.id, player.id);
         }
       }
       const creationTime = Date.now() - creationStart;
-      console.log(`Created 500 entities at same coordinate in ${creationTime}ms`);
+      console.log(
+        `Created 500 entities at same coordinate in ${creationTime}ms`,
+      );
 
       // Test spatial queries
       const queryStart = Date.now();
-      
+
       const entitiesAtCoord = await roomService.getEntitiesAtPosition(
-        room.id, 
-        targetCoord, 
-        0.5 // Search radius
+        room.id,
+        targetCoord,
+        0.5, // Search radius
       );
-      
+
       const nearbyEntities = await roomService.getEntitiesInRadius(
         room.id,
         targetCoord,
-        1.0 // 1 unit radius
+        1.0, // 1 unit radius
       );
 
       const queryTime = Date.now() - queryStart;
@@ -552,11 +676,19 @@ describe('Game Logic Stress Tests', () => {
     }, 20000);
 
     it('should handle large world coordinates efficiently', async () => {
-      const gameId = 'large-coords-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'large-coords-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -566,7 +698,15 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Test with very large coordinate values
       const extremeCoords = [
@@ -574,19 +714,19 @@ describe('Game Logic Stress Tests', () => {
         { x: 0, y: 1000000, z: 0 },
         { x: 0, y: 0, z: 1000000 },
         { x: -1000000, y: -1000000, z: -1000000 },
-        { x: 999999, y: 999999, z: 999999 }
+        { x: 999999, y: 999999, z: 999999 },
       ];
 
       const entities = [];
 
       for (let i = 0; i < extremeCoords.length; i++) {
         const coord = extremeCoords[i];
-        
+
         const room = roomService.createRoom({
           gameId,
           name: `Extreme Room ${i}`,
           description: `Room at extreme coordinates`,
-          position: coord
+          position: coord,
         });
 
         const obj = objectService.createObject({
@@ -594,7 +734,7 @@ describe('Game Logic Stress Tests', () => {
           name: `Extreme Object ${i}`,
           description: `Object at extreme coordinates`,
           position: coord,
-          material: 'crystal'
+          material: 'crystal',
         });
 
         entities.push({ room, obj, coord });
@@ -602,31 +742,41 @@ describe('Game Logic Stress Tests', () => {
 
       // Test distance calculations with extreme coordinates
       const distanceStart = Date.now();
-      
+
       for (let i = 0; i < entities.length; i++) {
         for (let j = i + 1; j < entities.length; j++) {
           const distance = await roomService.calculateDistance(
             entities[i].coord,
-            entities[j].coord
+            entities[j].coord,
           );
-          
+
           expect(distance).toBeGreaterThan(0);
           expect(isFinite(distance)).toBe(true);
         }
       }
-      
+
       const distanceTime = Date.now() - distanceStart;
-      console.log(`Distance calculations with extreme coords completed in ${distanceTime}ms`);
+      console.log(
+        `Distance calculations with extreme coords completed in ${distanceTime}ms`,
+      );
 
       expect(distanceTime).toBeLessThan(1000);
     });
 
     it('should handle rapid teleportation efficiently', async () => {
-      const gameId = 'teleport-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'teleport-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -636,7 +786,15 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create multiple rooms
       const rooms = [];
@@ -645,7 +803,7 @@ describe('Game Logic Stress Tests', () => {
           gameId,
           name: `Teleport Room ${i}`,
           description: `Room ${i} for teleportation testing`,
-          position: { x: i * 100, y: i * 100, z: i * 10 }
+          position: { x: i * 100, y: i * 100, z: i * 10 },
         });
         rooms.push(room);
       }
@@ -660,7 +818,7 @@ describe('Game Logic Stress Tests', () => {
             description: `Object for teleportation testing`,
             position: { x: 0, y: 0, z: 0 },
             material: 'magic',
-            properties: { canTeleport: true }
+            properties: { canTeleport: true },
           });
           entities.push({ type: 'object', entity: obj });
           await roomService.placeObjectInRoom(rooms[0].id, obj.id);
@@ -670,7 +828,7 @@ describe('Game Logic Stress Tests', () => {
             name: `Teleport Player ${i}`,
             position: { x: 0, y: 0, z: 0 },
             health: 100,
-            level: 5
+            level: 5,
           });
           entities.push({ type: 'player', entity: player });
           await roomService.placePlayerInRoom(rooms[0].id, player.id);
@@ -687,7 +845,7 @@ describe('Game Logic Stress Tests', () => {
           const newPosition = {
             x: Math.random() * 50,
             y: Math.random() * 50,
-            z: Math.random() * 10
+            z: Math.random() * 10,
           };
 
           try {
@@ -696,13 +854,13 @@ describe('Game Logic Stress Tests', () => {
               result = await objectService.teleportObject(
                 entity.id,
                 targetRoom.id,
-                newPosition
+                newPosition,
               );
             } else {
               result = await playerService.teleportPlayer(
                 entity.id,
                 targetRoom.id,
-                newPosition
+                newPosition,
               );
             }
 
@@ -716,11 +874,16 @@ describe('Game Logic Stress Tests', () => {
         });
 
         const roundResults = await Promise.all(promises);
-        successfulTeleports += roundResults.reduce((sum, result) => sum + result, 0);
+        successfulTeleports += roundResults.reduce(
+          (sum, result) => sum + result,
+          0,
+        );
       }
 
       const teleportTime = Date.now() - teleportStart;
-      console.log(`Completed ${successfulTeleports} teleportations in ${teleportTime}ms`);
+      console.log(
+        `Completed ${successfulTeleports} teleportations in ${teleportTime}ms`,
+      );
 
       expect(successfulTeleports).toBeGreaterThan(800); // Most should succeed
       expect(teleportTime).toBeLessThan(5000); // Should be fast
@@ -729,11 +892,19 @@ describe('Game Logic Stress Tests', () => {
 
   describe('State Management Stress Tests', () => {
     it('should handle complex object states (50+ properties)', async () => {
-      const gameId = 'complex-state-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'complex-state-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -743,7 +914,15 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create objects with many state properties
       const complexObjects = [];
@@ -751,37 +930,39 @@ describe('Game Logic Stress Tests', () => {
         const properties: any = {
           // Basic properties
           durability: Math.random() * 100,
-          condition: ['pristine', 'good', 'worn', 'damaged', 'broken'][Math.floor(Math.random() * 5)],
+          condition: ['pristine', 'good', 'worn', 'damaged', 'broken'][
+            Math.floor(Math.random() * 5)
+          ],
           temperature: Math.random() * 200 - 50,
           age: Math.random() * 1000,
-          
+
           // State flags
           isOpen: Math.random() > 0.5,
           isLocked: Math.random() > 0.7,
           isActivated: Math.random() > 0.8,
           isVisible: Math.random() > 0.1,
           isMoveable: Math.random() > 0.3,
-          
+
           // Complex nested state
           enchantments: {
             fire: Math.random() * 10,
             ice: Math.random() * 10,
-            lightning: Math.random() * 10
+            lightning: Math.random() * 10,
           },
-          
+
           // Arrays of state data
           modifiers: Array.from({ length: 10 }, (_, j) => ({
             type: `modifier_${j}`,
             value: Math.random() * 100,
-            duration: Math.random() * 3600
+            duration: Math.random() * 3600,
           })),
-          
+
           // Historical data
           interactions: Array.from({ length: 20 }, (_, j) => ({
             timestamp: Date.now() - Math.random() * 86400000,
             action: `action_${j}`,
-            actor: `player_${Math.floor(Math.random() * 10)}`
-          }))
+            actor: `player_${Math.floor(Math.random() * 10)}`,
+          })),
         };
 
         // Add 30 more random properties
@@ -789,7 +970,7 @@ describe('Game Logic Stress Tests', () => {
           properties[`property_${j}`] = {
             value: Math.random() * 1000,
             lastChanged: Date.now() - Math.random() * 86400000,
-            metadata: `metadata_${j}`
+            metadata: `metadata_${j}`,
           };
         }
 
@@ -799,7 +980,7 @@ describe('Game Logic Stress Tests', () => {
           description: `Object with ${Object.keys(properties).length} properties`,
           position: { x: 0, y: 0, z: 0 },
           material: 'complex',
-          properties
+          properties,
         });
 
         complexObjects.push(obj);
@@ -819,11 +1000,14 @@ describe('Game Logic Stress Tests', () => {
             [`property_${round % 30}`]: {
               value: Math.random() * 1000,
               lastChanged: Date.now(),
-              metadata: `updated_round_${round}`
-            }
+              metadata: `updated_round_${round}`,
+            },
           };
 
-          const result = await objectService.updateObjectProperties(obj.id, updates);
+          const result = await objectService.updateObjectProperties(
+            obj.id,
+            updates,
+          );
           return result.success ? 1 : 0;
         });
 
@@ -832,18 +1016,28 @@ describe('Game Logic Stress Tests', () => {
       }
 
       const stateChangeTime = Date.now() - stateChangeStart;
-      console.log(`Completed ${stateChanges} state changes in ${stateChangeTime}ms`);
+      console.log(
+        `Completed ${stateChanges} state changes in ${stateChangeTime}ms`,
+      );
 
       expect(stateChanges).toBeGreaterThan(800); // Most updates should succeed
       expect(stateChangeTime).toBeLessThan(3000); // Should be reasonably fast
     }, 10000);
 
     it('should handle rapid state synchronization across systems', async () => {
-      const gameId = 'sync-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'sync-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -853,14 +1047,22 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create entities that need synchronization
       const room = roomService.createRoom({
         gameId,
         name: 'Sync Test Room',
         description: 'Room for synchronization testing',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       const entities = [];
@@ -871,7 +1073,7 @@ describe('Game Logic Stress Tests', () => {
           description: `Object for sync testing`,
           position: { x: i % 10, y: Math.floor(i / 10), z: 0 },
           material: 'sync',
-          properties: { syncId: i, lastSync: Date.now() }
+          properties: { syncId: i, lastSync: Date.now() },
         });
         entities.push(obj);
         await roomService.placeObjectInRoom(room.id, obj.id);
@@ -888,25 +1090,34 @@ describe('Game Logic Stress Tests', () => {
             position: {
               x: entity.position.x + Math.random() * 2 - 1,
               y: entity.position.y + Math.random() * 2 - 1,
-              z: entity.position.z
+              z: entity.position.z,
             },
             properties: {
               ...entity.properties,
               lastSync: Date.now(),
-              syncRound: round
-            }
+              syncRound: round,
+            },
           };
 
           // Update in multiple systems
-          const entityResult = await entityService.updateEntity(entity.id, newState);
-          const objectResult = await objectService.updateObject(entity.id, newState);
-          
+          const entityResult = await entityService.updateEntity(
+            entity.id,
+            newState,
+          );
+          const objectResult = await objectService.updateObject(
+            entity.id,
+            newState,
+          );
+
           // Save to database
           if (databaseService) {
-            await entityService.saveEntityVersion(entity.id, `Sync round ${round}`);
+            await entityService.saveEntityVersion(
+              entity.id,
+              `Sync round ${round}`,
+            );
           }
 
-          return (entityResult && objectResult.success) ? 1 : 0;
+          return entityResult && objectResult.success ? 1 : 0;
         });
 
         const roundResults = await Promise.all(updatePromises);
@@ -914,7 +1125,9 @@ describe('Game Logic Stress Tests', () => {
       }
 
       const syncTime = Date.now() - syncStart;
-      console.log(`Completed ${syncOperations} sync operations in ${syncTime}ms`);
+      console.log(
+        `Completed ${syncOperations} sync operations in ${syncTime}ms`,
+      );
 
       // Verify consistency across systems
       let consistentEntities = 0;
@@ -922,14 +1135,19 @@ describe('Game Logic Stress Tests', () => {
         const entityServiceVersion = entityService.getEntity(entity.id);
         const objectServiceVersion = objectService.getObject(entity.id);
 
-        if (entityServiceVersion && objectServiceVersion &&
-            entityServiceVersion.position.x === objectServiceVersion.position.x &&
-            entityServiceVersion.position.y === objectServiceVersion.position.y) {
+        if (
+          entityServiceVersion &&
+          objectServiceVersion &&
+          entityServiceVersion.position.x === objectServiceVersion.position.x &&
+          entityServiceVersion.position.y === objectServiceVersion.position.y
+        ) {
           consistentEntities++;
         }
       }
 
-      console.log(`${consistentEntities}/100 entities are consistent across systems`);
+      console.log(
+        `${consistentEntities}/100 entities are consistent across systems`,
+      );
 
       expect(syncOperations).toBeGreaterThan(900); // Most syncs should succeed
       expect(consistentEntities).toBeGreaterThan(95); // High consistency expected
@@ -937,11 +1155,19 @@ describe('Game Logic Stress Tests', () => {
     }, 15000);
 
     it('should handle undo/redo chains efficiently', async () => {
-      const gameId = 'undo-redo-test-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      const gameId =
+        'undo-redo-test-' +
+        Date.now() +
+        '-' +
+        Math.random().toString(36).substr(2, 9);
 
       // Clean up existing data first
-      databaseService.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-      databaseService.prepare('DELETE FROM objects WHERE game_id = ?').run(gameId);
+      databaseService
+        .prepare('DELETE FROM rooms WHERE game_id = ?')
+        .run(gameId);
+      databaseService
+        .prepare('DELETE FROM objects WHERE game_id = ?')
+        .run(gameId);
       databaseService.prepare('DELETE FROM npcs WHERE game_id = ?').run(gameId);
       databaseService.prepare('DELETE FROM games WHERE id = ?').run(gameId);
 
@@ -951,7 +1177,15 @@ describe('Game Logic Stress Tests', () => {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
       const now = new Date().toISOString();
-      insertGame.run(gameId, 'Stress Test Game', 'Test game description', 1, now, now, 1);
+      insertGame.run(
+        gameId,
+        'Stress Test Game',
+        'Test game description',
+        1,
+        now,
+        now,
+        1,
+      );
 
       // Create test objects
       const objects = [];
@@ -962,7 +1196,7 @@ describe('Game Logic Stress Tests', () => {
           description: `Object for undo/redo testing`,
           position: { x: i, y: 0, z: 0 },
           material: 'test',
-          properties: { value: i }
+          properties: { value: i },
         });
         objects.push(obj);
       }
@@ -979,15 +1213,15 @@ describe('Game Logic Stress Tests', () => {
           oldState: { ...obj },
           newState: {
             position: { x: obj.position.x + 1, y: obj.position.y + 1, z: 0 },
-            properties: { ...obj.properties, value: i }
-          }
+            properties: { ...obj.properties, value: i },
+          },
         };
 
         operations.push(operation);
 
         // Apply operation
         await objectService.updateObject(obj.id, operation.newState);
-        
+
         // Save version for undo capability
         if (databaseService) {
           await entityService.saveEntityVersion(obj.id, `Operation ${i}`);
@@ -1007,9 +1241,9 @@ describe('Game Logic Stress Tests', () => {
         try {
           const undoResult = await entityService.rollbackEntity(
             operation.objectId,
-            Math.max(1, i - 1) // Rollback to previous version
+            Math.max(1, i - 1), // Rollback to previous version
           );
-          
+
           if (undoResult) {
             successfulUndos++;
           }
@@ -1030,9 +1264,9 @@ describe('Game Logic Stress Tests', () => {
         try {
           const redoResult = await objectService.updateObject(
             operation.objectId,
-            operation.newState
+            operation.newState,
           );
-          
+
           if (redoResult.success) {
             successfulRedos++;
           }
