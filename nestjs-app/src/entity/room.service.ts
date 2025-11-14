@@ -407,7 +407,10 @@ export class RoomService {
     if (!this.databaseService) return;
 
     try {
+      console.log(`[RoomService] Starting transaction for room ${room.id}`);
+      console.log(`[RoomService] Database path:`, (this.databaseService as any).dbPath);
       this.databaseService.transaction((db) => {
+        console.log(`[RoomService] Inside transaction for room ${room.id}`);
         // Convert IRoom to RoomData format for database
         const roomData: RoomData = {
           id: room.id,
@@ -432,7 +435,7 @@ export class RoomService {
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
-        insertRoom.run(
+        const roomResult = insertRoom.run(
           roomData.id,
           roomData.gameId,
           roomData.name,
@@ -448,6 +451,7 @@ export class RoomService {
           roomData.version,
           roomData.createdAt,
         );
+        console.log(`[RoomService] Room INSERT result:`, roomResult);
 
         // Save room-object relationships
         if (room.objects && room.objects.length > 0) {
@@ -463,7 +467,13 @@ export class RoomService {
 
           for (const objectId of room.objects) {
             console.log(`[RoomService]   Saving room-object: ${room.id} -> ${objectId}`);
-            insertRoomObject.run(room.id, objectId, new Date().toISOString());
+            try {
+              const result = insertRoomObject.run(room.id, objectId, new Date().toISOString());
+              console.log(`[RoomService]   INSERT result:`, result);
+            } catch (err) {
+              console.log(`[RoomService]   ERROR inserting room-object:`, err.message);
+              throw err;
+            }
           }
         } else {
           console.log(`[RoomService] No room-object relationships to save for room ${room.id}`);
@@ -483,10 +493,21 @@ export class RoomService {
             insertRoomNpc.run(room.id, playerId, new Date().toISOString());
           }
         }
+        console.log(`[RoomService] Transaction completed for room ${room.id}`);
       });
+      console.log(`[RoomService] After transaction for room ${room.id}`);
+
+      // Force WAL checkpoint to make data visible
+      try {
+        this.databaseService.getDatabase().pragma('wal_checkpoint(PASSIVE)');
+        console.log(`[RoomService] WAL checkpoint completed for room ${room.id}`);
+      } catch (e) {
+        console.log(`[RoomService] WAL checkpoint error:`, e.message);
+      }
 
       // Note: Version history is saved explicitly via saveRoomVersion() when needed
     } catch (error) {
+      console.log(`[RoomService] ERROR saving room ${room.id}:`, error);
       this.logger.error(`Failed to save room ${room.id} to database:`, error);
       throw error;
     }
@@ -512,13 +533,20 @@ export class RoomService {
       if (!roomRow) return undefined;
 
       // Load room-object relationships
+      console.log(`[RoomService] Loading room-object relationships for roomId:`, roomId);
+      console.log(`[RoomService] Database path for load:`, (this.databaseService as any).dbPath);
       const objectQuery = this.databaseService.prepare(`
         SELECT object_id FROM room_objects WHERE room_id = ?
       `);
       const objectRows = objectQuery.all(roomId) as any[];
+      console.log(`[RoomService] Query returned ${objectRows.length} rows:`, objectRows);
       const objects = objectRows.map((row) => row.object_id);
       console.log(`[RoomService] Loaded ${objects.length} room-object relationships for room ${roomId}`);
       console.log(`[RoomService] Loaded objects:`, objects);
+
+      // Debug: Check what's actually in the database
+      const allRoomObjects = this.databaseService.prepare(`SELECT * FROM room_objects`).all();
+      console.log(`[RoomService] ALL room_objects in database:`, allRoomObjects);
 
       // Load room-player relationships
       const playerQuery = this.databaseService.prepare(`

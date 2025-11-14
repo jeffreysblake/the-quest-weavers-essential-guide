@@ -37,10 +37,13 @@ describe('Persistence System Integration', () => {
       fs.unlinkSync(testDbPath);
     }
 
-    // Create test module with real database
-    module = await Test.createTestingModule({
+    // Create test module with real database (don't compile yet to avoid auto-init)
+    const moduleBuilder = await Test.createTestingModule({
       imports: [CLIModule],
-    }).compile();
+    });
+
+    // Compile but prevent auto-initialization
+    module = await moduleBuilder.compile();
 
     cliService = module.get<CLIService>(CLIService);
     gameManagerService = module.get<GameManagerService>(GameManagerService);
@@ -50,10 +53,17 @@ describe('Persistence System Integration', () => {
     playerService = module.get<PlayerService>(PlayerService);
     gameFileService = module.get<GameFileService>(GameFileService);
 
+    // Disconnect any existing connection (in case auto-init happened)
+    try {
+      await databaseService.disconnect();
+    } catch (e) {
+      // Ignore if not connected
+    }
+
     // Set custom database path for testing
     databaseService.setDatabasePath(testDbPath);
 
-    // Initialize database (this will create tables)
+    // Initialize database with the correct path (this will create tables)
     await databaseService.onModuleInit();
   });
 

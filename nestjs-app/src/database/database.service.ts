@@ -57,6 +57,15 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
   // Method for tests to set custom database path
   setDatabasePath(path: string): void {
+    const wasConnected = !!this.database;
+    if (wasConnected) {
+      // Close existing connection
+      try {
+        this.database.close();
+      } catch (e) {
+        // Ignore errors
+      }
+    }
     this.customDbPath = path;
     this.updateDbPath();
   }
@@ -77,8 +86,11 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       // Enable foreign keys
       this.database.pragma('foreign_keys = ON');
 
-      // Enable WAL mode for better concurrency
-      this.database.pragma('journal_mode = WAL');
+      // Use DELETE mode for tests (WAL can cause issues with temp databases)
+      // In production, WAL mode should be enabled for better concurrency
+      const journalMode = this.dbPath.includes('test-') ? 'DELETE' : 'WAL';
+      this.database.pragma(`journal_mode = ${journalMode}`);
+      console.log(`[DatabaseService] Database connected with journal_mode=${journalMode}, path=${this.dbPath}`);
 
       this.logger.log('Database connection established');
     } catch (error) {
@@ -352,9 +364,18 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
   // Transaction management
   transaction<T>(callback: (db: Database.Database) => T): T {
-    const wrappedCallback = () => callback(this.database);
+    console.log('[DatabaseService] Starting transaction');
+    const wrappedCallback = () => {
+      console.log('[DatabaseService] Executing transaction callback');
+      const result = callback(this.database);
+      console.log('[DatabaseService] Transaction callback completed, result:', result);
+      return result;
+    };
     const transaction = this.database.transaction(wrappedCallback);
-    return transaction();
+    console.log('[DatabaseService] Transaction function created, executing...');
+    const finalResult = transaction();
+    console.log('[DatabaseService] Transaction executed, result:', finalResult);
+    return finalResult;
   }
 
   // Generic query methods
