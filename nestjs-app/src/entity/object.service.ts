@@ -112,15 +112,9 @@ export class ObjectService {
     // Also register in EntityService for compatibility (preserve existing ID)
     this.entityService['entities'].set(object.id, object);
 
-    // Save to database if available
-    if (this.databaseService) {
-      this.saveObjectToDatabase(object).catch((error) => {
-        this.logger.error(
-          `Failed to save object ${object.id} to database:`,
-          error,
-        );
-      });
-    }
+    // Don't save automatically to prevent race conditions with explicit persistGame() calls
+    // The object is cached in memory and will be persisted when persistGame() is called
+    // This ensures data consistency and prevents stale async saves from overwriting fresh data
 
     return object;
   }

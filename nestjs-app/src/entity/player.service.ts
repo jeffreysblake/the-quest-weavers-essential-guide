@@ -40,15 +40,9 @@ export class PlayerService {
     // Also create in EntityService for compatibility
     this.entityService.createEntity(player);
 
-    // Save to database if available
-    if (this.databaseService) {
-      this.savePlayerToDatabase(player).catch((error) => {
-        this.logger.error(
-          `Failed to save player ${player.id} to database:`,
-          error,
-        );
-      });
-    }
+    // Don't save automatically to prevent race conditions with explicit persistGame() calls
+    // The player is cached in memory and will be persisted when persistGame() is called
+    // This ensures data consistency and prevents stale async saves from overwriting fresh data
 
     return player;
   }
