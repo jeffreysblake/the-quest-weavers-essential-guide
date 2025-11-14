@@ -17,7 +17,7 @@ describe('LLM Integration Tests', () => {
     }).compile();
 
     controller = app.get<LLMController>(LLMController);
-  });
+  }, 30000); // Increase timeout to 30 seconds for module compilation
 
   afterEach(async () => {
     await app.close();

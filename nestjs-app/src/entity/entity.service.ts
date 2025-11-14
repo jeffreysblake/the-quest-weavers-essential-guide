@@ -10,10 +10,10 @@ export class EntityService {
 
   constructor(private readonly databaseService?: DatabaseService) {}
 
-  createEntity(entityData: Omit<IEntity, 'id'>): IEntity {
+  createEntity(entityData: Omit<IEntity, 'id'> | IEntity): IEntity {
     const entity: IEntity = {
       ...entityData,
-      id: this.generateId(),
+      id: (entityData as any).id || this.generateId(),
     };
 
     this.entities.set(entity.id, entity);

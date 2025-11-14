@@ -4,6 +4,7 @@ import { ObjectService } from './object.service';
 import { PlayerService } from './player.service';
 import { RoomService } from './room.service';
 import { PhysicsService } from './physics.service';
+import { DatabaseService } from '../database/database.service';
 
 describe('Player-Room Integration Tests', () => {
   let entityService: EntityService;
@@ -13,6 +14,23 @@ describe('Player-Room Integration Tests', () => {
   let physicsService: PhysicsService;
 
   beforeEach(async () => {
+    // Create mock DatabaseService
+    const mockDatabaseService = {
+      transaction: jest.fn((callback) => callback({
+        prepare: jest.fn(() => ({
+          run: jest.fn(),
+          get: jest.fn(),
+          all: jest.fn(() => [])
+        }))
+      })),
+      prepare: jest.fn(() => ({
+        run: jest.fn(),
+        get: jest.fn(),
+        all: jest.fn(() => [])
+      })),
+      exec: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EntityService,
@@ -20,6 +38,10 @@ describe('Player-Room Integration Tests', () => {
         PlayerService,
         RoomService,
         PhysicsService,
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
+        },
       ],
     }).compile();
 

@@ -462,9 +462,9 @@ export class ObjectService {
         const objectData: ObjectData = {
           id: object.id,
           gameId: object.gameId || 'default',
-          name: object.name,
-          description: object.description,
-          objectType: object.objectType,
+          name: object.name || 'Unnamed Object',
+          description: object.description || '',
+          objectType: object.objectType || 'item',
           position: object.position || { x: 0, y: 0, z: 0 },
           material: object.material,
           materialProperties: object.materialProperties
