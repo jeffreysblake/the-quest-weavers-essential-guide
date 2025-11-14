@@ -13,6 +13,7 @@ import { GameplayModule } from '../gameplay/gameplay.module';
 import { DialogueModule } from '../dialogue/dialogue.module';
 import { QuestModule } from '../quest/quest.module';
 import { InventoryModule } from '../inventory/inventory.module';
+import { TriggerModule } from '../trigger/trigger.module';
 import { EntityModule } from '../entity/entity.module';
 import { RoomModule } from '../entity/room.module';
 import { ObjectModule } from '../entity/object.module';
@@ -32,6 +33,7 @@ import { PlayerModule } from '../entity/player.module';
     DialogueModule,
     QuestModule,
     InventoryModule,
+    TriggerModule,
     EntityModule,
     RoomModule,
     ObjectModule,
