@@ -1,7 +1,11 @@
 module.exports = {
   "testEnvironment": "node",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.(t|j)s$": ["ts-jest", {
+      "tsconfig": {
+        "sourceMap": false
+      }
+    }]
   },
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "./src",
