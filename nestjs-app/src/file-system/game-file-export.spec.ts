@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { GameFileService } from './game-file.service';
 import { FileScannerService } from './file-scanner.service';
 import { DatabaseService } from '../database/database.service';
+import { ValidationService } from '../validation/validation.service';
+import { GameLogicValidatorService } from '../validation/game-logic-validator.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -23,6 +25,14 @@ describe('GameFileService - Export Functionality', () => {
     databaseService.setDatabasePath(testDbPath);
     await databaseService.onModuleInit();
 
+    const mockValidationService = {
+      validateData: jest.fn(),
+    };
+
+    const mockGameLogicValidatorService = {
+      validateGameLogic: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GameFileService,
@@ -30,6 +40,14 @@ describe('GameFileService - Export Functionality', () => {
         {
           provide: DatabaseService,
           useValue: databaseService,
+        },
+        {
+          provide: ValidationService,
+          useValue: mockValidationService,
+        },
+        {
+          provide: GameLogicValidatorService,
+          useValue: mockGameLogicValidatorService,
         },
       ],
     }).compile();
