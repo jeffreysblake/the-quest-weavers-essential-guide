@@ -15,7 +15,84 @@ export class ObjectService {
     private readonly databaseService?: DatabaseService,
   ) {}
 
+  private getDefaultMaterialProperties(material?: string) {
+    if (!material) return undefined;
+
+    // Default material properties based on common materials
+    const materialDefaults: Record<string, any> = {
+      wood: {
+        material: 'wood',
+        density: 0.6,
+        conductivity: 0.1,
+        flammability: 7,
+        brittleness: 3,
+        resistances: { ice: 2, lightning: 5 },
+      },
+      steel: {
+        material: 'steel',
+        density: 7.85,
+        conductivity: 8,
+        flammability: 0,
+        brittleness: 2,
+        resistances: { force: 5, fire: 7 },
+      },
+      iron: {
+        material: 'iron',
+        density: 7.87,
+        conductivity: 7,
+        flammability: 0,
+        brittleness: 3,
+        resistances: { force: 4, fire: 6 },
+      },
+      stone: {
+        material: 'stone',
+        density: 2.5,
+        conductivity: 1,
+        flammability: 0,
+        brittleness: 6,
+        resistances: { fire: 9, force: 7 },
+      },
+      glass: {
+        material: 'glass',
+        density: 2.5,
+        conductivity: 1,
+        flammability: 0,
+        brittleness: 9,
+        resistances: { fire: 5 },
+      },
+      cloth: {
+        material: 'cloth',
+        density: 0.5,
+        conductivity: 0.1,
+        flammability: 8,
+        brittleness: 1,
+        resistances: { ice: 1 },
+      },
+      leather: {
+        material: 'leather',
+        density: 0.9,
+        conductivity: 0.2,
+        flammability: 5,
+        brittleness: 2,
+        resistances: { fire: 3, ice: 3 },
+      },
+    };
+
+    return materialDefaults[material.toLowerCase()] || {
+      material,
+      density: 1,
+      conductivity: 1,
+      flammability: 1,
+      brittleness: 1,
+      resistances: {},
+    };
+  }
+
   createObject(objectData: Omit<IObject, 'id' | 'type'>): IObject {
+    // Auto-generate material properties if material is specified but materialProperties is not
+    const materialProperties = objectData.materialProperties ||
+      (objectData.material ? this.getDefaultMaterialProperties(objectData.material) : undefined);
+
     // Create object with generated ID
     const object: IObject = {
       ...objectData,
@@ -26,6 +103,7 @@ export class ObjectService {
       canContain: objectData.canContain || false,
       isContainer: objectData.isContainer || false,
       isPortable: objectData.isPortable ?? true,
+      materialProperties,
     };
 
     // Store in local cache
