@@ -46,24 +46,9 @@ describe('GameFileService', () => {
   };
 
   const mockFileScannerService = {
-
-  const mockValidationService = {
-    validateData: jest.fn(),
-  };
-
-  const mockGameLogicValidatorService = {
-    validateGameLogic: jest.fn(),
-  };
     scanGameDirectory: jest.fn(),
-
-  const mockValidationService = {
-    validateData: jest.fn(),
-  };
-
-  const mockGameLogicValidatorService = {
-    validateGameLogic: jest.fn(),
-  };
     detectChanges: jest.fn(),
+  };
 
   const mockValidationService = {
     validateData: jest.fn(),
@@ -71,24 +56,7 @@ describe('GameFileService', () => {
 
   const mockGameLogicValidatorService = {
     validateGameLogic: jest.fn(),
-  };
     validateGameDirectory: jest.fn(),
-
-  const mockValidationService = {
-    validateData: jest.fn(),
-  };
-
-  const mockGameLogicValidatorService = {
-    validateGameLogic: jest.fn(),
-  };
-  };
-
-  const mockValidationService = {
-    validateData: jest.fn(),
-  };
-
-  const mockGameLogicValidatorService = {
-    validateGameLogic: jest.fn(),
   };
 
   beforeEach(async () => {

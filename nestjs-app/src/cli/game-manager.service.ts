@@ -76,7 +76,7 @@ export class GameManagerService {
           game.version,
           game.createdAt,
           game.updatedAt,
-          game.isActive,
+          game.isActive ? 1 : 0,
         );
       });
 

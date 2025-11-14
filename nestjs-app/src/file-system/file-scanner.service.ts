@@ -396,4 +396,196 @@ export class FileScannerService {
       .filter((dirent) => dirent.isDirectory())
       .map((dirent) => dirent.name);
   }
+
+  // Priority 2: File System Features
+
+  /**
+   * Scan directory for game folders
+   * @param directory - Directory path to scan (relative or absolute)
+   * @returns Object with game list, total count, and any errors
+   */
+  scanGamesDirectory(directory: string): {
+    games: Array<{ gameId: string; name: string; path: string }>;
+    totalGames: number;
+    errors: string[];
+  } {
+    const scanPath = path.isAbsolute(directory)
+      ? directory
+      : path.join(process.cwd(), directory);
+
+    const games: Array<{ gameId: string; name: string; path: string }> = [];
+    const errors: string[] = [];
+
+    if (!fs.existsSync(scanPath)) {
+      const errorMsg = `Directory does not exist: ${scanPath}`;
+      this.logger.warn(errorMsg);
+      errors.push(errorMsg);
+      return { games: [], totalGames: 0, errors };
+    }
+
+    try {
+      const entries = fs.readdirSync(scanPath, { withFileTypes: true });
+
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          const gamePath = path.join(scanPath, entry.name);
+          const configPath = path.join(gamePath, 'game-config.json');
+
+          // Check if this folder has a game-config.json
+          if (fs.existsSync(configPath)) {
+            try {
+              const configContent = fs.readFileSync(configPath, 'utf-8');
+              const config = JSON.parse(configContent);
+
+              games.push({
+                gameId: config.id || entry.name,
+                name: config.name || entry.name,
+                path: gamePath,
+              });
+            } catch (error) {
+              const errorMsg = `Failed to parse game-config.json in ${entry.name}: ${error.message}`;
+              this.logger.warn(errorMsg);
+              errors.push(errorMsg);
+              // Still add it with default values
+              games.push({
+                gameId: entry.name,
+                name: entry.name,
+                path: gamePath,
+              });
+            }
+          }
+        }
+      }
+
+      this.logger.log(`Found ${games.length} games in ${scanPath}`);
+      return { games, totalGames: games.length, errors };
+    } catch (error) {
+      const errorMsg = `Error scanning directory ${scanPath}: ${error.message}`;
+      this.logger.error(errorMsg, error);
+      errors.push(errorMsg);
+      return { games: [], totalGames: 0, errors };
+    }
+  }
+
+  /**
+   * Validate individual file JSON syntax and structure
+   * @param filePath - Path to the file to validate
+   * @returns Validation result with errors if any
+   */
+  validateGameFile(filePath: string): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      errors.push(`File does not exist: ${filePath}`);
+      return { isValid: false, errors };
+    }
+
+    // Check if it's a file (not a directory)
+    const stats = fs.statSync(filePath);
+    if (!stats.isFile()) {
+      errors.push(`Path is not a file: ${filePath}`);
+      return { isValid: false, errors };
+    }
+
+    // Validate JSON syntax
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const data = JSON.parse(content);
+
+      // Determine file type based on filename and path
+      const fileName = path.basename(filePath);
+      const dirName = path.basename(path.dirname(filePath));
+
+      // Validate structure based on file type
+      if (fileName === 'game-config.json') {
+        this.validateGameConfig(data, errors);
+      } else if (fileName === 'connections.json') {
+        this.validateConnections(data, errors);
+      } else if (dirName === 'rooms') {
+        this.validateRoom(data, errors);
+      } else if (dirName === 'objects') {
+        this.validateObject(data, errors);
+      } else if (dirName === 'npcs') {
+        this.validateNPC(data, errors);
+      }
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        errors.push(`Invalid JSON syntax: ${error.message}`);
+      } else {
+        errors.push(`Error reading file: ${error.message}`);
+      }
+      return { isValid: false, errors };
+    }
+
+    return { isValid: errors.length === 0, errors };
+  }
+
+  // Helper validation methods
+  private validateGameConfig(data: any, errors: string[]): void {
+    if (!data.id) errors.push('Missing required field: id');
+    if (!data.name) errors.push('Missing required field: name');
+    if (typeof data.id !== 'string')
+      errors.push('Field "id" must be a string');
+    if (typeof data.name !== 'string')
+      errors.push('Field "name" must be a string');
+  }
+
+  private validateConnections(data: any, errors: string[]): void {
+    if (!data.connections || !Array.isArray(data.connections)) {
+      errors.push('Missing or invalid "connections" array');
+      return;
+    }
+
+    data.connections.forEach((conn: any, index: number) => {
+      if (!conn.from)
+        errors.push(`Connection ${index}: missing "from" field`);
+      if (!conn.to) errors.push(`Connection ${index}: missing "to" field`);
+      if (!conn.direction)
+        errors.push(`Connection ${index}: missing "direction" field`);
+    });
+  }
+
+  private validateRoom(data: any, errors: string[]): void {
+    if (!data.id) errors.push('Missing required field: id');
+    if (!data.name) errors.push('Missing required field: name');
+    if (!data.description) errors.push('Missing required field: description');
+
+    if (data.position) {
+      if (typeof data.position.x !== 'number')
+        errors.push('position.x must be a number');
+      if (typeof data.position.y !== 'number')
+        errors.push('position.y must be a number');
+      if (typeof data.position.z !== 'number')
+        errors.push('position.z must be a number');
+    }
+  }
+
+  private validateObject(data: any, errors: string[]): void {
+    if (!data.id) errors.push('Missing required field: id');
+    if (!data.name) errors.push('Missing required field: name');
+    if (!data.objectType) errors.push('Missing required field: objectType');
+
+    const validTypes = ['item', 'furniture', 'weapon', 'consumable', 'container'];
+    if (data.objectType && !validTypes.includes(data.objectType)) {
+      errors.push(
+        `Invalid objectType: ${data.objectType}. Must be one of: ${validTypes.join(', ')}`,
+      );
+    }
+  }
+
+  private validateNPC(data: any, errors: string[]): void {
+    if (!data.id) errors.push('Missing required field: id');
+    if (!data.name) errors.push('Missing required field: name');
+    if (!data.description) errors.push('Missing required field: description');
+
+    if (data.position) {
+      if (typeof data.position.x !== 'number')
+        errors.push('position.x must be a number');
+      if (typeof data.position.y !== 'number')
+        errors.push('position.y must be a number');
+      if (typeof data.position.z !== 'number')
+        errors.push('position.z must be a number');
+    }
+  }
 }

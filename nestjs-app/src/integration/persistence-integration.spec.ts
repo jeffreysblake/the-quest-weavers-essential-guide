@@ -37,40 +37,10 @@ describe('Persistence System Integration', () => {
       fs.unlinkSync(testDbPath);
     }
 
-    // Create mock database service
-    const mockPrepare = jest.fn().mockReturnValue({
-      run: jest.fn(),
-      get: jest.fn().mockReturnValue({ count: 1 }),
-      all: jest.fn().mockReturnValue([]),
-    });
-
-    const mockDatabaseService = {
-      onModuleInit: jest.fn().mockResolvedValue(undefined),
-      disconnect: jest.fn().mockResolvedValue(undefined),
-      setDatabasePath: jest.fn(),
-      saveEntity: jest.fn().mockResolvedValue(undefined),
-      getEntity: jest.fn().mockResolvedValue(null),
-      deleteEntity: jest.fn().mockResolvedValue(undefined),
-      getAllEntities: jest.fn().mockResolvedValue([]),
-      saveVersion: jest.fn().mockReturnValue(1),
-      getVersion: jest.fn().mockResolvedValue(null),
-      listVersions: jest.fn().mockReturnValue([]),
-      prepare: mockPrepare,
-      transaction: jest.fn((callback) => {
-        const mockDb = {
-          prepare: mockPrepare,
-        };
-        return callback(mockDb);
-      }),
-      healthCheck: jest.fn().mockResolvedValue(true),
-    };
-
+    // Create test module with real database
     module = await Test.createTestingModule({
       imports: [CLIModule],
-    })
-      .overrideProvider(DatabaseService)
-      .useValue(mockDatabaseService)
-      .compile();
+    }).compile();
 
     cliService = module.get<CLIService>(CLIService);
     gameManagerService = module.get<GameManagerService>(GameManagerService);
@@ -80,7 +50,10 @@ describe('Persistence System Integration', () => {
     playerService = module.get<PlayerService>(PlayerService);
     gameFileService = module.get<GameFileService>(GameFileService);
 
-    // Initialize database
+    // Set custom database path for testing
+    databaseService.setDatabasePath(testDbPath);
+
+    // Initialize database (this will create tables)
     await databaseService.onModuleInit();
   });
 
@@ -212,7 +185,7 @@ describe('Persistence System Integration', () => {
       expect(version1).toBe(1);
 
       // Modify room
-      roomService.updateEntity(room.id, {
+      roomService.update(room.id, {
         description: 'Updated description',
         name: 'Updated Room Name',
       });
@@ -543,8 +516,13 @@ describe('Persistence System Integration', () => {
       });
 
       // Add objects to room
-      roomService.addObjectToRoom(room.id, container.id);
-      roomService.addObjectToRoom(room.id, item.id);
+      const addResult1 = roomService.addObjectToRoom(room.id, container.id);
+      const addResult2 = roomService.addObjectToRoom(room.id, item.id);
+
+      // Debug: Check room objects before persist
+      const roomBeforePersist = roomService.getRoom(room.id);
+      console.log('Room objects before persist:', roomBeforePersist?.objects);
+      console.log('addObjectToRoom results:', addResult1, addResult2);
 
       // Persist and verify relationships
       await gameManagerService.persistGame(gameId);
@@ -557,6 +535,9 @@ describe('Persistence System Integration', () => {
         room.id,
         gameId,
       );
+      console.log('Reloaded room objects:', reloadedRoom?.objects);
+      console.log('Expected container.id:', container.id);
+      console.log('Expected item.id:', item.id);
       expect(reloadedRoom?.objects).toContain(container.id);
       expect(reloadedRoom?.objects).toContain(item.id);
 

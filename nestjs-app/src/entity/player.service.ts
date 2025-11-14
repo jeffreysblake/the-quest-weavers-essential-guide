@@ -587,21 +587,33 @@ export class PlayerService {
       throw new Error('Database service not available for version management');
     }
 
-    const success = await this.databaseService.rollbackToVersion(
+    // Get the version data
+    const versionData = await this.databaseService.getVersion(
       'player',
       playerId,
       version,
     );
 
-    if (success) {
-      // Reload player from database
-      const player = await this.loadPlayerFromDatabase(playerId);
-      if (player) {
-        this.players.set(playerId, player);
-      }
+    if (!versionData) {
+      return false;
     }
 
-    return success;
+    // Update the in-memory cache with the old version
+    this.players.set(playerId, versionData as IPlayer);
+
+    // Save the old version to the database
+    await this.savePlayerToDatabase(versionData as IPlayer);
+
+    // Create a version history entry for the rollback
+    await this.databaseService.saveVersion(
+      'player',
+      playerId,
+      versionData,
+      'system',
+      `Rollback to version ${version}`,
+    );
+
+    return true;
   }
 
   // Dynamic loading for gameplay
@@ -688,14 +700,7 @@ export class PlayerService {
         );
       });
 
-      // Save version history
-      this.databaseService.saveVersion(
-        'player',
-        player.id,
-        player,
-        'player_service',
-        'Player updated',
-      );
+      // Note: Version history is saved explicitly via savePlayerVersion() when needed
     } catch (error) {
       this.logger.error(
         `Failed to save player ${player.id} to database:`,
@@ -817,6 +822,266 @@ export class PlayerService {
     return {
       size: this.players.size,
       players: Array.from(this.players.keys()),
+    };
+  }
+
+  // Priority 2: Inventory Management Features
+
+  /**
+   * Sort player's inventory by specified criteria
+   * @param playerId - The player's ID
+   * @param sortBy - Criteria to sort by: 'name', 'type', 'weight', or 'value'
+   * @returns Sorted array of inventory objects
+   */
+  sortInventory(
+    playerId: string,
+    sortBy: 'name' | 'type' | 'weight' | 'value',
+  ): IObject[] {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      this.logger.warn(`Player ${playerId} not found for sortInventory`);
+      return [];
+    }
+
+    // Get actual objects from inventory IDs
+    const inventoryObjects = player.inventory
+      .map((itemId) => this.objectService.getObject(itemId))
+      .filter(Boolean) as IObject[];
+
+    // Sort based on criteria
+    switch (sortBy) {
+      case 'name':
+        return inventoryObjects.sort((a, b) =>
+          a.name.localeCompare(b.name),
+        );
+      case 'type':
+        return inventoryObjects.sort((a, b) =>
+          a.objectType.localeCompare(b.objectType),
+        );
+      case 'weight':
+        return inventoryObjects.sort((a, b) => {
+          const weightA = a.weight || a.properties?.weight || 0;
+          const weightB = b.weight || b.properties?.weight || 0;
+          return weightB - weightA; // Descending order
+        });
+      case 'value':
+        return inventoryObjects.sort((a, b) => {
+          const valueA = a.properties?.value || 0;
+          const valueB = b.properties?.value || 0;
+          return valueB - valueA; // Descending order
+        });
+      default:
+        return inventoryObjects;
+    }
+  }
+
+  /**
+   * Filter inventory items matching criteria
+   * @param playerId - The player's ID
+   * @param criteria - Search criteria (name, objectType/type, material, weight, rarity, etc.)
+   * @returns Array of matching inventory objects
+   */
+  findInventoryItems(
+    playerId: string,
+    criteria: {
+      name?: string;
+      objectType?: string;
+      type?: string;
+      material?: string;
+      weight?: number | { min?: number; max?: number };
+      rarity?: number | { min?: number; max?: number };
+      value?: number | { min?: number; max?: number };
+    },
+  ): IObject[] {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      this.logger.warn(`Player ${playerId} not found for findInventoryItems`);
+      return [];
+    }
+
+    // Get actual objects from inventory IDs
+    const inventoryObjects = player.inventory
+      .map((itemId) => this.objectService.getObject(itemId))
+      .filter(Boolean) as IObject[];
+
+    // Filter based on criteria
+    return inventoryObjects.filter((obj) => {
+      // Check name (partial match, case-insensitive)
+      if (
+        criteria.name &&
+        !obj.name.toLowerCase().includes(criteria.name.toLowerCase())
+      ) {
+        return false;
+      }
+
+      // Check object type (exact match) - support both 'type' and 'objectType' fields
+      const typeToCheck = criteria.objectType || criteria.type;
+      if (typeToCheck && obj.objectType !== typeToCheck) {
+        return false;
+      }
+
+      // Check material (exact match)
+      if (criteria.material && obj.material !== criteria.material) {
+        return false;
+      }
+
+      // Check weight (exact or range)
+      if (criteria.weight !== undefined) {
+        const objWeight = obj.weight || obj.properties?.weight || 0;
+        if (typeof criteria.weight === 'number') {
+          if (objWeight !== criteria.weight) return false;
+        } else if (typeof criteria.weight === 'object') {
+          if (
+            criteria.weight.min !== undefined &&
+            objWeight < criteria.weight.min
+          ) {
+            return false;
+          }
+          if (
+            criteria.weight.max !== undefined &&
+            objWeight > criteria.weight.max
+          ) {
+            return false;
+          }
+        }
+      }
+
+      // Check rarity (exact or range) - assumes rarity is in properties
+      if (criteria.rarity !== undefined) {
+        const objRarity = (obj.properties as any)?.rarity || 0;
+        if (typeof criteria.rarity === 'number') {
+          if (objRarity !== criteria.rarity) return false;
+        } else if (typeof criteria.rarity === 'object') {
+          if (
+            criteria.rarity.min !== undefined &&
+            objRarity < criteria.rarity.min
+          ) {
+            return false;
+          }
+          if (
+            criteria.rarity.max !== undefined &&
+            objRarity > criteria.rarity.max
+          ) {
+            return false;
+          }
+        }
+      }
+
+      // Check value (exact or range)
+      if (criteria.value !== undefined) {
+        const objValue = obj.properties?.value || 0;
+        if (typeof criteria.value === 'number') {
+          if (objValue !== criteria.value) return false;
+        } else if (typeof criteria.value === 'object') {
+          if (criteria.value.min !== undefined && objValue < criteria.value.min) {
+            return false;
+          }
+          if (criteria.value.max !== undefined && objValue > criteria.value.max) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * Calculate aggregate stats from inventory
+   * @param playerId - The player's ID
+   * @returns Object with totalItems, totalWeight, and totalValue
+   */
+  getInventoryStats(playerId: string): {
+    totalItems: number;
+    totalWeight: number;
+    totalValue: number;
+  } {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      this.logger.warn(`Player ${playerId} not found for getInventoryStats`);
+      return { totalItems: 0, totalWeight: 0, totalValue: 0 };
+    }
+
+    // Get actual objects from inventory IDs
+    const inventoryObjects = player.inventory
+      .map((itemId) => this.objectService.getObject(itemId))
+      .filter(Boolean) as IObject[];
+
+    // Calculate totals
+    const totalItems = inventoryObjects.length;
+    const totalWeight = inventoryObjects.reduce((sum, obj) => {
+      return sum + (obj.weight || obj.properties?.weight || 0);
+    }, 0);
+    const totalValue = inventoryObjects.reduce((sum, obj) => {
+      return sum + (obj.properties?.value || 0);
+    }, 0);
+
+    return {
+      totalItems,
+      totalWeight,
+      totalValue,
+    };
+  }
+
+  /**
+   * Remove item from player inventory and place it in the player's current room
+   * @param playerId - The player's ID
+   * @param objectId - The object ID to drop
+   * @returns Success/failure result
+   */
+  dropObject(playerId: string, objectId: string): IInteractionResult {
+    const player = this.getPlayer(playerId);
+    if (!player) {
+      return {
+        success: false,
+        message: 'Player not found',
+      };
+    }
+
+    const object = this.objectService.getObject(objectId);
+    if (!object) {
+      return {
+        success: false,
+        message: 'Object not found',
+      };
+    }
+
+    // Check if object is in player's inventory
+    const inventoryIndex = player.inventory.indexOf(objectId);
+    if (inventoryIndex === -1) {
+      return {
+        success: false,
+        message: `You do not have the ${object.name} in your inventory.`,
+      };
+    }
+
+    // Remove from player's inventory
+    player.inventory.splice(inventoryIndex, 1);
+    this.updatePlayer(playerId, { inventory: player.inventory });
+
+    // If player has a current room, add object to that room
+    if (player.roomId) {
+      // Update object's room ID
+      object.roomId = player.roomId;
+      this.entityService.updateEntity(objectId, object);
+
+      return {
+        success: true,
+        message: `You drop the ${object.name}.`,
+        effects: {
+          itemDropped: objectId,
+          droppedInRoom: player.roomId,
+        },
+      };
+    }
+
+    // If no room, just remove from inventory
+    return {
+      success: true,
+      message: `You drop the ${object.name}.`,
+      effects: {
+        itemDropped: objectId,
+      },
     };
   }
 }

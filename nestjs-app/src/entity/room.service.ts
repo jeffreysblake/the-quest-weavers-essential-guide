@@ -299,21 +299,33 @@ export class RoomService {
       throw new Error('Database service not available for version management');
     }
 
-    const success = await this.databaseService.rollbackToVersion(
+    // Get the version data
+    const versionData = await this.databaseService.getVersion(
       'room',
       roomId,
       version,
     );
 
-    if (success) {
-      // Reload room from database
-      const room = await this.loadRoomFromDatabase(roomId);
-      if (room) {
-        this.rooms.set(roomId, room);
-      }
+    if (!versionData) {
+      return false;
     }
 
-    return success;
+    // Update the in-memory cache with the old version
+    this.rooms.set(roomId, versionData as IRoom);
+
+    // Save the old version to the database
+    await this.saveRoomToDatabase(versionData as IRoom);
+
+    // Create a version history entry for the rollback
+    await this.databaseService.saveVersion(
+      'room',
+      roomId,
+      versionData,
+      'system',
+      `Rollback to version ${version}`,
+    );
+
+    return true;
   }
 
   // Dynamic loading for gameplay
@@ -439,6 +451,8 @@ export class RoomService {
 
         // Save room-object relationships
         if (room.objects && room.objects.length > 0) {
+          console.log(`[RoomService] Saving ${room.objects.length} room-object relationships for room ${room.id}`);
+          console.log(`[RoomService] Objects to save:`, room.objects);
           // Clear existing relationships
           db.prepare('DELETE FROM room_objects WHERE room_id = ?').run(room.id);
 
@@ -448,8 +462,11 @@ export class RoomService {
           `);
 
           for (const objectId of room.objects) {
+            console.log(`[RoomService]   Saving room-object: ${room.id} -> ${objectId}`);
             insertRoomObject.run(room.id, objectId, new Date().toISOString());
           }
+        } else {
+          console.log(`[RoomService] No room-object relationships to save for room ${room.id}`);
         }
 
         // Save room-player relationships
@@ -468,14 +485,7 @@ export class RoomService {
         }
       });
 
-      // Save version history
-      this.databaseService.saveVersion(
-        'room',
-        room.id,
-        room,
-        'room_service',
-        'Room updated',
-      );
+      // Note: Version history is saved explicitly via saveRoomVersion() when needed
     } catch (error) {
       this.logger.error(`Failed to save room ${room.id} to database:`, error);
       throw error;
@@ -507,6 +517,8 @@ export class RoomService {
       `);
       const objectRows = objectQuery.all(roomId) as any[];
       const objects = objectRows.map((row) => row.object_id);
+      console.log(`[RoomService] Loaded ${objects.length} room-object relationships for room ${roomId}`);
+      console.log(`[RoomService] Loaded objects:`, objects);
 
       // Load room-player relationships
       const playerQuery = this.databaseService.prepare(`
@@ -616,5 +628,42 @@ export class RoomService {
 
   private generateId(): string {
     return uuidv4();
+  }
+
+  // Priority 2: Spatial Utilities
+
+  /**
+   * Calculate 3D Euclidean distance between two positions
+   * @param pos1 - First position with x, y, z coordinates
+   * @param pos2 - Second position with x, y, z coordinates
+   * @returns Distance as a number
+   */
+  calculateDistance(
+    pos1: { x: number; y: number; z: number },
+    pos2: { x: number; y: number; z: number },
+  ): number {
+    // Validate inputs
+    if (!pos1 || !pos2) {
+      this.logger.warn('Invalid positions provided to calculateDistance');
+      return 0;
+    }
+
+    // Ensure positions have valid numeric coordinates
+    const x1 = typeof pos1.x === 'number' ? pos1.x : 0;
+    const y1 = typeof pos1.y === 'number' ? pos1.y : 0;
+    const z1 = typeof pos1.z === 'number' ? pos1.z : 0;
+
+    const x2 = typeof pos2.x === 'number' ? pos2.x : 0;
+    const y2 = typeof pos2.y === 'number' ? pos2.y : 0;
+    const z2 = typeof pos2.z === 'number' ? pos2.z : 0;
+
+    // Calculate Euclidean distance: sqrt((x2-x1)² + (y2-y1)² + (z2-z1)²)
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const dz = z2 - z1;
+
+    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+    return distance;
   }
 }

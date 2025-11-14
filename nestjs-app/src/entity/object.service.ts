@@ -466,22 +466,34 @@ export class ObjectService {
       throw new Error('Database service not available for version management');
     }
 
-    const success = await this.databaseService.rollbackToVersion(
+    // Get the version data
+    const versionData = await this.databaseService.getVersion(
       'object',
       objectId,
       version,
     );
 
-    if (success) {
-      // Reload object from database
-      const object = await this.loadObjectFromDatabase(objectId);
-      if (object) {
-        this.objects.set(objectId, object);
-        this.entityService.updateEntity(objectId, object); // Sync with EntityService
-      }
+    if (!versionData) {
+      return false;
     }
 
-    return success;
+    // Update the in-memory cache with the old version
+    this.objects.set(objectId, versionData as IObject);
+    this.entityService.updateEntity(objectId, versionData as IObject);
+
+    // Save the old version to the database
+    await this.saveObjectToDatabase(versionData as IObject);
+
+    // Create a version history entry for the rollback
+    await this.databaseService.saveVersion(
+      'object',
+      objectId,
+      versionData,
+      'system',
+      `Rollback to version ${version}`,
+    );
+
+    return true;
   }
 
   // Dynamic loading for gameplay
@@ -623,14 +635,7 @@ export class ObjectService {
         }
       });
 
-      // Save version history
-      this.databaseService.saveVersion(
-        'object',
-        object.id,
-        object,
-        'object_service',
-        'Object updated',
-      );
+      // Note: Version history is saved explicitly via saveObjectVersion() when needed
     } catch (error) {
       this.logger.error(
         `Failed to save object ${object.id} to database:`,
