@@ -1974,4 +1974,1355 @@ describe('DialogueManagerService', () => {
       expect(finalConversations[0].history.length).toBeGreaterThan(10);
     });
   });
+
+  describe('Safety: Dialogue Dead-Ends', () => {
+    const createContext = (): IDialogueContext => ({
+      gameId: 'game1',
+      playerId: 'player1',
+      npcId: 'npc1',
+      conversationState: null as any,
+      playerFlags: {},
+      playerVariables: {},
+      playerInventory: [],
+      questStates: {},
+    });
+
+    test('should throw error when navigating to non-existent node', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Broken Navigation',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Choose your path',
+            choices: [
+              { id: 'choice1', text: 'Go somewhere', nextNodeId: 'nonexistent_node' },
+            ],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      await expect(
+        service.makeChoice(conversationId, 'choice1', context)
+      ).rejects.toThrow("Dialogue node 'nonexistent_node' not found");
+    });
+
+    test('should throw error when starting with non-existent start node', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Bad Start',
+        startNodeId: 'nonexistent_start',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'You will never see this',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await expect(
+        service.startConversation('game1', 'player1', 'npc1', 'tree1', context)
+      ).rejects.toThrow("Dialogue node 'nonexistent_start' not found");
+    });
+
+    test('should handle self-referencing node without infinite loop', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Self Reference',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'I point to myself!',
+            choices: [
+              { id: 'choice1', text: 'Loop back', nextNodeId: 'node1' },
+              { id: 'choice2', text: 'Exit', endsConversation: true },
+            ],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Loop multiple times
+      await service.makeChoice(conversationId, 'choice1', context);
+      await service.makeChoice(conversationId, 'choice1', context);
+      const result = await service.makeChoice(conversationId, 'choice1', context);
+
+      expect(result.currentNode.id).toBe('node1');
+      expect(result.conversationEnded).toBe(false);
+    });
+
+    test('should detect when all conditional responses fail', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'All Locked',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'All options are locked',
+            choices: [
+              {
+                id: 'choice1',
+                text: 'Need flag',
+                nextNodeId: 'node2',
+                conditions: [{ type: 'flag', key: 'has_flag', operator: 'equals', value: true }],
+              },
+              {
+                id: 'choice2',
+                text: 'Need item',
+                nextNodeId: 'node2',
+                conditions: [{ type: 'item', key: 'magic_key' }],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Success',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(result.availableChoices).toHaveLength(0);
+      expect(result.conversationEnded).toBe(false);
+    });
+
+    test('should handle choice with empty text', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Empty Choice',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              { id: 'choice1', text: '', nextNodeId: 'node2' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'You chose empty',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(result.availableChoices).toHaveLength(1);
+      expect(result.availableChoices[0].text).toBe('');
+    });
+
+    test('should handle node with undefined choices array', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Undefined Choices',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'No choices defined',
+            // choices is undefined
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(result.availableChoices).toHaveLength(0);
+    });
+
+    test('should handle choice without nextNodeId and without endsConversation', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Dead End Choice',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Choose',
+            choices: [
+              { id: 'choice1', text: 'Nowhere to go' }, // No nextNodeId, no endsConversation
+            ],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      const result = await service.makeChoice(conversationId, 'choice1', context);
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('No next node specified for choice');
+    });
+  });
+
+  describe('Safety: Dialogue State Corruption', () => {
+    const createContext = (): IDialogueContext => ({
+      gameId: 'game1',
+      playerId: 'player1',
+      npcId: 'npc1',
+      conversationState: null as any,
+      playerFlags: {},
+      playerVariables: {},
+      playerInventory: [],
+      questStates: {},
+    });
+
+    test('should handle tree deletion during active conversation', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Temporary Tree',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Starting node',
+            choices: [
+              { id: 'choice1', text: 'Continue', nextNodeId: 'node2' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Second node',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Delete the tree while conversation is active
+      service.removeDialogueTree('tree1');
+
+      // Try to make choice - should throw because tree is gone
+      await expect(
+        service.makeChoice(conversationId, 'choice1', context)
+      ).rejects.toThrow("Dialogue tree 'tree1' not found");
+    });
+
+    test('should handle corrupted conversation state with invalid node', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 1',
+            choices: [
+              { id: 'choice1', text: 'Next', nextNodeId: 'node2' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 2',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Manually corrupt the state
+      const state = service.getConversationState(conversationId);
+      if (state) {
+        state.currentNodeId = 'corrupted_node_id';
+      }
+
+      // Should throw error when trying to get current dialogue
+      await expect(
+        service.getCurrentDialogue(conversationId, context)
+      ).rejects.toThrow("Dialogue node 'corrupted_node_id' not found");
+    });
+
+    test('should maintain conversation isolation between players', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 1',
+            choices: [
+              { id: 'choice1', text: 'Next', nextNodeId: 'node2' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 2',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context1 = createContext();
+      const context2 = { ...createContext(), playerId: 'player2' };
+
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context1);
+      await service.startConversation('game1', 'player2', 'npc1', 'tree1', context2);
+
+      const player1Convos = service.getPlayerConversations('game1', 'player1');
+      const player2Convos = service.getPlayerConversations('game1', 'player2');
+
+      expect(player1Convos).toHaveLength(1);
+      expect(player2Convos).toHaveLength(1);
+      expect(player1Convos[0].conversationId).not.toBe(player2Convos[0].conversationId);
+
+      // Player 1 makes choice
+      await service.makeChoice(player1Convos[0].conversationId, 'choice1', context1);
+
+      // Verify player 2 is still on node1
+      const player2State = service.getConversationState(player2Convos[0].conversationId);
+      expect(player2State?.currentNodeId).toBe('node1');
+    });
+
+    test('should handle conversation history with corrupted entries', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const state = conversations[0];
+
+      // Manually corrupt history
+      state.history.push({
+        nodeId: 'fake_node',
+        speaker: 'unknown',
+        text: 'Corrupted',
+        timestamp: 'invalid_timestamp',
+      });
+
+      expect(state.history).toHaveLength(2);
+      expect(state.history[1].nodeId).toBe('fake_node');
+    });
+
+    test('should handle missing conversation state gracefully', async () => {
+      await expect(
+        service.getCurrentDialogue('nonexistent_conversation_id', createContext())
+      ).rejects.toThrow("Conversation 'nonexistent_conversation_id' not found");
+    });
+
+    test('should clear all conversations without affecting trees', () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      service.clearAllConversations();
+
+      expect(service.getDialogueTree('tree1')).toBeDefined();
+      expect(service.getPlayerConversations('game1', 'player1')).toHaveLength(0);
+    });
+
+    test('should clear all trees without affecting conversations', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      service.clearAllDialogueTrees();
+
+      expect(service.getDialogueTree('tree1')).toBeUndefined();
+      expect(service.getPlayerConversations('game1', 'player1')).toHaveLength(1);
+    });
+  });
+
+  describe('Safety: Response Validation', () => {
+    const createContext = (): IDialogueContext => ({
+      gameId: 'game1',
+      playerId: 'player1',
+      npcId: 'npc1',
+      conversationState: null as any,
+      playerFlags: {},
+      playerVariables: {},
+      playerInventory: [],
+      questStates: {},
+    });
+
+    test('should handle duplicate choice IDs', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Duplicate Choices',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              { id: 'choice1', text: 'First choice', nextNodeId: 'node2' },
+              { id: 'choice1', text: 'Second choice (same ID)', nextNodeId: 'node3' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 2',
+          },
+          {
+            id: 'node3',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 3',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Will use the first matching choice
+      const result = await service.makeChoice(conversationId, 'choice1', context);
+      expect(result.currentNode.id).toBe('node2');
+    });
+
+    test('should handle null or undefined choice ID', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              { id: 'choice1', text: 'Valid choice', nextNodeId: 'node2' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Success',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Try to make choice with null ID - should throw or not find choice
+      await expect(
+        service.makeChoice(conversationId, null as any, context)
+      ).rejects.toThrow("Choice 'null' not found");
+    });
+
+    test('should handle choice with condition that always fails', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Always Locked',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              {
+                id: 'choice1',
+                text: 'Impossible',
+                nextNodeId: 'node2',
+                conditions: [
+                  { type: 'variable', key: 'impossible', operator: 'equals', value: 999 },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'You will never reach here',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      context.playerVariables.impossible = 0; // Will never equal 999
+
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(result.availableChoices).toHaveLength(0);
+    });
+
+    test('should handle empty choices array', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Empty Choices',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'No options',
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(result.availableChoices).toHaveLength(0);
+      expect(result.conversationEnded).toBe(false);
+    });
+
+    test('should verify choice conditions before execution', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Conditional Choice',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              {
+                id: 'choice1',
+                text: 'Needs flag',
+                nextNodeId: 'node2',
+                conditions: [{ type: 'flag', key: 'special', operator: 'equals', value: true }],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Success',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Try to make choice without meeting condition
+      const result = await service.makeChoice(conversationId, 'choice1', context);
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('Choice conditions not met');
+    });
+  });
+
+  describe('Safety: Choice Availability Edge Cases', () => {
+    const createContext = (overrides?: Partial<IDialogueContext>): IDialogueContext => ({
+      gameId: 'game1',
+      playerId: 'player1',
+      npcId: 'npc1',
+      conversationState: null as any,
+      playerFlags: {},
+      playerVariables: {},
+      playerInventory: [],
+      questStates: {},
+      ...overrides,
+    });
+
+    test('should handle dynamic choice invalidation', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Dynamic Lock',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              {
+                id: 'choice1',
+                text: 'Needs item',
+                nextNodeId: 'node2',
+                conditions: [{ type: 'item', key: 'magic_key' }],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Success',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      // Start with item
+      const context = createContext({ playerInventory: ['magic_key'] });
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Remove item before making choice
+      context.playerInventory = [];
+
+      // Choice should now fail
+      const result = await service.makeChoice(conversationId, 'choice1', context);
+      expect(result.success).toBe(false);
+    });
+
+    test('should handle level requirement not met', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Level Lock',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              {
+                id: 'choice1',
+                text: 'High level option',
+                nextNodeId: 'node2',
+                conditions: [{ type: 'variable', key: 'level', operator: 'greater', value: 10 }],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Success',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext({ playerVariables: { level: 5 } });
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(result.availableChoices).toHaveLength(0);
+    });
+
+    test('should handle multiple required items with one missing', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Multiple Items',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              {
+                id: 'choice1',
+                text: 'Need all items',
+                nextNodeId: 'node2',
+                conditions: [
+                  { type: 'item', key: 'sword' },
+                  { type: 'item', key: 'shield' },
+                  { type: 'item', key: 'potion' },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Success',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext({ playerInventory: ['sword', 'shield'] }); // Missing potion
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(result.availableChoices).toHaveLength(0);
+    });
+
+    test('should show choice when all complex conditions met', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Complex Conditions',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            choices: [
+              {
+                id: 'choice1',
+                text: 'Complex',
+                nextNodeId: 'node2',
+                conditions: [
+                  { type: 'flag', key: 'flag1', operator: 'equals', value: true },
+                  { type: 'variable', key: 'gold', operator: 'greater', value: 100 },
+                  { type: 'item', key: 'key' },
+                  { type: 'quest', key: 'main_quest', operator: 'equals', value: 'active' },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Success',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext({
+        playerFlags: { flag1: true },
+        playerVariables: { gold: 150 },
+        playerInventory: ['key'],
+        questStates: { main_quest: 'active' },
+      });
+
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      expect(result.availableChoices).toHaveLength(1);
+    });
+  });
+
+  describe('Safety: NPC Dialogue Edge Cases', () => {
+    const createContext = (): IDialogueContext => ({
+      gameId: 'game1',
+      playerId: 'player1',
+      npcId: 'npc1',
+      conversationState: null as any,
+      playerFlags: {},
+      playerVariables: {},
+      playerInventory: [],
+      questStates: {},
+    });
+
+    test('should handle NPC with no registered dialogue trees', () => {
+      const trees = service.getNpcDialogueTrees('nonexistent_npc');
+      expect(trees).toHaveLength(0);
+    });
+
+    test('should handle multiple simultaneous conversations with same NPC', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Hello',
+            choices: [
+              { id: 'choice1', text: 'Hi', nextNodeId: 'node2' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Goodbye',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+
+      // Start two conversations with same NPC - add small delay to ensure unique timestamps
+      const result1 = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      // Add a tiny delay to ensure different timestamp
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      const result2 = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      expect(conversations).toHaveLength(2);
+      expect(conversations[0].conversationId).not.toBe(conversations[1].conversationId);
+    });
+
+    test('should isolate conversations between different games', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context1 = createContext();
+      const context2 = { ...createContext(), gameId: 'game2' };
+
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context1);
+      await service.startConversation('game2', 'player1', 'npc1', 'tree1', context2);
+
+      const game1Convos = service.getPlayerConversations('game1', 'player1');
+      const game2Convos = service.getPlayerConversations('game2', 'player1');
+
+      expect(game1Convos).toHaveLength(1);
+      expect(game2Convos).toHaveLength(1);
+    });
+
+    test('should handle NPC with multiple dialogue trees', () => {
+      const tree1: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Greeting',
+        startNodeId: 'node1',
+        nodes: [
+          { id: 'node1', type: DialogueNodeType.TEXT, text: 'Hello' },
+        ],
+      };
+
+      const tree2: IDialogueTreeData = {
+        id: 'tree2',
+        npcId: 'npc1',
+        name: 'Quest',
+        startNodeId: 'node1',
+        nodes: [
+          { id: 'node1', type: DialogueNodeType.TEXT, text: 'Need help?' },
+        ],
+      };
+
+      service.registerDialogueTree(tree1);
+      service.registerDialogueTree(tree2);
+
+      const trees = service.getNpcDialogueTrees('npc1');
+      expect(trees).toHaveLength(2);
+    });
+
+    test('should prevent starting conversation with wrong NPC', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Test',
+        startNodeId: 'node1',
+        nodes: [
+          { id: 'node1', type: DialogueNodeType.TEXT, text: 'Test' },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = { ...createContext(), npcId: 'npc2' };
+
+      await expect(
+        service.startConversation('game1', 'player1', 'npc2', 'tree1', context)
+      ).rejects.toThrow("Dialogue tree 'tree1' does not belong to NPC 'npc2'");
+    });
+  });
+
+  describe('Safety: Action Execution Safety', () => {
+    const createContext = (): IDialogueContext => ({
+      gameId: 'game1',
+      playerId: 'player1',
+      npcId: 'npc1',
+      conversationState: null as any,
+      playerFlags: {},
+      playerVariables: {},
+      playerInventory: [],
+      questStates: {},
+    });
+
+    test('should handle give_item action without itemId', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Bad Item Action',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            actions: [
+              { type: 'give_item' } as any, // Missing itemId
+            ],
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(context.playerInventory).toHaveLength(0);
+    });
+
+    test('should handle update_quest action without questId', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Bad Quest Action',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            actions: [
+              { type: 'update_quest', value: 'completed' } as any, // Missing questId
+            ],
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(Object.keys(context.questStates)).toHaveLength(0);
+    });
+
+    test('should handle set_variable action with undefined value', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Undefined Value',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            actions: [
+              { type: 'set_variable', key: 'score' }, // No value specified
+            ],
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(context.playerVariables.score).toBeUndefined();
+    });
+
+    test('should execute multiple actions in sequence', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Multiple Actions',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            actions: [
+              { type: 'set_flag', key: 'flag1', value: true },
+              { type: 'set_variable', key: 'gold', value: 100 },
+              { type: 'give_item', itemId: 'sword' },
+              { type: 'update_quest', questId: 'quest1', value: 'active' },
+            ],
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      const result = await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(context.playerFlags.flag1).toBe(true);
+      expect(context.playerVariables.gold).toBe(100);
+      expect(context.playerInventory).toContain('sword');
+      expect(context.questStates.quest1).toBe('active');
+      expect(result.actionsTriggered).toHaveLength(4);
+    });
+
+    test('should handle custom action that throws error', async () => {
+      const failingAction = jest.fn().mockRejectedValue(new Error('Action failed'));
+
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Failing Action',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            actions: [
+              { type: 'custom', customAction: failingAction },
+            ],
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+
+      await expect(
+        service.startConversation('game1', 'player1', 'npc1', 'tree1', context)
+      ).rejects.toThrow('Action failed');
+    });
+
+    test('should execute actions on both node and choice', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Double Actions',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            actions: [
+              { type: 'set_flag', key: 'node_flag', value: true },
+            ],
+            choices: [
+              {
+                id: 'choice1',
+                text: 'Continue',
+                nextNodeId: 'node2',
+                actions: [
+                  { type: 'set_flag', key: 'choice_flag', value: true },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Done',
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      expect(context.playerFlags.node_flag).toBe(true);
+
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      await service.makeChoice(conversations[0].conversationId, 'choice1', context);
+
+      expect(context.playerFlags.choice_flag).toBe(true);
+    });
+
+    test('should handle duplicate item additions', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Duplicate Items',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Test',
+            actions: [
+              { type: 'give_item', itemId: 'potion' },
+              { type: 'give_item', itemId: 'potion' },
+              { type: 'give_item', itemId: 'potion' },
+            ],
+            choices: [],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+
+      // Should add three potions (duplicates allowed)
+      expect(context.playerInventory.filter(item => item === 'potion')).toHaveLength(3);
+    });
+  });
+
+  describe('Safety: Infinite Loop Prevention', () => {
+    const createContext = (): IDialogueContext => ({
+      gameId: 'game1',
+      playerId: 'player1',
+      npcId: 'npc1',
+      conversationState: null as any,
+      playerFlags: {},
+      playerVariables: {},
+      playerInventory: [],
+      questStates: {},
+    });
+
+    test('should handle deep circular loop without stack overflow', async () => {
+      const nodes: IDialogueNode[] = [];
+      const loopSize = 50;
+
+      for (let i = 0; i < loopSize; i++) {
+        const nextIndex = (i + 1) % loopSize;
+        nodes.push({
+          id: `node${i}`,
+          type: DialogueNodeType.TEXT,
+          text: `Node ${i}`,
+          choices: [
+            { id: `choice${i}`, text: 'Next', nextNodeId: `node${nextIndex}` },
+          ],
+        });
+      }
+
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Deep Loop',
+        startNodeId: 'node0',
+        nodes,
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Navigate through loop multiple times
+      for (let i = 0; i < 100; i++) {
+        const nodeIndex = i % loopSize;
+        const result = await service.makeChoice(conversationId, `choice${nodeIndex}`, context);
+        expect(result.success).toBe(true);
+      }
+
+      // Should still be in valid state
+      const state = service.getConversationState(conversationId);
+      expect(state).toBeDefined();
+    });
+
+    test('should track conversation history through loops', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Loop Tracker',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Start',
+            choices: [
+              { id: 'choice1', text: 'Loop', nextNodeId: 'node1' },
+            ],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Loop 5 times
+      for (let i = 0; i < 5; i++) {
+        await service.makeChoice(conversationId, 'choice1', context);
+      }
+
+      const state = service.getConversationState(conversationId);
+      // Each loop adds 2 entries: node text + choice
+      expect(state?.history.length).toBeGreaterThan(10);
+    });
+
+    test('should handle three-way circular reference', async () => {
+      const treeData: IDialogueTreeData = {
+        id: 'tree1',
+        npcId: 'npc1',
+        name: 'Triangle Loop',
+        startNodeId: 'node1',
+        nodes: [
+          {
+            id: 'node1',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 1',
+            choices: [
+              { id: 'choice1', text: 'To Node 2', nextNodeId: 'node2' },
+            ],
+          },
+          {
+            id: 'node2',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 2',
+            choices: [
+              { id: 'choice2', text: 'To Node 3', nextNodeId: 'node3' },
+            ],
+          },
+          {
+            id: 'node3',
+            type: DialogueNodeType.TEXT,
+            text: 'Node 3',
+            choices: [
+              { id: 'choice3', text: 'Back to Node 1', nextNodeId: 'node1' },
+            ],
+          },
+        ],
+      };
+
+      service.registerDialogueTree(treeData);
+
+      const context = createContext();
+      await service.startConversation('game1', 'player1', 'npc1', 'tree1', context);
+      const conversations = service.getPlayerConversations('game1', 'player1');
+      const conversationId = conversations[0].conversationId;
+
+      // Complete triangle multiple times
+      await service.makeChoice(conversationId, 'choice1', context);
+      await service.makeChoice(conversationId, 'choice2', context);
+      await service.makeChoice(conversationId, 'choice3', context);
+
+      const result = await service.getCurrentDialogue(conversationId, context);
+      expect(result.currentNode.id).toBe('node1');
+    });
+  });
 });
