@@ -92,6 +92,10 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       this.database.pragma(`journal_mode = ${journalMode}`);
       console.log(`[DatabaseService] Database connected with journal_mode=${journalMode}, path=${this.dbPath}`);
 
+      // Set busy timeout to 5 seconds to handle lock contention
+      // This makes SQLite wait up to 5 seconds for a lock instead of failing immediately
+      this.database.pragma('busy_timeout = 5000');
+
       this.logger.log('Database connection established');
     } catch (error) {
       this.logger.error('Failed to connect to database', error);
@@ -376,6 +380,115 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     const finalResult = transaction();
     console.log('[DatabaseService] Transaction executed, result:', finalResult);
     return finalResult;
+  }
+
+  // Transaction with automatic retry logic for handling lock contention
+  transactionWithRetry<T>(
+    callback: (db: Database.Database) => T,
+    options: { maxRetries?: number; initialDelay?: number } = {},
+  ): T {
+    const maxRetries = options.maxRetries ?? 10;
+    const initialDelay = options.initialDelay ?? 10;
+
+    let lastError: Error | null = null;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(
+          `[DatabaseService] Transaction attempt ${attempt + 1}/${maxRetries + 1}`,
+        );
+        return this.transaction(callback);
+      } catch (error) {
+        lastError = error;
+
+        // Check if this is a lock contention error
+        const isLockError =
+          error.message &&
+          (error.message.includes('BUSY') ||
+            error.message.includes('LOCKED') ||
+            error.message.includes('database is locked'));
+
+        if (!isLockError || attempt >= maxRetries) {
+          // Not a lock error or max retries reached - rethrow
+          this.logger.error(
+            `Transaction failed after ${attempt + 1} attempts: ${error.message}`,
+            error,
+          );
+          throw error;
+        }
+
+        // Calculate backoff delay with exponential backoff
+        const backoffDelay = initialDelay * Math.pow(2, attempt);
+        const jitter = Math.random() * backoffDelay * 0.1; // Add 10% jitter
+        const totalDelay = backoffDelay + jitter;
+
+        this.logger.warn(
+          `Transaction attempt ${attempt + 1} failed due to lock contention, retrying in ${totalDelay.toFixed(0)}ms...`,
+        );
+
+        // Synchronous sleep for retry delay
+        const start = Date.now();
+        while (Date.now() - start < totalDelay) {
+          // Busy wait - not ideal but necessary for synchronous operation
+        }
+      }
+    }
+
+    // Should never reach here, but TypeScript needs this
+    throw lastError || new Error('Transaction failed after all retries');
+  }
+
+  // Async version of transactionWithRetry for use in async contexts
+  async transactionWithRetryAsync<T>(
+    callback: (db: Database.Database) => T,
+    options: { maxRetries?: number; initialDelay?: number } = {},
+  ): Promise<T> {
+    const maxRetries = options.maxRetries ?? 10;
+    const initialDelay = options.initialDelay ?? 10;
+
+    let lastError: Error | null = null;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(
+          `[DatabaseService] Async transaction attempt ${attempt + 1}/${maxRetries + 1}`,
+        );
+        return this.transaction(callback);
+      } catch (error) {
+        lastError = error;
+
+        // Check if this is a lock contention error
+        const isLockError =
+          error.message &&
+          (error.message.includes('BUSY') ||
+            error.message.includes('LOCKED') ||
+            error.message.includes('database is locked'));
+
+        if (!isLockError || attempt >= maxRetries) {
+          // Not a lock error or max retries reached - rethrow
+          this.logger.error(
+            `Async transaction failed after ${attempt + 1} attempts: ${error.message}`,
+            error,
+          );
+          throw error;
+        }
+
+        // Calculate backoff delay with exponential backoff
+        const backoffDelay = initialDelay * Math.pow(2, attempt);
+        const jitter = Math.random() * backoffDelay * 0.1; // Add 10% jitter
+        const totalDelay = backoffDelay + jitter;
+
+        this.logger.warn(
+          `Async transaction attempt ${attempt + 1} failed due to lock contention, retrying in ${totalDelay.toFixed(0)}ms...`,
+        );
+
+        // Async sleep for retry delay
+        await new Promise((resolve) => setTimeout(resolve, totalDelay));
+      }
+    }
+
+    // Should never reach here, but TypeScript needs this
+    throw lastError || new Error('Async transaction failed after all retries');
   }
 
   // Generic query methods

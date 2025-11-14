@@ -314,6 +314,140 @@ describe('DatabaseService Stress Tests', () => {
     }, 30000);
   });
 
+  describe('Transaction Retry Mechanism', () => {
+    it('should automatically retry transactions on lock contention', async () => {
+      service
+        .prepare(
+          `
+        CREATE TABLE IF NOT EXISTS retry_test (
+          id INTEGER PRIMARY KEY,
+          value TEXT NOT NULL
+        )
+      `,
+        )
+        .run();
+
+      // Clear any existing data
+      service.prepare('DELETE FROM retry_test').run();
+
+      // Insert initial data
+      service
+        .prepare('INSERT INTO retry_test (id, value) VALUES (1, ?)')
+        .run('initial');
+
+      let operationCount = 0;
+
+      // Create 20 concurrent operations that will cause lock contention
+      const promises = Array.from({ length: 20 }, async (_, i) => {
+        await service.transactionWithRetryAsync((db) => {
+          // Read current value
+          const current = db
+            .prepare('SELECT value FROM retry_test WHERE id = 1')
+            .get() as any;
+
+          // Simulate some processing
+          const start = Date.now();
+          while (Date.now() - start < Math.random() * 3) {
+            /* busy wait */
+          }
+
+          // Update value
+          db.prepare('UPDATE retry_test SET value = ? WHERE id = 1').run(
+            `updated-${i}-${Date.now()}`,
+          );
+
+          operationCount++;
+        });
+      });
+
+      await Promise.all(promises);
+
+      // Verify all operations completed
+      expect(operationCount).toBe(20);
+
+      // Verify database is still consistent
+      const final = service
+        .prepare('SELECT * FROM retry_test WHERE id = 1')
+        .get() as any;
+      expect(final.value).toContain('updated-');
+    }, 30000);
+
+    it('should respect maxRetries option', async () => {
+      service
+        .prepare(
+          `
+        CREATE TABLE IF NOT EXISTS max_retry_test (
+          id INTEGER PRIMARY KEY,
+          value INTEGER
+        )
+      `,
+        )
+        .run();
+
+      service.prepare('DELETE FROM max_retry_test').run();
+      service
+        .prepare('INSERT INTO max_retry_test (id, value) VALUES (1, 0)')
+        .run();
+
+      // This should succeed with default retries
+      await service.transactionWithRetryAsync((db) => {
+        db.prepare('UPDATE max_retry_test SET value = 100 WHERE id = 1').run();
+      });
+
+      const result = service
+        .prepare('SELECT value FROM max_retry_test WHERE id = 1')
+        .get() as any;
+      expect(result.value).toBe(100);
+    });
+
+    it('should use custom retry options', async () => {
+      service
+        .prepare(
+          `
+        CREATE TABLE IF NOT EXISTS custom_retry_test (
+          id INTEGER PRIMARY KEY,
+          counter INTEGER
+        )
+      `,
+        )
+        .run();
+
+      service.prepare('DELETE FROM custom_retry_test').run();
+      service
+        .prepare('INSERT INTO custom_retry_test (id, counter) VALUES (1, 0)')
+        .run();
+
+      // Test with custom maxRetries and initialDelay
+      const promises = Array.from({ length: 10 }, async () => {
+        await service.transactionWithRetryAsync(
+          (db) => {
+            const current = db
+              .prepare('SELECT counter FROM custom_retry_test WHERE id = 1')
+              .get() as any;
+
+            // Small processing delay
+            const start = Date.now();
+            while (Date.now() - start < 1) {
+              /* busy wait */
+            }
+
+            db.prepare(
+              'UPDATE custom_retry_test SET counter = ? WHERE id = 1',
+            ).run(current.counter + 1);
+          },
+          { maxRetries: 5, initialDelay: 5 },
+        );
+      });
+
+      await Promise.all(promises);
+
+      const final = service
+        .prepare('SELECT counter FROM custom_retry_test WHERE id = 1')
+        .get() as any;
+      expect(final.counter).toBe(10);
+    }, 30000);
+  });
+
   describe('Transaction Failure Recovery', () => {
     it('should handle transaction failures without corruption', async () => {
       service
@@ -404,50 +538,24 @@ describe('DatabaseService Stress Tests', () => {
 
       const numOperations = 50;
       const promises = Array.from({ length: numOperations }, async (_, i) => {
-        let retries = 0;
-        const maxRetries = 10;
+        // Use the new transactionWithRetryAsync method
+        await service.transactionWithRetryAsync((db) => {
+          // Read current value
+          const current = db
+            .prepare('SELECT counter FROM lock_test WHERE id = 1')
+            .get() as any;
 
-        while (retries < maxRetries) {
-          try {
-            service.transaction((db) => {
-              // Read current value
-              const current = db
-                .prepare('SELECT counter FROM lock_test WHERE id = 1')
-                .get() as any;
-
-              // Simulate processing time to increase lock contention
-              const start = Date.now();
-              while (Date.now() - start < Math.random() * 5) {
-                /* busy wait */
-              }
-
-              // Update counter
-              db.prepare('UPDATE lock_test SET counter = ? WHERE id = 1').run(
-                current.counter + 1,
-              );
-            });
-            break; // Success, exit retry loop
-          } catch (error) {
-            retries++;
-            if (
-              error.message.includes('BUSY') ||
-              error.message.includes('LOCKED')
-            ) {
-              // Wait before retry with exponential backoff
-              await new Promise((resolve) =>
-                setTimeout(resolve, Math.pow(2, retries) * 10),
-              );
-            } else {
-              throw error; // Re-throw non-lock errors
-            }
+          // Simulate processing time to increase lock contention
+          const start = Date.now();
+          while (Date.now() - start < Math.random() * 5) {
+            /* busy wait */
           }
-        }
 
-        if (retries >= maxRetries) {
-          throw new Error(
-            `Failed after ${maxRetries} retries for operation ${i}`,
+          // Update counter
+          db.prepare('UPDATE lock_test SET counter = ? WHERE id = 1').run(
+            current.counter + 1,
           );
-        }
+        });
       });
 
       await Promise.all(promises);
