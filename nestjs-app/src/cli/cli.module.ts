@@ -9,6 +9,10 @@ import { CommandsModule } from '../commands/commands.module';
 import { ComponentsModule } from '../components/components.module';
 import { PoolingModule } from '../pooling/pooling.module';
 import { StateMachineModule } from '../state-machine/state-machine.module';
+import { GameplayModule } from '../gameplay/gameplay.module';
+import { DialogueModule } from '../dialogue/dialogue.module';
+import { QuestModule } from '../quest/quest.module';
+import { InventoryModule } from '../inventory/inventory.module';
 import { EntityModule } from '../entity/entity.module';
 import { RoomModule } from '../entity/room.module';
 import { ObjectModule } from '../entity/object.module';
@@ -24,6 +28,10 @@ import { PlayerModule } from '../entity/player.module';
     ComponentsModule,
     PoolingModule,
     StateMachineModule,
+    GameplayModule,
+    DialogueModule,
+    QuestModule,
+    InventoryModule,
     EntityModule,
     RoomModule,
     ObjectModule,

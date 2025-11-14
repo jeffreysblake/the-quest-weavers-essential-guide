@@ -252,6 +252,27 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
         FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
       );
 
+      -- Player save states
+      CREATE TABLE IF NOT EXISTS player_saves (
+        save_id TEXT PRIMARY KEY,
+        game_id TEXT NOT NULL,
+        player_id TEXT NOT NULL,
+        slot_number INTEGER NOT NULL,
+        save_name TEXT,
+        current_room_id TEXT,
+        inventory TEXT, -- JSON array of object IDs
+        stats TEXT, -- JSON object for health, mana, level, etc.
+        flags TEXT, -- JSON object for quest flags, achievements
+        variables TEXT, -- JSON object for custom game variables
+        quest_states TEXT, -- JSON object mapping quest ID to state
+        world_state TEXT, -- JSON object for door states, NPC states, etc.
+        play_time INTEGER DEFAULT 0, -- Playtime in seconds
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
+        FOREIGN KEY (player_id) REFERENCES npcs(id) ON DELETE CASCADE
+      );
+
       -- Spatial relationships between objects
       CREATE TABLE IF NOT EXISTS spatial_relationships (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -317,6 +338,9 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       CREATE INDEX IF NOT EXISTS idx_rooms_game_id ON rooms(game_id);
       CREATE INDEX IF NOT EXISTS idx_objects_game_id ON objects(game_id);
       CREATE INDEX IF NOT EXISTS idx_npcs_game_id ON npcs(game_id);
+      CREATE INDEX IF NOT EXISTS idx_player_saves_game_id ON player_saves(game_id);
+      CREATE INDEX IF NOT EXISTS idx_player_saves_player_id ON player_saves(player_id);
+      CREATE INDEX IF NOT EXISTS idx_player_saves_slot ON player_saves(game_id, player_id, slot_number);
       CREATE INDEX IF NOT EXISTS idx_room_connections_room_id ON room_connections(room_id);
       CREATE INDEX IF NOT EXISTS idx_spatial_relationships_object_id ON spatial_relationships(object_id);
       CREATE INDEX IF NOT EXISTS idx_room_objects_room_id ON room_objects(room_id);
