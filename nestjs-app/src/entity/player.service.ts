@@ -40,15 +40,9 @@ export class PlayerService {
     // Also create in EntityService for compatibility
     this.entityService.createEntity(player);
 
-    // Save to database if available
-    if (this.databaseService) {
-      this.savePlayerToDatabase(player).catch((error) => {
-        this.logger.error(
-          `Failed to save player ${player.id} to database:`,
-          error,
-        );
-      });
-    }
+    // Don't save automatically to prevent race conditions with explicit persistGame() calls
+    // The player is cached in memory and will be persisted when persistGame() is called
+    // This ensures data consistency and prevents stale async saves from overwriting fresh data
 
     return player;
   }
@@ -163,6 +157,11 @@ export class PlayerService {
   ): boolean {
     const player = this.getPlayer(id);
     if (!player) return false;
+
+    // Fix Bug 2: Cap health at maxHealth to prevent overflow exploit
+    if (updates.health !== undefined && player.maxHealth !== undefined) {
+      updates.health = Math.min(updates.health, player.maxHealth);
+    }
 
     // Update local cache first
     Object.assign(player, updates);
@@ -421,8 +420,10 @@ export class PlayerService {
 
     const result = this.physicsService.applyAreaEffect(roomId, effect);
 
+    // BUG FIX #2: Casting a spell should succeed even if no objects are affected
+    // The spell was cast successfully, it just didn't hit anything
     return {
-      success: result.success,
+      success: true,
       message: `${player.name} casts ${this.getSpellName(spellType)} across the room! ${result.message}`,
       effects: {
         physicsResult: result,

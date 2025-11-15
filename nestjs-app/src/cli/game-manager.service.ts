@@ -284,12 +284,12 @@ export class GameManagerService {
     try {
       this.logger.log(`Persisting game: ${gameId}`);
 
-      // Persist all entity types
-      await Promise.all([
-        this.roomService.persistRooms(),
-        this.objectService.persistObjects(),
-        this.playerService.persistPlayers(),
-      ]);
+      // Persist objects and players first (they are referenced by rooms via foreign keys)
+      await this.objectService.persistObjects();
+      await this.playerService.persistPlayers();
+
+      // Then persist rooms (which reference objects and players in room_objects table)
+      await this.roomService.persistRooms();
 
       this.logger.log(`Successfully persisted game: ${gameId}`);
 

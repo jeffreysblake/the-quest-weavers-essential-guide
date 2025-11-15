@@ -80,7 +80,23 @@ export class InventoryManagerService {
       };
     }
 
+    // Bug Fix 2: Validate quantity and weight
+    if (quantity <= 0) {
+      return {
+        success: false,
+        message: 'Quantity must be greater than 0',
+      };
+    }
+
     const itemWeight = itemData?.weight || 1;
+
+    if (itemWeight < 0) {
+      return {
+        success: false,
+        message: 'Weight cannot be negative',
+      };
+    }
+
     const totalWeight = itemWeight * quantity;
 
     // Check weight limit
@@ -154,6 +170,7 @@ export class InventoryManagerService {
       weight: itemWeight,
       equipped: false,
       metadata: itemData?.metadata || {},
+      containerItems: itemData?.containerItems, // Preserve container items
     };
 
     inventory.items.push(newItem);
@@ -214,6 +231,11 @@ export class InventoryManagerService {
         success: false,
         message: `Insufficient quantity (have ${item.quantity}, need ${quantity})`,
       };
+    }
+
+    // Bug Fix 1: Unequip item before removing if it's equipped
+    if (item.equipped && item.equipSlot) {
+      await this.unequipItem(ownerId, item.equipSlot);
     }
 
     const weightReduced = (item.weight || 0) * quantity;
@@ -277,7 +299,13 @@ export class InventoryManagerService {
       };
     }
 
-    const item = inventory.items.find((item) => item.instanceId === itemInstanceId);
+    // Try to find by instanceId first, then by itemId as fallback
+    let item = inventory.items.find((item) => item.instanceId === itemInstanceId);
+
+    if (!item) {
+      // Fallback: try to find by itemId
+      item = inventory.items.find((item) => item.itemId === itemInstanceId);
+    }
 
     if (!item) {
       return {
@@ -293,10 +321,16 @@ export class InventoryManagerService {
       };
     }
 
-    // Unequip current item in slot
+    // BUG FIX #3: Unequip current item in slot and properly clear its state
     const currentEquipped = inventory.equippedItems.get(slot);
     if (currentEquipped) {
-      await this.unequipItem(ownerId, slot);
+      // Find the old item in the items array and clear its flags
+      const oldItem = inventory.items.find(i => i.instanceId === currentEquipped.instanceId);
+      if (oldItem) {
+        oldItem.equipped = false;
+        oldItem.equipSlot = undefined;
+      }
+      inventory.equippedItems.delete(slot);
     }
 
     // Equip new item
@@ -414,6 +448,10 @@ export class InventoryManagerService {
       };
     }
 
+    // Store original item state for potential rollback (deep copy to avoid mutation)
+    const originalItem = JSON.parse(JSON.stringify(item));
+    const originalQuantity = item.quantity;
+
     // Remove from source
     const removeResult = await this.removeItem(fromOwnerId, itemInstanceId, quantity);
 
@@ -429,12 +467,20 @@ export class InventoryManagerService {
     });
 
     if (!addResult.success) {
-      // Rollback - add back to source
-      await this.addItem(fromOwnerId, item.itemId, quantity, {
-        weight: item.weight,
-        maxStack: item.maxStack,
-        metadata: item.metadata,
-      });
+      // BUG FIX #4: Rollback - restore original item state
+      // Find the item in the inventory (it may have reduced quantity or been completely removed)
+      const itemIndex = fromInventory.items.findIndex(i => i.instanceId === itemInstanceId);
+
+      if (itemIndex >= 0) {
+        // Item still exists (partial removal) - restore original quantity
+        fromInventory.items[itemIndex] = originalItem;
+      } else {
+        // Item was completely removed - add it back
+        fromInventory.items.push(originalItem);
+      }
+
+      fromInventory.currentWeight += (originalItem.weight || 0) * quantity;
+      fromInventory.updatedAt = new Date().toISOString();
 
       return {
         success: false,
@@ -573,5 +619,63 @@ export class InventoryManagerService {
   clearAllInventories(): void {
     this.inventories.clear();
     this.logger.log('Cleared all inventories');
+  }
+
+  /**
+   * Export all inventories to a serializable format
+   * Converts Maps to arrays for JSON serialization
+   */
+  exportState(): any {
+    const inventoriesArray: any[] = [];
+
+    this.inventories.forEach((inventory, ownerId) => {
+      // Convert equippedItems Map to array of [slot, item] pairs
+      const equippedItemsArray: [string, IInventoryItem][] = [];
+      inventory.equippedItems.forEach((item, slot) => {
+        equippedItemsArray.push([slot, item]);
+      });
+
+      inventoriesArray.push({
+        ownerId,
+        inventory: {
+          ...inventory,
+          equippedItems: equippedItemsArray, // Convert Map to array
+        },
+      });
+    });
+
+    return { inventories: inventoriesArray };
+  }
+
+  /**
+   * Import inventories from a serialized format
+   * Converts arrays back to Maps
+   */
+  importState(state: any): void {
+    if (!state || !state.inventories) {
+      return;
+    }
+
+    this.inventories.clear();
+
+    for (const { ownerId, inventory } of state.inventories) {
+      // Convert equippedItems array back to Map
+      const equippedItemsMap = new Map<EquipmentSlot, IInventoryItem>();
+
+      if (Array.isArray(inventory.equippedItems)) {
+        for (const [slot, item] of inventory.equippedItems) {
+          equippedItemsMap.set(slot as EquipmentSlot, item);
+        }
+      }
+
+      const restoredInventory: IInventory = {
+        ...inventory,
+        equippedItems: equippedItemsMap,
+      };
+
+      this.inventories.set(ownerId, restoredInventory);
+    }
+
+    this.logger.log(`Imported ${this.inventories.size} inventories`);
   }
 }

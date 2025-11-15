@@ -109,6 +109,7 @@ export interface IPlayerQuest {
   gameId: string;
   state: QuestState;
   objectives: IQuestObjective[]; // Copy of objectives with progress
+  nextQuestId?: string; // For quest chains (copied from quest definition)
   startedAt?: string;
   completedAt?: string;
   failedAt?: string;

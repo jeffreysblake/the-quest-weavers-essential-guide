@@ -427,6 +427,9 @@ describe('Persistence System Integration', () => {
       }
       const cacheTime = Date.now() - startTime;
 
+      // Persist to database before testing database access
+      await gameManagerService.persistGame(gameId);
+
       // Clear cache and measure database access time
       roomService.clearCache();
 
@@ -658,6 +661,29 @@ describe('Persistence System Integration', () => {
         description: 'A game for testing the workflow',
         gameId: gameId,
       });
+
+      // Create some entities to test with
+      const room = roomService.createRoom({
+        name: 'Workflow Test Room',
+        description: 'A room for workflow testing',
+        position: { x: 0, y: 0, z: 0 },
+        width: 10,
+        height: 10,
+        size: { width: 10, height: 10, depth: 3 },
+        objects: [],
+        players: [],
+        gameId: gameId,
+      });
+
+      const obj = objectService.createObject({
+        name: 'Workflow Test Object',
+        description: 'An object for workflow testing',
+        position: { x: 5, y: 5, z: 0 },
+        gameId: gameId,
+      });
+
+      // Persist the entities to database
+      await gameManagerService.persistGame(gameId);
 
       // 1. List games (should include our test game)
       const games = await gameManagerService.listGames();

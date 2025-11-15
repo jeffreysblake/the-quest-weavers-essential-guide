@@ -139,7 +139,7 @@ export class PhysicsService {
   ): IPhysicsResult {
     const material = target.materialProperties!;
     const flammability = material.flammability || 0;
-    const damage = Math.floor(intensity * (flammability / 10));
+    let damage = Math.floor(intensity * (flammability / 10));
 
     let message = `${target.name} is hit by ${effect.description}`;
     const chainReactions: any[] = [];
@@ -158,10 +158,20 @@ export class PhysicsService {
         isOnFire: true,
       };
 
+      // Fix Bug 3: Highly flammable materials take much more damage when they catch fire
+      // This ensures one-hit kills work properly on flammable objects
+      if (flammability >= 7 && intensity >= 8) {
+        // Very flammable + intense fire = complete destruction
+        const maxDamage = target.health !== undefined ? target.health : (target.maxHealth || 10);
+        objectsAffected[0].damage = Math.max(damage, maxDamage);
+        message += ` The ${target.name} is consumed by flames!`;
+      }
+
       // Check for explosive contents or materials
       if (material.properties?.explosive || this.hasExplosiveContents(target)) {
         message += ` The ${target.name} explodes!`;
-        objectsAffected[0].damage = target.health || target.maxHealth || 10;
+        // Fix: Use explicit undefined check to avoid zombie resurrection
+        objectsAffected[0].damage = target.health !== undefined ? target.health : (target.maxHealth || 10);
 
         // Create explosion effect for nearby objects
         chainReactions.push(
@@ -183,9 +193,9 @@ export class PhysicsService {
       // Even if the container doesn't burn, check for explosive contents
       if (this.hasExplosiveContents(target) && intensity > 4) {
         message += ` However, the heat ignites the contents and the ${target.name} explodes!`;
-        objectsAffected[0].damage = Math.floor(
-          (target.health || target.maxHealth || 10) * 0.8,
-        );
+        // Fix: Use explicit undefined check to avoid zombie resurrection
+        const maxDamage = target.health !== undefined ? target.health : (target.maxHealth || 10);
+        objectsAffected[0].damage = Math.floor(maxDamage * 0.8);
 
         // Create explosion effect for nearby objects
         chainReactions.push(
@@ -240,6 +250,27 @@ export class PhysicsService {
               type: 'lightning' as EffectType,
               intensity: Math.max(1, intensity - 2),
               description: `electrical conduction from ${target.name}`,
+            },
+          })),
+      );
+
+      // BUG FIX #1: Chain to nearby conductive objects in the same room
+      const nearbyObjects = this.getObjectsInRange(target.id, 5);
+      chainReactions.push(
+        ...nearbyObjects
+          .filter((id) => {
+            const obj = this.objectService.getObject(id);
+            return (
+              obj?.materialProperties?.conductivity &&
+              obj.materialProperties.conductivity > 5
+            );
+          })
+          .map((nearbyId) => ({
+            targetId: nearbyId,
+            effect: {
+              type: 'lightning' as EffectType,
+              intensity: Math.max(1, intensity - 2),
+              description: `electrical chain from ${target.name}`,
             },
           })),
       );
@@ -322,13 +353,15 @@ export class PhysicsService {
 
     if (brittleness > 7 && intensity > 6) {
       message += ` and shatters!`;
+      // Fix: Use explicit undefined check to avoid zombie resurrection
+      const fullDamage = target.health !== undefined ? target.health : (target.maxHealth || 10);
       return {
         success: true,
         message,
         objectsAffected: [
           {
             objectId: target.id,
-            damage: target.health || target.maxHealth || 10,
+            damage: fullDamage,
             destroyed: true,
           },
         ],
@@ -371,8 +404,16 @@ export class PhysicsService {
     if (!object) return;
 
     if (changes.damage) {
-      const currentHealth = object.health || object.maxHealth || 10;
-      object.health = Math.max(0, currentHealth - changes.damage);
+      // Fix Bug 1 & 3: Use explicit undefined check to avoid zombie resurrection
+      // When health is 0, the || operator would fall through to maxHealth, resurrecting the object
+      const currentHealth = object.health !== undefined ? object.health : (object.maxHealth || 10);
+
+      // Fix Bug 1: Don't apply damage to already destroyed objects
+      if (currentHealth <= 0) {
+        object.health = 0; // Keep at 0, don't resurrect
+      } else {
+        object.health = Math.max(0, currentHealth - changes.damage);
+      }
     }
 
     if (changes.newState) {
