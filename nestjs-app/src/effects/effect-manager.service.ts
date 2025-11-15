@@ -142,6 +142,7 @@ export class EffectManagerService {
       Object.assign(statChanges, result.statChanges);
       damage = result.damage || 0;
       healing = result.healing || 0;
+      // Don't store instant effects - they apply immediately and don't persist
     } else {
       // Setup ticking for over_time effects
       if (effect.durationType === DurationType.OVER_TIME && effect.tickInterval) {
@@ -160,11 +161,11 @@ export class EffectManagerService {
         const result = await this.applyStatModifier(activeEffect, effectContext);
         Object.assign(statChanges, result.statChanges);
       }
-    }
 
-    // Store active effect
-    targetEffects.push(activeEffect);
-    this.activeEffects.set(targetId, targetEffects);
+      // Store active effect (only non-instant effects persist)
+      targetEffects.push(activeEffect);
+      this.activeEffects.set(targetId, targetEffects);
+    }
 
     // Emit event
     await this.eventEmitter.emit(
@@ -232,6 +233,14 @@ export class EffectManagerService {
       if (!activeEffect.paused) {
         await this.applyEffectTick(activeEffect, context);
         activeEffect.lastTickAt = new Date().toISOString();
+      }
+
+      // Check if ticks are complete after applying the tick
+      if (activeEffect.ticksRemaining !== undefined && activeEffect.ticksRemaining <= 0) {
+        await this.removeEffect(activeEffect.targetId, activeEffect.effectId);
+        clearInterval(interval);
+        this.intervals.delete(instanceId);
+        return;
       }
     }, effect.tickInterval);
 

@@ -1081,8 +1081,11 @@ describe('InventoryManagerService', () => {
       service.createInventory('player1', 'game1', { maxSlots: 50 });
       const result = await service.addItem('player1', 'item', 0, { weight: 1 });
 
+      // BUG FIXED: Now properly rejects zero quantity
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('must be greater than 0');
       const inventory = service.getInventory('player1');
-      expect(inventory?.items[0].quantity).toBe(0);
+      expect(inventory?.items.length).toBe(0);
     });
 
     it('should handle items with no weight correctly', async () => {
@@ -1216,11 +1219,12 @@ describe('InventoryManagerService', () => {
     it('should reject negative quantity when adding items', async () => {
       const result = await service.addItem('player1', 'item', -5, { weight: 1 });
 
-      // Currently allows negative, but total weight becomes negative
-      // This test documents current behavior
+      // BUG FIXED: Now properly rejects negative quantities
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('must be greater than 0');
       const inventory = service.getInventory('player1');
-      expect(inventory?.items[0]?.quantity).toBe(-5);
-      expect(inventory?.currentWeight).toBe(-5);
+      expect(inventory?.items.length).toBe(0);
+      expect(inventory?.currentWeight).toBe(0);
     });
 
     it('should reject negative quantity when removing items', async () => {
@@ -1323,12 +1327,11 @@ describe('InventoryManagerService', () => {
 
       const inventory = service.getInventory('player1');
 
-      // equippedItems map should still reference the removed item (orphaned reference)
       const equippedSword = inventory?.equippedItems.get(EquipmentSlot.MAIN_HAND);
 
-      // This is a BUG: equippedItems map becomes orphaned
-      expect(equippedSword).toBeDefined(); // Map still has reference
-      expect(inventory?.items.find(i => i.instanceId === swordId)).toBeUndefined(); // But item is gone
+      // BUG FIXED: Now properly unequips before removing
+      expect(equippedSword).toBeUndefined(); // No orphaned reference
+      expect(inventory?.items.find(i => i.instanceId === swordId)).toBeUndefined(); // Item is gone
     });
 
     it('should detect orphaned equipped items', async () => {
@@ -1665,9 +1668,11 @@ describe('InventoryManagerService', () => {
     it('should reject adding items with invalid weight', async () => {
       const result = await service.addItem('player1', 'item', 1, { weight: -10 });
 
-      // Negative weight would reduce total weight - this is a bug
+      // BUG FIXED: Now properly rejects negative weights
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('cannot be negative');
       const inventory = service.getInventory('player1');
-      expect(inventory?.currentWeight).toBe(-10); // Current behavior
+      expect(inventory?.currentWeight).toBe(0);
     });
 
     it('should handle removing from empty inventory', async () => {

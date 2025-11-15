@@ -28,6 +28,14 @@ export class ObjectService {
         brittleness: 3,
         resistances: { ice: 2, lightning: 5 },
       },
+      metal: {
+        material: 'metal',
+        density: 9,
+        conductivity: 9,
+        flammability: 0,
+        brittleness: 3,
+        resistances: { fire: 8, lightning: 1, ice: 7 },
+      },
       steel: {
         material: 'steel',
         density: 7.85,

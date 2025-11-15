@@ -80,7 +80,23 @@ export class InventoryManagerService {
       };
     }
 
+    // Bug Fix 2: Validate quantity and weight
+    if (quantity <= 0) {
+      return {
+        success: false,
+        message: 'Quantity must be greater than 0',
+      };
+    }
+
     const itemWeight = itemData?.weight || 1;
+
+    if (itemWeight < 0) {
+      return {
+        success: false,
+        message: 'Weight cannot be negative',
+      };
+    }
+
     const totalWeight = itemWeight * quantity;
 
     // Check weight limit
@@ -216,6 +232,11 @@ export class InventoryManagerService {
       };
     }
 
+    // Bug Fix 1: Unequip item before removing if it's equipped
+    if (item.equipped && item.equipSlot) {
+      await this.unequipItem(ownerId, item.equipSlot);
+    }
+
     const weightReduced = (item.weight || 0) * quantity;
 
     if (item.quantity === quantity) {
@@ -293,10 +314,16 @@ export class InventoryManagerService {
       };
     }
 
-    // Unequip current item in slot
+    // BUG FIX #3: Unequip current item in slot and properly clear its state
     const currentEquipped = inventory.equippedItems.get(slot);
     if (currentEquipped) {
-      await this.unequipItem(ownerId, slot);
+      // Find the old item in the items array and clear its flags
+      const oldItem = inventory.items.find(i => i.instanceId === currentEquipped.instanceId);
+      if (oldItem) {
+        oldItem.equipped = false;
+        oldItem.equipSlot = undefined;
+      }
+      inventory.equippedItems.delete(slot);
     }
 
     // Equip new item
@@ -414,6 +441,10 @@ export class InventoryManagerService {
       };
     }
 
+    // Store original item state for potential rollback (deep copy to avoid mutation)
+    const originalItem = JSON.parse(JSON.stringify(item));
+    const originalQuantity = item.quantity;
+
     // Remove from source
     const removeResult = await this.removeItem(fromOwnerId, itemInstanceId, quantity);
 
@@ -429,12 +460,20 @@ export class InventoryManagerService {
     });
 
     if (!addResult.success) {
-      // Rollback - add back to source
-      await this.addItem(fromOwnerId, item.itemId, quantity, {
-        weight: item.weight,
-        maxStack: item.maxStack,
-        metadata: item.metadata,
-      });
+      // BUG FIX #4: Rollback - restore original item state
+      // Find the item in the inventory (it may have reduced quantity or been completely removed)
+      const itemIndex = fromInventory.items.findIndex(i => i.instanceId === itemInstanceId);
+
+      if (itemIndex >= 0) {
+        // Item still exists (partial removal) - restore original quantity
+        fromInventory.items[itemIndex] = originalItem;
+      } else {
+        // Item was completely removed - add it back
+        fromInventory.items.push(originalItem);
+      }
+
+      fromInventory.currentWeight += (originalItem.weight || 0) * quantity;
+      fromInventory.updatedAt = new Date().toISOString();
 
       return {
         success: false,
