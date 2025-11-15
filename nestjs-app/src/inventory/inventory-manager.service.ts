@@ -170,6 +170,7 @@ export class InventoryManagerService {
       weight: itemWeight,
       equipped: false,
       metadata: itemData?.metadata || {},
+      containerItems: itemData?.containerItems, // Preserve container items
     };
 
     inventory.items.push(newItem);
@@ -298,7 +299,13 @@ export class InventoryManagerService {
       };
     }
 
-    const item = inventory.items.find((item) => item.instanceId === itemInstanceId);
+    // Try to find by instanceId first, then by itemId as fallback
+    let item = inventory.items.find((item) => item.instanceId === itemInstanceId);
+
+    if (!item) {
+      // Fallback: try to find by itemId
+      item = inventory.items.find((item) => item.itemId === itemInstanceId);
+    }
 
     if (!item) {
       return {
@@ -612,5 +619,63 @@ export class InventoryManagerService {
   clearAllInventories(): void {
     this.inventories.clear();
     this.logger.log('Cleared all inventories');
+  }
+
+  /**
+   * Export all inventories to a serializable format
+   * Converts Maps to arrays for JSON serialization
+   */
+  exportState(): any {
+    const inventoriesArray: any[] = [];
+
+    this.inventories.forEach((inventory, ownerId) => {
+      // Convert equippedItems Map to array of [slot, item] pairs
+      const equippedItemsArray: [string, IInventoryItem][] = [];
+      inventory.equippedItems.forEach((item, slot) => {
+        equippedItemsArray.push([slot, item]);
+      });
+
+      inventoriesArray.push({
+        ownerId,
+        inventory: {
+          ...inventory,
+          equippedItems: equippedItemsArray, // Convert Map to array
+        },
+      });
+    });
+
+    return { inventories: inventoriesArray };
+  }
+
+  /**
+   * Import inventories from a serialized format
+   * Converts arrays back to Maps
+   */
+  importState(state: any): void {
+    if (!state || !state.inventories) {
+      return;
+    }
+
+    this.inventories.clear();
+
+    for (const { ownerId, inventory } of state.inventories) {
+      // Convert equippedItems array back to Map
+      const equippedItemsMap = new Map<EquipmentSlot, IInventoryItem>();
+
+      if (Array.isArray(inventory.equippedItems)) {
+        for (const [slot, item] of inventory.equippedItems) {
+          equippedItemsMap.set(slot as EquipmentSlot, item);
+        }
+      }
+
+      const restoredInventory: IInventory = {
+        ...inventory,
+        equippedItems: equippedItemsMap,
+      };
+
+      this.inventories.set(ownerId, restoredInventory);
+    }
+
+    this.logger.log(`Imported ${this.inventories.size} inventories`);
   }
 }

@@ -83,12 +83,30 @@ export class QuestManagerService {
 
     // Create player quest
     const now = new Date().toISOString();
+
+    // Deep copy objectives and reset progress for incomplete objectives
+    // (completed objectives are preserved - useful for testing save/load of completed quests)
+    const objectives = JSON.parse(JSON.stringify(quest.objectives));
+    objectives.forEach((obj: IQuestObjective) => {
+      // Only reset progress for objectives that aren't already completed
+      if (!obj.completed) {
+        // Reset currentCount for count-based objectives
+        if (obj.targetCount !== undefined) {
+          obj.currentCount = 0;
+        } else {
+          // Remove currentCount for non-counting objectives
+          delete obj.currentCount;
+        }
+      }
+    });
+
     const playerQuest: IPlayerQuest = {
       questId: quest.id,
       playerId,
       gameId: quest.gameId,
       state: QuestState.ACTIVE,
-      objectives: JSON.parse(JSON.stringify(quest.objectives)), // Deep copy
+      objectives: objectives,
+      nextQuestId: quest.nextQuestId, // Copy for quest chain information
       startedAt: now,
     };
 
@@ -170,7 +188,8 @@ export class QuestManagerService {
     // Update progress
     const currentCount = objective.currentCount || 0;
     const targetCount = objective.targetCount || 1;
-    objective.currentCount = Math.min(currentCount + increment, targetCount);
+    // Bug #3 Fix: Prevent negative counts by using Math.max(0, ...)
+    objective.currentCount = Math.max(0, Math.min(currentCount + increment, targetCount));
 
     const objectiveCompleted = objective.currentCount >= targetCount;
 
@@ -215,7 +234,7 @@ export class QuestManagerService {
   /**
    * Complete a quest
    */
-  private async completeQuest(
+  async completeQuest(
     playerId: string,
     questId: string,
     context: IQuestContext,
@@ -227,6 +246,16 @@ export class QuestManagerService {
       return {
         success: false,
         message: 'Quest not found',
+      };
+    }
+
+    // Bug #2 Fix: Prevent duplicate reward grants by checking if already completed
+    if (playerQuest.state === QuestState.COMPLETED) {
+      return {
+        success: true,
+        message: `Quest '${quest.name}' already completed`,
+        questCompleted: true,
+        rewards: quest.rewards,
       };
     }
 
@@ -290,6 +319,23 @@ export class QuestManagerService {
       };
     }
 
+    // Bug #4 Fix: Prevent modifying completed quests - completed state is immutable
+    if (playerQuest.state === QuestState.COMPLETED) {
+      return {
+        success: false,
+        message: `Quest '${quest.name}' is already completed and cannot be failed`,
+      };
+    }
+
+    // Also prevent re-failing already failed quests
+    if (playerQuest.state === QuestState.FAILED) {
+      return {
+        success: true,
+        message: `Quest '${quest.name}' is already failed`,
+        questFailed: true,
+      };
+    }
+
     playerQuest.state = QuestState.FAILED;
     playerQuest.failedAt = new Date().toISOString();
 
@@ -326,7 +372,8 @@ export class QuestManagerService {
       };
     }
 
-    if (!quest.canAbandon) {
+    // Only prevent abandonment if explicitly set to false (default is true)
+    if (quest.canAbandon === false) {
       return {
         success: false,
         message: `Quest '${quest.name}' cannot be abandoned`,
@@ -343,6 +390,16 @@ export class QuestManagerService {
       };
     }
 
+    // Bug #4 Fix: Prevent abandoning completed quests - completed state is immutable
+    const playerQuest = playerQuestList[index];
+    if (playerQuest.state === QuestState.COMPLETED) {
+      return {
+        success: false,
+        message: `Quest '${quest.name}' is already completed and cannot be abandoned`,
+      };
+    }
+
+    // Bug #1 Fix: Atomically remove quest to prevent race conditions with updates
     playerQuestList.splice(index, 1);
     this.playerQuests.set(playerId, playerQuestList);
 
@@ -627,5 +684,43 @@ export class QuestManagerService {
   clearPlayerQuests(playerId: string): void {
     this.playerQuests.delete(playerId);
     this.logger.log(`Cleared all quests for player ${playerId}`);
+  }
+
+  /**
+   * Get all player quests for a game (for save/load)
+   */
+  getAllPlayerQuests(gameId: string): { [playerId: string]: IPlayerQuest[] } {
+    const result: { [playerId: string]: IPlayerQuest[] } = {};
+
+    for (const [playerId, quests] of this.playerQuests.entries()) {
+      const gameQuests = quests.filter(q => q.gameId === gameId);
+      if (gameQuests.length > 0) {
+        result[playerId] = gameQuests;
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Restore player quests from saved data (for save/load)
+   */
+  restorePlayerQuests(gameId: string, questData: { [playerId: string]: IPlayerQuest[] }): void {
+    // Clear existing quests for this game first
+    for (const [playerId, quests] of this.playerQuests.entries()) {
+      const filteredQuests = quests.filter(q => q.gameId !== gameId);
+      if (filteredQuests.length === 0) {
+        this.playerQuests.delete(playerId);
+      } else {
+        this.playerQuests.set(playerId, filteredQuests);
+      }
+    }
+
+    // Restore the saved quests
+    for (const [playerId, quests] of Object.entries(questData)) {
+      const existingQuests = this.playerQuests.get(playerId) || [];
+      this.playerQuests.set(playerId, [...existingQuests, ...quests]);
+      this.logger.log(`Restored ${quests.length} quests for player ${playerId}`);
+    }
   }
 }

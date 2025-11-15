@@ -20,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class EffectManagerService {
   private readonly logger = new Logger(EffectManagerService.name);
   private effects: Map<string, IEffect> = new Map(); // effectId -> effect definition
-  private activeEffects: Map<string, IActiveEffect[]> = new Map(); // targetId -> active effects
+  private activeEffects: Map<string, Map<string, IActiveEffect[]>> = new Map(); // gameId -> targetId -> active effects
   private intervals: Map<string, NodeJS.Timeout> = new Map(); // activeEffectId -> interval
 
   constructor(private readonly eventEmitter: EventEmitterService) {}
@@ -34,14 +34,27 @@ export class EffectManagerService {
   }
 
   /**
-   * Apply an effect to a target
+   * Apply an effect to a target (supports two signatures)
+   * 1. applyEffect(effectId, targetId, gameId, context) - Normal application
+   * 2. applyEffect(gameId, activeEffect) - Restoration from save
    */
   async applyEffect(
-    effectId: string,
-    targetId: string,
-    gameId: string,
+    effectIdOrGameId: string,
+    targetIdOrActiveEffect: string | IActiveEffect,
+    gameId?: string,
     context: Partial<IEffectContext> = {},
   ): Promise<IEffectResult> {
+    // Determine which signature is being used
+    if (typeof targetIdOrActiveEffect === 'object') {
+      // Signature 2: applyEffect(gameId, activeEffect)
+      return this.restoreActiveEffect(effectIdOrGameId, targetIdOrActiveEffect);
+    }
+
+    // Signature 1: applyEffect(effectId, targetId, gameId, context)
+    const effectId = effectIdOrGameId;
+    const targetId = targetIdOrActiveEffect;
+    const actualGameId = gameId!;
+
     const effect = this.effects.get(effectId);
 
     if (!effect) {
@@ -51,8 +64,14 @@ export class EffectManagerService {
       };
     }
 
+    // Get or create game-specific active effects
+    if (!this.activeEffects.has(actualGameId)) {
+      this.activeEffects.set(actualGameId, new Map());
+    }
+    const gameEffects = this.activeEffects.get(actualGameId)!;
+
     // Get target's active effects
-    const targetEffects = this.activeEffects.get(targetId) || [];
+    const targetEffects = gameEffects.get(targetId) || [];
 
     // Check if effect is already active and handle stacking
     const existingEffect = targetEffects.find((ae) => ae.effectId === effectId);
@@ -128,7 +147,7 @@ export class EffectManagerService {
     let healing = 0;
 
     const effectContext: IEffectContext = {
-      gameId,
+      gameId: actualGameId,
       targetId,
       sourceId: context.sourceId,
       effect,
@@ -164,7 +183,7 @@ export class EffectManagerService {
 
       // Store active effect (only non-instant effects persist)
       targetEffects.push(activeEffect);
-      this.activeEffects.set(targetId, targetEffects);
+      gameEffects.set(targetId, targetEffects);
     }
 
     // Emit event
@@ -177,7 +196,7 @@ export class EffectManagerService {
         targetId,
         sourceId: context.sourceId,
       },
-      gameId,
+      actualGameId,
     );
 
     this.logger.log(`Applied effect '${effect.name}' to ${targetId}`);
@@ -201,7 +220,7 @@ export class EffectManagerService {
     context: IEffectContext,
   ): void {
     const effect = activeEffect.effect;
-    const instanceId = `${activeEffect.targetId}_${activeEffect.effectId}_${Date.now()}`;
+    const instanceId = `${context.gameId}_${activeEffect.targetId}_${activeEffect.effectId}_${Date.now()}`;
 
     if (!effect.tickInterval) return;
 
@@ -211,7 +230,7 @@ export class EffectManagerService {
         const now = Date.now();
         const expiresAt = new Date(activeEffect.expiresAt).getTime();
         if (now >= expiresAt) {
-          await this.removeEffect(activeEffect.targetId, activeEffect.effectId);
+          await this.removeEffect(context.gameId, activeEffect.targetId, activeEffect.effectId);
           clearInterval(interval);
           this.intervals.delete(instanceId);
           return;
@@ -221,7 +240,7 @@ export class EffectManagerService {
       // Check tick count
       if (activeEffect.ticksRemaining !== undefined) {
         if (activeEffect.ticksRemaining <= 0) {
-          await this.removeEffect(activeEffect.targetId, activeEffect.effectId);
+          await this.removeEffect(context.gameId, activeEffect.targetId, activeEffect.effectId);
           clearInterval(interval);
           this.intervals.delete(instanceId);
           return;
@@ -237,7 +256,7 @@ export class EffectManagerService {
 
       // Check if ticks are complete after applying the tick
       if (activeEffect.ticksRemaining !== undefined && activeEffect.ticksRemaining <= 0) {
-        await this.removeEffect(activeEffect.targetId, activeEffect.effectId);
+        await this.removeEffect(context.gameId, activeEffect.targetId, activeEffect.effectId);
         clearInterval(interval);
         this.intervals.delete(instanceId);
         return;
@@ -361,9 +380,13 @@ export class EffectManagerService {
   /**
    * Remove an effect from a target
    */
-  async removeEffect(targetId: string, effectId: string): Promise<boolean> {
-    const targetEffects = this.activeEffects.get(targetId);
+  async removeEffect(gameId: string, targetId: string, effectId: string): Promise<boolean> {
+    const gameEffects = this.activeEffects.get(gameId);
+    if (!gameEffects) {
+      return false;
+    }
 
+    const targetEffects = gameEffects.get(targetId);
     if (!targetEffects) {
       return false;
     }
@@ -377,7 +400,7 @@ export class EffectManagerService {
     const activeEffect = targetEffects[index];
 
     // Clear any intervals
-    const instanceId = `${targetId}_${effectId}_`;
+    const instanceId = `${gameId}_${targetId}_${effectId}_`;
     for (const [key, interval] of this.intervals.entries()) {
       if (key.startsWith(instanceId)) {
         clearInterval(interval);
@@ -387,7 +410,7 @@ export class EffectManagerService {
 
     // Remove from active effects
     targetEffects.splice(index, 1);
-    this.activeEffects.set(targetId, targetEffects);
+    gameEffects.set(targetId, targetEffects);
 
     // Emit event
     await this.eventEmitter.emit(
@@ -398,10 +421,10 @@ export class EffectManagerService {
         effectName: activeEffect.effect.name,
         targetId,
       },
-      'global',
+      gameId,
     );
 
-    this.logger.log(`Removed effect '${activeEffect.effect.name}' from ${targetId}`);
+    this.logger.log(`Removed effect '${activeEffect.effect.name}' from ${targetId} in game ${gameId}`);
 
     return true;
   }
@@ -409,9 +432,13 @@ export class EffectManagerService {
   /**
    * Remove all effects from a target
    */
-  async removeAllEffects(targetId: string): Promise<number> {
-    const targetEffects = this.activeEffects.get(targetId);
+  async removeAllEffects(gameId: string, targetId: string): Promise<number> {
+    const gameEffects = this.activeEffects.get(gameId);
+    if (!gameEffects) {
+      return 0;
+    }
 
+    const targetEffects = gameEffects.get(targetId);
     if (!targetEffects) {
       return 0;
     }
@@ -419,15 +446,16 @@ export class EffectManagerService {
     const count = targetEffects.length;
 
     // Clear all intervals for this target
+    const prefix = `${gameId}_${targetId}_`;
     for (const [key, interval] of this.intervals.entries()) {
-      if (key.startsWith(targetId)) {
+      if (key.startsWith(prefix)) {
         clearInterval(interval);
         this.intervals.delete(key);
       }
     }
 
-    this.activeEffects.delete(targetId);
-    this.logger.log(`Removed all ${count} effects from ${targetId}`);
+    gameEffects.delete(targetId);
+    this.logger.log(`Removed all ${count} effects from ${targetId} in game ${gameId}`);
 
     return count;
   }
@@ -435,15 +463,19 @@ export class EffectManagerService {
   /**
    * Get active effects for a target
    */
-  getActiveEffects(targetId: string): IActiveEffect[] {
-    return this.activeEffects.get(targetId) || [];
+  getActiveEffects(gameId: string, targetId: string): IActiveEffect[] {
+    const gameEffects = this.activeEffects.get(gameId);
+    if (!gameEffects) {
+      return [];
+    }
+    return gameEffects.get(targetId) || [];
   }
 
   /**
    * Get total stat modifiers for a target
    */
-  getTotalStatModifiers(targetId: string): Record<string, number> {
-    const effects = this.getActiveEffects(targetId);
+  getTotalStatModifiers(gameId: string, targetId: string): Record<string, number> {
+    const effects = this.getActiveEffects(gameId, targetId);
     const modifiers: Record<string, number> = {};
 
     for (const activeEffect of effects) {
@@ -471,8 +503,8 @@ export class EffectManagerService {
   /**
    * Get effect statistics for a target
    */
-  getEffectStats(targetId: string): IEffectStats {
-    const effects = this.getActiveEffects(targetId);
+  getEffectStats(gameId: string, targetId: string): IEffectStats {
+    const effects = this.getActiveEffects(gameId, targetId);
 
     let buffs = 0;
     let debuffs = 0;
@@ -509,16 +541,20 @@ export class EffectManagerService {
       debuffs,
       statusEffects,
       equipmentBonuses,
-      totalStatModifiers: this.getTotalStatModifiers(targetId),
+      totalStatModifiers: this.getTotalStatModifiers(gameId, targetId),
     };
   }
 
   /**
    * Pause/unpause an effect
    */
-  setEffectPaused(targetId: string, effectId: string, paused: boolean): boolean {
-    const targetEffects = this.activeEffects.get(targetId);
+  setEffectPaused(gameId: string, targetId: string, effectId: string, paused: boolean): boolean {
+    const gameEffects = this.activeEffects.get(gameId);
+    if (!gameEffects) {
+      return false;
+    }
 
+    const targetEffects = gameEffects.get(targetId);
     if (!targetEffects) {
       return false;
     }
@@ -531,7 +567,7 @@ export class EffectManagerService {
 
     activeEffect.paused = paused;
     this.logger.log(
-      `${paused ? 'Paused' : 'Unpaused'} effect '${activeEffect.effect.name}' on ${targetId}`,
+      `${paused ? 'Paused' : 'Unpaused'} effect '${activeEffect.effect.name}' on ${targetId} in game ${gameId}`,
     );
 
     return true;
@@ -558,6 +594,147 @@ export class EffectManagerService {
   clearAllEffectDefinitions(): void {
     this.effects.clear();
     this.logger.log('Cleared all effect definitions');
+  }
+
+  /**
+   * Export active effects for a game (for save/load)
+   */
+  exportEffects(gameId: string): any {
+    const gameEffects = this.activeEffects.get(gameId);
+    if (!gameEffects) {
+      return {};
+    }
+
+    const exportData: Record<string, any[]> = {};
+
+    for (const [targetId, effects] of gameEffects.entries()) {
+      exportData[targetId] = effects.map(ae => ({
+        effectId: ae.effectId,
+        targetId: ae.targetId,
+        sourceId: ae.sourceId,
+        appliedAt: ae.appliedAt,
+        expiresAt: ae.expiresAt,
+        lastTickAt: ae.lastTickAt,
+        ticksRemaining: ae.ticksRemaining,
+        stacks: ae.stacks,
+        paused: ae.paused,
+        metadata: ae.metadata,
+        // Store the effect definition separately
+        effect: ae.effect,
+      }));
+    }
+
+    return exportData;
+  }
+
+  /**
+   * Import active effects for a game (from save/load)
+   */
+  async importEffects(gameId: string, effectsData: any): Promise<void> {
+    if (!effectsData || typeof effectsData !== 'object') {
+      return;
+    }
+
+    // Clear existing effects for this game
+    const gameEffects = this.activeEffects.get(gameId);
+    if (gameEffects) {
+      // Clear intervals for this game
+      const prefix = `${gameId}_`;
+      for (const [key, interval] of this.intervals.entries()) {
+        if (key.startsWith(prefix)) {
+          clearInterval(interval);
+          this.intervals.delete(key);
+        }
+      }
+      gameEffects.clear();
+    }
+
+    // Initialize game effects if needed
+    if (!this.activeEffects.has(gameId)) {
+      this.activeEffects.set(gameId, new Map());
+    }
+
+    // Restore effects
+    let totalImported = 0;
+    for (const [targetId, effects] of Object.entries(effectsData)) {
+      if (Array.isArray(effects)) {
+        for (const effectData of effects) {
+          const result = await this.applyEffect(gameId, effectData as IActiveEffect);
+          if (result.success) {
+            totalImported++;
+          }
+        }
+      }
+    }
+
+    this.logger.log(`Imported ${totalImported} effects for game ${gameId}`);
+  }
+
+  /**
+   * Restore an active effect (used during load)
+   */
+  private async restoreActiveEffect(
+    gameId: string,
+    activeEffect: IActiveEffect,
+  ): Promise<IEffectResult> {
+    // Get or create game-specific active effects
+    if (!this.activeEffects.has(gameId)) {
+      this.activeEffects.set(gameId, new Map());
+    }
+    const gameEffects = this.activeEffects.get(gameId)!;
+
+    // Get target's active effects
+    const targetId = activeEffect.targetId;
+    const targetEffects = gameEffects.get(targetId) || [];
+
+    // Check if effect already exists (avoid duplicates)
+    const existingEffect = targetEffects.find((ae) => ae.effectId === activeEffect.effectId);
+    if (existingEffect) {
+      this.logger.warn(`Effect ${activeEffect.effectId} already exists on ${targetId}, skipping restoration`);
+      return {
+        success: false,
+        message: 'Effect already exists',
+      };
+    }
+
+    // Ensure the effect definition is registered
+    if (!this.effects.has(activeEffect.effectId)) {
+      this.registerEffect(activeEffect.effect);
+    }
+
+    // Store the active effect
+    targetEffects.push(activeEffect);
+    gameEffects.set(targetId, targetEffects);
+
+    // Setup ticking for over_time effects if they haven't expired
+    const effect = activeEffect.effect;
+    if (effect.durationType === DurationType.OVER_TIME && effect.tickInterval) {
+      // Check if effect hasn't expired
+      if (!activeEffect.expiresAt || new Date(activeEffect.expiresAt).getTime() > Date.now()) {
+        // Check if there are ticks remaining
+        if (!activeEffect.ticksRemaining || activeEffect.ticksRemaining > 0) {
+          const context: IEffectContext = {
+            gameId,
+            targetId: activeEffect.targetId,
+            sourceId: activeEffect.sourceId,
+            effect,
+            targetStats: {},
+            targetFlags: {},
+            targetVariables: {},
+          };
+          this.setupEffectTicking(activeEffect, context);
+        }
+      }
+    }
+
+    this.logger.log(`Restored effect '${effect.name}' on ${targetId} in game ${gameId}`);
+
+    return {
+      success: true,
+      message: `Effect '${effect.name}' restored`,
+      effectId: effect.id,
+      activeEffect,
+    };
   }
 
   /**
