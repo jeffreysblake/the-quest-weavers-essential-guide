@@ -79,7 +79,9 @@ describe('ObjectService - Weapon and Armor Combat Tests', () => {
         },
       });
 
-      expect(eternalWeapon.properties?.durability).toBe(Number.MAX_SAFE_INTEGER);
+      expect(eternalWeapon.properties?.durability).toBe(
+        Number.MAX_SAFE_INTEGER,
+      );
     });
 
     it('should handle unequipped weapon attacks (no damage)', () => {
@@ -476,7 +478,9 @@ describe('ObjectService - Weapon and Armor Combat Tests', () => {
         },
       });
 
-      expect(compositeObject.materialProperties?.material).toBe('steel_leather_composite');
+      expect(compositeObject.materialProperties?.material).toBe(
+        'steel_leather_composite',
+      );
     });
 
     it('should handle material property mutations', () => {
@@ -598,7 +602,9 @@ describe('ObjectService - Weapon and Armor Combat Tests', () => {
       });
 
       const attached = service.getObject(sword.id);
-      expect(attached?.spatialRelationship?.relationshipType).toBe('attached_to');
+      expect(attached?.spatialRelationship?.relationshipType).toBe(
+        'attached_to',
+      );
     });
 
     it('should get object location description', () => {

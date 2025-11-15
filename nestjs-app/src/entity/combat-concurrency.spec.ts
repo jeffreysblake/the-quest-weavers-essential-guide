@@ -16,7 +16,10 @@ import {
 } from '../effects/effect.interfaces';
 import { IPlayer } from './player.interface';
 import { IObject } from './object.interface';
-import { IPhysicsEffect, EffectType as PhysicsEffectType } from './physics.interface';
+import {
+  IPhysicsEffect,
+  EffectType as PhysicsEffectType,
+} from './physics.interface';
 
 /**
  * Combat Concurrency Test Suite
@@ -297,7 +300,8 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Enemy should be dead (health at 0, not negative)
       const deadEnemy = objectService.getObject(weakEnemy.id);
-      expect(deadEnemy!.health).toBeLessThanOrEqual(10); expect(deadEnemy!.health).toBeGreaterThanOrEqual(0);
+      expect(deadEnemy!.health).toBeLessThanOrEqual(10);
+      expect(deadEnemy!.health).toBeGreaterThanOrEqual(0);
     });
 
     it('should handle death processing during attack', async () => {
@@ -323,13 +327,19 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       objectService.updateObject(enemy.id, { health: 0 });
 
       // Try to attack the dead enemy
-      const result = await playerService.castSpell(attacker.id, 'fire', enemy.id, 5);
+      const result = await playerService.castSpell(
+        attacker.id,
+        'fire',
+        enemy.id,
+        5,
+      );
 
       // Attack should still execute but enemy stays dead
       expect(result.success).toBe(true);
 
       const deadEnemy = objectService.getObject(enemy.id);
-      expect(deadEnemy!.health).toBeLessThanOrEqual(10); expect(deadEnemy!.health).toBeGreaterThanOrEqual(0); // Should remain 0, not go negative
+      expect(deadEnemy!.health).toBeLessThanOrEqual(10);
+      expect(deadEnemy!.health).toBeGreaterThanOrEqual(0); // Should remain 0, not go negative
     });
 
     it('should handle combat state changes during attacks', async () => {
@@ -355,7 +365,9 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       // Attack while also changing enemy properties
       const [attackResult, updateResult] = await Promise.all([
         playerService.castSpell(player.id, 'fire', enemy.id, 5),
-        Promise.resolve(objectService.updateObject(enemy.id, { material: 'metal' })),
+        Promise.resolve(
+          objectService.updateObject(enemy.id, { material: 'metal' }),
+        ),
       ]);
 
       expect(attackResult.success).toBe(true);
@@ -498,7 +510,12 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         players.push(player);
 
         // Each player attacks the boss
-        const spellTypes: PhysicsEffectType[] = ['fire', 'lightning', 'ice', 'force'];
+        const spellTypes: PhysicsEffectType[] = [
+          'fire',
+          'lightning',
+          'ice',
+          'force',
+        ];
         const spellType = spellTypes[i % spellTypes.length];
         attacks.push(playerService.castSpell(player.id, spellType, boss.id, 5));
       }
@@ -631,7 +648,8 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       expect(result3.damage).toBe(20);
 
       // Total damage should be 75
-      const totalDamage = (result1.damage || 0) + (result2.damage || 0) + (result3.damage || 0);
+      const totalDamage =
+        (result1.damage || 0) + (result2.damage || 0) + (result3.damage || 0);
       expect(totalDamage).toBe(75);
     });
 
@@ -760,9 +778,14 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       effectManager.registerEffect(massiveDamage);
 
-      const result = await effectManager.applyEffect('overkill-damage', target.id, 'game-1', {
-        targetStats: { [StatType.HEALTH]: 10 },
-      });
+      const result = await effectManager.applyEffect(
+        'overkill-damage',
+        target.id,
+        'game-1',
+        {
+          targetStats: { [StatType.HEALTH]: 10 },
+        },
+      );
 
       expect(result.damage).toBe(1000);
 
@@ -1032,14 +1055,17 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         damages.push(
           effectManager.applyEffect(`damage-${i}`, target.id, 'game-1', {
             targetStats: { [StatType.HEALTH]: 1000 },
-          })
+          }),
         );
       }
 
       const results = await Promise.all(damages);
 
       // Calculate actual total damage
-      const actualTotalDamage = results.reduce((sum, result) => sum + (result.damage || 0), 0);
+      const actualTotalDamage = results.reduce(
+        (sum, result) => sum + (result.damage || 0),
+        0,
+      );
 
       // No damage should be lost
       expect(actualTotalDamage).toBe(expectedTotalDamage);
@@ -1092,7 +1118,9 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Should only have one instance of the buff
       const effects = effectManager.getActiveEffects('game-1', player.id);
-      const buffCount = effects.filter((e) => e.effectId === 'double-buff').length;
+      const buffCount = effects.filter(
+        (e) => e.effectId === 'double-buff',
+      ).length;
       expect(buffCount).toBe(1);
     });
 
@@ -1191,7 +1219,10 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       expect(effects.length).toBeGreaterThanOrEqual(1);
 
       // Net modifier should be +10
-      const modifiers = effectManager.getTotalStatModifiers('game-1', player.id);
+      const modifiers = effectManager.getTotalStatModifiers(
+        'game-1',
+        player.id,
+      );
       expect(modifiers[StatType.ATTACK]).toBeDefined();
     });
 
@@ -1226,7 +1257,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         applications.push(
           effectManager.applyEffect('limited-stack', player.id, 'game-1', {
             targetStats: {},
-          })
+          }),
         );
       }
 
@@ -1313,20 +1344,31 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       effectManager.registerEffect(poison);
 
       // Apply poison
-      await effectManager.applyEffect('dispellable-poison', player.id, 'game-1', {
-        targetStats: { [StatType.HEALTH]: 100 },
-      });
+      await effectManager.applyEffect(
+        'dispellable-poison',
+        player.id,
+        'game-1',
+        {
+          targetStats: { [StatType.HEALTH]: 100 },
+        },
+      );
 
       // Wait a bit then remove during ticking
       await new Promise((resolve) => setTimeout(resolve, 50));
 
-      const removed = await effectManager.removeEffect('game-1', player.id, 'dispellable-poison');
+      const removed = await effectManager.removeEffect(
+        'game-1',
+        player.id,
+        'dispellable-poison',
+      );
 
       // Poison should be removed
       expect(removed).toBe(true);
 
       const effects = effectManager.getActiveEffects('game-1', player.id);
-      const hasPoison = effects.some((e) => e.effectId === 'dispellable-poison');
+      const hasPoison = effects.some(
+        (e) => e.effectId === 'dispellable-poison',
+      );
       expect(hasPoison).toBe(false);
     });
 
@@ -1482,7 +1524,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         applications.push(
           effectManager.applyEffect(`mass-effect-${i}`, player.id, 'game-1', {
             targetStats: {},
-          })
+          }),
         );
       }
 
@@ -1495,7 +1537,8 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Player should have 50 active effects
       const activeEffects = effectManager.getActiveEffects('game-1', player.id);
-      expect(activeEffects.length).toBeGreaterThanOrEqual(1); expect(activeEffects.length).toBeLessThanOrEqual(50);
+      expect(activeEffects.length).toBeGreaterThanOrEqual(1);
+      expect(activeEffects.length).toBeLessThanOrEqual(50);
     });
 
     it('should verify effect application atomicity', async () => {
@@ -1527,7 +1570,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         applications.push(
           effectManager.applyEffect('atomic-effect', player.id, 'game-1', {
             targetStats: {},
-          })
+          }),
         );
       }
 
@@ -1535,7 +1578,9 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Should only have one effect (non-stackable)
       const effects = effectManager.getActiveEffects('game-1', player.id);
-      const atomicEffects = effects.filter((e) => e.effectId === 'atomic-effect');
+      const atomicEffects = effects.filter(
+        (e) => e.effectId === 'atomic-effect',
+      );
 
       // Either 0 or 1 effect, never partial application
       expect(atomicEffects.length).toBeLessThanOrEqual(1);
@@ -1575,7 +1620,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // All players attack simultaneously (breaking turn order)
       const attacks = players.map((player) =>
-        playerService.castSpell(player.id, 'force', enemy.id, 3)
+        playerService.castSpell(player.id, 'force', enemy.id, 3),
       );
 
       const results = await Promise.all(attacks);
@@ -1728,9 +1773,14 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       // Player attacks while receiving lethal damage
       const [attackResult, deathResult] = await Promise.all([
         playerService.castSpell(dyingPlayer.id, 'fire', enemy.id, 5),
-        effectManager.applyEffect('instant-death-player', dyingPlayer.id, 'game-1', {
-          targetStats: { [StatType.HEALTH]: 5 },
-        }),
+        effectManager.applyEffect(
+          'instant-death-player',
+          dyingPlayer.id,
+          'game-1',
+          {
+            targetStats: { [StatType.HEALTH]: 5 },
+          },
+        ),
       ]);
 
       expect(attackResult.success).toBe(true);
@@ -1783,7 +1833,9 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         playerService.castSpell(players[0].id, 'fire', enemy.id, 5),
         playerService.castSpell(players[1].id, 'ice', enemy.id, 5),
         playerService.castSpell(players[2].id, 'lightning', enemy.id, 5),
-        Promise.resolve(room.players.splice(room.players.indexOf(players[1].id), 1)),
+        Promise.resolve(
+          room.players.splice(room.players.indexOf(players[1].id), 1),
+        ),
       ]);
 
       expect(attack1.success).toBe(true);
@@ -1931,7 +1983,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
             type: 'force',
             intensity: 5,
             description: 'melee strike',
-          })
+          }),
         );
       }
 
@@ -2063,7 +2115,8 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       const manaGain = regenResult.statChanges?.[StatType.MANA] || 0;
       const manaLoss = Math.abs(costResult.statChanges?.[StatType.MANA] || 0);
 
-      expect(typeof manaGain).toBe("number"); expect(typeof manaLoss).toBe("number");
+      expect(typeof manaGain).toBe('number');
+      expect(typeof manaLoss).toBe('number');
     });
 
     it('should handle cooldown expiration timing', async () => {
@@ -2098,15 +2151,25 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       });
 
       // Use ability twice rapidly
-      const result1 = await effectManager.applyEffect('cooldown-ability', enemy.id, 'game-1', {
-        sourceId: player.id,
-        targetStats: { [StatType.HEALTH]: 200 },
-      });
+      const result1 = await effectManager.applyEffect(
+        'cooldown-ability',
+        enemy.id,
+        'game-1',
+        {
+          sourceId: player.id,
+          targetStats: { [StatType.HEALTH]: 200 },
+        },
+      );
 
-      const result2 = await effectManager.applyEffect('cooldown-ability', enemy.id, 'game-1', {
-        sourceId: player.id,
-        targetStats: { [StatType.HEALTH]: 150 },
-      });
+      const result2 = await effectManager.applyEffect(
+        'cooldown-ability',
+        enemy.id,
+        'game-1',
+        {
+          sourceId: player.id,
+          targetStats: { [StatType.HEALTH]: 150 },
+        },
+      );
 
       // Both should work (no cooldown tracking in current implementation)
       expect(result1.success).toBe(true);
@@ -2151,7 +2214,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
           effectManager.applyEffect('ultimate-ability', target.id, 'game-1', {
             sourceId: player.id,
             targetStats: { [StatType.HEALTH]: 500 },
-          })
+          }),
         );
       }
 
@@ -2255,16 +2318,26 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       effectManager.registerEffect(interrupt);
 
       // Start channeling
-      await effectManager.applyEffect('channeled-spell', channeler.id, 'game-1', {
-        targetStats: { [StatType.MANA]: 100 },
-      });
+      await effectManager.applyEffect(
+        'channeled-spell',
+        channeler.id,
+        'game-1',
+        {
+          targetStats: { [StatType.MANA]: 100 },
+        },
+      );
 
       // Wait a bit then interrupt
       await new Promise((resolve) => setTimeout(resolve, 50));
 
-      const interruptResult = await effectManager.applyEffect('interrupt', channeler.id, 'game-1', {
-        targetStats: {},
-      });
+      const interruptResult = await effectManager.applyEffect(
+        'interrupt',
+        channeler.id,
+        'game-1',
+        {
+          targetStats: {},
+        },
+      );
 
       expect(interruptResult.success).toBe(true);
 
@@ -2313,15 +2386,20 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         effectManager.registerEffect(gain);
 
         operations.push(
-          effectManager.applyEffect(`resource-drain-${i}`, player.id, 'game-1', {
-            targetStats: { [StatType.STAMINA]: 100 },
-          })
+          effectManager.applyEffect(
+            `resource-drain-${i}`,
+            player.id,
+            'game-1',
+            {
+              targetStats: { [StatType.STAMINA]: 100 },
+            },
+          ),
         );
 
         operations.push(
           effectManager.applyEffect(`resource-gain-${i}`, player.id, 'game-1', {
             targetStats: { [StatType.STAMINA]: 100 },
-          })
+          }),
         );
       }
 
@@ -2377,9 +2455,14 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
           effectManager.registerEffect(drain);
 
           operations.push(
-            effectManager.applyEffect(`accounting-drain-${i}`, player.id, 'game-1', {
-              targetStats: { [StatType.STAMINA]: 100 },
-            })
+            effectManager.applyEffect(
+              `accounting-drain-${i}`,
+              player.id,
+              'game-1',
+              {
+                targetStats: { [StatType.STAMINA]: 100 },
+              },
+            ),
           );
         } else {
           expectedStaminaChange += amount;
@@ -2397,9 +2480,14 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
           effectManager.registerEffect(gain);
 
           operations.push(
-            effectManager.applyEffect(`accounting-gain-${i}`, player.id, 'game-1', {
-              targetStats: { [StatType.STAMINA]: 100 },
-            })
+            effectManager.applyEffect(
+              `accounting-gain-${i}`,
+              player.id,
+              'game-1',
+              {
+                targetStats: { [StatType.STAMINA]: 100 },
+              },
+            ),
           );
         }
       }
@@ -2413,7 +2501,8 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       }, 0);
 
       // Should match expected change exactly
-      expect(typeof actualStaminaChange).toBe("number"); expect(Math.abs(actualStaminaChange)).toBeGreaterThanOrEqual(0);
+      expect(typeof actualStaminaChange).toBe('number');
+      expect(Math.abs(actualStaminaChange)).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -2441,7 +2530,11 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       const updates = [];
       for (let i = 0; i < 10; i++) {
         updates.push(
-          Promise.resolve(playerService.updatePlayer(player.id, { health: initialHealth - (i + 1) }))
+          Promise.resolve(
+            playerService.updatePlayer(player.id, {
+              health: initialHealth - (i + 1),
+            }),
+          ),
         );
       }
 
@@ -2482,9 +2575,14 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         effectManager.registerEffect(effect);
 
         effects.push(
-          effectManager.applyEffect(`consistency-effect-${i}`, target.id, 'game-1', {
-            targetStats: {},
-          })
+          effectManager.applyEffect(
+            `consistency-effect-${i}`,
+            target.id,
+            'game-1',
+            {
+              targetStats: {},
+            },
+          ),
         );
       }
 
@@ -2497,7 +2595,8 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // All 10 effects should be active
       const activeEffects = effectManager.getActiveEffects('game-1', target.id);
-      expect(activeEffects.length).toBeGreaterThanOrEqual(1); expect(activeEffects.length).toBeLessThanOrEqual(10);
+      expect(activeEffects.length).toBeGreaterThanOrEqual(1);
+      expect(activeEffects.length).toBeLessThanOrEqual(10);
     });
 
     it('should handle concurrent player state updates', async () => {
@@ -2514,8 +2613,14 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       const updates = await Promise.all([
         Promise.resolve(playerService.updatePlayer(player.id, { health: 90 })),
         Promise.resolve(playerService.updatePlayer(player.id, { level: 2 })),
-        Promise.resolve(playerService.updatePlayer(player.id, { experience: 100 })),
-        Promise.resolve(playerService.updatePlayer(player.id, { position: { x: 5, y: 5, z: 0 } })),
+        Promise.resolve(
+          playerService.updatePlayer(player.id, { experience: 100 }),
+        ),
+        Promise.resolve(
+          playerService.updatePlayer(player.id, {
+            position: { x: 5, y: 5, z: 0 },
+          }),
+        ),
       ]);
 
       // All updates should succeed
@@ -2556,7 +2661,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
             type: 'force',
             intensity: 5,
             description: 'persistence test attack',
-          })
+          }),
         );
       }
 
@@ -2605,7 +2710,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       const operations = [
         playerService.castSpell(player.id, 'fire', enemy.id, 5),
         ...items.map((item) =>
-          Promise.resolve(playerService.addToInventory(player.id, item.id))
+          Promise.resolve(playerService.addToInventory(player.id, item.id)),
         ),
       ];
 
@@ -2643,10 +2748,12 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
         operations.push(
           physicsService.applyEffect(target.id, {
-            type: ['fire', 'ice', 'lightning', 'force'][i % 4] as PhysicsEffectType,
+            type: ['fire', 'ice', 'lightning', 'force'][
+              i % 4
+            ] as PhysicsEffectType,
             intensity: (i % 5) + 1,
             description: `integrity test ${i}`,
-          })
+          }),
         );
       }
 

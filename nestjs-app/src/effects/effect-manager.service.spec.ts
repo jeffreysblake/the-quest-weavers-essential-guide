@@ -179,7 +179,12 @@ describe('EffectManagerService', () => {
       const context = {
         targetStats: { [StatType.HEALTH]: 100 },
       };
-      const result = await service.applyEffect('percent-heal', 'player1', 'game1', context);
+      const result = await service.applyEffect(
+        'percent-heal',
+        'player1',
+        'game1',
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.healing).toBe(25);
@@ -197,7 +202,11 @@ describe('EffectManagerService', () => {
       };
 
       service.registerEffect(manaEffect);
-      const result = await service.applyEffect('restore-mana', 'player1', 'game1');
+      const result = await service.applyEffect(
+        'restore-mana',
+        'player1',
+        'game1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.MANA]).toBe(40);
@@ -215,14 +224,22 @@ describe('EffectManagerService', () => {
       };
 
       service.registerEffect(staminaEffect);
-      const result = await service.applyEffect('restore-stamina', 'player1', 'game1');
+      const result = await service.applyEffect(
+        'restore-stamina',
+        'player1',
+        'game1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.STAMINA]).toBe(60);
     });
 
     it('should return error for non-existent effect', async () => {
-      const result = await service.applyEffect('nonexistent', 'player1', 'game1');
+      const result = await service.applyEffect(
+        'nonexistent',
+        'player1',
+        'game1',
+      );
 
       expect(result.success).toBe(false);
       expect(result.message).toContain('not found');
@@ -246,7 +263,12 @@ describe('EffectManagerService', () => {
       const context = {
         targetStats: { [StatType.STRENGTH]: 50 },
       };
-      const result = await service.applyEffect('strength-buff', 'player1', 'game1', context);
+      const result = await service.applyEffect(
+        'strength-buff',
+        'player1',
+        'game1',
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.STRENGTH]).toBe(10);
@@ -268,7 +290,12 @@ describe('EffectManagerService', () => {
       const context = {
         targetStats: { [StatType.DEFENSE]: 30 },
       };
-      const result = await service.applyEffect('defense-debuff', 'enemy1', 'game1', context);
+      const result = await service.applyEffect(
+        'defense-debuff',
+        'enemy1',
+        'game1',
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.DEFENSE]).toBe(-5);
@@ -291,7 +318,12 @@ describe('EffectManagerService', () => {
       const context = {
         targetStats: { [StatType.ATTACK]: 100 },
       };
-      const result = await service.applyEffect('attack-buff', 'player1', 'game1', context);
+      const result = await service.applyEffect(
+        'attack-buff',
+        'player1',
+        'game1',
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.ATTACK]).toBe(20);
@@ -313,7 +345,12 @@ describe('EffectManagerService', () => {
       const context = {
         targetStats: { [StatType.ATTACK]: 50 },
       };
-      const result = await service.applyEffect('sword-bonus', 'player1', 'game1', context);
+      const result = await service.applyEffect(
+        'sword-bonus',
+        'player1',
+        'game1',
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.ATTACK]).toBe(15);
@@ -336,7 +373,12 @@ describe('EffectManagerService', () => {
       const context = {
         targetStats: { [StatType.ATTACK]: 50 },
       };
-      const result = await service.applyEffect('double-damage', 'player1', 'game1', context);
+      const result = await service.applyEffect(
+        'double-damage',
+        'player1',
+        'game1',
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.ATTACK]).toBe(50); // 50 * 2 * 1 stack = 100, change is 50
@@ -361,16 +403,28 @@ describe('EffectManagerService', () => {
 
       service.registerEffect(stackableEffect);
 
-      const result1 = await service.applyEffect('poison-stack', 'enemy1', 'game1');
+      const result1 = await service.applyEffect(
+        'poison-stack',
+        'enemy1',
+        'game1',
+      );
       expect(result1.success).toBe(true);
       expect(result1.activeEffect?.stacks).toBe(1);
 
-      const result2 = await service.applyEffect('poison-stack', 'enemy1', 'game1');
+      const result2 = await service.applyEffect(
+        'poison-stack',
+        'enemy1',
+        'game1',
+      );
       expect(result2.success).toBe(true);
       expect(result2.activeEffect?.stacks).toBe(2);
       expect(result2.message).toContain('stacked');
 
-      const result3 = await service.applyEffect('poison-stack', 'enemy1', 'game1');
+      const result3 = await service.applyEffect(
+        'poison-stack',
+        'enemy1',
+        'game1',
+      );
       expect(result3.success).toBe(true);
       expect(result3.activeEffect?.stacks).toBe(3);
     });
@@ -395,7 +449,11 @@ describe('EffectManagerService', () => {
       await service.applyEffect('limited-stack', 'player1', 'game1');
       await service.applyEffect('limited-stack', 'player1', 'game1');
 
-      const result = await service.applyEffect('limited-stack', 'player1', 'game1');
+      const result = await service.applyEffect(
+        'limited-stack',
+        'player1',
+        'game1',
+      );
       expect(result.success).toBe(false);
       expect(result.message).toContain('max stacks');
     });
@@ -421,7 +479,7 @@ describe('EffectManagerService', () => {
       const firstAppliedAt = result1.activeEffect?.appliedAt;
 
       // Wait a bit
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       const result2 = await service.applyEffect('shield', 'player1', 'game1');
       expect(result2.success).toBe(true);
@@ -447,7 +505,11 @@ describe('EffectManagerService', () => {
 
       // Apply effect multiple times
       for (let i = 0; i < 10; i++) {
-        const result = await service.applyEffect('unlimited-stack', 'player1', 'game1');
+        const result = await service.applyEffect(
+          'unlimited-stack',
+          'player1',
+          'game1',
+        );
         expect(result.success).toBe(true);
       }
 
@@ -646,7 +708,11 @@ describe('EffectManagerService', () => {
       };
 
       service.registerEffect(permanentEffect);
-      const result = await service.applyEffect('permanent-buff', 'player1', 'game1');
+      const result = await service.applyEffect(
+        'permanent-buff',
+        'player1',
+        'game1',
+      );
 
       expect(result.success).toBe(true);
       expect(result.activeEffect?.expiresAt).toBeUndefined();
@@ -668,7 +734,12 @@ describe('EffectManagerService', () => {
       const context = {
         targetStats: { [StatType.DEFENSE]: 30 },
       };
-      const result = await service.applyEffect('armor-bonus', 'player1', 'game1', context);
+      const result = await service.applyEffect(
+        'armor-bonus',
+        'player1',
+        'game1',
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.DEFENSE]).toBe(20);
@@ -753,7 +824,10 @@ describe('EffectManagerService', () => {
     });
 
     it('should return false when target has no effects', async () => {
-      const removed = await service.removeEffect('nonexistent-target', 'some-effect');
+      const removed = await service.removeEffect(
+        'nonexistent-target',
+        'some-effect',
+      );
       expect(removed).toBe(false);
     });
 
@@ -1194,7 +1268,9 @@ describe('EffectManagerService', () => {
       };
 
       service.registerEffect(effect);
-      await service.applyEffect('test-event', 'player1', 'game1', { sourceId: 'potion1' });
+      await service.applyEffect('test-event', 'player1', 'game1', {
+        sourceId: 'potion1',
+      });
 
       expect(mockEventEmitter.emit).toHaveBeenCalledWith(
         GameEventType.CUSTOM_EVENT,
@@ -1320,7 +1396,11 @@ describe('EffectManagerService', () => {
       };
 
       service.registerEffect(effect);
-      const result = await service.applyEffect('zero-duration', 'player1', 'game1');
+      const result = await service.applyEffect(
+        'zero-duration',
+        'player1',
+        'game1',
+      );
 
       expect(result.success).toBe(true);
     });
@@ -1337,7 +1417,11 @@ describe('EffectManagerService', () => {
       };
 
       service.registerEffect(effect);
-      const result = await service.applyEffect('no-stat-type', 'player1', 'game1');
+      const result = await service.applyEffect(
+        'no-stat-type',
+        'player1',
+        'game1',
+      );
 
       expect(result.success).toBe(true);
     });
@@ -1355,7 +1439,12 @@ describe('EffectManagerService', () => {
       };
 
       service.registerEffect(effect);
-      const result = await service.applyEffect('missing-stats', 'player1', 'game1', {});
+      const result = await service.applyEffect(
+        'missing-stats',
+        'player1',
+        'game1',
+        {},
+      );
 
       expect(result.success).toBe(true);
     });

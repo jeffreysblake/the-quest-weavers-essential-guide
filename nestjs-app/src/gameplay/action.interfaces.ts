@@ -92,7 +92,10 @@ export interface IActionValidator {
   /**
    * Check if action is valid in current context
    */
-  canPerform(action: IAction, context: IGameContext): Promise<IValidationResult>;
+  canPerform(
+    action: IAction,
+    context: IGameContext,
+  ): Promise<IValidationResult>;
 
   /**
    * Get reason why action cannot be performed
@@ -169,7 +172,13 @@ export interface IInteractionCondition {
  * Effect of successful interaction
  */
 export interface IInteractionEffect {
-  type: 'change_property' | 'add_item' | 'remove_item' | 'move_to_room' | 'trigger_event' | 'custom';
+  type:
+    | 'change_property'
+    | 'add_item'
+    | 'remove_item'
+    | 'move_to_room'
+    | 'trigger_event'
+    | 'custom';
   entityId?: string;
   entityType?: 'object' | 'npc' | 'room' | 'player';
   property?: string;

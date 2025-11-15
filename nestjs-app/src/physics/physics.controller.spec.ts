@@ -112,7 +112,10 @@ describe('PhysicsController', () => {
       expect(result).toBeDefined();
       expect(result.name).toBe('updated-entity');
       expect(mockPhysicsService.findOne).toHaveBeenCalledWith('test-id');
-      expect(mockPhysicsService.updateEntity).toHaveBeenCalledWith('test-id', dto);
+      expect(mockPhysicsService.updateEntity).toHaveBeenCalledWith(
+        'test-id',
+        dto,
+      );
     });
 
     it('should return error when entity not found', () => {

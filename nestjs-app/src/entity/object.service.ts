@@ -86,20 +86,25 @@ export class ObjectService {
       },
     };
 
-    return materialDefaults[material.toLowerCase()] || {
-      material,
-      density: 1,
-      conductivity: 1,
-      flammability: 1,
-      brittleness: 1,
-      resistances: {},
-    };
+    return (
+      materialDefaults[material.toLowerCase()] || {
+        material,
+        density: 1,
+        conductivity: 1,
+        flammability: 1,
+        brittleness: 1,
+        resistances: {},
+      }
+    );
   }
 
   createObject(objectData: Omit<IObject, 'id' | 'type'>): IObject {
     // Auto-generate material properties if material is specified but materialProperties is not
-    const materialProperties = objectData.materialProperties ||
-      (objectData.material ? this.getDefaultMaterialProperties(objectData.material) : undefined);
+    const materialProperties =
+      objectData.materialProperties ||
+      (objectData.material
+        ? this.getDefaultMaterialProperties(objectData.material)
+        : undefined);
 
     // Create object with generated ID
     const object: IObject = {
@@ -118,7 +123,17 @@ export class ObjectService {
     this.objects.set(object.id, object);
 
     // Also register in EntityService for compatibility (preserve existing ID)
-    this.entityService['entities'].set(object.id, object);
+    // NULL CHECK: Validate entityService has entities map before accessing
+    try {
+      if (this.entityService && this.entityService['entities']) {
+        this.entityService['entities'].set(object.id, object);
+      } else {
+        this.logger.warn(`createObject: entityService.entities is not available, skipping registration for object ${object.id}`);
+      }
+    } catch (error) {
+      this.logger.error(`createObject: Failed to register object ${object.id} in EntityService: ${error.message}`);
+      // Continue anyway since object is already in local cache
+    }
 
     // Don't save automatically to prevent race conditions with explicit persistGame() calls
     // The object is cached in memory and will be persisted when persistGame() is called
@@ -165,7 +180,14 @@ export class ObjectService {
       object = await this.loadObjectFromDatabase(id, gameId);
       if (object) {
         this.objects.set(object.id, object);
-        this.entityService['entities'].set(object.id, object); // Sync with EntityService
+        // NULL CHECK: Safely sync with EntityService
+        try {
+          if (this.entityService && this.entityService['entities']) {
+            this.entityService['entities'].set(object.id, object);
+          }
+        } catch (error) {
+          this.logger.error(`getObjectWithFallback: Failed to sync object ${object.id} with EntityService: ${error.message}`);
+        }
         return object;
       }
     }
@@ -225,7 +247,7 @@ export class ObjectService {
   }
 
   // Place an object in a room
-  placeInRoom(objectId: string, roomId: string): boolean {
+  async placeInRoom(objectId: string, roomId: string): Promise<boolean> {
     const object = this.getObject(objectId);
     if (!object) {
       return false;
@@ -238,30 +260,39 @@ export class ObjectService {
     this.objects.set(objectId, object);
 
     // Update in EntityService
-    this.entityService.updateEntity(objectId, object);
+    try {
+      await this.entityService.updateEntity(objectId, object);
+    } catch (error) {
+      this.logger.error(`Failed to update object entity ${objectId}:`, error);
+    }
 
     return true;
   }
 
-  update(id: string, updates: Partial<IObject>): boolean {
-    return this.updateObject(id, updates);
+  async update(id: string, updates: Partial<IObject>): Promise<boolean> {
+    return await this.updateObject(id, updates);
   }
 
-  updateObject(
+  async updateObject(
     id: string,
     updates: Partial<Omit<IObject, 'id' | 'type'>>,
-  ): boolean {
+  ): Promise<boolean> {
     const object = this.getObject(id);
     if (!object) return false;
 
     // Update the entity
-    return this.entityService.updateEntity(id, {
-      ...updates,
-      type: 'object',
-    });
+    try {
+      return await this.entityService.updateEntity(id, {
+        ...updates,
+        type: 'object',
+      });
+    } catch (error) {
+      this.logger.error(`Failed to update object entity ${id}:`, error);
+      return false;
+    }
   }
 
-  placeObject(objectId: string, relationship: ISpatialRelationship): boolean {
+  async placeObject(objectId: string, relationship: ISpatialRelationship): Promise<boolean> {
     const object = this.getObject(objectId);
     const target = this.entityService.getEntity(relationship.targetId);
 
@@ -285,10 +316,15 @@ export class ObjectService {
 
     // Update object's spatial relationship
     object.spatialRelationship = relationship;
-    return this.entityService.updateEntity(objectId, object);
+    try {
+      return await this.entityService.updateEntity(objectId, object);
+    } catch (error) {
+      this.logger.error(`Failed to update object entity ${objectId}:`, error);
+      return false;
+    }
   }
 
-  removeObjectFromContainer(objectId: string, containerId: string): boolean {
+  async removeObjectFromContainer(objectId: string, containerId: string): Promise<boolean> {
     const container = this.getObject(containerId);
     if (!container || !container.containedObjects) return false;
 
@@ -300,10 +336,19 @@ export class ObjectService {
       const object = this.getObject(objectId);
       if (object) {
         object.spatialRelationship = undefined;
-        this.entityService.updateEntity(objectId, object);
+        try {
+          await this.entityService.updateEntity(objectId, object);
+        } catch (error) {
+          this.logger.error(`Failed to update object entity ${objectId}:`, error);
+        }
       }
 
-      return this.entityService.updateEntity(containerId, container);
+      try {
+        return await this.entityService.updateEntity(containerId, container);
+      } catch (error) {
+        this.logger.error(`Failed to update container entity ${containerId}:`, error);
+        return false;
+      }
     }
     return false;
   }
@@ -422,7 +467,14 @@ export class ObjectService {
       this.objects.clear();
       objects.forEach((object) => {
         this.objects.set(object.id, object);
-        this.entityService['entities'].set(object.id, object); // Sync with EntityService
+        // NULL CHECK: Safely sync with EntityService
+        try {
+          if (this.entityService && this.entityService['entities']) {
+            this.entityService['entities'].set(object.id, object);
+          }
+        } catch (error) {
+          this.logger.error(`loadObjects: Failed to sync object ${object.id} with EntityService: ${error.message}`);
+        }
       });
 
       this.logger.log('Successfully loaded objects');
@@ -481,7 +533,11 @@ export class ObjectService {
 
     // Update the in-memory cache with the old version
     this.objects.set(objectId, versionData as IObject);
-    this.entityService.updateEntity(objectId, versionData as IObject);
+    try {
+      await this.entityService.updateEntity(objectId, versionData as IObject);
+    } catch (error) {
+      this.logger.error(`Failed to update object entity ${objectId}:`, error);
+    }
 
     // Save the old version to the database
     await this.saveObjectToDatabase(versionData as IObject);
@@ -523,7 +579,11 @@ export class ObjectService {
       const object = await this.loadObjectFromDatabase(objectId, gameId);
       if (object) {
         this.objects.set(objectId, object);
-        this.entityService.updateEntity(objectId, object); // Sync with EntityService
+        try {
+          await this.entityService.updateEntity(objectId, object); // Sync with EntityService
+        } catch (error) {
+          this.logger.error(`Failed to sync object ${objectId} with EntityService:`, error);
+        }
         return object;
       }
     }
@@ -724,27 +784,103 @@ export class ObjectService {
     }
   }
 
+  /**
+   * Load multiple objects by IDs in a single batch query
+   * Prevents N+1 query pattern by using WHERE id IN (...)
+   */
+  async loadMultipleObjects(objectIds: string[]): Promise<IObject[]> {
+    if (!this.databaseService || objectIds.length === 0) return [];
+
+    try {
+      // Batch load object data
+      const placeholders = objectIds.map(() => '?').join(',');
+      const objectQuery = this.databaseService.prepare(`
+        SELECT * FROM objects WHERE id IN (${placeholders})
+      `);
+      const objectRows = objectQuery.all(...objectIds) as any[];
+
+      // Batch load all spatial relationships for these objects
+      const relationshipQuery = this.databaseService.prepare(`
+        SELECT * FROM spatial_relationships WHERE object_id IN (${placeholders})
+      `);
+      const relationshipRows = relationshipQuery.all(...objectIds) as any[];
+
+      // Map relationships by object ID
+      const relationshipsByObject = new Map<string, any>();
+      relationshipRows.forEach((row: any) => {
+        relationshipsByObject.set(row.object_id, row);
+      });
+
+      // Convert to IObject objects
+      const objects: IObject[] = objectRows.map((objectRow) => {
+        const relationshipRow = relationshipsByObject.get(objectRow.id);
+
+        const object: IObject = {
+          id: objectRow.id,
+          name: objectRow.name,
+          description: objectRow.description,
+          type: 'object',
+          objectType: objectRow.object_type,
+          position: {
+            x: objectRow.position_x || 0,
+            y: objectRow.position_y || 0,
+            z: objectRow.position_z || 0,
+          },
+          material: objectRow.material,
+          materialProperties: objectRow.material_properties
+            ? JSON.parse(objectRow.material_properties)
+            : undefined,
+          weight: objectRow.weight || 0,
+          health: objectRow.health,
+          maxHealth: objectRow.max_health,
+          isPortable: objectRow.is_portable ?? true,
+          isContainer: objectRow.is_container || false,
+          canContain: objectRow.can_contain || false,
+          containerCapacity: objectRow.container_capacity || 0,
+          containedObjects: [], // Would need to be loaded separately
+          state: objectRow.state_data
+            ? JSON.parse(objectRow.state_data)
+            : undefined,
+          properties: objectRow.properties
+            ? JSON.parse(objectRow.properties)
+            : {},
+          gameId: objectRow.game_id,
+        };
+
+        // Add spatial relationship if exists
+        if (relationshipRow) {
+          object.spatialRelationship = {
+            targetId: relationshipRow.target_id,
+            relationshipType: relationshipRow.relationship_type,
+            description: relationshipRow.description,
+          };
+        }
+
+        return object;
+      });
+
+      return objects;
+    } catch (error) {
+      this.logger.error('Failed to batch load objects from database:', error);
+      return [];
+    }
+  }
+
   private async loadGameObjectsFromDatabase(
     gameId: string,
   ): Promise<IObject[]> {
     if (!this.databaseService) return [];
 
     try {
+      // First get all object IDs for this game
       const query = this.databaseService.prepare(
-        'SELECT * FROM objects WHERE game_id = ?',
+        'SELECT id FROM objects WHERE game_id = ?',
       );
       const rows = query.all(gameId) as any[];
+      const objectIds = rows.map((row) => row.id);
 
-      const objects: IObject[] = [];
-
-      for (const row of rows) {
-        const object = await this.loadObjectFromDatabase(row.id, gameId);
-        if (object) {
-          objects.push(object);
-        }
-      }
-
-      return objects;
+      // Use batch loading to prevent N+1 queries
+      return await this.loadMultipleObjects(objectIds);
     } catch (error) {
       this.logger.error(
         `Failed to load objects for game ${gameId} from database:`,
@@ -758,19 +894,13 @@ export class ObjectService {
     if (!this.databaseService) return [];
 
     try {
-      const query = this.databaseService.prepare('SELECT * FROM objects');
+      // First get all object IDs
+      const query = this.databaseService.prepare('SELECT id FROM objects');
       const rows = query.all() as any[];
+      const objectIds = rows.map((row) => row.id);
 
-      const objects: IObject[] = [];
-
-      for (const row of rows) {
-        const object = await this.loadObjectFromDatabase(row.id);
-        if (object) {
-          objects.push(object);
-        }
-      }
-
-      return objects;
+      // Use batch loading to prevent N+1 queries
+      return await this.loadMultipleObjects(objectIds);
     } catch (error) {
       this.logger.error('Failed to load all objects from database:', error);
       return [];
@@ -778,11 +908,11 @@ export class ObjectService {
   }
 
   // Missing methods for game service compatibility
-  updateObjectPosition(
+  async updateObjectPosition(
     objectId: string,
     newPosition: { x: number; y: number; z: number },
-  ): boolean {
-    return this.updateObject(objectId, { position: newPosition });
+  ): Promise<boolean> {
+    return await this.updateObject(objectId, { position: newPosition });
   }
 
   getSpatialRelationships(objectId: string): ISpatialRelationship[] {

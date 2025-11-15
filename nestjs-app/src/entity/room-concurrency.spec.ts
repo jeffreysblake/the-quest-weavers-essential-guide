@@ -508,7 +508,11 @@ describe('Room Concurrency Tests', () => {
 
       // Set room on fire
       roomService.update(room.id, {
-        environment: { lighting: 'bright', sound: 'crackling', weather: 'fire' },
+        environment: {
+          lighting: 'bright',
+          sound: 'crackling',
+          weather: 'fire',
+        },
       });
 
       // All players take damage concurrently
@@ -593,9 +597,15 @@ describe('Room Concurrency Tests', () => {
 
       // Dynamic connections created during movement
       await Promise.all([
-        Promise.resolve(roomService.connectRooms(rooms[0].id, rooms[1].id, 'north')),
-        Promise.resolve(roomService.connectRooms(rooms[1].id, rooms[2].id, 'east')),
-        Promise.resolve(roomService.connectRooms(rooms[2].id, rooms[3].id, 'south')),
+        Promise.resolve(
+          roomService.connectRooms(rooms[0].id, rooms[1].id, 'north'),
+        ),
+        Promise.resolve(
+          roomService.connectRooms(rooms[1].id, rooms[2].id, 'east'),
+        ),
+        Promise.resolve(
+          roomService.connectRooms(rooms[2].id, rooms[3].id, 'south'),
+        ),
       ]);
 
       // Verify connections
@@ -738,7 +748,9 @@ describe('Room Concurrency Tests', () => {
       // All try to occupy same position
       await Promise.all(
         entities.map((entity) =>
-          Promise.resolve(playerService.movePlayer(entity.id, contestedPosition)),
+          Promise.resolve(
+            playerService.movePlayer(entity.id, contestedPosition),
+          ),
         ),
       );
 
@@ -1072,7 +1084,9 @@ describe('Room Concurrency Tests', () => {
 
       // Verify items are in container (or just proceed with test)
       const containerData = objectService.getObject(container.id);
-      const containerContents = objectService.getObjectsInContainer(container.id);
+      const containerContents = objectService.getObjectsInContainer(
+        container.id,
+      );
       // Items should be in container, but if not, test continues to verify looting behavior
       expect(containerContents.length).toBeGreaterThanOrEqual(0);
 
@@ -1114,7 +1128,9 @@ describe('Room Concurrency Tests', () => {
       );
 
       movePlayerToRoom(player, room);
-      heavyObjects.forEach((obj) => roomService.addObjectToRoom(room.id, obj.id));
+      heavyObjects.forEach((obj) =>
+        roomService.addObjectToRoom(room.id, obj.id),
+      );
 
       const maxWeight = 200;
       let currentWeight = 0;
@@ -1175,7 +1191,9 @@ describe('Room Concurrency Tests', () => {
       ]);
 
       const roomData = roomService.getRoom(room.id);
-      const playerCount = roomData.players.filter((id) => id === player.id).length;
+      const playerCount = roomData.players.filter(
+        (id) => id === player.id,
+      ).length;
       expect(playerCount).toBe(1);
     });
 
@@ -1228,10 +1246,18 @@ describe('Room Concurrency Tests', () => {
 
       // Create a graph: 0-1-2-3-4
       await Promise.all([
-        Promise.resolve(roomService.connectRooms(rooms[0].id, rooms[1].id, 'north')),
-        Promise.resolve(roomService.connectRooms(rooms[1].id, rooms[2].id, 'north')),
-        Promise.resolve(roomService.connectRooms(rooms[2].id, rooms[3].id, 'north')),
-        Promise.resolve(roomService.connectRooms(rooms[3].id, rooms[4].id, 'north')),
+        Promise.resolve(
+          roomService.connectRooms(rooms[0].id, rooms[1].id, 'north'),
+        ),
+        Promise.resolve(
+          roomService.connectRooms(rooms[1].id, rooms[2].id, 'north'),
+        ),
+        Promise.resolve(
+          roomService.connectRooms(rooms[2].id, rooms[3].id, 'north'),
+        ),
+        Promise.resolve(
+          roomService.connectRooms(rooms[3].id, rooms[4].id, 'north'),
+        ),
       ]);
 
       // Verify connectivity
@@ -1289,18 +1315,22 @@ describe('Room Concurrency Tests', () => {
 
       // Concurrent additions and removals
       await Promise.all([
-        ...players.slice(0, 5).map((player) =>
-          Promise.resolve(movePlayerToRoom(player, room)),
-        ),
+        ...players
+          .slice(0, 5)
+          .map((player) => Promise.resolve(movePlayerToRoom(player, room))),
       ]);
 
       await Promise.all([
-        ...players.slice(5).map((player) =>
-          Promise.resolve(movePlayerToRoom(player, room)),
-        ),
-        ...players.slice(0, 2).map((player) =>
-          Promise.resolve(roomService.removePlayerFromRoom(room.id, player.id)),
-        ),
+        ...players
+          .slice(5)
+          .map((player) => Promise.resolve(movePlayerToRoom(player, room))),
+        ...players
+          .slice(0, 2)
+          .map((player) =>
+            Promise.resolve(
+              roomService.removePlayerFromRoom(room.id, player.id),
+            ),
+          ),
       ]);
 
       const roomData = roomService.getRoom(room.id);

@@ -112,13 +112,17 @@ describe('GameStateService - State Integrity After Load', () => {
 
     gameStateService = module.get<GameStateService>(GameStateService);
     questManager = module.get<QuestManagerService>(QuestManagerService);
-    inventoryManager = module.get<InventoryManagerService>(InventoryManagerService);
-    worldStateManager = module.get<WorldStateManagerService>(WorldStateManagerService);
+    inventoryManager = module.get<InventoryManagerService>(
+      InventoryManagerService,
+    );
+    worldStateManager = module.get<WorldStateManagerService>(
+      WorldStateManagerService,
+    );
     effectManager = module.get<EffectManagerService>(EffectManagerService);
     playerService = module.get<PlayerService>(PlayerService);
     objectService = module.get<ObjectService>(ObjectService);
     roomService = module.get<RoomService>(RoomService);
-    eventEmitter = module.get(EventEmitterService) as jest.Mocked<EventEmitterService>;
+    eventEmitter = module.get(EventEmitterService);
   });
 
   afterEach(() => {
@@ -136,7 +140,9 @@ describe('GameStateService - State Integrity After Load', () => {
     if (actual === expected) return;
 
     if (typeof actual !== typeof expected) {
-      throw new Error(`Type mismatch at ${path}: ${typeof actual} !== ${typeof expected}`);
+      throw new Error(
+        `Type mismatch at ${path}: ${typeof actual} !== ${typeof expected}`,
+      );
     }
 
     if (actual === null || expected === null) {
@@ -425,8 +431,20 @@ describe('GameStateService - State Integrity After Load', () => {
       };
 
       await questManager.startQuest('quest3', playerId, context);
-      await questManager.updateObjective(playerId, 'quest3', 'obj1', 3, context);
-      await questManager.updateObjective(playerId, 'quest3', 'obj2', 2, context);
+      await questManager.updateObjective(
+        playerId,
+        'quest3',
+        'obj1',
+        3,
+        context,
+      );
+      await questManager.updateObjective(
+        playerId,
+        'quest3',
+        'obj2',
+        2,
+        context,
+      );
 
       // Save and load
       await gameStateService.saveGameState(gameId, 'test-slot');
@@ -1070,7 +1088,9 @@ describe('GameStateService - State Integrity After Load', () => {
 
       expect(loadedNpc?.health).toBe(450);
       expect(loadedNpc?.customState.maxHealth).toBe(500);
-      expect(loadedNpc?.health).toBeLessThanOrEqual(loadedNpc?.customState.maxHealth);
+      expect(loadedNpc?.health).toBeLessThanOrEqual(
+        loadedNpc?.customState.maxHealth,
+      );
     });
 
     it('should preserve NPC dialogue state after load', async () => {
@@ -1210,7 +1230,11 @@ describe('GameStateService - State Integrity After Load', () => {
       const loadedNpc = loadedWorldState?.npcs.get('merchant1');
 
       expect(loadedNpc?.customState.inventory).toEqual(npcInventory);
-      expect(loadedNpc?.customState.shopItems).toEqual(['item1', 'item2', 'item3']);
+      expect(loadedNpc?.customState.shopItems).toEqual([
+        'item1',
+        'item2',
+        'item3',
+      ]);
     });
 
     it('should preserve NPC combat state after load', async () => {
@@ -1319,8 +1343,8 @@ describe('GameStateService - State Integrity After Load', () => {
 
       expect(afterLoad).toBeDefined();
       expect(afterLoad?.items.length).toBe(beforeSave?.items.length);
-      expect(afterLoad?.items.map(i => i.itemId).sort()).toEqual(
-        beforeSave?.items.map(i => i.itemId).sort()
+      expect(afterLoad?.items.map((i) => i.itemId).sort()).toEqual(
+        beforeSave?.items.map((i) => i.itemId).sort(),
       );
     });
 
@@ -1348,7 +1372,9 @@ describe('GameStateService - State Integrity After Load', () => {
       const itemsAfter = afterLoad?.items || [];
 
       for (const beforeItem of itemsBefore) {
-        const afterItem = itemsAfter.find(i => i.itemId === beforeItem.itemId);
+        const afterItem = itemsAfter.find(
+          (i) => i.itemId === beforeItem.itemId,
+        );
         expect(afterItem).toBeDefined();
         expect(afterItem?.quantity).toBe(beforeItem.quantity);
       }
@@ -1368,8 +1394,16 @@ describe('GameStateService - State Integrity After Load', () => {
       await inventoryManager.addItem(playerId, 'shield1', 1);
 
       await inventoryManager.equipItem(playerId, 'helmet1', EquipmentSlot.HEAD);
-      await inventoryManager.equipItem(playerId, 'sword1', EquipmentSlot.MAIN_HAND);
-      await inventoryManager.equipItem(playerId, 'shield1', EquipmentSlot.OFF_HAND);
+      await inventoryManager.equipItem(
+        playerId,
+        'sword1',
+        EquipmentSlot.MAIN_HAND,
+      );
+      await inventoryManager.equipItem(
+        playerId,
+        'shield1',
+        EquipmentSlot.OFF_HAND,
+      );
 
       const beforeSave = inventoryManager.getInventory(playerId);
 
@@ -1379,9 +1413,15 @@ describe('GameStateService - State Integrity After Load', () => {
 
       const afterLoad = inventoryManager.getInventory(playerId);
 
-      expect(afterLoad?.equippedItems.get(EquipmentSlot.HEAD)?.itemId).toBe('helmet1');
-      expect(afterLoad?.equippedItems.get(EquipmentSlot.MAIN_HAND)?.itemId).toBe('sword1');
-      expect(afterLoad?.equippedItems.get(EquipmentSlot.OFF_HAND)?.itemId).toBe('shield1');
+      expect(afterLoad?.equippedItems.get(EquipmentSlot.HEAD)?.itemId).toBe(
+        'helmet1',
+      );
+      expect(
+        afterLoad?.equippedItems.get(EquipmentSlot.MAIN_HAND)?.itemId,
+      ).toBe('sword1');
+      expect(afterLoad?.equippedItems.get(EquipmentSlot.OFF_HAND)?.itemId).toBe(
+        'shield1',
+      );
     });
 
     it('should preserve container contents after load', async () => {
@@ -1409,14 +1449,14 @@ describe('GameStateService - State Integrity After Load', () => {
       });
 
       const beforeSave = inventoryManager.getInventory(playerId);
-      const bagBefore = beforeSave?.items.find(i => i.itemId === 'bag1');
+      const bagBefore = beforeSave?.items.find((i) => i.itemId === 'bag1');
 
       // Save and load
       await gameStateService.saveGameState(gameId, 'test-slot');
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const afterLoad = inventoryManager.getInventory(playerId);
-      const bagAfter = afterLoad?.items.find(i => i.itemId === 'bag1');
+      const bagAfter = afterLoad?.items.find((i) => i.itemId === 'bag1');
 
       expect(bagAfter?.containerItems).toBeDefined();
       expect(bagAfter?.containerItems?.length).toBe(2);
@@ -1442,14 +1482,14 @@ describe('GameStateService - State Integrity After Load', () => {
       });
 
       const beforeSave = inventoryManager.getInventory(playerId);
-      const swordBefore = beforeSave?.items.find(i => i.itemId === 'sword1');
+      const swordBefore = beforeSave?.items.find((i) => i.itemId === 'sword1');
 
       // Save and load
       await gameStateService.saveGameState(gameId, 'test-slot');
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const afterLoad = inventoryManager.getInventory(playerId);
-      const swordAfter = afterLoad?.items.find(i => i.itemId === 'sword1');
+      const swordAfter = afterLoad?.items.find((i) => i.itemId === 'sword1');
 
       expect(swordAfter?.metadata).toEqual(swordBefore?.metadata);
     });
@@ -1475,14 +1515,16 @@ describe('GameStateService - State Integrity After Load', () => {
       });
 
       const beforeSave = inventoryManager.getInventory(playerId);
-      const ringBefore = beforeSave?.items.find(i => i.itemId === 'magic_ring');
+      const ringBefore = beforeSave?.items.find(
+        (i) => i.itemId === 'magic_ring',
+      );
 
       // Save and load
       await gameStateService.saveGameState(gameId, 'test-slot');
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const afterLoad = inventoryManager.getInventory(playerId);
-      const ringAfter = afterLoad?.items.find(i => i.itemId === 'magic_ring');
+      const ringAfter = afterLoad?.items.find((i) => i.itemId === 'magic_ring');
 
       expect(ringAfter?.metadata).toEqual(ringBefore?.metadata);
     });
@@ -1499,8 +1541,8 @@ describe('GameStateService - State Integrity After Load', () => {
       await inventoryManager.addItem(playerId, 'unique_shield', 1);
 
       const beforeSave = inventoryManager.getInventory(playerId);
-      const uniqueItemsBefore = beforeSave?.items.filter(
-        i => i.itemId.startsWith('unique_')
+      const uniqueItemsBefore = beforeSave?.items.filter((i) =>
+        i.itemId.startsWith('unique_'),
       );
 
       // Save and load
@@ -1508,8 +1550,8 @@ describe('GameStateService - State Integrity After Load', () => {
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const afterLoad = inventoryManager.getInventory(playerId);
-      const uniqueItemsAfter = afterLoad?.items.filter(
-        i => i.itemId.startsWith('unique_')
+      const uniqueItemsAfter = afterLoad?.items.filter((i) =>
+        i.itemId.startsWith('unique_'),
       );
 
       expect(uniqueItemsAfter?.length).toBe(uniqueItemsBefore?.length);
@@ -1524,7 +1566,14 @@ describe('GameStateService - State Integrity After Load', () => {
         maxSlots: 50,
       });
 
-      const itemsToAdd = ['sword', 'shield', 'helmet', 'boots', 'potion', 'key'];
+      const itemsToAdd = [
+        'sword',
+        'shield',
+        'helmet',
+        'boots',
+        'potion',
+        'key',
+      ];
       for (const itemId of itemsToAdd) {
         await inventoryManager.addItem(playerId, itemId, 1);
       }
@@ -1539,7 +1588,7 @@ describe('GameStateService - State Integrity After Load', () => {
 
       expect(afterLoad?.items.length).toBe(beforeSave?.items.length);
       for (const itemId of itemsToAdd) {
-        expect(afterLoad?.items.find(i => i.itemId === itemId)).toBeDefined();
+        expect(afterLoad?.items.find((i) => i.itemId === itemId)).toBeDefined();
       }
     });
 
@@ -1559,18 +1608,23 @@ describe('GameStateService - State Integrity After Load', () => {
       await inventoryManager.addItem(playerId, 'arrow', 30); // Should stack
 
       const beforeSave = inventoryManager.getInventory(playerId);
-      const arrowsBefore = beforeSave?.items.filter(i => i.itemId === 'arrow');
+      const arrowsBefore = beforeSave?.items.filter(
+        (i) => i.itemId === 'arrow',
+      );
 
       // Save and load
       await gameStateService.saveGameState(gameId, 'test-slot');
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const afterLoad = inventoryManager.getInventory(playerId);
-      const arrowsAfter = afterLoad?.items.filter(i => i.itemId === 'arrow');
+      const arrowsAfter = afterLoad?.items.filter((i) => i.itemId === 'arrow');
 
       // Should be stacked into one item with quantity 80
       expect(arrowsAfter?.length).toBe(arrowsBefore?.length);
-      const totalQuantity = arrowsAfter?.reduce((sum, item) => sum + item.quantity, 0);
+      const totalQuantity = arrowsAfter?.reduce(
+        (sum, item) => sum + item.quantity,
+        0,
+      );
       expect(totalQuantity).toBe(80);
     });
 
@@ -1643,14 +1697,14 @@ describe('GameStateService - State Integrity After Load', () => {
       await inventoryManager.addItem(playerId, 'potion', 1);
 
       const beforeSave = inventoryManager.getInventory(playerId);
-      const instanceIdsBefore = beforeSave?.items.map(i => i.instanceId);
+      const instanceIdsBefore = beforeSave?.items.map((i) => i.instanceId);
 
       // Save and load
       await gameStateService.saveGameState(gameId, 'test-slot');
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const afterLoad = inventoryManager.getInventory(playerId);
-      const instanceIdsAfter = afterLoad?.items.map(i => i.instanceId);
+      const instanceIdsAfter = afterLoad?.items.map((i) => i.instanceId);
 
       expect(instanceIdsAfter).toEqual(instanceIdsBefore);
     });
@@ -1879,8 +1933,16 @@ describe('GameStateService - State Integrity After Load', () => {
         },
       });
 
-      await inventoryManager.equipItem(playerId, 'magic_sword', EquipmentSlot.MAIN_HAND);
-      await inventoryManager.equipItem(playerId, 'plate_armor', EquipmentSlot.CHEST);
+      await inventoryManager.equipItem(
+        playerId,
+        'magic_sword',
+        EquipmentSlot.MAIN_HAND,
+      );
+      await inventoryManager.equipItem(
+        playerId,
+        'plate_armor',
+        EquipmentSlot.CHEST,
+      );
 
       // Save and load
       await gameStateService.saveGameState(gameId, 'test-slot');
@@ -1900,9 +1962,24 @@ describe('GameStateService - State Integrity After Load', () => {
       const worldState = worldStateManager.initializeWorldState(gameId);
 
       const combatLog = [
-        { round: 1, action: 'player1 attacks enemy1', damage: 15, timestamp: new Date().toISOString() },
-        { round: 1, action: 'enemy1 attacks player1', damage: 10, timestamp: new Date().toISOString() },
-        { round: 2, action: 'player1 casts fireball', damage: 25, timestamp: new Date().toISOString() },
+        {
+          round: 1,
+          action: 'player1 attacks enemy1',
+          damage: 15,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          round: 1,
+          action: 'enemy1 attacks player1',
+          damage: 10,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          round: 2,
+          action: 'player1 casts fireball',
+          damage: 25,
+          timestamp: new Date().toISOString(),
+        },
       ];
 
       worldState.globalVariables['combatLog'] = combatLog;
@@ -1940,7 +2017,8 @@ describe('GameStateService - State Integrity After Load', () => {
 
       const loadedWorldState = worldStateManager.getWorldState(gameId);
       const loadedTurnOrder = loadedWorldState?.globalVariables['turnOrder'];
-      const currentIndex = loadedWorldState?.globalVariables['currentTurnIndex'];
+      const currentIndex =
+        loadedWorldState?.globalVariables['currentTurnIndex'];
 
       expect(loadedTurnOrder).toEqual(turnOrder);
       expect(currentIndex).toBe(2);
@@ -1966,7 +2044,9 @@ describe('GameStateService - State Integrity After Load', () => {
       const loadedWorldState = worldStateManager.getWorldState(gameId);
 
       expect(loadedWorldState?.globalVariables['combatActive']).toBe(true);
-      expect(loadedWorldState?.globalVariables['combatState'].canResume).toBe(true);
+      expect(loadedWorldState?.globalVariables['combatState'].canResume).toBe(
+        true,
+      );
     });
 
     it('should preserve temporary combat buffs with expiration times', async () => {
@@ -2086,20 +2166,26 @@ describe('GameStateService - State Integrity After Load', () => {
       const worldState = worldStateManager.initializeWorldState(gameId);
 
       const doorStates: Map<string, IDoorState> = new Map([
-        ['door1', {
-          doorId: 'door1',
-          isOpen: false,
-          isLocked: true,
-          requiredKeyId: 'brass_key',
-          openedBy: undefined,
-        }],
-        ['door2', {
-          doorId: 'door2',
-          isOpen: true,
-          isLocked: false,
-          openedBy: 'player1',
-          openedAt: new Date().toISOString(),
-        }],
+        [
+          'door1',
+          {
+            doorId: 'door1',
+            isOpen: false,
+            isLocked: true,
+            requiredKeyId: 'brass_key',
+            openedBy: undefined,
+          },
+        ],
+        [
+          'door2',
+          {
+            doorId: 'door2',
+            isOpen: true,
+            isLocked: false,
+            openedBy: 'player1',
+            openedAt: new Date().toISOString(),
+          },
+        ],
       ]);
 
       worldState.doors = doorStates;
@@ -2120,9 +2206,17 @@ describe('GameStateService - State Integrity After Load', () => {
       const worldState = worldStateManager.initializeWorldState(gameId);
 
       worldState.globalVariables['triggers'] = {
-        trap1: { triggered: true, triggeredBy: 'player1', triggerTime: new Date().toISOString() },
+        trap1: {
+          triggered: true,
+          triggeredBy: 'player1',
+          triggerTime: new Date().toISOString(),
+        },
         trap2: { triggered: false, triggeredBy: null, triggerTime: null },
-        event1: { triggered: true, triggeredBy: 'npc1', triggerTime: new Date().toISOString() },
+        event1: {
+          triggered: true,
+          triggeredBy: 'npc1',
+          triggerTime: new Date().toISOString(),
+        },
       };
 
       // Save and load
@@ -2142,9 +2236,21 @@ describe('GameStateService - State Integrity After Load', () => {
       const worldState = worldStateManager.initializeWorldState(gameId);
 
       const eventHistory = [
-        { eventId: 'evt1', type: 'quest_completed', timestamp: new Date().toISOString() },
-        { eventId: 'evt2', type: 'npc_defeated', timestamp: new Date().toISOString() },
-        { eventId: 'evt3', type: 'treasure_found', timestamp: new Date().toISOString() },
+        {
+          eventId: 'evt1',
+          type: 'quest_completed',
+          timestamp: new Date().toISOString(),
+        },
+        {
+          eventId: 'evt2',
+          type: 'npc_defeated',
+          timestamp: new Date().toISOString(),
+        },
+        {
+          eventId: 'evt3',
+          type: 'treasure_found',
+          timestamp: new Date().toISOString(),
+        },
       ];
 
       worldState.globalVariables['eventHistory'] = eventHistory;
@@ -2195,8 +2301,16 @@ describe('GameStateService - State Integrity After Load', () => {
       const worldState = worldStateManager.initializeWorldState(gameId);
 
       const spawnedItems = [
-        { itemId: 'loot1', spawnedAt: new Date().toISOString(), location: 'room5' },
-        { itemId: 'loot2', spawnedAt: new Date().toISOString(), location: 'room7' },
+        {
+          itemId: 'loot1',
+          spawnedAt: new Date().toISOString(),
+          location: 'room5',
+        },
+        {
+          itemId: 'loot2',
+          spawnedAt: new Date().toISOString(),
+          location: 'room7',
+        },
       ];
 
       worldState.globalVariables['spawnedItems'] = spawnedItems;
@@ -2410,7 +2524,8 @@ describe('GameStateService - State Integrity After Load', () => {
 
       const loadedPlayer = playerService.getPlayer(player.id);
       const loadedWorldState = worldStateManager.getWorldState(gameId);
-      const loadedStats = loadedWorldState?.globalVariables[`player_${player.id}_stats`];
+      const loadedStats =
+        loadedWorldState?.globalVariables[`player_${player.id}_stats`];
 
       expect(loadedPlayer?.health).toBe(87);
       expect(loadedPlayer?.maxHealth).toBe(120);
@@ -2540,8 +2655,8 @@ describe('GameStateService - State Integrity After Load', () => {
       const activeEffects = effectManager.getActiveEffects(gameId, player.id);
 
       expect(activeEffects.length).toBe(2);
-      expect(activeEffects.find(e => e.effectId === 'haste')).toBeDefined();
-      expect(activeEffects.find(e => e.effectId === 'shield')).toBeDefined();
+      expect(activeEffects.find((e) => e.effectId === 'haste')).toBeDefined();
+      expect(activeEffects.find((e) => e.effectId === 'shield')).toBeDefined();
     });
 
     it('should preserve player skill and ability states', async () => {
@@ -2579,8 +2694,10 @@ describe('GameStateService - State Integrity After Load', () => {
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const loadedWorldState = worldStateManager.getWorldState(gameId);
-      const skills = loadedWorldState?.globalVariables[`player_${player.id}_skills`];
-      const abilities = loadedWorldState?.globalVariables[`player_${player.id}_abilities`];
+      const skills =
+        loadedWorldState?.globalVariables[`player_${player.id}_skills`];
+      const abilities =
+        loadedWorldState?.globalVariables[`player_${player.id}_abilities`];
 
       expect(skills.archerySkill).toBe(40);
       expect(abilities.learned).toContain('power_shot');
@@ -2602,7 +2719,13 @@ describe('GameStateService - State Integrity After Load', () => {
 
       const worldState = worldStateManager.initializeWorldState(gameId);
       worldState.globalVariables[`player_${player.id}_spellbook`] = {
-        knownSpells: ['fireball', 'ice_shard', 'lightning_bolt', 'heal', 'teleport'],
+        knownSpells: [
+          'fireball',
+          'ice_shard',
+          'lightning_bolt',
+          'heal',
+          'teleport',
+        ],
         spellLevels: {
           fireball: 3,
           ice_shard: 2,
@@ -2617,7 +2740,8 @@ describe('GameStateService - State Integrity After Load', () => {
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const loadedWorldState = worldStateManager.getWorldState(gameId);
-      const spellbook = loadedWorldState?.globalVariables[`player_${player.id}_spellbook`];
+      const spellbook =
+        loadedWorldState?.globalVariables[`player_${player.id}_spellbook`];
 
       expect(spellbook.knownSpells.length).toBe(5);
       expect(spellbook.spellLevels.fireball).toBe(3);
@@ -2651,7 +2775,8 @@ describe('GameStateService - State Integrity After Load', () => {
 
       const loadedPlayer = playerService.getPlayer(player.id);
       const loadedWorldState = worldStateManager.getWorldState(gameId);
-      const deathState = loadedWorldState?.globalVariables[`player_${player.id}_death`];
+      const deathState =
+        loadedWorldState?.globalVariables[`player_${player.id}_death`];
 
       expect(loadedPlayer?.health).toBe(0);
       expect(deathState.isDead).toBe(true);
@@ -2716,8 +2841,8 @@ describe('GameStateService - State Integrity After Load', () => {
       const activeEffects = effectManager.getActiveEffects(gameId, player.id);
 
       expect(activeEffects.length).toBe(2);
-      const buffEffect = activeEffects.find(e => e.effectId === 'blessing');
-      const debuffEffect = activeEffects.find(e => e.effectId === 'curse');
+      const buffEffect = activeEffects.find((e) => e.effectId === 'blessing');
+      const debuffEffect = activeEffects.find((e) => e.effectId === 'curse');
 
       expect(buffEffect).toBeDefined();
       expect(debuffEffect).toBeDefined();
@@ -2750,7 +2875,8 @@ describe('GameStateService - State Integrity After Load', () => {
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const loadedWorldState = worldStateManager.getWorldState(gameId);
-      const achievements = loadedWorldState?.globalVariables[`player_${player.id}_achievements`];
+      const achievements =
+        loadedWorldState?.globalVariables[`player_${player.id}_achievements`];
 
       expect(achievements.unlocked).toContain('dragon_slayer');
       expect(achievements.progress.master_explorer).toBe(75);
@@ -2785,7 +2911,8 @@ describe('GameStateService - State Integrity After Load', () => {
       await gameStateService.loadGameState(gameId, 'test-slot');
 
       const loadedWorldState = worldStateManager.getWorldState(gameId);
-      const metadata = loadedWorldState?.globalVariables[`player_${player.id}_metadata`];
+      const metadata =
+        loadedWorldState?.globalVariables[`player_${player.id}_metadata`];
 
       expect(metadata.playTime).toBe(7200000);
       expect(metadata.questsCompleted).toBe(15);
@@ -2821,9 +2948,7 @@ describe('GameStateService - State Integrity After Load', () => {
         round: 7,
         turnOrder: ['player1', 'boss1'],
         currentTurn: 1,
-        combatLog: [
-          { round: 7, action: 'player1 attacks', damage: 25 },
-        ],
+        combatLog: [{ round: 7, action: 'player1 attacks', damage: 25 }],
       };
 
       // Save during combat

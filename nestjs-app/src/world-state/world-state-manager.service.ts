@@ -14,10 +14,18 @@ import {
 } from './world-state.interfaces';
 import { EventEmitterService } from '../events/event-emitter.service';
 import { GameEventType } from '../events/event.interfaces';
+import { DatabaseService } from '../database/database.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Mutex, withTimeout } from 'async-mutex';
 
 /**
  * Manages persistent world state changes
+ *
+ * CONCURRENCY PROTECTION:
+ * - Uses Mutex locks to prevent race conditions in world state updates
+ * - Per-game locks prevent concurrent modifications to world state
+ * - Prevents lost updates when multiple operations modify state simultaneously
+ * - All locks have 5-second timeout to prevent permanent deadlocks
  */
 @Injectable()
 export class WorldStateManagerService {
@@ -26,12 +34,40 @@ export class WorldStateManagerService {
   private changeHistory: Map<string, IStateChange[]> = new Map(); // gameId -> changes
   private readonly MAX_HISTORY = 1000; // Max changes to keep per game
 
-  constructor(private readonly eventEmitter: EventEmitterService) {}
+  // Concurrency protection
+  private readonly worldStateLocks = new Map<string, Mutex>();
+  private readonly LOCK_TIMEOUT = 5000;
+
+  constructor(
+    private readonly eventEmitter: EventEmitterService,
+    private readonly databaseService: DatabaseService,
+  ) {}
+
+  /**
+   * Get or create a lock for a specific game's world state
+   */
+  private getWorldStateLock(gameId: string): Mutex {
+    if (!this.worldStateLocks.has(gameId)) {
+      this.worldStateLocks.set(gameId, new Mutex());
+    }
+    return this.worldStateLocks.get(gameId)!;
+  }
 
   /**
    * Initialize world state for a game
    */
-  initializeWorldState(gameId: string): IWorldState {
+  async initializeWorldState(gameId: string): Promise<IWorldState> {
+    // Try to load from database first
+    const loadedState = await this.loadWorldStateFromDatabase(gameId);
+
+    if (loadedState) {
+      this.worldStates.set(gameId, loadedState);
+      this.changeHistory.set(gameId, []);
+      this.logger.log(`Loaded world state for game ${gameId} from database`);
+      return loadedState;
+    }
+
+    // Create new world state if none exists
     const worldState: IWorldState = {
       gameId,
       doors: new Map(),
@@ -46,136 +82,171 @@ export class WorldStateManagerService {
     this.worldStates.set(gameId, worldState);
     this.changeHistory.set(gameId, []);
 
-    this.logger.log(`Initialized world state for game ${gameId}`);
+    this.logger.log(`Initialized new world state for game ${gameId}`);
     return worldState;
   }
 
   /**
    * Update world state
+   * THREAD-SAFE: Acquires world state lock to prevent concurrent state modifications
    */
   async updateState(request: IStateUpdateRequest): Promise<IStateUpdateResult> {
-    let worldState = this.worldStates.get(request.gameId);
+    const lock = this.getWorldStateLock(request.gameId);
 
-    if (!worldState) {
-      worldState = this.initializeWorldState(request.gameId);
-    }
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          let worldState = this.worldStates.get(request.gameId);
 
-    let previousState: any;
-    let newState: any;
+          if (!worldState) {
+            worldState = await this.initializeWorldState(request.gameId);
+          }
 
-    // Handle different entity types
-    switch (request.entityType) {
-      case 'door':
-        const result = this.updateDoorState(
-          worldState,
-          request.entityId,
-          request.newState,
-          request.changedBy,
+          let previousState: any;
+          let newState: any;
+
+          // Handle different entity types
+          switch (request.entityType) {
+            case 'door':
+              const result = this.updateDoorState(
+                worldState,
+                request.entityId,
+                request.newState,
+                request.changedBy,
+              );
+              previousState = result.previousState;
+              newState = result.newState;
+              break;
+
+            case 'object':
+              const objResult = this.updateObjectState(
+                worldState,
+                request.entityId,
+                request.newState,
+                request.changedBy,
+              );
+              previousState = objResult.previousState;
+              newState = objResult.newState;
+              break;
+
+            case 'npc':
+              const npcResult = this.updateNpcState(
+                worldState,
+                request.entityId,
+                request.newState,
+                request.changedBy,
+              );
+              previousState = npcResult.previousState;
+              newState = npcResult.newState;
+              break;
+
+            case 'environment':
+              const envResult = this.updateEnvironmentState(
+                worldState,
+                request.entityId,
+                request.newState,
+              );
+              previousState = envResult.previousState;
+              newState = envResult.newState;
+              break;
+
+            case 'global':
+              // Handle global flags/variables
+              if (request.changeType === StateChangeType.CUSTOM) {
+                previousState = {
+                  ...worldState.globalFlags,
+                  ...worldState.globalVariables,
+                };
+                Object.assign(
+                  worldState.globalFlags,
+                  request.newState.flags || {},
+                );
+                Object.assign(
+                  worldState.globalVariables,
+                  request.newState.variables || {},
+                );
+                newState = {
+                  ...worldState.globalFlags,
+                  ...worldState.globalVariables,
+                };
+              }
+              break;
+
+            default:
+              return {
+                success: false,
+                message: `Unknown entity type: ${request.entityType}`,
+              };
+          }
+
+          // Record state change
+          const stateChange: IStateChange = {
+            id: uuidv4(),
+            gameId: request.gameId,
+            changeType: request.changeType,
+            entityId: request.entityId,
+            entityType: request.entityType,
+            previousState,
+            newState,
+            changedBy: request.changedBy,
+            timestamp: new Date().toISOString(),
+            reason: request.reason,
+          };
+
+          // Add to history
+          const history = this.changeHistory.get(request.gameId) || [];
+          history.push(stateChange);
+
+          // Trim history if needed
+          if (history.length > this.MAX_HISTORY) {
+            history.shift();
+          }
+
+          this.changeHistory.set(request.gameId, history);
+
+          // Update world state timestamp
+          worldState.lastUpdated = new Date().toISOString();
+
+          // Save to database
+          await this.saveWorldStateToDatabase(request.gameId, worldState);
+
+          // Emit event
+          await this.eventEmitter.emit(
+            GameEventType.CUSTOM_EVENT,
+            {
+              action: 'world_state_changed',
+              changeType: request.changeType,
+              entityId: request.entityId,
+              entityType: request.entityType,
+            },
+            request.gameId,
+          );
+
+          this.logger.log(
+            `Updated ${request.entityType} state: ${request.entityId} (${request.changeType})`,
+          );
+
+          return {
+            success: true,
+            message: 'State updated successfully',
+            stateChange,
+            previousState,
+            newState,
+          };
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(
+          `Lock timeout updating world state for game ${request.gameId}`,
         );
-        previousState = result.previousState;
-        newState = result.newState;
-        break;
-
-      case 'object':
-        const objResult = this.updateObjectState(
-          worldState,
-          request.entityId,
-          request.newState,
-          request.changedBy,
-        );
-        previousState = objResult.previousState;
-        newState = objResult.newState;
-        break;
-
-      case 'npc':
-        const npcResult = this.updateNpcState(
-          worldState,
-          request.entityId,
-          request.newState,
-          request.changedBy,
-        );
-        previousState = npcResult.previousState;
-        newState = npcResult.newState;
-        break;
-
-      case 'environment':
-        const envResult = this.updateEnvironmentState(
-          worldState,
-          request.entityId,
-          request.newState,
-        );
-        previousState = envResult.previousState;
-        newState = envResult.newState;
-        break;
-
-      case 'global':
-        // Handle global flags/variables
-        if (request.changeType === StateChangeType.CUSTOM) {
-          previousState = { ...worldState.globalFlags, ...worldState.globalVariables };
-          Object.assign(worldState.globalFlags, request.newState.flags || {});
-          Object.assign(worldState.globalVariables, request.newState.variables || {});
-          newState = { ...worldState.globalFlags, ...worldState.globalVariables };
-        }
-        break;
-
-      default:
         return {
           success: false,
-          message: `Unknown entity type: ${request.entityType}`,
+          message: 'Operation timed out, please try again',
         };
+      }
+      throw error;
     }
-
-    // Record state change
-    const stateChange: IStateChange = {
-      id: uuidv4(),
-      gameId: request.gameId,
-      changeType: request.changeType,
-      entityId: request.entityId,
-      entityType: request.entityType,
-      previousState,
-      newState,
-      changedBy: request.changedBy,
-      timestamp: new Date().toISOString(),
-      reason: request.reason,
-    };
-
-    // Add to history
-    const history = this.changeHistory.get(request.gameId) || [];
-    history.push(stateChange);
-
-    // Trim history if needed
-    if (history.length > this.MAX_HISTORY) {
-      history.shift();
-    }
-
-    this.changeHistory.set(request.gameId, history);
-
-    // Update world state timestamp
-    worldState.lastUpdated = new Date().toISOString();
-
-    // Emit event
-    await this.eventEmitter.emit(
-      GameEventType.CUSTOM_EVENT,
-      {
-        action: 'world_state_changed',
-        changeType: request.changeType,
-        entityId: request.entityId,
-        entityType: request.entityType,
-      },
-      request.gameId,
-    );
-
-    this.logger.log(
-      `Updated ${request.entityType} state: ${request.entityId} (${request.changeType})`,
-    );
-
-    return {
-      success: true,
-      message: 'State updated successfully',
-      stateChange,
-      previousState,
-      newState,
-    };
   }
 
   /**
@@ -195,7 +266,9 @@ export class WorldStateManagerService {
       isLocked: newState.isLocked ?? previousState?.isLocked ?? false,
       requiredKeyId: newState.requiredKeyId ?? previousState?.requiredKeyId,
       openedBy: newState.isOpen ? changedBy : previousState?.openedBy,
-      openedAt: newState.isOpen ? new Date().toISOString() : previousState?.openedAt,
+      openedAt: newState.isOpen
+        ? new Date().toISOString()
+        : previousState?.openedAt,
     };
 
     worldState.doors.set(doorId, updatedState);
@@ -247,7 +320,8 @@ export class WorldStateManagerService {
       roomId: newState.roomId ?? previousState?.roomId,
       health: newState.health ?? previousState?.health,
       attitude: newState.attitude ?? previousState?.attitude,
-      currentActivity: newState.currentActivity ?? previousState?.currentActivity,
+      currentActivity:
+        newState.currentActivity ?? previousState?.currentActivity,
       customState: { ...previousState?.customState, ...newState.customState },
       lastModified: new Date().toISOString(),
       modifiedBy: changedBy,
@@ -310,7 +384,10 @@ export class WorldStateManagerService {
   /**
    * Get environment state
    */
-  getEnvironmentState(gameId: string, roomId: string): IEnvironmentState | undefined {
+  getEnvironmentState(
+    gameId: string,
+    roomId: string,
+  ): IEnvironmentState | undefined {
     const worldState = this.worldStates.get(gameId);
     return worldState?.environments.get(roomId);
   }
@@ -333,10 +410,12 @@ export class WorldStateManagerService {
     }
 
     return history.filter((change) => {
-      if (query.entityType && change.entityType !== query.entityType) return false;
+      if (query.entityType && change.entityType !== query.entityType)
+        return false;
       if (query.entityId && change.entityId !== query.entityId) return false;
       if (query.changedBy && change.changedBy !== query.changedBy) return false;
-      if (query.changeType && change.changeType !== query.changeType) return false;
+      if (query.changeType && change.changeType !== query.changeType)
+        return false;
 
       if (query.fromTimestamp) {
         const changeTime = new Date(change.timestamp).getTime();
@@ -357,7 +436,10 @@ export class WorldStateManagerService {
   /**
    * Revert state change
    */
-  async revertStateChange(gameId: string, changeId: string): Promise<IStateUpdateResult> {
+  async revertStateChange(
+    gameId: string,
+    changeId: string,
+  ): Promise<IStateUpdateResult> {
     const history = this.changeHistory.get(gameId) || [];
     const change = history.find((c) => c.id === changeId);
 
@@ -470,7 +552,9 @@ export class WorldStateManagerService {
       const worldState: IWorldState = {
         gameId,
         doors: new Map(data.doors.map((d: IDoorState) => [d.doorId, d])),
-        objects: new Map(data.objects.map((o: IObjectState) => [o.objectId, o])),
+        objects: new Map(
+          data.objects.map((o: IObjectState) => [o.objectId, o]),
+        ),
         npcs: new Map(data.npcs.map((n: INpcState) => [n.npcId, n])),
         environments: new Map(
           data.environments.map((e: IEnvironmentState) => [e.roomId, e]),
@@ -485,8 +569,140 @@ export class WorldStateManagerService {
 
       return true;
     } catch (error) {
-      this.logger.error(`Failed to import world state: ${error.message}`, error);
+      this.logger.error(
+        `Failed to import world state: ${error.message}`,
+        error,
+      );
       return false;
+    }
+  }
+
+  /**
+   * Save world state to database
+   */
+  private async saveWorldStateToDatabase(
+    gameId: string,
+    worldState: IWorldState,
+  ): Promise<void> {
+    try {
+      // Convert Maps to arrays for JSON serialization
+      const doorsArray = Array.from(worldState.doors.values());
+      const objectsArray = Array.from(worldState.objects.values());
+      const npcsArray = Array.from(worldState.npcs.values());
+      const environmentsArray = Array.from(worldState.environments.values());
+
+      const db = this.databaseService.getDatabase();
+
+      // Upsert world state
+      const stmt = db.prepare(`
+        INSERT INTO world_states (
+          game_id,
+          doors_state,
+          objects_state,
+          npcs_state,
+          environments_state,
+          global_flags,
+          global_variables,
+          last_updated
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(game_id) DO UPDATE SET
+          doors_state = excluded.doors_state,
+          objects_state = excluded.objects_state,
+          npcs_state = excluded.npcs_state,
+          environments_state = excluded.environments_state,
+          global_flags = excluded.global_flags,
+          global_variables = excluded.global_variables,
+          last_updated = excluded.last_updated
+      `);
+
+      stmt.run(
+        gameId,
+        JSON.stringify(doorsArray),
+        JSON.stringify(objectsArray),
+        JSON.stringify(npcsArray),
+        JSON.stringify(environmentsArray),
+        JSON.stringify(worldState.globalFlags),
+        JSON.stringify(worldState.globalVariables),
+        worldState.lastUpdated,
+      );
+
+      this.logger.debug(`Saved world state to database for game ${gameId}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to save world state to database for game ${gameId}: ${error.message}`,
+        error.stack,
+      );
+      // Don't throw - log error but continue execution
+    }
+  }
+
+  /**
+   * Load world state from database
+   */
+  private async loadWorldStateFromDatabase(
+    gameId: string,
+  ): Promise<IWorldState | null> {
+    try {
+      const db = this.databaseService.getDatabase();
+
+      const stmt = db.prepare(`
+        SELECT
+          doors_state,
+          objects_state,
+          npcs_state,
+          environments_state,
+          global_flags,
+          global_variables,
+          last_updated
+        FROM world_states
+        WHERE game_id = ?
+      `);
+
+      const row = stmt.get(gameId) as
+        | {
+            doors_state: string;
+            objects_state: string;
+            npcs_state: string;
+            environments_state: string;
+            global_flags: string;
+            global_variables: string;
+            last_updated: string;
+          }
+        | undefined;
+
+      if (!row) {
+        return null;
+      }
+
+      // Parse JSON and convert arrays back to Maps
+      const doorsArray: IDoorState[] = JSON.parse(row.doors_state || '[]');
+      const objectsArray: IObjectState[] = JSON.parse(
+        row.objects_state || '[]',
+      );
+      const npcsArray: INpcState[] = JSON.parse(row.npcs_state || '[]');
+      const environmentsArray: IEnvironmentState[] = JSON.parse(
+        row.environments_state || '[]',
+      );
+
+      const worldState: IWorldState = {
+        gameId,
+        doors: new Map(doorsArray.map((d) => [d.doorId, d])),
+        objects: new Map(objectsArray.map((o) => [o.objectId, o])),
+        npcs: new Map(npcsArray.map((n) => [n.npcId, n])),
+        environments: new Map(environmentsArray.map((e) => [e.roomId, e])),
+        globalFlags: JSON.parse(row.global_flags || '{}'),
+        globalVariables: JSON.parse(row.global_variables || '{}'),
+        lastUpdated: row.last_updated,
+      };
+
+      this.logger.debug(`Loaded world state from database for game ${gameId}`);
+      return worldState;
+    } catch (error) {
+      this.logger.error(
+        `Failed to load world state from database for game ${gameId}: ${error.message}`,
+        error.stack,
+      );
+      return null;
     }
   }
 

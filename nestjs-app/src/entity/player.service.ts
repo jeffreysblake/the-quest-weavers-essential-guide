@@ -9,11 +9,23 @@ import { IPhysicsEffect, EffectType } from './physics.interface';
 import { DatabaseService } from '../database/database.service';
 import { NPCData } from '../database/database.interfaces';
 import { v4 as uuidv4 } from 'uuid';
+import { Mutex, withTimeout } from 'async-mutex';
 
+/**
+ * CONCURRENCY PROTECTION:
+ * - Uses Mutex locks to prevent race conditions in player operations
+ * - Per-player locks prevent concurrent modifications to player state
+ * - Prevents inventory duplication and lost updates
+ * - All locks have 5-second timeout to prevent permanent deadlocks
+ */
 @Injectable()
 export class PlayerService {
   private readonly logger = new Logger(PlayerService.name);
   private players: Map<string, IPlayer> = new Map();
+
+  // Concurrency protection
+  private readonly playerLocks = new Map<string, Mutex>();
+  private readonly LOCK_TIMEOUT = 5000;
 
   constructor(
     private readonly entityService: EntityService,
@@ -22,7 +34,17 @@ export class PlayerService {
     private readonly databaseService?: DatabaseService,
   ) {}
 
-  createPlayer(playerData: Omit<IPlayer, 'id' | 'type'>): IPlayer {
+  /**
+   * Get or create a lock for a specific player
+   */
+  private getPlayerLock(playerId: string): Mutex {
+    if (!this.playerLocks.has(playerId)) {
+      this.playerLocks.set(playerId, new Mutex());
+    }
+    return this.playerLocks.get(playerId)!;
+  }
+
+  async createPlayer(playerData: Omit<IPlayer, 'id' | 'type'>): Promise<IPlayer> {
     // Create player with generated ID
     const player: IPlayer = {
       ...playerData,
@@ -38,7 +60,14 @@ export class PlayerService {
     this.players.set(player.id, player);
 
     // Also create in EntityService for compatibility
-    this.entityService.createEntity(player);
+    try {
+      await this.entityService.createEntity(player);
+    } catch (error) {
+      this.logger.error(`Failed to create player entity ${player.id}:`, error);
+      // Remove from cache if entity creation failed
+      this.players.delete(player.id);
+      throw error;
+    }
 
     // Don't save automatically to prevent race conditions with explicit persistGame() calls
     // The player is cached in memory and will be persisted when persistGame() is called
@@ -67,24 +96,24 @@ export class PlayerService {
     return this.getPlayer(id);
   }
 
-  create(playerData: Omit<IPlayer, 'id' | 'type'>): IPlayer {
-    return this.createPlayer(playerData);
+  async create(playerData: Omit<IPlayer, 'id' | 'type'>): Promise<IPlayer> {
+    return await this.createPlayer(playerData);
   }
 
   findAll(): IPlayer[] {
     return Array.from(this.players.values());
   }
 
-  update(id: string, updates: Partial<IPlayer>): boolean {
-    return this.updatePlayer(id, updates);
+  async update(id: string, updates: Partial<IPlayer>): Promise<boolean> {
+    return await this.updatePlayer(id, updates);
   }
 
-  moveToRoom(playerId: string, roomId: string): boolean {
+  async moveToRoom(playerId: string, roomId: string): Promise<boolean> {
     const player = this.getPlayer(playerId);
     if (!player) return false;
 
     player.roomId = roomId;
-    this.updatePlayer(playerId, { roomId });
+    await this.updatePlayer(playerId, { roomId });
     return true;
   }
 
@@ -111,7 +140,11 @@ export class PlayerService {
       player = await this.loadPlayerFromDatabase(id, gameId);
       if (player) {
         this.players.set(player.id, player);
-        this.entityService.createEntity(player); // Sync with EntityService
+        try {
+          await this.entityService.createEntity(player); // Sync with EntityService
+        } catch (error) {
+          this.logger.error(`Failed to sync player ${player.id} with EntityService:`, error);
+        }
         return player;
       }
     }
@@ -151,10 +184,10 @@ export class PlayerService {
     return inMemoryPlayers;
   }
 
-  updatePlayer(
+  async updatePlayer(
     id: string,
     updates: Partial<Omit<IPlayer, 'id' | 'type'>>,
-  ): boolean {
+  ): Promise<boolean> {
     const player = this.getPlayer(id);
     if (!player) return false;
 
@@ -168,25 +201,30 @@ export class PlayerService {
     this.players.set(id, player);
 
     // Update the entity service
-    return this.entityService.updateEntity(id, {
-      ...updates,
-      type: 'player',
-    });
+    try {
+      return await this.entityService.updateEntity(id, {
+        ...updates,
+        type: 'player',
+      });
+    } catch (error) {
+      this.logger.error(`Failed to update player entity ${id}:`, error);
+      return false;
+    }
   }
 
-  addInventoryItem(playerId: string, item: any): boolean {
+  async addInventoryItem(playerId: string, item: any): Promise<boolean> {
     const player = this.getPlayer(playerId);
     if (!player) return false;
 
     player.inventory.push(item);
-    return this.updatePlayer(playerId, { inventory: player.inventory });
+    return await this.updatePlayer(playerId, { inventory: player.inventory });
   }
 
-  interactWithObject(
+  async interactWithObject(
     playerId: string,
     objectId: string,
     action: string = 'examine',
-  ): IInteractionResult {
+  ): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
     const object = this.objectService.getObject(objectId);
 
@@ -202,11 +240,11 @@ export class PlayerService {
         return this.examineObjectInternal(player, object);
       case 'take':
       case 'pickup':
-        return this.takeObjectInternal(player, object);
+        return await this.takeObjectInternal(player, object);
       case 'open':
-        return this.openContainer(player, object);
+        return await this.openContainer(player, object);
       case 'close':
-        return this.closeContainer(player, object);
+        return await this.closeContainer(player, object);
       case 'use':
         return this.useObjectInternal(player, object);
       default:
@@ -217,7 +255,10 @@ export class PlayerService {
     }
   }
 
-  private examineObjectInternal(player: IPlayer, object: IObject): IInteractionResult {
+  private examineObjectInternal(
+    player: IPlayer,
+    object: IObject,
+  ): IInteractionResult {
     let description = `You examine the ${object.name}.`;
 
     if (object.spatialRelationship) {
@@ -241,7 +282,10 @@ export class PlayerService {
     };
   }
 
-  private takeObjectInternal(player: IPlayer, object: IObject): IInteractionResult {
+  private async takeObjectInternal(
+    player: IPlayer,
+    object: IObject,
+  ): Promise<IInteractionResult> {
     if (!object.isPortable) {
       return {
         success: false,
@@ -261,8 +305,12 @@ export class PlayerService {
     player.inventory.push(object.id);
     object.spatialRelationship = undefined;
 
-    this.updatePlayer(player.id, { inventory: player.inventory });
-    this.entityService.updateEntity(object.id, object);
+    await this.updatePlayer(player.id, { inventory: player.inventory });
+    try {
+      await this.entityService.updateEntity(object.id, object);
+    } catch (error) {
+      this.logger.error(`Failed to update object entity ${object.id}:`, error);
+    }
 
     return {
       success: true,
@@ -273,7 +321,7 @@ export class PlayerService {
     };
   }
 
-  private openContainer(player: IPlayer, object: IObject): IInteractionResult {
+  private async openContainer(player: IPlayer, object: IObject): Promise<IInteractionResult> {
     if (!object.isContainer) {
       return {
         success: false,
@@ -296,7 +344,11 @@ export class PlayerService {
     }
 
     object.state = { ...object.state, isOpen: true };
-    this.entityService.updateEntity(object.id, object);
+    try {
+      await this.entityService.updateEntity(object.id, object);
+    } catch (error) {
+      this.logger.error(`Failed to update object entity ${object.id}:`, error);
+    }
 
     return {
       success: true,
@@ -307,7 +359,7 @@ export class PlayerService {
     };
   }
 
-  private closeContainer(player: IPlayer, object: IObject): IInteractionResult {
+  private async closeContainer(player: IPlayer, object: IObject): Promise<IInteractionResult> {
     if (!object.isContainer) {
       return {
         success: false,
@@ -323,7 +375,11 @@ export class PlayerService {
     }
 
     object.state = { ...object.state, isOpen: false };
-    this.entityService.updateEntity(object.id, object);
+    try {
+      await this.entityService.updateEntity(object.id, object);
+    } catch (error) {
+      this.logger.error(`Failed to update object entity ${object.id}:`, error);
+    }
 
     return {
       success: true,
@@ -334,7 +390,10 @@ export class PlayerService {
     };
   }
 
-  private useObjectInternal(player: IPlayer, object: IObject): IInteractionResult {
+  private useObjectInternal(
+    player: IPlayer,
+    object: IObject,
+  ): IInteractionResult {
     // Basic use implementation - can be extended based on object type
     switch (object.objectType) {
       case 'weapon':
@@ -377,6 +436,29 @@ export class PlayerService {
         success: false,
         message: 'Player not found',
       };
+    }
+
+    // VALIDATION: Validate intensity parameter to prevent crashes
+    if (typeof intensity !== 'number' || Number.isNaN(intensity) || !Number.isFinite(intensity)) {
+      this.logger.error(`castSpell: Invalid intensity value: ${intensity}`);
+      return {
+        success: false,
+        message: 'Invalid spell intensity',
+      };
+    }
+
+    // VALIDATION: Ensure intensity is positive and reasonable
+    if (intensity < 0) {
+      this.logger.error(`castSpell: Negative intensity not allowed: ${intensity}`);
+      return {
+        success: false,
+        message: 'Spell intensity must be positive',
+      };
+    }
+
+    if (intensity > 1000) {
+      this.logger.warn(`castSpell: Capping extremely high intensity from ${intensity} to 1000`);
+      intensity = 1000; // Cap at reasonable maximum
     }
 
     const effect: IPhysicsEffect = {
@@ -466,34 +548,77 @@ export class PlayerService {
   }
 
   // Missing methods for game service compatibility
-  movePlayer(
+  async movePlayer(
     playerId: string,
     newPosition: { x: number; y: number; z: number },
-  ): boolean {
-    return this.updatePlayer(playerId, { position: newPosition });
+  ): Promise<boolean> {
+    return await this.updatePlayer(playerId, { position: newPosition });
   }
 
-  addToInventory(playerId: string, itemId: string): boolean {
-    const player = this.getPlayer(playerId);
-    if (!player) return false;
+  /**
+   * Add item to player inventory
+   * THREAD-SAFE: Acquires player lock to prevent duplicate additions
+   */
+  async addToInventory(playerId: string, itemId: string): Promise<boolean> {
+    const lock = this.getPlayerLock(playerId);
 
-    if (!player.inventory.includes(itemId)) {
-      player.inventory.push(itemId);
-      return this.updatePlayer(playerId, { inventory: player.inventory });
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const player = this.getPlayer(playerId);
+          if (!player) return false;
+
+          if (!player.inventory.includes(itemId)) {
+            player.inventory.push(itemId);
+            return await this.updatePlayer(playerId, { inventory: player.inventory });
+          }
+          return true;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(
+          `Lock timeout adding to inventory for player ${playerId}`,
+        );
+        return false;
+      }
+      throw error;
     }
-    return true;
   }
 
-  removeFromInventory(playerId: string, itemId: string): boolean {
-    const player = this.getPlayer(playerId);
-    if (!player) return false;
+  /**
+   * Remove item from player inventory
+   * THREAD-SAFE: Acquires player lock to prevent concurrent modifications
+   */
+  async removeFromInventory(
+    playerId: string,
+    itemId: string,
+  ): Promise<boolean> {
+    const lock = this.getPlayerLock(playerId);
 
-    const index = player.inventory.indexOf(itemId);
-    if (index > -1) {
-      player.inventory.splice(index, 1);
-      return this.updatePlayer(playerId, { inventory: player.inventory });
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const player = this.getPlayer(playerId);
+          if (!player) return false;
+
+          const index = player.inventory.indexOf(itemId);
+          if (index > -1) {
+            player.inventory.splice(index, 1);
+            return await this.updatePlayer(playerId, { inventory: player.inventory });
+          }
+          return false;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(
+          `Lock timeout removing from inventory for player ${playerId}`,
+        );
+        return false;
+      }
+      throw error;
     }
-    return false;
   }
 
   getInventory(playerId: string): any[] {
@@ -642,7 +767,11 @@ export class PlayerService {
       const player = await this.loadPlayerFromDatabase(playerId, gameId);
       if (player) {
         this.players.set(playerId, player);
-        this.entityService.createEntity(player); // Sync with EntityService
+        try {
+          await this.entityService.createEntity(player); // Sync with EntityService
+        } catch (error) {
+          this.logger.error(`Failed to sync player ${playerId} with EntityService:`, error);
+        }
         return player;
       }
     }
@@ -730,6 +859,22 @@ export class PlayerService {
 
       if (!playerRow) return undefined;
 
+      // ERROR HANDLING: Safe JSON parsing with try-catch
+      let inventory: string[] = [];
+      if (playerRow.inventory_data) {
+        try {
+          inventory = JSON.parse(playerRow.inventory_data);
+          // Validate that parsed data is an array
+          if (!Array.isArray(inventory)) {
+            this.logger.error(`loadPlayerFromDatabase: inventory_data is not an array for player ${playerRow.id}`);
+            inventory = [];
+          }
+        } catch (error) {
+          this.logger.error(`loadPlayerFromDatabase: Failed to parse inventory_data for player ${playerRow.id}: ${error.message}`);
+          inventory = [];
+        }
+      }
+
       // Convert database format to IPlayer
       const player: IPlayer = {
         id: playerRow.id,
@@ -743,9 +888,7 @@ export class PlayerService {
         health: playerRow.health || 100,
         level: playerRow.level || 1,
         experience: playerRow.experience || 0,
-        inventory: playerRow.inventory_data
-          ? JSON.parse(playerRow.inventory_data)
-          : [],
+        inventory: inventory,
         gameId: playerRow.game_id,
       };
 
@@ -759,27 +902,65 @@ export class PlayerService {
     }
   }
 
+  /**
+   * Load multiple players by IDs in a single batch query
+   * Prevents N+1 query pattern by using WHERE id IN (...)
+   */
+  async loadMultiplePlayers(playerIds: string[]): Promise<IPlayer[]> {
+    if (!this.databaseService || playerIds.length === 0) return [];
+
+    try {
+      // Batch load player data
+      const placeholders = playerIds.map(() => '?').join(',');
+      const playerQuery = this.databaseService.prepare(`
+        SELECT * FROM npcs WHERE id IN (${placeholders})
+      `);
+      const playerRows = playerQuery.all(...playerIds) as any[];
+
+      // Convert to IPlayer objects
+      const players: IPlayer[] = playerRows.map((playerRow) => {
+        const player: IPlayer = {
+          id: playerRow.id,
+          name: playerRow.name,
+          type: 'player',
+          position: {
+            x: playerRow.position_x || 0,
+            y: playerRow.position_y || 0,
+            z: playerRow.position_z || 0,
+          },
+          health: playerRow.health || 100,
+          level: playerRow.level || 1,
+          experience: playerRow.experience || 0,
+          inventory: playerRow.inventory_data
+            ? JSON.parse(playerRow.inventory_data)
+            : [],
+          gameId: playerRow.game_id,
+        };
+        return player;
+      });
+
+      return players;
+    } catch (error) {
+      this.logger.error('Failed to batch load players from database:', error);
+      return [];
+    }
+  }
+
   private async loadGamePlayersFromDatabase(
     gameId: string,
   ): Promise<IPlayer[]> {
     if (!this.databaseService) return [];
 
     try {
+      // First get all player IDs for this game
       const query = this.databaseService.prepare(
-        'SELECT * FROM npcs WHERE game_id = ?',
+        'SELECT id FROM npcs WHERE game_id = ?',
       );
       const rows = query.all(gameId) as any[];
+      const playerIds = rows.map((row) => row.id);
 
-      const players: IPlayer[] = [];
-
-      for (const row of rows) {
-        const player = await this.loadPlayerFromDatabase(row.id, gameId);
-        if (player) {
-          players.push(player);
-        }
-      }
-
-      return players;
+      // Use batch loading to prevent N+1 queries
+      return await this.loadMultiplePlayers(playerIds);
     } catch (error) {
       this.logger.error(
         `Failed to load players for game ${gameId} from database:`,
@@ -793,19 +974,13 @@ export class PlayerService {
     if (!this.databaseService) return [];
 
     try {
-      const query = this.databaseService.prepare('SELECT * FROM npcs');
+      // First get all player IDs
+      const query = this.databaseService.prepare('SELECT id FROM npcs');
       const rows = query.all() as any[];
+      const playerIds = rows.map((row) => row.id);
 
-      const players: IPlayer[] = [];
-
-      for (const row of rows) {
-        const player = await this.loadPlayerFromDatabase(row.id);
-        if (player) {
-          players.push(player);
-        }
-      }
-
-      return players;
+      // Use batch loading to prevent N+1 queries
+      return await this.loadMultiplePlayers(playerIds);
     } catch (error) {
       this.logger.error('Failed to load all players from database:', error);
       return [];
@@ -916,7 +1091,7 @@ export class PlayerService {
    * @param objectId - The object's ID
    * @returns Interaction result with success/failure message
    */
-  giveObjectToPlayer(playerId: string, objectId: string): IInteractionResult {
+  async giveObjectToPlayer(playerId: string, objectId: string): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
     if (!player) {
       return {
@@ -933,7 +1108,7 @@ export class PlayerService {
       };
     }
 
-    const success = this.addToInventory(playerId, objectId);
+    const success = await this.addToInventory(playerId, objectId);
     if (success) {
       return {
         success: true,
@@ -976,9 +1151,7 @@ export class PlayerService {
     // Sort based on criteria
     switch (sortBy) {
       case 'name':
-        return inventoryObjects.sort((a, b) =>
-          a.name.localeCompare(b.name),
-        );
+        return inventoryObjects.sort((a, b) => a.name.localeCompare(b.name));
       case 'type':
         return inventoryObjects.sort((a, b) =>
           a.objectType.localeCompare(b.objectType),
@@ -1098,10 +1271,16 @@ export class PlayerService {
         if (typeof criteria.value === 'number') {
           if (objValue !== criteria.value) return false;
         } else if (typeof criteria.value === 'object') {
-          if (criteria.value.min !== undefined && objValue < criteria.value.min) {
+          if (
+            criteria.value.min !== undefined &&
+            objValue < criteria.value.min
+          ) {
             return false;
           }
-          if (criteria.value.max !== undefined && objValue > criteria.value.max) {
+          if (
+            criteria.value.max !== undefined &&
+            objValue > criteria.value.max
+          ) {
             return false;
           }
         }
@@ -1154,7 +1333,7 @@ export class PlayerService {
    * @param objectId - The object ID to drop
    * @returns Success/failure result
    */
-  dropObject(playerId: string, objectId: string): IInteractionResult {
+  async dropObject(playerId: string, objectId: string): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
     if (!player) {
       return {
@@ -1182,13 +1361,17 @@ export class PlayerService {
 
     // Remove from player's inventory
     player.inventory.splice(inventoryIndex, 1);
-    this.updatePlayer(playerId, { inventory: player.inventory });
+    await this.updatePlayer(playerId, { inventory: player.inventory });
 
     // If player has a current room, add object to that room
     if (player.roomId) {
       // Update object's room ID
       object.roomId = player.roomId;
-      this.entityService.updateEntity(objectId, object);
+      try {
+        await this.entityService.updateEntity(objectId, object);
+      } catch (error) {
+        this.logger.error(`Failed to update object entity ${objectId}:`, error);
+      }
 
       return {
         success: true,

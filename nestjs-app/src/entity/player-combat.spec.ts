@@ -177,7 +177,9 @@ describe('PlayerService - Combat System Tests', () => {
 
       const updatedPlayer = service.getPlayer(player.id);
       // Implementation should cap at maxHealth
-      expect(updatedPlayer?.health).toBeLessThanOrEqual(updatedPlayer?.maxHealth || 100);
+      expect(updatedPlayer?.health).toBeLessThanOrEqual(
+        updatedPlayer?.maxHealth || 100,
+      );
     });
 
     it('should handle health with undefined maxHealth', () => {
@@ -259,7 +261,12 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 100,
       });
 
-      const result = service.castSpell(player.id, 'fire', 'nonexistent-target', 5);
+      const result = service.castSpell(
+        player.id,
+        'fire',
+        'nonexistent-target',
+        5,
+      );
 
       // Should fail or return appropriate error
       expect(result).toBeDefined();
@@ -326,7 +333,12 @@ describe('PlayerService - Combat System Tests', () => {
         maxHealth: 50,
       });
 
-      const result = service.castSpell('nonexistent-player', 'fire', target.id, 5);
+      const result = service.castSpell(
+        'nonexistent-player',
+        'fire',
+        target.id,
+        5,
+      );
 
       expect(result.success).toBe(false);
       expect(result.message).toContain('not found');

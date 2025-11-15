@@ -20,7 +20,7 @@ export class PhysicsService {
   ) {}
 
   // Apply an effect to a target object
-  applyEffect(targetId: string, effect: IPhysicsEffect): IPhysicsResult {
+  async applyEffect(targetId: string, effect: IPhysicsEffect): Promise<IPhysicsResult> {
     const target = this.objectService.getObject(targetId);
     if (!target) {
       return {
@@ -34,7 +34,7 @@ export class PhysicsService {
     // Apply damage and state changes
     if (result.objectsAffected) {
       for (const affected of result.objectsAffected) {
-        this.applyObjectChanges(affected.objectId, affected);
+        await this.applyObjectChanges(affected.objectId, affected);
       }
     }
 
@@ -42,7 +42,7 @@ export class PhysicsService {
     if (result.chainReactions) {
       const chainResults: string[] = [];
       for (const chain of result.chainReactions) {
-        const chainResult = this.applyEffect(chain.targetId, chain.effect);
+        const chainResult = await this.applyEffect(chain.targetId, chain.effect);
         if (chainResult.success) {
           chainResults.push(chainResult.message);
         }
@@ -56,11 +56,11 @@ export class PhysicsService {
   }
 
   // Apply area effect to all objects in a room or spatial area
-  applyAreaEffect(
+  async applyAreaEffect(
     roomId: string,
     effect: IPhysicsEffect,
     sourcePosition?: { x: number; y: number; z: number },
-  ): IPhysicsResult {
+  ): Promise<IPhysicsResult> {
     const room = this.roomService.getRoom(roomId);
     if (!room) {
       return {
@@ -75,7 +75,7 @@ export class PhysicsService {
 
     // Apply effect to all objects in room
     for (const objectId of room.objects) {
-      const objectResult = this.applyEffect(objectId, effect);
+      const objectResult = await this.applyEffect(objectId, effect);
       if (objectResult.success) {
         results.push(objectResult.message);
         if (objectResult.objectsAffected) {
@@ -139,7 +139,7 @@ export class PhysicsService {
   ): IPhysicsResult {
     const material = target.materialProperties!;
     const flammability = material.flammability || 0;
-    let damage = Math.floor(intensity * (flammability / 10));
+    const damage = Math.floor(intensity * (flammability / 10));
 
     let message = `${target.name} is hit by ${effect.description}`;
     const chainReactions: any[] = [];
@@ -162,7 +162,8 @@ export class PhysicsService {
       // This ensures one-hit kills work properly on flammable objects
       if (flammability >= 7 && intensity >= 8) {
         // Very flammable + intense fire = complete destruction
-        const maxDamage = target.health !== undefined ? target.health : (target.maxHealth || 10);
+        const maxDamage =
+          target.health !== undefined ? target.health : target.maxHealth || 10;
         objectsAffected[0].damage = Math.max(damage, maxDamage);
         message += ` The ${target.name} is consumed by flames!`;
       }
@@ -171,7 +172,8 @@ export class PhysicsService {
       if (material.properties?.explosive || this.hasExplosiveContents(target)) {
         message += ` The ${target.name} explodes!`;
         // Fix: Use explicit undefined check to avoid zombie resurrection
-        objectsAffected[0].damage = target.health !== undefined ? target.health : (target.maxHealth || 10);
+        objectsAffected[0].damage =
+          target.health !== undefined ? target.health : target.maxHealth || 10;
 
         // Create explosion effect for nearby objects
         chainReactions.push(
@@ -194,7 +196,8 @@ export class PhysicsService {
       if (this.hasExplosiveContents(target) && intensity > 4) {
         message += ` However, the heat ignites the contents and the ${target.name} explodes!`;
         // Fix: Use explicit undefined check to avoid zombie resurrection
-        const maxDamage = target.health !== undefined ? target.health : (target.maxHealth || 10);
+        const maxDamage =
+          target.health !== undefined ? target.health : target.maxHealth || 10;
         objectsAffected[0].damage = Math.floor(maxDamage * 0.8);
 
         // Create explosion effect for nearby objects
@@ -354,7 +357,8 @@ export class PhysicsService {
     if (brittleness > 7 && intensity > 6) {
       message += ` and shatters!`;
       // Fix: Use explicit undefined check to avoid zombie resurrection
-      const fullDamage = target.health !== undefined ? target.health : (target.maxHealth || 10);
+      const fullDamage =
+        target.health !== undefined ? target.health : target.maxHealth || 10;
       return {
         success: true,
         message,
@@ -399,14 +403,15 @@ export class PhysicsService {
     };
   }
 
-  private applyObjectChanges(objectId: string, changes: any): void {
+  private async applyObjectChanges(objectId: string, changes: any): Promise<void> {
     const object = this.objectService.getObject(objectId);
     if (!object) return;
 
     if (changes.damage) {
       // Fix Bug 1 & 3: Use explicit undefined check to avoid zombie resurrection
       // When health is 0, the || operator would fall through to maxHealth, resurrecting the object
-      const currentHealth = object.health !== undefined ? object.health : (object.maxHealth || 10);
+      const currentHealth =
+        object.health !== undefined ? object.health : object.maxHealth || 10;
 
       // Fix Bug 1: Don't apply damage to already destroyed objects
       if (currentHealth <= 0) {
@@ -425,7 +430,12 @@ export class PhysicsService {
       object.state = { ...object.state, destroyed: true };
     }
 
-    this.entityService.updateEntity(objectId, object);
+    try {
+      await this.entityService.updateEntity(objectId, object);
+    } catch (error) {
+      // Log error but don't throw - physics effects should continue even if DB update fails
+      console.error(`Failed to update object entity ${objectId}:`, error);
+    }
   }
 
   private hasExplosiveContents(target: IObject): boolean {

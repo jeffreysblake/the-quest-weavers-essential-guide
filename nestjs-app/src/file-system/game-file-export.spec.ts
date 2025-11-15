@@ -232,8 +232,20 @@ describe('GameFileService - Export Functionality', () => {
       );
       expect(room1.id).toBeDefined();
       expect(room1.name).toBeDefined();
-      expect(room1.position).toEqual(expect.objectContaining({ x: expect.any(Number), y: expect.any(Number), z: expect.any(Number) }));
-      expect(room1.size).toEqual(expect.objectContaining({ width: expect.any(Number), height: expect.any(Number), depth: expect.any(Number) }));
+      expect(room1.position).toEqual(
+        expect.objectContaining({
+          x: expect.any(Number),
+          y: expect.any(Number),
+          z: expect.any(Number),
+        }),
+      );
+      expect(room1.size).toEqual(
+        expect.objectContaining({
+          width: expect.any(Number),
+          height: expect.any(Number),
+          depth: expect.any(Number),
+        }),
+      );
 
       // Check object was exported
       const objectFiles = fs

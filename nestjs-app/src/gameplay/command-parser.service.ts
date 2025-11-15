@@ -179,8 +179,14 @@ export class CommandParserService {
       return {
         verb,
         action,
-        tool: words.slice(1, onIndex).filter((w) => !this.prepositions.has(w)).join(' '),
-        target: words.slice(onIndex + 1).filter((w) => !this.prepositions.has(w)).join(' '),
+        tool: words
+          .slice(1, onIndex)
+          .filter((w) => !this.prepositions.has(w))
+          .join(' '),
+        target: words
+          .slice(onIndex + 1)
+          .filter((w) => !this.prepositions.has(w))
+          .join(' '),
         raw,
       };
     }
@@ -190,8 +196,14 @@ export class CommandParserService {
       return {
         verb,
         action,
-        target: words.slice(1, withIndex).filter((w) => !this.prepositions.has(w)).join(' '),
-        tool: words.slice(withIndex + 1).filter((w) => !this.prepositions.has(w)).join(' '),
+        target: words
+          .slice(1, withIndex)
+          .filter((w) => !this.prepositions.has(w))
+          .join(' '),
+        tool: words
+          .slice(withIndex + 1)
+          .filter((w) => !this.prepositions.has(w))
+          .join(' '),
         raw,
       };
     }
@@ -208,10 +220,7 @@ export class CommandParserService {
   /**
    * Create structured action from parsed command
    */
-  createAction(
-    parsedCommand: IParsedCommand,
-    playerId: string,
-  ): IAction {
+  createAction(parsedCommand: IParsedCommand, playerId: string): IAction {
     return {
       type: parsedCommand.action,
       actor: playerId,
@@ -343,7 +352,10 @@ export class CommandParserService {
       case ActionType.USE:
       case ActionType.EXAMINE:
         if (!parsedCommand.target) {
-          return { valid: false, error: 'What do you want to ' + parsedCommand.verb + '?' };
+          return {
+            valid: false,
+            error: 'What do you want to ' + parsedCommand.verb + '?',
+          };
         }
         break;
     }

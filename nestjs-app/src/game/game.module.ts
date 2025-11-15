@@ -8,6 +8,8 @@ import { RoomModule } from '../entity/room.module';
 import { PlayerModule } from '../entity/player.module';
 import { ObjectModule } from '../entity/object.module';
 import { DatabaseModule } from '../database/database.module';
+import { EventsModule } from '../events/events.module';
+import { DialogueModule } from '../dialogue/dialogue.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { DatabaseModule } from '../database/database.module';
     RoomModule,
     PlayerModule,
     ObjectModule,
+    EventsModule,
+    DialogueModule,
   ],
   controllers: [GameController],
   providers: [GameService, GameStateService, CommandProcessorService],

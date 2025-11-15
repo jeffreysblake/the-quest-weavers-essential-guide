@@ -16,17 +16,19 @@ describe('Player-Room Integration Tests', () => {
   beforeEach(async () => {
     // Create mock DatabaseService
     const mockDatabaseService = {
-      transaction: jest.fn((callback) => callback({
-        prepare: jest.fn(() => ({
-          run: jest.fn(),
-          get: jest.fn(),
-          all: jest.fn(() => [])
-        }))
-      })),
+      transaction: jest.fn((callback) =>
+        callback({
+          prepare: jest.fn(() => ({
+            run: jest.fn(),
+            get: jest.fn(),
+            all: jest.fn(() => []),
+          })),
+        }),
+      ),
       prepare: jest.fn(() => ({
         run: jest.fn(),
         get: jest.fn(),
-        all: jest.fn(() => [])
+        all: jest.fn(() => []),
       })),
       exec: jest.fn(),
     };

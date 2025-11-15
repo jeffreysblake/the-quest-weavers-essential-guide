@@ -51,9 +51,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       const targetStats = { [StatType.HEALTH]: 50 };
 
-      const result = await service.applyEffect('instant-death', 'player-1', 'game-1', {
-        targetStats,
-      });
+      const result = await service.applyEffect(
+        'instant-death',
+        'player-1',
+        'game-1',
+        {
+          targetStats,
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.damage).toBe(100);
@@ -75,9 +80,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       const targetStats = { [StatType.HEALTH]: 100 };
 
-      const result = await service.applyEffect('massive-damage', 'player-1', 'game-1', {
-        targetStats,
-      });
+      const result = await service.applyEffect(
+        'massive-damage',
+        'player-1',
+        'game-1',
+        {
+          targetStats,
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.damage).toBeDefined();
@@ -97,9 +107,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(zeroDamage);
 
-      const result = await service.applyEffect('zero-damage', 'player-1', 'game-1', {
-        targetStats: { [StatType.HEALTH]: 100 },
-      });
+      const result = await service.applyEffect(
+        'zero-damage',
+        'player-1',
+        'game-1',
+        {
+          targetStats: { [StatType.HEALTH]: 100 },
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.damage).toBe(0);
@@ -119,9 +134,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(percentDamage);
 
-      const result = await service.applyEffect('percent-damage', 'player-1', 'game-1', {
-        targetStats: { [StatType.HEALTH]: 200 },
-      });
+      const result = await service.applyEffect(
+        'percent-damage',
+        'player-1',
+        'game-1',
+        {
+          targetStats: { [StatType.HEALTH]: 200 },
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.damage).toBe(100); // 50% of 200
@@ -140,9 +160,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(overHeal);
 
-      const result = await service.applyEffect('over-heal', 'player-1', 'game-1', {
-        targetStats: { [StatType.HEALTH]: 90 }, // Close to max (100)
-      });
+      const result = await service.applyEffect(
+        'over-heal',
+        'player-1',
+        'game-1',
+        {
+          targetStats: { [StatType.HEALTH]: 90 }, // Close to max (100)
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.healing).toBe(1000);
@@ -175,9 +200,14 @@ describe('EffectManagerService - Combat System Tests', () => {
       await service.applyEffect('stackable-poison', 'player-1', 'game-1', {
         targetStats: { [StatType.HEALTH]: 100 },
       });
-      const result3 = await service.applyEffect('stackable-poison', 'player-1', 'game-1', {
-        targetStats: { [StatType.HEALTH]: 100 },
-      });
+      const result3 = await service.applyEffect(
+        'stackable-poison',
+        'player-1',
+        'game-1',
+        {
+          targetStats: { [StatType.HEALTH]: 100 },
+        },
+      );
 
       expect(result3.success).toBe(true);
       expect(result3.activeEffect?.stacks).toBe(3);
@@ -205,9 +235,14 @@ describe('EffectManagerService - Combat System Tests', () => {
       await service.applyEffect('limited-stack', 'player-1', 'game-1', {
         targetStats: {},
       });
-      const result3 = await service.applyEffect('limited-stack', 'player-1', 'game-1', {
-        targetStats: {},
-      });
+      const result3 = await service.applyEffect(
+        'limited-stack',
+        'player-1',
+        'game-1',
+        {
+          targetStats: {},
+        },
+      );
 
       expect(result3.success).toBe(false);
       expect(result3.message).toContain('max stacks');
@@ -228,17 +263,27 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(nonStackable);
 
-      const result1 = await service.applyEffect('non-stackable', 'player-1', 'game-1', {
-        targetStats: {},
-      });
+      const result1 = await service.applyEffect(
+        'non-stackable',
+        'player-1',
+        'game-1',
+        {
+          targetStats: {},
+        },
+      );
       const firstAppliedAt = result1.activeEffect?.appliedAt;
 
       // Wait a tiny bit
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const result2 = await service.applyEffect('non-stackable', 'player-1', 'game-1', {
-        targetStats: {},
-      });
+      const result2 = await service.applyEffect(
+        'non-stackable',
+        'player-1',
+        'game-1',
+        {
+          targetStats: {},
+        },
+      );
 
       expect(result2.success).toBe(true);
       expect(result2.message).toContain('refreshed');
@@ -378,9 +423,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(percentBuff);
 
-      const result = await service.applyEffect('percent-buff', 'player-1', 'game-1', {
-        targetStats: { [StatType.ATTACK]: 100 },
-      });
+      const result = await service.applyEffect(
+        'percent-buff',
+        'player-1',
+        'game-1',
+        {
+          targetStats: { [StatType.ATTACK]: 100 },
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.ATTACK]).toBe(50); // 50% of 100
@@ -400,9 +450,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(massiveDebuff);
 
-      const result = await service.applyEffect('massive-debuff', 'player-1', 'game-1', {
-        targetStats: { [StatType.DEFENSE]: 50 },
-      });
+      const result = await service.applyEffect(
+        'massive-debuff',
+        'player-1',
+        'game-1',
+        {
+          targetStats: { [StatType.DEFENSE]: 50 },
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.statChanges?.[StatType.DEFENSE]).toBe(-1000);
@@ -423,9 +478,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(extremeMultiplier);
 
-      const result = await service.applyEffect('extreme-multiply', 'player-1', 'game-1', {
-        targetStats: { [StatType.ATTACK]: 100 },
-      });
+      const result = await service.applyEffect(
+        'extreme-multiply',
+        'player-1',
+        'game-1',
+        {
+          targetStats: { [StatType.ATTACK]: 100 },
+        },
+      );
 
       expect(result.success).toBe(true);
       // Should not cause overflow
@@ -470,9 +530,15 @@ describe('EffectManagerService - Combat System Tests', () => {
       service.registerEffect(buff2);
       service.registerEffect(debuff);
 
-      await service.applyEffect('buff-1', 'player-1', 'game-1', { targetStats: {} });
-      await service.applyEffect('buff-2', 'player-1', 'game-1', { targetStats: {} });
-      await service.applyEffect('debuff-1', 'player-1', 'game-1', { targetStats: {} });
+      await service.applyEffect('buff-1', 'player-1', 'game-1', {
+        targetStats: {},
+      });
+      await service.applyEffect('buff-2', 'player-1', 'game-1', {
+        targetStats: {},
+      });
+      await service.applyEffect('debuff-1', 'player-1', 'game-1', {
+        targetStats: {},
+      });
 
       const modifiers = service.getTotalStatModifiers('player-1');
       expect(modifiers[StatType.ATTACK]).toBe(20); // 10 + 15 - 5
@@ -494,7 +560,9 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(removableEffect);
 
-      await service.applyEffect('removable', 'player-1', 'game-1', { targetStats: {} });
+      await service.applyEffect('removable', 'player-1', 'game-1', {
+        targetStats: {},
+      });
 
       let effects = service.getActiveEffects('player-1');
       expect(effects.length).toBe(1);
@@ -532,8 +600,12 @@ describe('EffectManagerService - Combat System Tests', () => {
       service.registerEffect(effect1);
       service.registerEffect(effect2);
 
-      await service.applyEffect('effect-1', 'player-1', 'game-1', { targetStats: {} });
-      await service.applyEffect('effect-2', 'player-1', 'game-1', { targetStats: {} });
+      await service.applyEffect('effect-1', 'player-1', 'game-1', {
+        targetStats: {},
+      });
+      await service.applyEffect('effect-2', 'player-1', 'game-1', {
+        targetStats: {},
+      });
 
       const count = await service.removeAllEffects('player-1');
       expect(count).toBe(2);
@@ -543,7 +615,10 @@ describe('EffectManagerService - Combat System Tests', () => {
     });
 
     it('should handle removing nonexistent effect', async () => {
-      const removed = await service.removeEffect('nonexistent-player', 'nonexistent-effect');
+      const removed = await service.removeEffect(
+        'nonexistent-player',
+        'nonexistent-effect',
+      );
       expect(removed).toBe(false);
     });
 
@@ -673,8 +748,12 @@ describe('EffectManagerService - Combat System Tests', () => {
       service.registerEffect(debuff);
       service.registerEffect(status);
 
-      await service.applyEffect('stat-buff', 'player-1', 'game-1', { targetStats: {} });
-      await service.applyEffect('stat-debuff', 'player-1', 'game-1', { targetStats: {} });
+      await service.applyEffect('stat-buff', 'player-1', 'game-1', {
+        targetStats: {},
+      });
+      await service.applyEffect('stat-debuff', 'player-1', 'game-1', {
+        targetStats: {},
+      });
       await service.applyEffect('stat-poison', 'player-1', 'game-1', {
         targetStats: { [StatType.HEALTH]: 100 },
       });
@@ -730,9 +809,14 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       service.registerEffect(incompleteEffect);
 
-      const result = await service.applyEffect('incomplete', 'player-1', 'game-1', {
-        targetStats: {},
-      });
+      const result = await service.applyEffect(
+        'incomplete',
+        'player-1',
+        'game-1',
+        {
+          targetStats: {},
+        },
+      );
 
       // Should still succeed but with no effect
       expect(result.success).toBe(true);

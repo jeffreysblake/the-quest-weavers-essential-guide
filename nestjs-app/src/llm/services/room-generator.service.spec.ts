@@ -177,7 +177,9 @@ describe('RoomGeneratorService', () => {
     it('should generate a room with all parameters', async () => {
       const mockRoom = createMockRoom({ name: 'Generated Room' });
       roomService.create.mockReturnValue(mockRoom);
-      objectService.create.mockImplementation((data) => createMockObject({ name: data.name }));
+      objectService.create.mockImplementation((data) =>
+        createMockObject({ name: data.name }),
+      );
 
       const result = await service.generateRoom({
         theme: 'ancient castle',
@@ -296,7 +298,10 @@ describe('RoomGeneratorService', () => {
       const mockRoom = createMockRoom();
       roomService.create.mockReturnValue(mockRoom);
 
-      await service.generateRoom({ style: 'mystery', theme: 'detective office' });
+      await service.generateRoom({
+        style: 'mystery',
+        theme: 'detective office',
+      });
 
       expect(promptTemplateService.renderTemplate).toHaveBeenCalledWith(
         'room_description',
@@ -350,7 +355,10 @@ describe('RoomGeneratorService', () => {
     });
 
     it('should generate a room with connected rooms', async () => {
-      const connectedRoom = createMockRoom({ id: 'connected-1', name: 'Adjacent Room' });
+      const connectedRoom = createMockRoom({
+        id: 'connected-1',
+        name: 'Adjacent Room',
+      });
       roomService.findById.mockReturnValue(connectedRoom);
       const mockRoom = createMockRoom();
       roomService.create.mockReturnValue(mockRoom);
@@ -401,7 +409,9 @@ describe('RoomGeneratorService', () => {
       roomService.create.mockReturnValue(mockRoom);
       const mockObj1 = createMockObject({ name: 'wooden table' });
       const mockObj2 = createMockObject({ name: 'iron chest' });
-      objectService.create.mockReturnValueOnce(mockObj1).mockReturnValueOnce(mockObj2);
+      objectService.create
+        .mockReturnValueOnce(mockObj1)
+        .mockReturnValueOnce(mockObj2);
 
       await service.generateRoom({});
 
@@ -485,17 +495,25 @@ describe('RoomGeneratorService', () => {
       roomService.findAll.mockReturnValue([]);
       objectService.findAll.mockReturnValue([]);
       promptTemplateService.renderTemplate.mockResolvedValue('Test prompt');
-      llmService.generateStructuredResponse.mockRejectedValue(new Error('LLM service error'));
+      llmService.generateStructuredResponse.mockRejectedValue(
+        new Error('LLM service error'),
+      );
 
-      await expect(service.generateRoom({})).rejects.toThrow('Failed to generate room: LLM service error');
+      await expect(service.generateRoom({})).rejects.toThrow(
+        'Failed to generate room: LLM service error',
+      );
     });
 
     it('should throw error when prompt template rendering fails', async () => {
       roomService.findAll.mockReturnValue([]);
       objectService.findAll.mockReturnValue([]);
-      promptTemplateService.renderTemplate.mockRejectedValue(new Error('Template error'));
+      promptTemplateService.renderTemplate.mockRejectedValue(
+        new Error('Template error'),
+      );
 
-      await expect(service.generateRoom({})).rejects.toThrow('Failed to generate room: Template error');
+      await expect(service.generateRoom({})).rejects.toThrow(
+        'Failed to generate room: Template error',
+      );
     });
 
     it('should throw error when room service create fails', async () => {
@@ -514,7 +532,9 @@ describe('RoomGeneratorService', () => {
         throw new Error('Room creation error');
       });
 
-      await expect(service.generateRoom({})).rejects.toThrow('Failed to generate room: Room creation error');
+      await expect(service.generateRoom({})).rejects.toThrow(
+        'Failed to generate room: Room creation error',
+      );
     });
 
     it('should handle object creation failures gracefully', async () => {
@@ -616,7 +636,9 @@ describe('RoomGeneratorService', () => {
       mockRooms.forEach((room) => roomService.create.mockReturnValueOnce(room));
       roomService.connectRooms.mockReturnValue(true);
 
-      const requests = Array.from({ length: 5 }, (_, i) => ({ theme: `room-${i}` }));
+      const requests = Array.from({ length: 5 }, (_, i) => ({
+        theme: `room-${i}`,
+      }));
 
       const results = await service.generateMultipleRooms(requests, true);
 
@@ -630,7 +652,9 @@ describe('RoomGeneratorService', () => {
       mockRooms.forEach((room) => roomService.create.mockReturnValueOnce(room));
       roomService.connectRooms.mockReturnValue(true);
 
-      const requests = Array.from({ length: 10 }, (_, i) => ({ theme: `room-${i}` }));
+      const requests = Array.from({ length: 10 }, (_, i) => ({
+        theme: `room-${i}`,
+      }));
 
       const results = await service.generateMultipleRooms(requests, true);
 
@@ -689,7 +713,9 @@ describe('RoomGeneratorService', () => {
         .mockReturnValueOnce(mockRooms[0])
         .mockReturnValueOnce(mockRooms[1])
         .mockReturnValueOnce(mockRooms[2]);
-      roomService.findById.mockImplementation((id) => mockRooms.find((r) => r.id === id));
+      roomService.findById.mockImplementation((id) =>
+        mockRooms.find((r) => r.id === id),
+      );
 
       const requests = [
         { theme: 'entrance' },
@@ -741,7 +767,9 @@ describe('RoomGeneratorService', () => {
 
   describe('enhanceExistingRoom', () => {
     beforeEach(() => {
-      promptTemplateService.renderTemplate.mockResolvedValue('Enhancement prompt');
+      promptTemplateService.renderTemplate.mockResolvedValue(
+        'Enhancement prompt',
+      );
       llmService.generateStructuredResponse.mockResolvedValue({
         parsedContent: createMockRoomContent({
           description: 'Enhanced description',
@@ -766,7 +794,10 @@ describe('RoomGeneratorService', () => {
     });
 
     it('should enhance existing room with new objects', async () => {
-      const existingRoom = createMockRoom({ id: 'room-1', description: 'Old description' });
+      const existingRoom = createMockRoom({
+        id: 'room-1',
+        description: 'Old description',
+      });
       roomService.findById.mockReturnValue(existingRoom);
       roomService.update.mockReturnValue(true);
       const mockObject = createMockObject({ name: 'new object' });
@@ -779,11 +810,17 @@ describe('RoomGeneratorService', () => {
       expect(result).toBeDefined();
       expect(roomService.update).toHaveBeenCalled();
       expect(objectService.create).toHaveBeenCalled();
-      expect(objectService.placeInRoom).toHaveBeenCalledWith(mockObject.id, 'room-1');
+      expect(objectService.placeInRoom).toHaveBeenCalledWith(
+        mockObject.id,
+        'room-1',
+      );
     });
 
     it('should enhance existing room with new description', async () => {
-      const existingRoom = createMockRoom({ id: 'room-1', description: 'Old description' });
+      const existingRoom = createMockRoom({
+        id: 'room-1',
+        description: 'Old description',
+      });
       roomService.findById.mockReturnValue(existingRoom);
       roomService.update.mockReturnValue(true);
 
@@ -793,9 +830,12 @@ describe('RoomGeneratorService', () => {
 
       expect(result).toBeDefined();
       expect(result.description).toBe('Enhanced description');
-      expect(roomService.update).toHaveBeenCalledWith('room-1', expect.objectContaining({
-        description: 'Enhanced description',
-      }));
+      expect(roomService.update).toHaveBeenCalledWith(
+        'room-1',
+        expect.objectContaining({
+          description: 'Enhanced description',
+        }),
+      );
     });
 
     it('should throw error for non-existent room', async () => {
@@ -831,7 +871,9 @@ describe('RoomGeneratorService', () => {
 
       await service.enhanceExistingRoom('room-1', {});
 
-      expect(contextBuilderService.buildRoomContext).toHaveBeenCalledWith('room-1');
+      expect(contextBuilderService.buildRoomContext).toHaveBeenCalledWith(
+        'room-1',
+      );
       expect(promptTemplateService.renderTemplate).toHaveBeenCalledWith(
         'room_enhancement',
         expect.objectContaining({
@@ -888,7 +930,10 @@ describe('RoomGeneratorService', () => {
     });
 
     it('should build context with connected rooms', async () => {
-      const connectedRoom = createMockRoom({ id: 'connected-1', name: 'Adjacent Hall' });
+      const connectedRoom = createMockRoom({
+        id: 'connected-1',
+        name: 'Adjacent Hall',
+      });
       roomService.findById.mockReturnValue(connectedRoom);
       roomService.findAll.mockReturnValue([connectedRoom]);
       objectService.findAll.mockReturnValue([]);
@@ -903,7 +948,11 @@ describe('RoomGeneratorService', () => {
 
     it('should build context with world state', async () => {
       const existingRooms = [createMockRoom(), createMockRoom()];
-      const existingObjects = [createMockObject(), createMockObject(), createMockObject()];
+      const existingObjects = [
+        createMockObject(),
+        createMockObject(),
+        createMockObject(),
+      ];
       roomService.findAll.mockReturnValue(existingRooms);
       objectService.findAll.mockReturnValue(existingObjects);
       roomService.create.mockReturnValue(createMockRoom());
@@ -960,7 +1009,14 @@ describe('RoomGeneratorService', () => {
         expect.any(String),
         expect.objectContaining({
           type: 'object',
-          required: ['name', 'description', 'shortDescription', 'objects', 'exits', 'ambiance'],
+          required: [
+            'name',
+            'description',
+            'shortDescription',
+            'objects',
+            'exits',
+            'ambiance',
+          ],
           properties: expect.objectContaining({
             name: expect.objectContaining({ type: 'string' }),
             description: expect.objectContaining({ type: 'string' }),
@@ -1226,7 +1282,9 @@ describe('RoomGeneratorService', () => {
       expect(roomService.connectRooms).toHaveBeenCalledWith(
         mockRooms[0].id,
         mockRooms[1].id,
-        expect.stringMatching(/^(north|south|east|west|up|down|northeast|northwest|southeast|southwest)$/),
+        expect.stringMatching(
+          /^(north|south|east|west|up|down|northeast|northwest|southeast|southwest)$/,
+        ),
       );
     });
 

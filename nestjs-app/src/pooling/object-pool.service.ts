@@ -101,12 +101,14 @@ export class ObjectPoolService<T> {
   /**
    * Get pool statistics
    */
-  getStats(poolName: string): {
-    available: number;
-    inUse: number;
-    total: number;
-    maxSize: number;
-  } | undefined {
+  getStats(poolName: string):
+    | {
+        available: number;
+        inUse: number;
+        total: number;
+        maxSize: number;
+      }
+    | undefined {
     const pool = this.pools.get(poolName);
     const inUseSet = this.inUse.get(poolName);
     const max = this.maxSize.get(poolName);

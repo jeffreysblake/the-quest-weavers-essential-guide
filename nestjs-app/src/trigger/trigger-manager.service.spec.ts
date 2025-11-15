@@ -34,7 +34,7 @@ describe('TriggerManagerService', () => {
     }).compile();
 
     service = module.get<TriggerManagerService>(TriggerManagerService);
-    eventEmitter = module.get(EventEmitterService) as jest.Mocked<EventEmitterService>;
+    eventEmitter = module.get(EventEmitterService);
   });
 
   afterEach(() => {
@@ -1415,7 +1415,9 @@ describe('TriggerManagerService', () => {
     });
 
     it('should handle action execution errors gracefully', async () => {
-      const errorAction = jest.fn().mockRejectedValue(new Error('Action failed'));
+      const errorAction = jest
+        .fn()
+        .mockRejectedValue(new Error('Action failed'));
 
       const trigger: ITrigger = {
         id: 'trigger1',

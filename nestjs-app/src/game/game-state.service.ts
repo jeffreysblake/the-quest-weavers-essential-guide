@@ -4,6 +4,7 @@ import { QuestManagerService } from '../quest/quest-manager.service';
 import { InventoryManagerService } from '../inventory/inventory-manager.service';
 import { EffectManagerService } from '../effects/effect-manager.service';
 import { WorldStateManagerService } from '../world-state/world-state-manager.service';
+import { Mutex, withTimeout } from 'async-mutex';
 
 export interface GameState {
   gameId: string;
@@ -35,10 +36,21 @@ export interface GameState {
   worldStates?: { [gameId: string]: any };
 }
 
+/**
+ * CONCURRENCY PROTECTION:
+ * - Uses Mutex locks to prevent race conditions in game state operations
+ * - Per-game locks prevent concurrent save/load operations on the same game
+ * - Prevents lost updates when multiple operations modify state simultaneously
+ * - All locks have 10-second timeout to prevent permanent deadlocks
+ */
 @Injectable()
 export class GameStateService {
   private gameStates = new Map<string, GameState>();
   private saveSlots = new Map<string, Map<string, GameState>>();
+
+  // Concurrency protection
+  private readonly gameLocks = new Map<string, Mutex>();
+  private readonly LOCK_TIMEOUT = 10000; // 10 seconds (save/load can be slow)
 
   constructor(
     @Optional() private readonly playerService?: PlayerService,
@@ -47,6 +59,16 @@ export class GameStateService {
     @Optional() private readonly effectManager?: EffectManagerService,
     @Optional() private readonly worldStateManager?: WorldStateManagerService,
   ) {}
+
+  /**
+   * Get or create a lock for a specific game
+   */
+  private getGameLock(gameId: string): Mutex {
+    if (!this.gameLocks.has(gameId)) {
+      this.gameLocks.set(gameId, new Mutex());
+    }
+    return this.gameLocks.get(gameId)!;
+  }
 
   // Get current game state
   async getGameState(gameId: string): Promise<GameState> {
@@ -90,171 +112,210 @@ export class GameStateService {
   }
 
   // Save game state to a specific slot
+  // THREAD-SAFE: Acquires game lock to prevent concurrent save/load operations
   async saveGameState(gameId: string, slotName: string): Promise<void> {
-    const currentState = await this.getGameState(gameId);
+    const lock = this.getGameLock(gameId);
 
-    if (!this.saveSlots.has(gameId)) {
-      this.saveSlots.set(gameId, new Map());
-    }
+    try {
+      await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(async () => {
+        const currentState = await this.getGameState(gameId);
 
-    const gameSlots = this.saveSlots.get(gameId)!;
-
-    // Capture state from all services
-    const capturedState: GameState = JSON.parse(JSON.stringify(currentState));
-
-    // Capture player states from PlayerService
-    if (this.playerService) {
-      const players = this.playerService.findAll?.() || [];
-      capturedState.players = {};
-      for (const player of players) {
-        if (player.gameId === gameId) {
-          capturedState.players[player.id] = JSON.parse(JSON.stringify(player));
+        if (!this.saveSlots.has(gameId)) {
+          this.saveSlots.set(gameId, new Map());
         }
-      }
-    }
 
-    // Capture quest states from QuestManager
-    if (this.questManager) {
-      try {
-        const questData = this.questManager.getAllPlayerQuests?.(gameId);
-        if (questData) {
-          capturedState.quests = JSON.parse(JSON.stringify({ [gameId]: questData }));
+        const gameSlots = this.saveSlots.get(gameId)!;
+
+        // Capture state from all services
+        const capturedState: GameState = JSON.parse(
+          JSON.stringify(currentState),
+        );
+
+        // Capture player states from PlayerService
+        if (this.playerService) {
+          const players = this.playerService.findAll?.() || [];
+          capturedState.players = {};
+          for (const player of players) {
+            if (player.gameId === gameId) {
+              capturedState.players[player.id] = JSON.parse(
+                JSON.stringify(player),
+              );
+            }
+          }
         }
-      } catch (e) {
-        // Quest manager might not have this method in all versions
-      }
-    }
 
-    // Capture inventory states from InventoryManager
-    if (this.inventoryManager) {
-      try {
-        const inventoryState = this.inventoryManager.exportState?.();
-        if (inventoryState) {
-          capturedState.inventories = inventoryState;
+        // Capture quest states from QuestManager
+        if (this.questManager) {
+          try {
+            const questData = this.questManager.getAllPlayerQuests?.(gameId);
+            if (questData) {
+              capturedState.quests = JSON.parse(
+                JSON.stringify({ [gameId]: questData }),
+              );
+            }
+          } catch (e) {
+            // Quest manager might not have this method in all versions
+          }
         }
-      } catch (e) {
-        // Inventory manager might not have exportState
-      }
-    }
 
-    // Capture effect states from EffectManager
-    if (this.effectManager) {
-      try {
-        const effects = this.effectManager.exportEffects?.(gameId);
-        if (effects) {
-          capturedState.effects = JSON.parse(JSON.stringify({ [gameId]: effects }));
+        // Capture inventory states from InventoryManager
+        if (this.inventoryManager) {
+          try {
+            const inventoryState = this.inventoryManager.exportState?.();
+            if (inventoryState) {
+              capturedState.inventories = inventoryState;
+            }
+          } catch (e) {
+            // Inventory manager might not have exportState
+          }
         }
-      } catch (e) {
-        // Effect manager might not have this method
-      }
-    }
 
-    // Capture world states from WorldStateManager
-    if (this.worldStateManager) {
-      try {
-        const worldState = this.worldStateManager.getWorldState?.(gameId);
-        if (worldState) {
-          // Convert Maps to arrays for JSON serialization
-          const serializedWorldState = {
-            gameId: worldState.gameId,
-            doors: Array.from(worldState.doors?.entries?.() || []),
-            npcs: Array.from(worldState.npcs?.entries?.() || []),
-            objects: Array.from(worldState.objects?.entries?.() || []),
-            variables: worldState.variables,
-            flags: worldState.flags,
-          };
-          capturedState.worldStates = { [gameId]: serializedWorldState };
+        // Capture effect states from EffectManager
+        if (this.effectManager) {
+          try {
+            const effects = this.effectManager.exportEffects?.(gameId);
+            if (effects) {
+              capturedState.effects = JSON.parse(
+                JSON.stringify({ [gameId]: effects }),
+              );
+            }
+          } catch (e) {
+            // Effect manager might not have this method
+          }
         }
-      } catch (e) {
-        // World state manager might not have this method
+
+        // Capture world states from WorldStateManager
+        if (this.worldStateManager) {
+          try {
+            const worldState = this.worldStateManager.getWorldState?.(gameId);
+            if (worldState) {
+              // Convert Maps to arrays for JSON serialization
+              const serializedWorldState = {
+                gameId: worldState.gameId,
+                doors: Array.from(worldState.doors?.entries?.() || []),
+                npcs: Array.from(worldState.npcs?.entries?.() || []),
+                objects: Array.from(worldState.objects?.entries?.() || []),
+                variables: worldState.variables,
+                flags: worldState.flags,
+              };
+              capturedState.worldStates = { [gameId]: serializedWorldState };
+            }
+          } catch (e) {
+            // World state manager might not have this method
+          }
+        }
+
+        // Add metadata
+        capturedState.metadata = {
+          ...capturedState.metadata,
+          savedAt: new Date(),
+          slotName,
+        };
+
+        gameSlots.set(slotName, capturedState);
+      });
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        throw new Error(`Save operation timed out for game ${gameId}`);
       }
+      throw error;
     }
-
-    // Add metadata
-    capturedState.metadata = {
-      ...capturedState.metadata,
-      savedAt: new Date(),
-      slotName,
-    };
-
-    gameSlots.set(slotName, capturedState);
   }
 
   // Load game state from a specific slot
+  // THREAD-SAFE: Acquires game lock to prevent concurrent save/load operations
   async loadGameState(gameId: string, slotName: string): Promise<GameState> {
-    const gameSlots = this.saveSlots.get(gameId);
-    if (!gameSlots || !gameSlots.has(slotName)) {
-      throw new Error(`No saved game found in slot: ${slotName}`);
-    }
+    const lock = this.getGameLock(gameId);
 
-    const savedState = gameSlots.get(slotName)!;
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const gameSlots = this.saveSlots.get(gameId);
+          if (!gameSlots || !gameSlots.has(slotName)) {
+            throw new Error(`No saved game found in slot: ${slotName}`);
+          }
 
-    // Restore the saved state as current state
-    const restoredState = JSON.parse(JSON.stringify(savedState));
-    restoredState.metadata = {
-      ...restoredState.metadata,
-      loadedAt: new Date(),
-    };
+          const savedState = gameSlots.get(slotName)!;
 
-    this.gameStates.set(gameId, restoredState);
+          // Restore the saved state as current state
+          const restoredState = JSON.parse(JSON.stringify(savedState));
+          restoredState.metadata = {
+            ...restoredState.metadata,
+            loadedAt: new Date(),
+          };
 
-    // Restore player states to PlayerService
-    if (this.playerService && restoredState.players) {
-      for (const [playerId, playerData] of Object.entries(restoredState.players)) {
-        const existingPlayer = this.playerService.getPlayer?.(playerId);
-        if (existingPlayer) {
-          // Update existing player with saved data
-          this.playerService.updatePlayer?.(playerId, playerData);
-        }
+          this.gameStates.set(gameId, restoredState);
+
+          // Restore player states to PlayerService
+          if (this.playerService && restoredState.players) {
+            for (const [playerId, playerData] of Object.entries(
+              restoredState.players,
+            )) {
+              const existingPlayer = this.playerService.getPlayer?.(playerId);
+              if (existingPlayer) {
+                // Update existing player with saved data
+                this.playerService.updatePlayer?.(playerId, playerData);
+              }
+            }
+          }
+
+          // Restore inventory states to InventoryManager
+          if (this.inventoryManager && restoredState.inventories) {
+            try {
+              this.inventoryManager.importState?.(restoredState.inventories);
+            } catch (e) {
+              // Inventory manager might not have importState
+            }
+          }
+
+          // Restore quest states to QuestManager
+          if (this.questManager && restoredState.quests) {
+            try {
+              const questData = restoredState.quests[gameId];
+              if (questData) {
+                this.questManager.restorePlayerQuests?.(gameId, questData);
+              }
+            } catch (e) {
+              // Quest manager might not have this method
+            }
+          }
+
+          // Restore world states to WorldStateManager
+          if (this.worldStateManager && restoredState.worldStates) {
+            try {
+              const worldStateData = restoredState.worldStates[gameId];
+              if (worldStateData) {
+                this.worldStateManager.restoreWorldState?.(
+                  gameId,
+                  worldStateData,
+                );
+              }
+            } catch (e) {
+              // World state manager might not have this method
+            }
+          }
+
+          // Restore effect states to EffectManager
+          if (this.effectManager && restoredState.effects) {
+            try {
+              const effectData = restoredState.effects[gameId];
+              if (effectData) {
+                await this.effectManager.importEffects?.(gameId, effectData);
+              }
+            } catch (e) {
+              // Effect manager might not have this method
+            }
+          }
+
+          return restoredState;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        throw new Error(`Load operation timed out for game ${gameId}`);
       }
+      throw error;
     }
-
-    // Restore inventory states to InventoryManager
-    if (this.inventoryManager && restoredState.inventories) {
-      try {
-        this.inventoryManager.importState?.(restoredState.inventories);
-      } catch (e) {
-        // Inventory manager might not have importState
-      }
-    }
-
-    // Restore quest states to QuestManager
-    if (this.questManager && restoredState.quests) {
-      try {
-        const questData = restoredState.quests[gameId];
-        if (questData) {
-          this.questManager.restorePlayerQuests?.(gameId, questData);
-        }
-      } catch (e) {
-        // Quest manager might not have this method
-      }
-    }
-
-    // Restore world states to WorldStateManager
-    if (this.worldStateManager && restoredState.worldStates) {
-      try {
-        const worldStateData = restoredState.worldStates[gameId];
-        if (worldStateData) {
-          this.worldStateManager.restoreWorldState?.(gameId, worldStateData);
-        }
-      } catch (e) {
-        // World state manager might not have this method
-      }
-    }
-
-    // Restore effect states to EffectManager
-    if (this.effectManager && restoredState.effects) {
-      try {
-        const effectData = restoredState.effects[gameId];
-        if (effectData) {
-          await this.effectManager.importEffects?.(gameId, effectData);
-        }
-      } catch (e) {
-        // Effect manager might not have this method
-      }
-    }
-
-    return restoredState;
   }
 
   // Get list of available save slots for a game

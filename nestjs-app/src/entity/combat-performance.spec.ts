@@ -30,7 +30,13 @@ import { DatabaseService } from '../database/database.service';
 import { IObject } from './object.interface';
 import { IPlayer } from './player.interface';
 import { IPhysicsEffect, EffectType } from './physics.interface';
-import { IEffect, EffectType as EffectManagerType, DurationType, StatType, EffectTarget } from '../effects/effect.interfaces';
+import {
+  IEffect,
+  EffectType as EffectManagerType,
+  DurationType,
+  StatType,
+  EffectTarget,
+} from '../effects/effect.interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
 describe('Combat Performance Tests', () => {
@@ -61,7 +67,8 @@ describe('Combat Performance Tests', () => {
     }).compile();
 
     physicsService = module.get<PhysicsService>(PhysicsService);
-    cannonPhysicsService = module.get<CannonPhysicsService>(CannonPhysicsService);
+    cannonPhysicsService =
+      module.get<CannonPhysicsService>(CannonPhysicsService);
     entityService = module.get<EntityService>(EntityService);
     objectService = module.get<ObjectService>(ObjectService);
     playerService = module.get<PlayerService>(PlayerService);
@@ -74,7 +81,10 @@ describe('Combat Performance Tests', () => {
     cannonPhysicsService.cleanup();
 
     // Cleanup effect manager to stop all intervals
-    if (effectManager && typeof (effectManager as any).onModuleDestroy === 'function') {
+    if (
+      effectManager &&
+      typeof (effectManager as any).onModuleDestroy === 'function'
+    ) {
       (effectManager as any).onModuleDestroy();
     }
   });
@@ -86,7 +96,10 @@ describe('Combat Performance Tests', () => {
   /**
    * Create multiple combatants for stress testing
    */
-  function createCombatants(count: number, type: 'player' | 'enemy'): IPlayer[] {
+  function createCombatants(
+    count: number,
+    type: 'player' | 'enemy',
+  ): IPlayer[] {
     const combatants: IPlayer[] = [];
     for (let i = 0; i < count; i++) {
       const combatant = playerService.createPlayer({
@@ -94,7 +107,7 @@ describe('Combat Performance Tests', () => {
         position: {
           x: Math.random() * 100,
           y: Math.random() * 100,
-          z: 0
+          z: 0,
         },
         health: 100,
         inventory: [],
@@ -118,7 +131,7 @@ describe('Combat Performance Tests', () => {
         position: {
           x: Math.random() * 100,
           y: Math.random() * 100,
-          z: 0
+          z: 0,
         },
         material: 'wood',
         health: 50,
@@ -220,7 +233,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Simulate turn-based initiative calculation
-        combatants.forEach(combatant => {
+        combatants.forEach((combatant) => {
           const initiative = (combatant.level || 1) + Math.random() * 20;
           (combatant as any).initiative = initiative;
         });
@@ -235,14 +248,14 @@ describe('Combat Performance Tests', () => {
       const combatants = createCombatants(1000, 'player');
 
       // Assign random initiative values
-      combatants.forEach(c => {
+      combatants.forEach((c) => {
         (c as any).initiative = Math.random() * 100;
       });
 
       const elapsed = measureTime(() => {
         // Sort by initiative (typical combat operation)
-        combatants.sort((a, b) =>
-          ((b as any).initiative || 0) - ((a as any).initiative || 0)
+        combatants.sort(
+          (a, b) => ((b as any).initiative || 0) - ((a as any).initiative || 0),
         );
       });
 
@@ -257,7 +270,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         for (let i = 0; i < updates; i++) {
-          combatants.forEach(combatant => {
+          combatants.forEach((combatant) => {
             playerService.updatePlayer(combatant.id, {
               health: Math.max(0, (combatant.health || 100) - 1),
             });
@@ -285,7 +298,7 @@ describe('Combat Performance Tests', () => {
       });
 
       const targets = createDestructibles(100);
-      targets.forEach(t => {
+      targets.forEach((t) => {
         roomService.addObjectToRoom(room.id, t.id);
       });
 
@@ -316,7 +329,7 @@ describe('Combat Performance Tests', () => {
           position: {
             x: Math.random() * 100,
             y: Math.random() * 100,
-            z: 0
+            z: 0,
           },
           rotation: { x: 0, y: 0, z: 0 },
           size: { width: 1, height: 1, depth: 1 },
@@ -328,7 +341,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Simulate physics step (includes collision detection)
-        cannonPhysicsService.step(1/60);
+        cannonPhysicsService.step(1 / 60);
       });
 
       // Single physics tick should be fast even with 500 entities
@@ -359,7 +372,9 @@ describe('Combat Performance Tests', () => {
 
       // Log performance data
       const throughput = (1000 / elapsed) * 1000;
-      console.log(`      Attack throughput: ${Math.round(throughput)} attacks/second`);
+      console.log(
+        `      Attack throughput: ${Math.round(throughput)} attacks/second`,
+      );
     });
 
     it('should handle massive battle (500 vs 500 entities)', () => {
@@ -391,7 +406,9 @@ describe('Combat Performance Tests', () => {
       expect(memIncrease).toBeLessThan(50);
       expect(combatants.length).toBe(1000);
 
-      console.log(`      Memory increase: ${memIncrease.toFixed(2)}MB for 1000 entities`);
+      console.log(
+        `      Memory increase: ${memIncrease.toFixed(2)}MB for 1000 entities`,
+      );
     });
   });
 
@@ -425,7 +442,7 @@ describe('Combat Performance Tests', () => {
             await effectManager.applyEffect(
               buffEffect.id,
               target.id,
-              testGameId
+              testGameId,
             );
           }
         }
@@ -434,7 +451,9 @@ describe('Combat Performance Tests', () => {
       // BENCHMARK: 1000 effects in < 500ms
       expect(elapsed).toBeLessThan(500);
 
-      console.log(`      Effect application rate: ${Math.round(1000 / elapsed * 1000)} effects/second`);
+      console.log(
+        `      Effect application rate: ${Math.round((1000 / elapsed) * 1000)} effects/second`,
+      );
     });
 
     it('should handle effect ticking performance (1000 DoT/HoT effects)', async () => {
@@ -457,12 +476,9 @@ describe('Combat Performance Tests', () => {
       const elapsed = await measureTimeAsync(async () => {
         // Apply DoT to 100 targets (will tick multiple times)
         for (const target of targets) {
-          await effectManager.applyEffect(
-            dotEffect.id,
-            target.id,
-            testGameId,
-            { targetStats: { [StatType.HEALTH]: 100 } }
-          );
+          await effectManager.applyEffect(dotEffect.id, target.id, testGameId, {
+            targetStats: { [StatType.HEALTH]: 100 },
+          });
         }
       });
 
@@ -541,7 +557,7 @@ describe('Combat Performance Tests', () => {
           await effectManager.applyEffect(
             stackEffect.id,
             target.id,
-            testGameId
+            testGameId,
           );
         }
       });
@@ -587,7 +603,9 @@ describe('Combat Performance Tests', () => {
       expect(elapsed).toBeLessThan(100); // < 100ms
 
       const lookupsPerSecond = (1000 / elapsed) * 1000;
-      console.log(`      Effect lookup rate: ${Math.round(lookupsPerSecond)} lookups/second`);
+      console.log(
+        `      Effect lookup rate: ${Math.round(lookupsPerSecond)} lookups/second`,
+      );
     });
 
     it('should handle effect expiration processing (1000 effects expiring)', async () => {
@@ -615,7 +633,7 @@ describe('Combat Performance Tests', () => {
             shortEffect.id,
             target.id,
             testGameId,
-            { targetStats: {} }
+            { targetStats: {} },
           );
         }
       }
@@ -666,7 +684,9 @@ describe('Combat Performance Tests', () => {
       // Memory increase should be reasonable
       expect(memIncrease).toBeLessThan(100); // < 100MB for 10,000 effects
 
-      console.log(`      Memory: ${memIncrease.toFixed(2)}MB for ~10,000 effects`);
+      console.log(
+        `      Memory: ${memIncrease.toFixed(2)}MB for ~10,000 effects`,
+      );
     });
 
     it('should benchmark: applying 1000 effects < 500ms', async () => {
@@ -689,12 +709,9 @@ describe('Combat Performance Tests', () => {
       // Apply 1000 effects
       for (let i = 0; i < 10; i++) {
         for (const target of targets) {
-          await effectManager.applyEffect(
-            effect.id,
-            target.id,
-            testGameId,
-            { targetStats: { [StatType.HEALTH]: 100 } }
-          );
+          await effectManager.applyEffect(effect.id, target.id, testGameId, {
+            targetStats: { [StatType.HEALTH]: 100 },
+          });
         }
       }
 
@@ -756,14 +773,11 @@ describe('Combat Performance Tests', () => {
 
       // Apply effects concurrently using Promise.all
       await Promise.all(
-        targets.map(target =>
-          effectManager.applyEffect(
-            effect.id,
-            target.id,
-            testGameId,
-            { targetStats: {} }
-          )
-        )
+        targets.map((target) =>
+          effectManager.applyEffect(effect.id, target.id, testGameId, {
+            targetStats: {},
+          }),
+        ),
       );
 
       const elapsed = performance.now() - start;
@@ -797,10 +811,10 @@ describe('Combat Performance Tests', () => {
         }
 
         // Armor reduction
-        damage *= (1 - armorReduction);
+        damage *= 1 - armorReduction;
 
         // Random variance
-        damage *= (0.9 + Math.random() * 0.2);
+        damage *= 0.9 + Math.random() * 0.2;
 
         return Math.floor(damage);
       };
@@ -815,7 +829,9 @@ describe('Combat Performance Tests', () => {
       expect(elapsed).toBeLessThan(100); // < 100ms
 
       const calculationsPerSecond = (10000 / elapsed) * 1000;
-      console.log(`      Complex damage calc: ${Math.round(calculationsPerSecond)} calc/second`);
+      console.log(
+        `      Complex damage calc: ${Math.round(calculationsPerSecond)} calc/second`,
+      );
     });
 
     it('should measure armor/resistance calculation overhead', () => {
@@ -829,7 +845,10 @@ describe('Combat Performance Tests', () => {
         maxHealth: 100,
       });
 
-      const calculateWithResistance = (damage: number, material: string): number => {
+      const calculateWithResistance = (
+        damage: number,
+        material: string,
+      ): number => {
         const resistances: Record<string, number> = {
           metal: 0.5,
           stone: 0.7,
@@ -901,7 +920,7 @@ describe('Combat Performance Tests', () => {
           // Alternate between fire and ice
           physicsService.applyEffect(
             target.id,
-            i % 2 === 0 ? fireEffect : iceEffect
+            i % 2 === 0 ? fireEffect : iceEffect,
           );
         }
       });
@@ -919,7 +938,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         for (let tick = 0; tick < ticks; tick++) {
-          targets.forEach(target => {
+          targets.forEach((target) => {
             const currentHealth = target.health || 0;
             target.health = Math.max(0, currentHealth - dotDamage);
           });
@@ -934,7 +953,10 @@ describe('Combat Performance Tests', () => {
       const attacker = createCombatants(1, 'player')[0];
       const targets = createDestructibles(10);
 
-      const reflectDamage = (damage: number, reflectPercent: number): number => {
+      const reflectDamage = (
+        damage: number,
+        reflectPercent: number,
+      ): number => {
         return Math.floor(damage * reflectPercent);
       };
 
@@ -958,13 +980,13 @@ describe('Combat Performance Tests', () => {
       const targets = createCombatants(100, 'player');
 
       // Set all targets to half health
-      targets.forEach(t => {
+      targets.forEach((t) => {
         playerService.updatePlayer(t.id, { health: 50 });
       });
 
       const elapsed = measureTime(() => {
         for (let i = 0; i < 100; i++) {
-          targets.forEach(target => {
+          targets.forEach((target) => {
             const healing = 10;
             const maxHealth = 100;
             const currentHealth = 50;
@@ -996,7 +1018,9 @@ describe('Combat Performance Tests', () => {
       // BENCHMARK: 10,000 calculations in < 100ms
       expect(elapsed).toBeLessThan(100);
 
-      console.log(`      10,000 damage calculations in ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `      10,000 damage calculations in ${elapsed.toFixed(2)}ms`,
+      );
     });
   });
 
@@ -1057,7 +1081,9 @@ describe('Combat Performance Tests', () => {
       // Memory increase should be reasonable
       expect(memIncrease).toBeLessThan(10); // < 10MB for 10,000 entries
 
-      console.log(`      Combat log memory: ${memIncrease.toFixed(2)}MB for 10,000 entries`);
+      console.log(
+        `      Combat log memory: ${memIncrease.toFixed(2)}MB for 10,000 entries`,
+      );
     });
 
     it('should handle active combat tracking (1000 simultaneous fights)', () => {
@@ -1122,7 +1148,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Each entity has 100 threat entries
-        entities.forEach(entity => {
+        entities.forEach((entity) => {
           const threats: ThreatEntry[] = [];
           for (let i = 0; i < 100; i++) {
             threats.push({
@@ -1200,16 +1226,19 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Query active combats
-        const activeCombats = Array.from(combatStates.values())
-          .filter(state => state.phase === 'active');
+        const activeCombats = Array.from(combatStates.values()).filter(
+          (state) => state.phase === 'active',
+        );
 
         // Query by participant
-        const playerCombats = Array.from(combatStates.values())
-          .filter(state => state.participants.includes('player-500'));
+        const playerCombats = Array.from(combatStates.values()).filter(
+          (state) => state.participants.includes('player-500'),
+        );
 
         // Query by turn number
-        const longCombats = Array.from(combatStates.values())
-          .filter(state => state.turnNumber > 50);
+        const longCombats = Array.from(combatStates.values()).filter(
+          (state) => state.turnNumber > 50,
+        );
       });
 
       // Multiple queries on 1000 combats should be fast
@@ -1238,7 +1267,7 @@ describe('Combat Performance Tests', () => {
         }
 
         // Clear defeated combatants
-        const activeCombatants = combatants.filter(c => (c.health || 0) > 0);
+        const activeCombatants = combatants.filter((c) => (c.health || 0) > 0);
       });
 
       // Cleanup should be fast
@@ -1273,7 +1302,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Simulate physics step (includes broad-phase collision detection)
-        cannonPhysicsService.step(1/60);
+        cannonPhysicsService.step(1 / 60);
       });
 
       // Single physics tick with 1000 objects
@@ -1286,7 +1315,7 @@ describe('Combat Performance Tests', () => {
       const flammableObjects = createDestructibles(100);
 
       // Set all to wood (flammable)
-      flammableObjects.forEach(obj => {
+      flammableObjects.forEach((obj) => {
         objectService.updateObject(obj.id, { material: 'wood' });
       });
 
@@ -1297,7 +1326,7 @@ describe('Combat Performance Tests', () => {
         width: 50,
         height: 50,
         size: { width: 50, height: 50, depth: 10 },
-        objects: flammableObjects.map(o => o.id),
+        objects: flammableObjects.map((o) => o.id),
         players: [],
       });
 
@@ -1320,7 +1349,7 @@ describe('Combat Performance Tests', () => {
       const explosiveObjects = createDestructibles(100);
 
       // Make all objects explosive
-      explosiveObjects.forEach(obj => {
+      explosiveObjects.forEach((obj) => {
         const updated = objectService.getObject(obj.id);
         if (updated?.materialProperties) {
           updated.materialProperties.properties = { explosive: true };
@@ -1334,7 +1363,7 @@ describe('Combat Performance Tests', () => {
         width: 20,
         height: 20,
         size: { width: 20, height: 20, depth: 10 },
-        objects: explosiveObjects.map(o => o.id),
+        objects: explosiveObjects.map((o) => o.id),
         players: [],
       });
 
@@ -1380,7 +1409,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Apply effect to all objects (tests material resistance)
-        objects.forEach(obj => {
+        objects.forEach((obj) => {
           physicsService.applyEffect(obj.id, effect);
         });
       });
@@ -1399,7 +1428,7 @@ describe('Combat Performance Tests', () => {
           position: {
             x: Math.random() * 100,
             y: 100, // High up
-            z: Math.random() * 100
+            z: Math.random() * 100,
           },
           rotation: { x: 0, y: 0, z: 0 },
           size: { width: 1, height: 1, depth: 1 },
@@ -1415,14 +1444,16 @@ describe('Combat Performance Tests', () => {
       const elapsed = measureTime(() => {
         // Simulate 10 physics ticks
         for (let i = 0; i < 10; i++) {
-          cannonPhysicsService.step(1/60);
+          cannonPhysicsService.step(1 / 60);
         }
       });
 
       // 10 physics updates with 1000 objects
       expect(elapsed).toBeLessThan(500); // < 500ms
 
-      console.log(`      10 physics ticks (1000 objects): ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `      10 physics ticks (1000 objects): ${elapsed.toFixed(2)}ms`,
+      );
     });
 
     it('should test spatial partitioning effectiveness', () => {
@@ -1434,7 +1465,7 @@ describe('Combat Performance Tests', () => {
         { x: 50, y: 50, z: 0 },
       ];
 
-      const objectsByRegion = regions.map(region => {
+      const objectsByRegion = regions.map((region) => {
         const objects = [];
         for (let i = 0; i < 250; i++) {
           const obj = cannonPhysicsService.createEntity({
@@ -1456,13 +1487,16 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Physics step should use spatial partitioning
-        cannonPhysicsService.step(1/60);
+        cannonPhysicsService.step(1 / 60);
       });
 
       // Spatial partitioning should make this faster than brute force
       expect(elapsed).toBeLessThan(100); // < 100ms
 
-      const totalObjects = objectsByRegion.reduce((sum, arr) => sum + arr.length, 0);
+      const totalObjects = objectsByRegion.reduce(
+        (sum, arr) => sum + arr.length,
+        0,
+      );
       expect(totalObjects).toBe(1000);
     });
 
@@ -1491,14 +1525,16 @@ describe('Combat Performance Tests', () => {
       const start = performance.now();
 
       // Single physics tick
-      cannonPhysicsService.step(1/60);
+      cannonPhysicsService.step(1 / 60);
 
       const elapsed = performance.now() - start;
 
       // BENCHMARK: Single tick < 16ms (60 FPS)
       expect(elapsed).toBeLessThan(16);
 
-      console.log(`      Physics tick (100 objects): ${elapsed.toFixed(2)}ms (${(1000/elapsed).toFixed(1)} FPS)`);
+      console.log(
+        `      Physics tick (100 objects): ${elapsed.toFixed(2)}ms (${(1000 / elapsed).toFixed(1)} FPS)`,
+      );
     });
 
     it('should measure physics cleanup performance', () => {
@@ -1519,7 +1555,7 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = measureTime(() => {
         // Remove all objects
-        objects.forEach(obj => {
+        objects.forEach((obj) => {
           cannonPhysicsService.removeEntity(obj.id);
         });
       });
@@ -1583,7 +1619,7 @@ describe('Combat Performance Tests', () => {
           bossAbility.id,
           players[0].id,
           'raid-test',
-          { targetStats: { [StatType.HEALTH]: 1000 } }
+          { targetStats: { [StatType.HEALTH]: 1000 } },
         );
 
         // Adds attack random players
@@ -1639,7 +1675,7 @@ describe('Combat Performance Tests', () => {
         width: 100,
         height: 100,
         size: { width: 100, height: 100, depth: 20 },
-        objects: entities.map(e => e.id),
+        objects: entities.map((e) => e.id),
         players: [],
       });
 
@@ -1656,7 +1692,9 @@ describe('Combat Performance Tests', () => {
 
       const elapsed = performance.now() - start;
 
-      console.log(`      Environmental disaster (1000 entities): ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `      Environmental disaster (1000 entities): ${elapsed.toFixed(2)}ms`,
+      );
 
       // Should process all entities
       expect(elapsed).toBeLessThan(3000); // < 3 seconds

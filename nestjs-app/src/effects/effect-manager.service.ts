@@ -30,7 +30,9 @@ export class EffectManagerService {
    */
   registerEffect(effect: IEffect): void {
     this.effects.set(effect.id, effect);
-    this.logger.log(`Registered effect '${effect.name}' (${effect.id}) of type ${effect.type}`);
+    this.logger.log(
+      `Registered effect '${effect.name}' (${effect.id}) of type ${effect.type}`,
+    );
   }
 
   /**
@@ -109,7 +111,9 @@ export class EffectManagerService {
         // Refresh non-stackable effect
         existingEffect.appliedAt = new Date().toISOString();
         if (effect.duration) {
-          existingEffect.expiresAt = new Date(Date.now() + effect.duration).toISOString();
+          existingEffect.expiresAt = new Date(
+            Date.now() + effect.duration,
+          ).toISOString();
         }
 
         return {
@@ -133,7 +137,9 @@ export class EffectManagerService {
 
     // Set expiration for temporary effects
     if (effect.duration && effect.durationType !== DurationType.PERMANENT) {
-      activeEffect.expiresAt = new Date(Date.now() + effect.duration).toISOString();
+      activeEffect.expiresAt = new Date(
+        Date.now() + effect.duration,
+      ).toISOString();
     }
 
     // Set tick count for over_time effects
@@ -164,7 +170,10 @@ export class EffectManagerService {
       // Don't store instant effects - they apply immediately and don't persist
     } else {
       // Setup ticking for over_time effects
-      if (effect.durationType === DurationType.OVER_TIME && effect.tickInterval) {
+      if (
+        effect.durationType === DurationType.OVER_TIME &&
+        effect.tickInterval
+      ) {
         this.setupEffectTicking(activeEffect, effectContext);
       }
 
@@ -177,7 +186,10 @@ export class EffectManagerService {
         effect.type === EffectType.DEBUFF ||
         effect.type === EffectType.EQUIPMENT_BONUS
       ) {
-        const result = await this.applyStatModifier(activeEffect, effectContext);
+        const result = await this.applyStatModifier(
+          activeEffect,
+          effectContext,
+        );
         Object.assign(statChanges, result.statChanges);
       }
 
@@ -230,7 +242,11 @@ export class EffectManagerService {
         const now = Date.now();
         const expiresAt = new Date(activeEffect.expiresAt).getTime();
         if (now >= expiresAt) {
-          await this.removeEffect(context.gameId, activeEffect.targetId, activeEffect.effectId);
+          await this.removeEffect(
+            context.gameId,
+            activeEffect.targetId,
+            activeEffect.effectId,
+          );
           clearInterval(interval);
           this.intervals.delete(instanceId);
           return;
@@ -240,7 +256,11 @@ export class EffectManagerService {
       // Check tick count
       if (activeEffect.ticksRemaining !== undefined) {
         if (activeEffect.ticksRemaining <= 0) {
-          await this.removeEffect(context.gameId, activeEffect.targetId, activeEffect.effectId);
+          await this.removeEffect(
+            context.gameId,
+            activeEffect.targetId,
+            activeEffect.effectId,
+          );
           clearInterval(interval);
           this.intervals.delete(instanceId);
           return;
@@ -255,8 +275,15 @@ export class EffectManagerService {
       }
 
       // Check if ticks are complete after applying the tick
-      if (activeEffect.ticksRemaining !== undefined && activeEffect.ticksRemaining <= 0) {
-        await this.removeEffect(context.gameId, activeEffect.targetId, activeEffect.effectId);
+      if (
+        activeEffect.ticksRemaining !== undefined &&
+        activeEffect.ticksRemaining <= 0
+      ) {
+        await this.removeEffect(
+          context.gameId,
+          activeEffect.targetId,
+          activeEffect.effectId,
+        );
         clearInterval(interval);
         this.intervals.delete(instanceId);
         return;
@@ -286,7 +313,8 @@ export class EffectManagerService {
       case EffectType.HEAL:
         if (effect.value) {
           const healAmount = effect.percentage
-            ? (context.targetStats[StatType.HEALTH] || 100) * (effect.value / 100)
+            ? (context.targetStats[StatType.HEALTH] || 100) *
+              (effect.value / 100)
             : effect.value;
           statChanges[StatType.HEALTH] = healAmount * activeEffect.stacks;
           healing = healAmount * activeEffect.stacks;
@@ -298,7 +326,8 @@ export class EffectManagerService {
       case EffectType.BURN:
         if (effect.value) {
           const damageAmount = effect.percentage
-            ? (context.targetStats[StatType.HEALTH] || 100) * (effect.value / 100)
+            ? (context.targetStats[StatType.HEALTH] || 100) *
+              (effect.value / 100)
             : effect.value;
           statChanges[StatType.HEALTH] = -damageAmount * activeEffect.stacks;
           damage = damageAmount * activeEffect.stacks;
@@ -317,7 +346,8 @@ export class EffectManagerService {
       case EffectType.RESTORE_STAMINA:
         if (effect.value) {
           const staminaAmount = effect.percentage
-            ? (context.targetStats[StatType.STAMINA] || 100) * (effect.value / 100)
+            ? (context.targetStats[StatType.STAMINA] || 100) *
+              (effect.value / 100)
             : effect.value;
           statChanges[StatType.STAMINA] = staminaAmount * activeEffect.stacks;
         }
@@ -380,7 +410,11 @@ export class EffectManagerService {
   /**
    * Remove an effect from a target
    */
-  async removeEffect(gameId: string, targetId: string, effectId: string): Promise<boolean> {
+  async removeEffect(
+    gameId: string,
+    targetId: string,
+    effectId: string,
+  ): Promise<boolean> {
     const gameEffects = this.activeEffects.get(gameId);
     if (!gameEffects) {
       return false;
@@ -424,7 +458,9 @@ export class EffectManagerService {
       gameId,
     );
 
-    this.logger.log(`Removed effect '${activeEffect.effect.name}' from ${targetId} in game ${gameId}`);
+    this.logger.log(
+      `Removed effect '${activeEffect.effect.name}' from ${targetId} in game ${gameId}`,
+    );
 
     return true;
   }
@@ -455,7 +491,9 @@ export class EffectManagerService {
     }
 
     gameEffects.delete(targetId);
-    this.logger.log(`Removed all ${count} effects from ${targetId} in game ${gameId}`);
+    this.logger.log(
+      `Removed all ${count} effects from ${targetId} in game ${gameId}`,
+    );
 
     return count;
   }
@@ -474,7 +512,10 @@ export class EffectManagerService {
   /**
    * Get total stat modifiers for a target
    */
-  getTotalStatModifiers(gameId: string, targetId: string): Record<string, number> {
+  getTotalStatModifiers(
+    gameId: string,
+    targetId: string,
+  ): Record<string, number> {
     const effects = this.getActiveEffects(gameId, targetId);
     const modifiers: Record<string, number> = {};
 
@@ -491,9 +532,14 @@ export class EffectManagerService {
           effect.type === EffectType.EQUIPMENT_BONUS)
       ) {
         const currentMod = modifiers[effect.statType] || 0;
-        const sign = effect.type === EffectType.DECREASE_STAT || effect.type === EffectType.DEBUFF ? -1 : 1;
+        const sign =
+          effect.type === EffectType.DECREASE_STAT ||
+          effect.type === EffectType.DEBUFF
+            ? -1
+            : 1;
 
-        modifiers[effect.statType] = currentMod + sign * effect.value * activeEffect.stacks;
+        modifiers[effect.statType] =
+          currentMod + sign * effect.value * activeEffect.stacks;
       }
     }
 
@@ -548,7 +594,12 @@ export class EffectManagerService {
   /**
    * Pause/unpause an effect
    */
-  setEffectPaused(gameId: string, targetId: string, effectId: string, paused: boolean): boolean {
+  setEffectPaused(
+    gameId: string,
+    targetId: string,
+    effectId: string,
+    paused: boolean,
+  ): boolean {
     const gameEffects = this.activeEffects.get(gameId);
     if (!gameEffects) {
       return false;
@@ -608,7 +659,7 @@ export class EffectManagerService {
     const exportData: Record<string, any[]> = {};
 
     for (const [targetId, effects] of gameEffects.entries()) {
-      exportData[targetId] = effects.map(ae => ({
+      exportData[targetId] = effects.map((ae) => ({
         effectId: ae.effectId,
         targetId: ae.targetId,
         sourceId: ae.sourceId,
@@ -659,7 +710,10 @@ export class EffectManagerService {
     for (const [targetId, effects] of Object.entries(effectsData)) {
       if (Array.isArray(effects)) {
         for (const effectData of effects) {
-          const result = await this.applyEffect(gameId, effectData as IActiveEffect);
+          const result = await this.applyEffect(
+            gameId,
+            effectData as IActiveEffect,
+          );
           if (result.success) {
             totalImported++;
           }
@@ -688,9 +742,13 @@ export class EffectManagerService {
     const targetEffects = gameEffects.get(targetId) || [];
 
     // Check if effect already exists (avoid duplicates)
-    const existingEffect = targetEffects.find((ae) => ae.effectId === activeEffect.effectId);
+    const existingEffect = targetEffects.find(
+      (ae) => ae.effectId === activeEffect.effectId,
+    );
     if (existingEffect) {
-      this.logger.warn(`Effect ${activeEffect.effectId} already exists on ${targetId}, skipping restoration`);
+      this.logger.warn(
+        `Effect ${activeEffect.effectId} already exists on ${targetId}, skipping restoration`,
+      );
       return {
         success: false,
         message: 'Effect already exists',
@@ -710,7 +768,10 @@ export class EffectManagerService {
     const effect = activeEffect.effect;
     if (effect.durationType === DurationType.OVER_TIME && effect.tickInterval) {
       // Check if effect hasn't expired
-      if (!activeEffect.expiresAt || new Date(activeEffect.expiresAt).getTime() > Date.now()) {
+      if (
+        !activeEffect.expiresAt ||
+        new Date(activeEffect.expiresAt).getTime() > Date.now()
+      ) {
         // Check if there are ticks remaining
         if (!activeEffect.ticksRemaining || activeEffect.ticksRemaining > 0) {
           const context: IEffectContext = {
@@ -727,7 +788,9 @@ export class EffectManagerService {
       }
     }
 
-    this.logger.log(`Restored effect '${effect.name}' on ${targetId} in game ${gameId}`);
+    this.logger.log(
+      `Restored effect '${effect.name}' on ${targetId} in game ${gameId}`,
+    );
 
     return {
       success: true,

@@ -57,7 +57,9 @@ export class TriggerManagerService {
       this.setupTimeTrigger(trigger);
     }
 
-    this.logger.log(`Registered trigger '${trigger.name}' (${trigger.id}) of type ${trigger.type}`);
+    this.logger.log(
+      `Registered trigger '${trigger.name}' (${trigger.id}) of type ${trigger.type}`,
+    );
   }
 
   /**
@@ -104,7 +106,10 @@ export class TriggerManagerService {
   /**
    * Check event-based triggers
    */
-  private async checkEventTriggers(eventType: string, eventData: any): Promise<void> {
+  private async checkEventTriggers(
+    eventType: string,
+    eventData: any,
+  ): Promise<void> {
     for (const trigger of this.triggers.values()) {
       if (
         trigger.enabled &&
@@ -200,7 +205,10 @@ export class TriggerManagerService {
     // Check conditions
     let conditionsMet = true;
     if (trigger.conditions) {
-      conditionsMet = await this.evaluateConditionGroup(trigger.conditions, context);
+      conditionsMet = await this.evaluateConditionGroup(
+        trigger.conditions,
+        context,
+      );
     }
 
     if (!conditionsMet) {
@@ -240,7 +248,9 @@ export class TriggerManagerService {
     activeTrigger.lastFiredAt = new Date().toISOString();
 
     if (trigger.cooldown) {
-      activeTrigger.cooldownUntil = new Date(Date.now() + trigger.cooldown).toISOString();
+      activeTrigger.cooldownUntil = new Date(
+        Date.now() + trigger.cooldown,
+      ).toISOString();
     }
 
     // Emit trigger fired event
@@ -284,7 +294,7 @@ export class TriggerManagerService {
         results.push(await this.evaluateConditionGroup(condition, context));
       } else {
         // Individual condition
-        results.push(await this.evaluateCondition(condition as ITriggerCondition, context));
+        results.push(await this.evaluateCondition(condition, context));
       }
     }
 
@@ -427,7 +437,10 @@ export class TriggerManagerService {
   /**
    * Execute trigger action
    */
-  private async executeAction(action: ITriggerAction, context: ITriggerContext): Promise<void> {
+  private async executeAction(
+    action: ITriggerAction,
+    context: ITriggerContext,
+  ): Promise<void> {
     switch (action.type) {
       case 'set_flag':
         if (action.flagKey) {
@@ -492,7 +505,9 @@ export class TriggerManagerService {
         this.clearTimeTrigger(triggerId);
       }
 
-      this.logger.log(`Trigger '${trigger.name}' ${enabled ? 'enabled' : 'disabled'}`);
+      this.logger.log(
+        `Trigger '${trigger.name}' ${enabled ? 'enabled' : 'disabled'}`,
+      );
     }
   }
 

@@ -68,7 +68,9 @@ export class QuestManagerService {
       for (const prerequisite of quest.prerequisites) {
         const met = await this.checkPrerequisite(prerequisite, context);
         if (!met) {
-          prerequisitesFailed.push(this.getPrerequisiteDescription(prerequisite));
+          prerequisitesFailed.push(
+            this.getPrerequisiteDescription(prerequisite),
+          );
         }
       }
     }
@@ -112,7 +114,9 @@ export class QuestManagerService {
 
     // Set time limit expiration if applicable
     if (quest.timeLimit) {
-      const expiresAt = new Date(Date.now() + quest.timeLimit * 1000).toISOString();
+      const expiresAt = new Date(
+        Date.now() + quest.timeLimit * 1000,
+      ).toISOString();
       playerQuest.timeLimitExpiresAt = expiresAt;
     }
 
@@ -169,7 +173,9 @@ export class QuestManagerService {
     }
 
     // Find objective
-    const objective = playerQuest.objectives.find((obj) => obj.id === objectiveId);
+    const objective = playerQuest.objectives.find(
+      (obj) => obj.id === objectiveId,
+    );
 
     if (!objective) {
       return {
@@ -189,7 +195,10 @@ export class QuestManagerService {
     const currentCount = objective.currentCount || 0;
     const targetCount = objective.targetCount || 1;
     // Bug #3 Fix: Prevent negative counts by using Math.max(0, ...)
-    objective.currentCount = Math.max(0, Math.min(currentCount + increment, targetCount));
+    objective.currentCount = Math.max(
+      0,
+      Math.min(currentCount + increment, targetCount),
+    );
 
     const objectiveCompleted = objective.currentCount >= targetCount;
 
@@ -289,7 +298,11 @@ export class QuestManagerService {
     if (quest.nextQuestId) {
       const nextQuest = this.quests.get(quest.nextQuestId);
       if (nextQuest?.autoStart) {
-        const startResult = await this.startQuest(quest.nextQuestId, playerId, context);
+        const startResult = await this.startQuest(
+          quest.nextQuestId,
+          playerId,
+          context,
+        );
         if (startResult.success) {
           nextQuestUnlocked = quest.nextQuestId;
         }
@@ -308,7 +321,10 @@ export class QuestManagerService {
   /**
    * Fail a quest
    */
-  async failQuest(playerId: string, questId: string): Promise<IQuestUpdateResult> {
+  async failQuest(
+    playerId: string,
+    questId: string,
+  ): Promise<IQuestUpdateResult> {
     const playerQuest = this.getPlayerQuest(playerId, questId);
     const quest = this.quests.get(questId);
 
@@ -362,7 +378,10 @@ export class QuestManagerService {
   /**
    * Abandon a quest
    */
-  async abandonQuest(playerId: string, questId: string): Promise<IQuestUpdateResult> {
+  async abandonQuest(
+    playerId: string,
+    questId: string,
+  ): Promise<IQuestUpdateResult> {
     const quest = this.quests.get(questId);
 
     if (!quest) {
@@ -483,7 +502,9 @@ export class QuestManagerService {
 
       case 'flag':
         if (prerequisite.flagKey) {
-          return context.playerFlags[prerequisite.flagKey] === prerequisite.flagValue;
+          return (
+            context.playerFlags[prerequisite.flagKey] === prerequisite.flagValue
+          );
         }
         return false;
 
@@ -515,14 +536,22 @@ export class QuestManagerService {
       case 'flag':
         if (condition.key) {
           const flagValue = context.playerFlags[condition.key];
-          return this.compareValues(flagValue, condition.operator, condition.value);
+          return this.compareValues(
+            flagValue,
+            condition.operator,
+            condition.value,
+          );
         }
         return false;
 
       case 'variable':
         if (condition.key) {
           const varValue = context.playerVariables[condition.key];
-          return this.compareValues(varValue, condition.operator, condition.value);
+          return this.compareValues(
+            varValue,
+            condition.operator,
+            condition.value,
+          );
         }
         return false;
 
@@ -570,7 +599,10 @@ export class QuestManagerService {
   /**
    * Grant quest reward
    */
-  private async grantReward(reward: IQuestReward, context: IQuestContext): Promise<void> {
+  private async grantReward(
+    reward: IQuestReward,
+    context: IQuestContext,
+  ): Promise<void> {
     switch (reward.type) {
       case 'item':
         if (reward.itemId) {
@@ -693,7 +725,7 @@ export class QuestManagerService {
     const result: { [playerId: string]: IPlayerQuest[] } = {};
 
     for (const [playerId, quests] of this.playerQuests.entries()) {
-      const gameQuests = quests.filter(q => q.gameId === gameId);
+      const gameQuests = quests.filter((q) => q.gameId === gameId);
       if (gameQuests.length > 0) {
         result[playerId] = gameQuests;
       }
@@ -705,10 +737,13 @@ export class QuestManagerService {
   /**
    * Restore player quests from saved data (for save/load)
    */
-  restorePlayerQuests(gameId: string, questData: { [playerId: string]: IPlayerQuest[] }): void {
+  restorePlayerQuests(
+    gameId: string,
+    questData: { [playerId: string]: IPlayerQuest[] },
+  ): void {
     // Clear existing quests for this game first
     for (const [playerId, quests] of this.playerQuests.entries()) {
-      const filteredQuests = quests.filter(q => q.gameId !== gameId);
+      const filteredQuests = quests.filter((q) => q.gameId !== gameId);
       if (filteredQuests.length === 0) {
         this.playerQuests.delete(playerId);
       } else {
@@ -720,7 +755,9 @@ export class QuestManagerService {
     for (const [playerId, quests] of Object.entries(questData)) {
       const existingQuests = this.playerQuests.get(playerId) || [];
       this.playerQuests.set(playerId, [...existingQuests, ...quests]);
-      this.logger.log(`Restored ${quests.length} quests for player ${playerId}`);
+      this.logger.log(
+        `Restored ${quests.length} quests for player ${playerId}`,
+      );
     }
   }
 }

@@ -16,7 +16,9 @@ describe('ObjectService (Integration)', () => {
       getEntity: jest.fn().mockResolvedValue(null),
       deleteEntity: jest.fn().mockResolvedValue(undefined),
       getAllEntities: jest.fn().mockResolvedValue([]),
-      transaction: jest.fn((callback) => callback({ prepare: jest.fn(() => ({ run: jest.fn() })) })),
+      transaction: jest.fn((callback) =>
+        callback({ prepare: jest.fn(() => ({ run: jest.fn() })) }),
+      ),
       prepare: jest.fn(() => ({ get: jest.fn(), all: jest.fn(() => []) })),
       saveVersion: jest.fn().mockResolvedValue(1),
       getVersion: jest.fn().mockResolvedValue(null),
@@ -68,8 +70,14 @@ describe('ObjectService (Integration)', () => {
 
   describe('Object Creation', () => {
     it('should auto-generate UUID for new objects', () => {
-      const obj1 = service.createObject({ name: 'Object 1', objectType: 'item' });
-      const obj2 = service.createObject({ name: 'Object 2', objectType: 'item' });
+      const obj1 = service.createObject({
+        name: 'Object 1',
+        objectType: 'item',
+      });
+      const obj2 = service.createObject({
+        name: 'Object 2',
+        objectType: 'item',
+      });
 
       expect(obj1.id).toBeDefined();
       expect(obj2.id).toBeDefined();
@@ -110,7 +118,7 @@ describe('ObjectService (Integration)', () => {
       const obj = service.createObject({
         name: 'Heavy Rock',
         objectType: 'furniture',
-        isPortable: false
+        isPortable: false,
       });
       expect(obj.isPortable).toBe(false);
     });
@@ -279,7 +287,10 @@ describe('ObjectService (Integration)', () => {
 
   describe('Object Retrieval', () => {
     it('should retrieve object by ID', () => {
-      const created = service.createObject({ name: 'Test', objectType: 'item' });
+      const created = service.createObject({
+        name: 'Test',
+        objectType: 'item',
+      });
       const retrieved = service.getObject(created.id);
 
       expect(retrieved).toBeDefined();
@@ -335,13 +346,25 @@ describe('ObjectService (Integration)', () => {
     });
 
     it('should filter objects by gameId when getting all for game', async () => {
-      service.createObject({ name: 'Game1 Obj1', objectType: 'item', gameId: 'game1' });
-      service.createObject({ name: 'Game1 Obj2', objectType: 'item', gameId: 'game1' });
-      service.createObject({ name: 'Game2 Obj1', objectType: 'item', gameId: 'game2' });
+      service.createObject({
+        name: 'Game1 Obj1',
+        objectType: 'item',
+        gameId: 'game1',
+      });
+      service.createObject({
+        name: 'Game1 Obj2',
+        objectType: 'item',
+        gameId: 'game1',
+      });
+      service.createObject({
+        name: 'Game2 Obj1',
+        objectType: 'item',
+        gameId: 'game2',
+      });
 
       const game1Objects = await service.getAllObjectsForGame('game1');
       expect(game1Objects).toHaveLength(2);
-      expect(game1Objects.every(o => o.gameId === 'game1')).toBe(true);
+      expect(game1Objects.every((o) => o.gameId === 'game1')).toBe(true);
     });
   });
 
@@ -351,7 +374,7 @@ describe('ObjectService (Integration)', () => {
 
       const success = service.updateObject(obj.id, {
         name: 'Updated Name',
-        description: 'New description'
+        description: 'New description',
       });
 
       expect(success).toBe(true);
@@ -378,7 +401,7 @@ describe('ObjectService (Integration)', () => {
       const obj = service.createObject({
         name: 'Test',
         objectType: 'item',
-        position: { x: 0, y: 0, z: 0 }
+        position: { x: 0, y: 0, z: 0 },
       });
 
       const newPosition = { x: 10, y: 20, z: 30 };
@@ -473,12 +496,20 @@ describe('ObjectService (Integration)', () => {
 
       expect(success).toBe(true);
       const updatedBook = service.getObject(book.id);
-      expect(updatedBook?.spatialRelationship?.relationshipType).toBe('on_top_of');
+      expect(updatedBook?.spatialRelationship?.relationshipType).toBe(
+        'on_top_of',
+      );
     });
 
     it('should place object next to another object', () => {
-      const obj1 = service.createObject({ name: 'Chair', objectType: 'furniture' });
-      const obj2 = service.createObject({ name: 'Table', objectType: 'furniture' });
+      const obj1 = service.createObject({
+        name: 'Chair',
+        objectType: 'furniture',
+      });
+      const obj2 = service.createObject({
+        name: 'Table',
+        objectType: 'furniture',
+      });
 
       const success = service.placeObject(obj1.id, {
         targetId: obj2.id,
@@ -490,7 +521,10 @@ describe('ObjectService (Integration)', () => {
 
     it('should place object underneath another object', () => {
       const rug = service.createObject({ name: 'Rug', objectType: 'item' });
-      const table = service.createObject({ name: 'Table', objectType: 'furniture' });
+      const table = service.createObject({
+        name: 'Table',
+        objectType: 'furniture',
+      });
 
       const success = service.placeObject(rug.id, {
         targetId: table.id,
@@ -502,7 +536,10 @@ describe('ObjectService (Integration)', () => {
 
     it('should attach object to another object', () => {
       const torch = service.createObject({ name: 'Torch', objectType: 'item' });
-      const wall = service.createObject({ name: 'Wall', objectType: 'furniture' });
+      const wall = service.createObject({
+        name: 'Wall',
+        objectType: 'furniture',
+      });
 
       const success = service.placeObject(torch.id, {
         targetId: wall.id,
@@ -530,7 +567,10 @@ describe('ObjectService (Integration)', () => {
 
     it('should not place object inside non-container', () => {
       const item = service.createObject({ name: 'Key', objectType: 'item' });
-      const nonContainer = service.createObject({ name: 'Rock', objectType: 'item' });
+      const nonContainer = service.createObject({
+        name: 'Rock',
+        objectType: 'item',
+      });
 
       const success = service.placeObject(item.id, {
         targetId: nonContainer.id,
@@ -588,13 +628,37 @@ describe('ObjectService (Integration)', () => {
         containedObjects: [],
       });
 
-      const item1 = service.createObject({ name: 'Item 1', objectType: 'item' });
-      const item2 = service.createObject({ name: 'Item 2', objectType: 'item' });
-      const item3 = service.createObject({ name: 'Item 3', objectType: 'item' });
+      const item1 = service.createObject({
+        name: 'Item 1',
+        objectType: 'item',
+      });
+      const item2 = service.createObject({
+        name: 'Item 2',
+        objectType: 'item',
+      });
+      const item3 = service.createObject({
+        name: 'Item 3',
+        objectType: 'item',
+      });
 
-      expect(service.placeObject(item1.id, { targetId: container.id, relationshipType: 'inside' })).toBe(true);
-      expect(service.placeObject(item2.id, { targetId: container.id, relationshipType: 'inside' })).toBe(true);
-      expect(service.placeObject(item3.id, { targetId: container.id, relationshipType: 'inside' })).toBe(false);
+      expect(
+        service.placeObject(item1.id, {
+          targetId: container.id,
+          relationshipType: 'inside',
+        }),
+      ).toBe(true);
+      expect(
+        service.placeObject(item2.id, {
+          targetId: container.id,
+          relationshipType: 'inside',
+        }),
+      ).toBe(true);
+      expect(
+        service.placeObject(item3.id, {
+          targetId: container.id,
+          relationshipType: 'inside',
+        }),
+      ).toBe(false);
     });
 
     it('should not place on top of non-furniture objects', () => {
@@ -610,8 +674,14 @@ describe('ObjectService (Integration)', () => {
     });
 
     it('should return false for invalid relationship types', () => {
-      const obj1 = service.createObject({ name: 'Object 1', objectType: 'item' });
-      const obj2 = service.createObject({ name: 'Object 2', objectType: 'item' });
+      const obj1 = service.createObject({
+        name: 'Object 1',
+        objectType: 'item',
+      });
+      const obj2 = service.createObject({
+        name: 'Object 2',
+        objectType: 'item',
+      });
 
       const success = service.placeObject(obj1.id, {
         targetId: obj2.id,
@@ -711,7 +781,10 @@ describe('ObjectService (Integration)', () => {
 
     it('should return false when removing from non-existent container', () => {
       const item = service.createObject({ name: 'Key', objectType: 'item' });
-      const success = service.removeObjectFromContainer(item.id, 'non-existent');
+      const success = service.removeObjectFromContainer(
+        item.id,
+        'non-existent',
+      );
       expect(success).toBe(false);
     });
 
@@ -742,13 +815,19 @@ describe('ObjectService (Integration)', () => {
       const item1 = service.createObject({ name: 'Key', objectType: 'item' });
       const item2 = service.createObject({ name: 'Coin', objectType: 'item' });
 
-      service.placeObject(item1.id, { targetId: container.id, relationshipType: 'inside' });
-      service.placeObject(item2.id, { targetId: container.id, relationshipType: 'inside' });
+      service.placeObject(item1.id, {
+        targetId: container.id,
+        relationshipType: 'inside',
+      });
+      service.placeObject(item2.id, {
+        targetId: container.id,
+        relationshipType: 'inside',
+      });
 
       const contents = service.getObjectsInContainer(container.id);
       expect(contents).toHaveLength(2);
-      expect(contents.map(o => o.id)).toContain(item1.id);
-      expect(contents.map(o => o.id)).toContain(item2.id);
+      expect(contents.map((o) => o.id)).toContain(item1.id);
+      expect(contents.map((o) => o.id)).toContain(item2.id);
     });
 
     it('should return empty array for empty container', () => {
@@ -781,11 +860,19 @@ describe('ObjectService (Integration)', () => {
 
       const item = service.createObject({ name: 'Key', objectType: 'item' });
 
-      service.placeObject(item.id, { targetId: container.id, relationshipType: 'inside' });
-      service.placeObject(item.id, { targetId: container.id, relationshipType: 'inside' });
+      service.placeObject(item.id, {
+        targetId: container.id,
+        relationshipType: 'inside',
+      });
+      service.placeObject(item.id, {
+        targetId: container.id,
+        relationshipType: 'inside',
+      });
 
       const updatedContainer = service.getObject(container.id);
-      const keyCount = updatedContainer?.containedObjects?.filter(id => id === item.id).length;
+      const keyCount = updatedContainer?.containedObjects?.filter(
+        (id) => id === item.id,
+      ).length;
       expect(keyCount).toBe(1);
     });
   });
@@ -799,7 +886,10 @@ describe('ObjectService (Integration)', () => {
         canContain: true,
       });
 
-      const key = service.createObject({ name: 'Golden Key', objectType: 'item' });
+      const key = service.createObject({
+        name: 'Golden Key',
+        objectType: 'item',
+      });
 
       service.placeObject(key.id, {
         targetId: chest.id,
@@ -818,7 +908,10 @@ describe('ObjectService (Integration)', () => {
         objectType: 'furniture',
       });
 
-      const book = service.createObject({ name: 'Ancient Tome', objectType: 'item' });
+      const book = service.createObject({
+        name: 'Ancient Tome',
+        objectType: 'item',
+      });
 
       service.placeObject(book.id, {
         targetId: table.id,
@@ -849,11 +942,16 @@ describe('ObjectService (Integration)', () => {
       });
 
       const location = service.getObjectLocation(item.id);
-      expect(location).toBe('The key is hidden beneath false bottom of the chest');
+      expect(location).toBe(
+        'The key is hidden beneath false bottom of the chest',
+      );
     });
 
     it('should handle object with no placement', () => {
-      const item = service.createObject({ name: 'Floating Key', objectType: 'item' });
+      const item = service.createObject({
+        name: 'Floating Key',
+        objectType: 'item',
+      });
       const location = service.getObjectLocation(item.id);
       expect(location).toContain('not placed anywhere');
     });
@@ -877,8 +975,14 @@ describe('ObjectService (Integration)', () => {
     });
 
     it('should get cache statistics', () => {
-      const obj1 = service.createObject({ name: 'Object 1', objectType: 'item' });
-      const obj2 = service.createObject({ name: 'Object 2', objectType: 'item' });
+      const obj1 = service.createObject({
+        name: 'Object 1',
+        objectType: 'item',
+      });
+      const obj2 = service.createObject({
+        name: 'Object 2',
+        objectType: 'item',
+      });
 
       const stats = service.getCacheStats();
 
@@ -927,7 +1031,9 @@ describe('ObjectService (Integration)', () => {
 
     it('should handle load without database service', async () => {
       const serviceWithoutDb = new ObjectService(entityService, undefined);
-      await expect(serviceWithoutDb.loadObjects('game-123')).resolves.not.toThrow();
+      await expect(
+        serviceWithoutDb.loadObjects('game-123'),
+      ).resolves.not.toThrow();
     });
 
     it('should get object with database fallback', async () => {
@@ -968,7 +1074,11 @@ describe('ObjectService (Integration)', () => {
     });
 
     it('should load object on demand', async () => {
-      const obj = service.createObject({ name: 'Test', objectType: 'item', gameId: 'game-123' });
+      const obj = service.createObject({
+        name: 'Test',
+        objectType: 'item',
+        gameId: 'game-123',
+      });
       const result = await service.loadObjectOnDemand('game-123', obj.id);
 
       expect(result).toBeDefined();
@@ -976,7 +1086,11 @@ describe('ObjectService (Integration)', () => {
     });
 
     it('should refresh object from database', async () => {
-      const obj = service.createObject({ name: 'Original', objectType: 'item', gameId: 'game-123' });
+      const obj = service.createObject({
+        name: 'Original',
+        objectType: 'item',
+        gameId: 'game-123',
+      });
 
       mockDatabaseService.prepare = jest.fn(() => ({
         get: jest.fn(() => ({
@@ -1013,16 +1127,21 @@ describe('ObjectService (Integration)', () => {
         obj.id,
         expect.any(Object),
         'object_service',
-        'Initial save'
+        'Initial save',
       );
       expect(version).toBe(1);
     });
 
     it('should throw error when saving version without database', async () => {
       const serviceWithoutDb = new ObjectService(entityService, undefined);
-      const obj = serviceWithoutDb.createObject({ name: 'Test', objectType: 'item' });
+      const obj = serviceWithoutDb.createObject({
+        name: 'Test',
+        objectType: 'item',
+      });
 
-      await expect(serviceWithoutDb.saveObjectVersion(obj.id)).rejects.toThrow();
+      await expect(
+        serviceWithoutDb.saveObjectVersion(obj.id),
+      ).rejects.toThrow();
     });
 
     it('should throw error when saving non-existent object version', async () => {
@@ -1034,20 +1153,26 @@ describe('ObjectService (Integration)', () => {
 
       await service.getObjectVersion(obj.id, 1);
 
-      expect(mockDatabaseService.getVersion).toHaveBeenCalledWith('object', obj.id, 1);
+      expect(mockDatabaseService.getVersion).toHaveBeenCalledWith(
+        'object',
+        obj.id,
+        1,
+      );
     });
 
     it('should throw error when getting version without database', async () => {
       const serviceWithoutDb = new ObjectService(entityService, undefined);
 
-      await expect(serviceWithoutDb.getObjectVersion('obj-123', 1)).rejects.toThrow();
+      await expect(
+        serviceWithoutDb.getObjectVersion('obj-123', 1),
+      ).rejects.toThrow();
     });
 
     it('should rollback object to previous version', async () => {
       const obj = service.createObject({
         name: 'Current Version',
         objectType: 'item',
-        description: 'Current description'
+        description: 'Current description',
       });
 
       const oldVersion: IObject = {
@@ -1061,7 +1186,11 @@ describe('ObjectService (Integration)', () => {
       const success = await service.rollbackObject(obj.id, 1);
 
       expect(success).toBe(true);
-      expect(mockDatabaseService.getVersion).toHaveBeenCalledWith('object', obj.id, 1);
+      expect(mockDatabaseService.getVersion).toHaveBeenCalledWith(
+        'object',
+        obj.id,
+        1,
+      );
       expect(mockDatabaseService.saveVersion).toHaveBeenCalled();
     });
 
@@ -1078,7 +1207,9 @@ describe('ObjectService (Integration)', () => {
     it('should throw error when rolling back without database', async () => {
       const serviceWithoutDb = new ObjectService(entityService, undefined);
 
-      await expect(serviceWithoutDb.rollbackObject('obj-123', 1)).rejects.toThrow();
+      await expect(
+        serviceWithoutDb.rollbackObject('obj-123', 1),
+      ).rejects.toThrow();
     });
   });
 
@@ -1129,7 +1260,10 @@ describe('ObjectService (Integration)', () => {
         containedObjects: ['valid-id', 'non-existent-id'],
       });
 
-      const validItem = service.createObject({ name: 'Valid Item', objectType: 'item' });
+      const validItem = service.createObject({
+        name: 'Valid Item',
+        objectType: 'item',
+      });
 
       const containerObj = service.getObject(container.id);
       if (containerObj) {
@@ -1178,7 +1312,7 @@ describe('ObjectService (Integration)', () => {
       const inMemoryObj = service.createObject({
         name: 'In Memory',
         objectType: 'item',
-        gameId: 'game-123'
+        gameId: 'game-123',
       });
 
       mockDatabaseService.prepare = jest.fn(() => ({
@@ -1197,7 +1331,7 @@ describe('ObjectService (Integration)', () => {
             container_capacity: 0,
             weight: 0,
             properties: '{}',
-          }
+          },
         ]),
         get: jest.fn((id) => {
           if (id === 'db-obj-1') {
@@ -1224,7 +1358,7 @@ describe('ObjectService (Integration)', () => {
       const allObjects = await service.getAllObjectsForGame('game-123');
 
       expect(allObjects.length).toBeGreaterThanOrEqual(1);
-      expect(allObjects.some(o => o.id === inMemoryObj.id)).toBe(true);
+      expect(allObjects.some((o) => o.id === inMemoryObj.id)).toBe(true);
     });
   });
 
@@ -1254,13 +1388,13 @@ describe('ObjectService (Integration)', () => {
       // Place box in chest
       service.placeObject(box.id, {
         targetId: chest.id,
-        relationshipType: 'inside'
+        relationshipType: 'inside',
       });
 
       // Place key in box
       service.placeObject(key.id, {
         targetId: box.id,
-        relationshipType: 'inside'
+        relationshipType: 'inside',
       });
 
       expect(service.getObjectsInContainer(chest.id)).toHaveLength(1);
@@ -1268,16 +1402,25 @@ describe('ObjectService (Integration)', () => {
     });
 
     it('should handle multiple objects with same name', () => {
-      const coin1 = service.createObject({ name: 'Gold Coin', objectType: 'item' });
-      const coin2 = service.createObject({ name: 'Gold Coin', objectType: 'item' });
-      const coin3 = service.createObject({ name: 'Gold Coin', objectType: 'item' });
+      const coin1 = service.createObject({
+        name: 'Gold Coin',
+        objectType: 'item',
+      });
+      const coin2 = service.createObject({
+        name: 'Gold Coin',
+        objectType: 'item',
+      });
+      const coin3 = service.createObject({
+        name: 'Gold Coin',
+        objectType: 'item',
+      });
 
       expect(coin1.id).not.toBe(coin2.id);
       expect(coin2.id).not.toBe(coin3.id);
       expect(coin1.id).not.toBe(coin3.id);
 
       const allObjects = service.getAllObjects();
-      const goldCoins = allObjects.filter(o => o.name === 'Gold Coin');
+      const goldCoins = allObjects.filter((o) => o.name === 'Gold Coin');
       expect(goldCoins).toHaveLength(3);
     });
 
@@ -1296,7 +1439,7 @@ describe('ObjectService (Integration)', () => {
             fire: 6,
             force: 5,
             lightning: 3,
-            ice: 4
+            ice: 4,
           },
         },
       });
@@ -1311,10 +1454,12 @@ describe('ObjectService (Integration)', () => {
 
       // Create many objects
       for (let i = 0; i < 100; i++) {
-        objects.push(service.createObject({
-          name: `Object ${i}`,
-          objectType: 'item'
-        }));
+        objects.push(
+          service.createObject({
+            name: `Object ${i}`,
+            objectType: 'item',
+          }),
+        );
       }
 
       expect(service.getAllObjects()).toHaveLength(100);

@@ -525,8 +525,7 @@ export class FileScannerService {
   private validateGameConfig(data: any, errors: string[]): void {
     if (!data.id) errors.push('Missing required field: id');
     if (!data.name) errors.push('Missing required field: name');
-    if (typeof data.id !== 'string')
-      errors.push('Field "id" must be a string');
+    if (typeof data.id !== 'string') errors.push('Field "id" must be a string');
     if (typeof data.name !== 'string')
       errors.push('Field "name" must be a string');
   }
@@ -538,8 +537,7 @@ export class FileScannerService {
     }
 
     data.connections.forEach((conn: any, index: number) => {
-      if (!conn.from)
-        errors.push(`Connection ${index}: missing "from" field`);
+      if (!conn.from) errors.push(`Connection ${index}: missing "from" field`);
       if (!conn.to) errors.push(`Connection ${index}: missing "to" field`);
       if (!conn.direction)
         errors.push(`Connection ${index}: missing "direction" field`);
@@ -566,7 +564,13 @@ export class FileScannerService {
     if (!data.name) errors.push('Missing required field: name');
     if (!data.objectType) errors.push('Missing required field: objectType');
 
-    const validTypes = ['item', 'furniture', 'weapon', 'consumable', 'container'];
+    const validTypes = [
+      'item',
+      'furniture',
+      'weapon',
+      'consumable',
+      'container',
+    ];
     if (data.objectType && !validTypes.includes(data.objectType)) {
       errors.push(
         `Invalid objectType: ${data.objectType}. Must be one of: ${validTypes.join(', ')}`,

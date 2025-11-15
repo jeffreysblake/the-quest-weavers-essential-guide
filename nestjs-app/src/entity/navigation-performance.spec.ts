@@ -339,15 +339,12 @@ describe('Navigation Performance Tests', () => {
       gScore.set(startRoomId, 0);
       fScore.set(
         startRoomId,
-        this.heuristic(
-          roomMap.get(startRoomId)!,
-          roomMap.get(endRoomId)!,
-        ),
+        this.heuristic(roomMap.get(startRoomId)!, roomMap.get(endRoomId)!),
       );
 
       while (openSet.size > 0) {
         // Get node with lowest fScore
-        let current = this.getLowestFScore(openSet, fScore);
+        const current = this.getLowestFScore(openSet, fScore);
 
         if (current === endRoomId) {
           return this.reconstructPath(cameFrom, current);
@@ -521,7 +518,9 @@ describe('Navigation Performance Tests', () => {
         expect(path[path.length - 1]).toBe(endRoom.id);
       });
 
-      console.log(`Pathfinding across 1024 rooms took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Pathfinding across 1024 rooms took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(100);
     });
 
@@ -555,7 +554,9 @@ describe('Navigation Performance Tests', () => {
         expect(path.length).toBeGreaterThan(0);
       });
 
-      console.log(`A* on tree structure (${rooms.length} rooms) took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `A* on tree structure (${rooms.length} rooms) took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(50);
     });
 
@@ -576,7 +577,9 @@ describe('Navigation Performance Tests', () => {
         }
       });
 
-      console.log(`Pathfinding in maze (${rooms.length} rooms, ${deadEnds.length} dead ends) took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Pathfinding in maze (${rooms.length} rooms, ${deadEnds.length} dead ends) took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(100);
     });
 
@@ -593,7 +596,9 @@ describe('Navigation Performance Tests', () => {
         expect(path.length).toBeGreaterThan(0);
       });
 
-      console.log(`Multi-floor pathfinding (${rooms.length} rooms) took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Multi-floor pathfinding (${rooms.length} rooms) took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(100);
     });
 
@@ -606,7 +611,9 @@ describe('Navigation Performance Tests', () => {
         expect(typeof hasCircle).toBe('boolean');
       });
 
-      console.log(`Circular path detection (${rooms.length} rooms) took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Circular path detection (${rooms.length} rooms) took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(50);
     });
 
@@ -616,7 +623,9 @@ describe('Navigation Performance Tests', () => {
       const elapsed = measureTime(() => {
         const deadEnds = pathFinder.findDeadEnds(rooms);
         expect(deadEnds.length).toBeGreaterThan(0);
-        console.log(`Found ${deadEnds.length} dead ends in ${rooms.length} room maze`);
+        console.log(
+          `Found ${deadEnds.length} dead ends in ${rooms.length} room maze`,
+        );
       });
 
       console.log(`Dead-end detection took: ${elapsed.toFixed(2)}ms`);
@@ -649,7 +658,9 @@ describe('Navigation Performance Tests', () => {
       // Restore connections
       midRoom.connections = originalConnections;
 
-      console.log(`Dynamic pathfinding recalculation took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Dynamic pathfinding recalculation took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(100);
     });
 
@@ -706,7 +717,9 @@ describe('Navigation Performance Tests', () => {
       }
 
       const avgTime = totalTime / 6; // 6 corner-to-corner paths
-      console.log(`Average corner-to-corner pathfinding: ${avgTime.toFixed(2)}ms`);
+      console.log(
+        `Average corner-to-corner pathfinding: ${avgTime.toFixed(2)}ms`,
+      );
       expect(avgTime).toBeLessThan(50);
     });
   });
@@ -932,7 +945,9 @@ describe('Navigation Performance Tests', () => {
         expect(found).toBeDefined();
       });
 
-      console.log(`Object lookup in 1000-item inventory: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Object lookup in 1000-item inventory: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(10);
     });
 
@@ -1032,7 +1047,9 @@ describe('Navigation Performance Tests', () => {
         expect(player).toBeDefined();
       });
 
-      console.log(`Hash map lookup (1000 entities): ${hashMapTime.toFixed(2)}ms`);
+      console.log(
+        `Hash map lookup (1000 entities): ${hashMapTime.toFixed(2)}ms`,
+      );
       console.log(`Array lookup (1000 entities): ${arrayTime.toFixed(2)}ms`);
 
       // Hash map should be faster
@@ -1084,7 +1101,9 @@ describe('Navigation Performance Tests', () => {
         expect(foundRoom).toBeDefined();
       });
 
-      console.log(`Position-based room lookup (900 rooms): ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Position-based room lookup (900 rooms): ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(10);
     });
 
@@ -1161,7 +1180,9 @@ describe('Navigation Performance Tests', () => {
         });
       });
 
-      console.log(`100 concurrent player movements took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `100 concurrent player movements took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(500);
     });
 
@@ -1187,7 +1208,9 @@ describe('Navigation Performance Tests', () => {
       });
 
       const movesPerSecond = (moveCount / elapsed) * 1000;
-      console.log(`Movement throughput: ${movesPerSecond.toFixed(0)} moves/second`);
+      console.log(
+        `Movement throughput: ${movesPerSecond.toFixed(0)} moves/second`,
+      );
       console.log(`${moveCount} movements took: ${elapsed.toFixed(2)}ms`);
 
       expect(movesPerSecond).toBeGreaterThan(1000);
@@ -1219,7 +1242,9 @@ describe('Navigation Performance Tests', () => {
         });
       });
 
-      console.log(`50 players transitioning to same room: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `50 players transitioning to same room: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(100);
     });
 
@@ -1289,7 +1314,9 @@ describe('Navigation Performance Tests', () => {
         expect(paths.length).toBe(20);
       });
 
-      console.log(`20 concurrent pathfinding requests: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `20 concurrent pathfinding requests: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(500);
     });
 
@@ -1338,7 +1365,9 @@ describe('Navigation Performance Tests', () => {
         });
       });
 
-      console.log(`200 players × 5 moves = 1000 movements: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `200 players × 5 moves = 1000 movements: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(1000);
     });
 
@@ -1488,7 +1517,9 @@ describe('Navigation Performance Tests', () => {
         }
       });
 
-      console.log(`Memory for 2500 rooms + 100 players + 500 objects: ${memoryUsed.toFixed(2)}MB`);
+      console.log(
+        `Memory for 2500 rooms + 100 players + 500 objects: ${memoryUsed.toFixed(2)}MB`,
+      );
       expect(Math.abs(memoryUsed)).toBeLessThan(200); // < 200MB
     });
 
@@ -1506,7 +1537,9 @@ describe('Navigation Performance Tests', () => {
         }
       });
 
-      console.log(`100 random room accesses in ${statsBefore.size} room world: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `100 random room accesses in ${statsBefore.size} room world: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(100);
     });
 
@@ -1522,7 +1555,9 @@ describe('Navigation Performance Tests', () => {
         expect(path.length).toBeGreaterThan(0);
       });
 
-      console.log(`Pathfinding in ${rooms.length} room world: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Pathfinding in ${rooms.length} room world: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(500); // < 500ms for extreme case
     });
 
@@ -1552,7 +1587,9 @@ describe('Navigation Performance Tests', () => {
       expect(roomStats.size).toBe(0);
       expect(playerStats.size).toBe(0);
 
-      console.log(`Clearing ${rooms.length} rooms + 200 players took: ${elapsed.toFixed(2)}ms`);
+      console.log(
+        `Clearing ${rooms.length} rooms + 200 players took: ${elapsed.toFixed(2)}ms`,
+      );
       expect(elapsed).toBeLessThan(200);
     });
   });

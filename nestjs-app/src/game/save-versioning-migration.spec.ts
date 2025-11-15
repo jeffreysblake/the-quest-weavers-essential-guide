@@ -309,7 +309,7 @@ describe('Save File Versioning and Migration', () => {
       const migrated = migrateV1toV2(v1Save);
 
       expect(migrated.player.health).toBe(75); // Renamed to 'health'
-      expect((migrated.player as any).hp).toBeUndefined(); // Old field removed
+      expect(migrated.player.hp).toBeUndefined(); // Old field removed
     });
 
     it('should handle field type changes (string → number)', () => {
@@ -623,8 +623,8 @@ describe('Save File Versioning and Migration', () => {
       const migrated = migrateV1toV2(v1Save);
 
       // Removed features should be gone
-      expect((migrated.player as any).oldCraftingSystem).toBeUndefined();
-      expect((migrated.player as any).companions).toBeUndefined();
+      expect(migrated.player.oldCraftingSystem).toBeUndefined();
+      expect(migrated.player.companions).toBeUndefined();
     });
 
     it('should migrate saves with missing optional fields', () => {
@@ -801,9 +801,7 @@ describe('Save File Versioning and Migration', () => {
       });
 
       expect(result.success).toBe(true);
-      expect(result.warnings).toContain(
-        'Some features may not be available',
-      );
+      expect(result.warnings).toContain('Some features may not be available');
     });
   });
 
@@ -901,7 +899,9 @@ describe('Save File Versioning and Migration', () => {
       expect(migrated.player.oldCraftingSystem).toBeUndefined();
       // If warnings are provided, they should contain information
       if (warnings.length > 0) {
-        expect(warnings.some((w) => w.toLowerCase().includes('removed'))).toBe(true);
+        expect(warnings.some((w) => w.toLowerCase().includes('removed'))).toBe(
+          true,
+        );
       }
     });
 
@@ -1190,7 +1190,10 @@ function migrateV1toV2(save: GameState, warnings: string[] = []): GameState {
   }
 
   // Convert old effect format
-  if (migrated.player.activeEffects && Array.isArray(migrated.player.activeEffects)) {
+  if (
+    migrated.player.activeEffects &&
+    Array.isArray(migrated.player.activeEffects)
+  ) {
     migrated.player.activeEffects = migrated.player.activeEffects.map(
       (effect: any) => {
         if (typeof effect === 'string') {

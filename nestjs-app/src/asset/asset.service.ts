@@ -213,18 +213,14 @@ export class AssetService {
 
     const primaryLink = metadata.links.find(
       (l) =>
-        l.entityType === entityType &&
-        l.entityId === entityId &&
-        l.isPrimary,
+        l.entityType === entityType && l.entityId === entityId && l.isPrimary,
     );
 
     if (!primaryLink) {
       return null;
     }
 
-    return (
-      metadata.assets.find((a) => a.id === primaryLink.assetId) || null
-    );
+    return metadata.assets.find((a) => a.id === primaryLink.assetId) || null;
   }
 
   /**
@@ -354,9 +350,7 @@ export class AssetService {
 
     await this.saveMetadata(gameId, metadata);
 
-    this.logger.log(
-      `Unlinked asset ${assetId} from ${entityType}:${entityId}`,
-    );
+    this.logger.log(`Unlinked asset ${assetId} from ${entityType}:${entityId}`);
   }
 
   /**
@@ -415,8 +409,7 @@ export class AssetService {
 
     metadata.assets.forEach((asset) => {
       // Count by type
-      stats.byType[asset.assetType] =
-        (stats.byType[asset.assetType] || 0) + 1;
+      stats.byType[asset.assetType] = (stats.byType[asset.assetType] || 0) + 1;
 
       // Count by category
       stats.byCategory[asset.category] =

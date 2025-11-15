@@ -49,7 +49,7 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     }).compile();
 
     service = module.get<InventoryManagerService>(InventoryManagerService);
-    eventEmitter = module.get(EventEmitterService) as jest.Mocked<EventEmitterService>;
+    eventEmitter = module.get(EventEmitterService);
   });
 
   afterEach(() => {
@@ -64,7 +64,10 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
   /**
    * Create standard test inventory
    */
-  const createTestInventory = (playerId: string, config?: Partial<IInventoryConfig>) => {
+  const createTestInventory = (
+    playerId: string,
+    config?: Partial<IInventoryConfig>,
+  ) => {
     return service.createInventory(playerId, 'test-game', {
       maxSlots: 50,
       maxWeight: 1000,
@@ -89,7 +92,10 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
   /**
    * Count total quantity of an item across all stacks in an inventory
    */
-  const getTotalItemQuantity = (inventory: IInventory | undefined, itemId: string): number => {
+  const getTotalItemQuantity = (
+    inventory: IInventory | undefined,
+    itemId: string,
+  ): number => {
     if (!inventory) return 0;
     return inventory.items
       .filter((item) => item.itemId === itemId)
@@ -99,7 +105,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
   /**
    * Verify inventory integrity (no negative quantities, weight matches, etc.)
    */
-  const verifyInventoryIntegrity = (inventory: IInventory | undefined): void => {
+  const verifyInventoryIntegrity = (
+    inventory: IInventory | undefined,
+  ): void => {
     expect(inventory).toBeDefined();
     if (!inventory) return;
 
@@ -139,7 +147,8 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
   /**
    * Simulate delay (for timing-sensitive tests)
    */
-  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
 
   describe('1. CONCURRENT ITEM TRANSFERS', () => {
     beforeEach(() => {
@@ -149,7 +158,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent item duplication when two players transfer same item simultaneously', async () => {
-      const itemId = await addItemAndGetId('player1', 'rare_sword', 1, { weight: 10 });
+      const itemId = await addItemAndGetId('player1', 'rare_sword', 1, {
+        weight: 10,
+      });
 
       // Both players try to receive the same item at the exact same time
       const [result1, result2] = await Promise.all([
@@ -175,9 +186,16 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle player transferring item to themselves (edge case)', async () => {
-      const itemId = await addItemAndGetId('player1', 'coin', 100, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'coin', 100, {
+        weight: 1,
+      });
 
-      const result = await service.transferItem('player1', 'player1', itemId, 50);
+      const result = await service.transferItem(
+        'player1',
+        'player1',
+        itemId,
+        50,
+      );
 
       const inv = service.getInventory('player1');
       const totalCoins = getTotalItemQuantity(inv, 'coin');
@@ -188,7 +206,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent duplication through multiple rapid transfers', async () => {
-      const itemId = await addItemAndGetId('player1', 'gold', 1000, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'gold', 1000, {
+        weight: 1,
+      });
 
       // Rapid fire 10 concurrent transfers
       const transfers = [];
@@ -201,7 +221,8 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       // Count total gold across both inventories
       const inv1 = service.getInventory('player1');
       const inv2 = service.getInventory('player2');
-      const total = getTotalItemQuantity(inv1, 'gold') + getTotalItemQuantity(inv2, 'gold');
+      const total =
+        getTotalItemQuantity(inv1, 'gold') + getTotalItemQuantity(inv2, 'gold');
 
       expect(total).toBe(1000);
       verifyInventoryIntegrity(inv1);
@@ -209,7 +230,10 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle concurrent transfers from same source to different destinations', async () => {
-      const itemId = await addItemAndGetId('player1', 'arrow', 100, { weight: 1, maxStack: 99 });
+      const itemId = await addItemAndGetId('player1', 'arrow', 100, {
+        weight: 1,
+        maxStack: 99,
+      });
 
       const results = await Promise.all([
         service.transferItem('player1', 'player2', itemId, 30),
@@ -229,8 +253,12 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle concurrent transfers to same target inventory', async () => {
-      const item1 = await addItemAndGetId('player1', 'potion', 50, { weight: 1 });
-      const item2 = await addItemAndGetId('player3', 'potion', 50, { weight: 1 });
+      const item1 = await addItemAndGetId('player1', 'potion', 50, {
+        weight: 1,
+      });
+      const item2 = await addItemAndGetId('player3', 'potion', 50, {
+        weight: 1,
+      });
 
       await Promise.all([
         service.transferItem('player1', 'player2', item1, 50),
@@ -243,7 +271,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should maintain item integrity during transfer while source is being modified', async () => {
-      const itemId = await addItemAndGetId('player1', 'material', 100, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'material', 100, {
+        weight: 1,
+      });
 
       // Concurrent transfer and removal
       const [transferResult, removeResult] = await Promise.all([
@@ -255,7 +285,8 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const inv2 = service.getInventory('player2');
 
       const total =
-        getTotalItemQuantity(inv1, 'material') + getTotalItemQuantity(inv2, 'material');
+        getTotalItemQuantity(inv1, 'material') +
+        getTotalItemQuantity(inv2, 'material');
 
       // Should have either 50 (transfer failed, remove succeeded) or 70 (both succeeded) or 100 (both failed)
       expect([50, 70, 100]).toContain(total);
@@ -264,7 +295,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent transfer during item deletion', async () => {
-      const itemId = await addItemAndGetId('player1', 'consumable', 10, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'consumable', 10, {
+        weight: 1,
+      });
 
       const [transferResult, removeResult] = await Promise.all([
         service.transferItem('player1', 'player2', itemId, 10),
@@ -275,14 +308,17 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const inv2 = service.getInventory('player2');
 
       const total =
-        getTotalItemQuantity(inv1, 'consumable') + getTotalItemQuantity(inv2, 'consumable');
+        getTotalItemQuantity(inv1, 'consumable') +
+        getTotalItemQuantity(inv2, 'consumable');
 
       // Either transfer or delete succeeded, but not both
       expect([0, 10]).toContain(total);
     });
 
     it('should handle transfer while item is being equipped (should fail)', async () => {
-      const itemId = await addItemAndGetId('player1', 'sword', 1, { weight: 10 });
+      const itemId = await addItemAndGetId('player1', 'sword', 1, {
+        weight: 10,
+      });
 
       const [transferResult, equipResult] = await Promise.all([
         service.transferItem('player1', 'player2', itemId, 1),
@@ -294,7 +330,8 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
 
       // Item should be in one inventory, potentially equipped
       const total =
-        getTotalItemQuantity(inv1, 'sword') + getTotalItemQuantity(inv2, 'sword');
+        getTotalItemQuantity(inv1, 'sword') +
+        getTotalItemQuantity(inv2, 'sword');
       expect(total).toBe(1);
 
       verifyInventoryIntegrity(inv1);
@@ -303,10 +340,18 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
 
     it('should rollback partial transfers on destination failure', async () => {
       // Create player with limited inventory
-      service.createInventory('player4', 'test-game', { maxSlots: 1, maxWeight: 10 });
-      await service.addItem('player4', 'existing', 1, { weight: 5, maxStack: 1 });
+      service.createInventory('player4', 'test-game', {
+        maxSlots: 1,
+        maxWeight: 10,
+      });
+      await service.addItem('player4', 'existing', 1, {
+        weight: 5,
+        maxStack: 1,
+      });
 
-      const itemId = await addItemAndGetId('player1', 'heavy', 1, { weight: 20 });
+      const itemId = await addItemAndGetId('player1', 'heavy', 1, {
+        weight: 20,
+      });
 
       const originalWeight = service.getInventory('player1')?.currentWeight;
 
@@ -320,7 +365,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent race condition leading to negative item quantities', async () => {
-      const itemId = await addItemAndGetId('player1', 'resource', 10, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'resource', 10, {
+        weight: 1,
+      });
 
       // Try to transfer more than exists through concurrent operations
       const results = await Promise.all([
@@ -348,7 +395,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle adding items while removing items', async () => {
-      const itemId = await addItemAndGetId('player1', 'item', 50, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'item', 50, {
+        weight: 1,
+      });
 
       const results = await Promise.all([
         service.addItem('player1', 'item', 25, { weight: 1 }),
@@ -363,7 +412,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle equipping item while being transferred (should prevent transfer)', async () => {
-      const itemId = await addItemAndGetId('player1', 'weapon', 1, { weight: 10 });
+      const itemId = await addItemAndGetId('player1', 'weapon', 1, {
+        weight: 10,
+      });
       createTestInventory('player2');
 
       const [equipResult, transferResult] = await Promise.all([
@@ -380,12 +431,15 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const inv2 = service.getInventory('player2');
 
       const total =
-        getTotalItemQuantity(inv1, 'weapon') + getTotalItemQuantity(inv2, 'weapon');
+        getTotalItemQuantity(inv1, 'weapon') +
+        getTotalItemQuantity(inv2, 'weapon');
       expect(total).toBe(1);
     });
 
     it('should handle unequipping item during transfer attempt', async () => {
-      const itemId = await addItemAndGetId('player1', 'armor', 1, { weight: 15 });
+      const itemId = await addItemAndGetId('player1', 'armor', 1, {
+        weight: 15,
+      });
       await service.equipItem('player1', itemId, EquipmentSlot.CHEST);
       createTestInventory('player2');
 
@@ -398,7 +452,8 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const inv2 = service.getInventory('player2');
 
       const total =
-        getTotalItemQuantity(inv1, 'armor') + getTotalItemQuantity(inv2, 'armor');
+        getTotalItemQuantity(inv1, 'armor') +
+        getTotalItemQuantity(inv2, 'armor');
       expect(total).toBe(1);
 
       verifyInventoryIntegrity(inv1);
@@ -406,7 +461,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should auto-unequip when deleting equipped item', async () => {
-      const itemId = await addItemAndGetId('player1', 'helmet', 1, { weight: 5 });
+      const itemId = await addItemAndGetId('player1', 'helmet', 1, {
+        weight: 5,
+      });
       await service.equipItem('player1', itemId, EquipmentSlot.HEAD);
 
       await service.removeItem('player1', itemId, 1);
@@ -423,7 +480,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
 
       // Add 10 items concurrently
       for (let i = 0; i < 10; i++) {
-        operations.push(service.addItem('player1', `item${i}`, 5, { weight: 2 }));
+        operations.push(
+          service.addItem('player1', `item${i}`, 5, { weight: 2 }),
+        );
       }
 
       await Promise.all(operations);
@@ -436,7 +495,10 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle capacity checks with simultaneous adds', async () => {
-      service.createInventory('player2', 'test-game', { maxSlots: 3, maxWeight: 1000 });
+      service.createInventory('player2', 'test-game', {
+        maxSlots: 3,
+        maxWeight: 1000,
+      });
 
       // Try to add 5 different items simultaneously
       const results = await Promise.all([
@@ -458,7 +520,10 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
 
     it('should handle stack merging with concurrent adds', async () => {
       // Pre-add some items
-      await service.addItem('player1', 'potion', 30, { weight: 1, maxStack: 99 });
+      await service.addItem('player1', 'potion', 30, {
+        weight: 1,
+        maxStack: 99,
+      });
 
       // Concurrently add more of the same item
       const results = await Promise.all([
@@ -492,7 +557,10 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent weight overflow during concurrent adds', async () => {
-      service.createInventory('player2', 'test-game', { maxSlots: 50, maxWeight: 100 });
+      service.createInventory('player2', 'test-game', {
+        maxSlots: 50,
+        maxWeight: 100,
+      });
 
       // Try to add items that together exceed weight limit
       const results = await Promise.all([
@@ -509,14 +577,18 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle rapid add/remove cycles', async () => {
-      const itemId = await addItemAndGetId('player1', 'cyclic', 50, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'cyclic', 50, {
+        weight: 1,
+      });
 
       const operations = [];
       for (let i = 0; i < 20; i++) {
         if (i % 2 === 0) {
           operations.push(service.removeItem('player1', itemId, 1));
         } else {
-          operations.push(service.addItem('player1', 'cyclic', 1, { weight: 1 }));
+          operations.push(
+            service.addItem('player1', 'cyclic', 1, { weight: 1 }),
+          );
         }
       }
 
@@ -537,8 +609,12 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent two items equipped to same slot simultaneously', async () => {
-      const sword1 = await addItemAndGetId('player1', 'sword1', 1, { weight: 10 });
-      const sword2 = await addItemAndGetId('player1', 'sword2', 1, { weight: 10 });
+      const sword1 = await addItemAndGetId('player1', 'sword1', 1, {
+        weight: 10,
+      });
+      const sword2 = await addItemAndGetId('player1', 'sword2', 1, {
+        weight: 10,
+      });
 
       const [result1, result2] = await Promise.all([
         service.equipItem('player1', sword1, EquipmentSlot.MAIN_HAND),
@@ -602,7 +678,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle equipped item deletion race', async () => {
-      const itemId = await addItemAndGetId('player1', 'gloves', 1, { weight: 3 });
+      const itemId = await addItemAndGetId('player1', 'gloves', 1, {
+        weight: 3,
+      });
       await service.equipItem('player1', itemId, EquipmentSlot.HANDS);
 
       const [removeResult, unequipResult] = await Promise.all([
@@ -621,12 +699,16 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     it('should prevent equipment state corruption during concurrent operations', async () => {
       const items = [];
       for (let i = 0; i < 5; i++) {
-        items.push(await addItemAndGetId('player1', `item${i}`, 1, { weight: 5 }));
+        items.push(
+          await addItemAndGetId('player1', `item${i}`, 1, { weight: 5 }),
+        );
       }
 
       // Try to equip all items to same slot
       const results = await Promise.all(
-        items.map((id) => service.equipItem('player1', id, EquipmentSlot.MAIN_HAND)),
+        items.map((id) =>
+          service.equipItem('player1', id, EquipmentSlot.MAIN_HAND),
+        ),
       );
 
       const inv = service.getInventory('player1');
@@ -637,9 +719,15 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should maintain auto-unequip consistency during concurrent operations', async () => {
-      const item1 = await addItemAndGetId('player1', 'boots1', 1, { weight: 4 });
-      const item2 = await addItemAndGetId('player1', 'boots2', 1, { weight: 4 });
-      const item3 = await addItemAndGetId('player1', 'boots3', 1, { weight: 4 });
+      const item1 = await addItemAndGetId('player1', 'boots1', 1, {
+        weight: 4,
+      });
+      const item2 = await addItemAndGetId('player1', 'boots2', 1, {
+        weight: 4,
+      });
+      const item3 = await addItemAndGetId('player1', 'boots3', 1, {
+        weight: 4,
+      });
 
       await service.equipItem('player1', item1, EquipmentSlot.FEET);
 
@@ -655,9 +743,15 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle multiple equipment slots changing simultaneously', async () => {
-      const helmet = await addItemAndGetId('player1', 'helmet', 1, { weight: 5 });
-      const chest = await addItemAndGetId('player1', 'chest', 1, { weight: 10 });
-      const gloves = await addItemAndGetId('player1', 'gloves', 1, { weight: 3 });
+      const helmet = await addItemAndGetId('player1', 'helmet', 1, {
+        weight: 5,
+      });
+      const chest = await addItemAndGetId('player1', 'chest', 1, {
+        weight: 10,
+      });
+      const gloves = await addItemAndGetId('player1', 'gloves', 1, {
+        weight: 3,
+      });
       const boots = await addItemAndGetId('player1', 'boots', 1, { weight: 4 });
 
       await Promise.all([
@@ -676,10 +770,16 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent equipping already equipped items to different slots', async () => {
-      const itemId = await addItemAndGetId('player1', 'shield', 1, { weight: 8 });
+      const itemId = await addItemAndGetId('player1', 'shield', 1, {
+        weight: 8,
+      });
       await service.equipItem('player1', itemId, EquipmentSlot.OFF_HAND);
 
-      const result = await service.equipItem('player1', itemId, EquipmentSlot.MAIN_HAND);
+      const result = await service.equipItem(
+        'player1',
+        itemId,
+        EquipmentSlot.MAIN_HAND,
+      );
 
       expect(result.success).toBe(false);
 
@@ -697,7 +797,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     it('should enforce unique instanceId across all operations', async () => {
       const operations = [];
       for (let i = 0; i < 20; i++) {
-        operations.push(service.addItem('player1', 'item', 1, { weight: 1, maxStack: 1 }));
+        operations.push(
+          service.addItem('player1', 'item', 1, { weight: 1, maxStack: 1 }),
+        );
       }
 
       const results = await Promise.all(operations);
@@ -711,7 +813,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent item duplication through concurrent operations', async () => {
-      const itemId = await addItemAndGetId('player1', 'unique_item', 1, { weight: 5 });
+      const itemId = await addItemAndGetId('player1', 'unique_item', 1, {
+        weight: 5,
+      });
 
       // Try various operations that might duplicate the item
       const operations = [
@@ -726,14 +830,17 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const inv2 = service.getInventory('player2');
 
       const total =
-        getTotalItemQuantity(inv1, 'unique_item') + getTotalItemQuantity(inv2, 'unique_item');
+        getTotalItemQuantity(inv1, 'unique_item') +
+        getTotalItemQuantity(inv2, 'unique_item');
 
       // Item should exist at most once
       expect(total).toBeLessThanOrEqual(1);
     });
 
     it('should maintain quantity consistency through concurrent modifications', async () => {
-      const itemId = await addItemAndGetId('player1', 'stackable', 100, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'stackable', 100, {
+        weight: 1,
+      });
 
       // Perform multiple removes concurrently
       const results = await Promise.all([
@@ -802,7 +909,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
         const weight = Math.floor(Math.random() * 10) + 1;
         const quantity = Math.floor(Math.random() * 5) + 1;
         expectedWeight += weight * quantity;
-        operations.push(service.addItem('player1', `item${i}`, quantity, { weight }));
+        operations.push(
+          service.addItem('player1', `item${i}`, quantity, { weight }),
+        );
       }
 
       await Promise.all(operations);
@@ -875,13 +984,23 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should rollback on concurrent modification failure', async () => {
-      const itemId = await addItemAndGetId('player1', 'item', 100, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'item', 100, {
+        weight: 1,
+      });
 
       // Create a scenario where one operation should fail
-      service.createInventory('player3', 'test-game', { maxSlots: 1, maxWeight: 5 });
-      await service.addItem('player3', 'blocker', 1, { weight: 3, maxStack: 1 });
+      service.createInventory('player3', 'test-game', {
+        maxSlots: 1,
+        maxWeight: 5,
+      });
+      await service.addItem('player3', 'blocker', 1, {
+        weight: 3,
+        maxStack: 1,
+      });
 
-      const originalInv1 = JSON.parse(JSON.stringify(service.getInventory('player1')));
+      const originalInv1 = JSON.parse(
+        JSON.stringify(service.getInventory('player1')),
+      );
 
       // Try transfer that will fail due to full inventory
       await service.transferItem('player1', 'player3', itemId, 10);
@@ -894,7 +1013,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should maintain ACID compliance for inventory operations', async () => {
-      const itemId = await addItemAndGetId('player1', 'gold', 1000, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'gold', 1000, {
+        weight: 1,
+      });
 
       // Atomic: All operations complete or none do
       // Consistent: Inventory remains in valid state
@@ -910,7 +1031,8 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const inv2 = service.getInventory('player2');
 
       // Total gold should be conserved (allowing for race conditions)
-      const total = getTotalItemQuantity(inv1, 'gold') + getTotalItemQuantity(inv2, 'gold');
+      const total =
+        getTotalItemQuantity(inv1, 'gold') + getTotalItemQuantity(inv2, 'gold');
 
       // Due to concurrent operations, we might have:
       // - 500 (both succeeded: 1000 - 250 transfer - 250 remove)
@@ -925,8 +1047,12 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should prevent deadlock in circular item transfers', async () => {
-      const item1 = await addItemAndGetId('player1', 'item1', 10, { weight: 1 });
-      const item2 = await addItemAndGetId('player2', 'item2', 10, { weight: 1 });
+      const item1 = await addItemAndGetId('player1', 'item1', 10, {
+        weight: 1,
+      });
+      const item2 = await addItemAndGetId('player2', 'item2', 10, {
+        weight: 1,
+      });
 
       // Circular transfers: player1 -> player2, player2 -> player1
       const results = await Promise.all([
@@ -947,7 +1073,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle optimistic locking for inventory updates', async () => {
-      const itemId = await addItemAndGetId('player1', 'contested', 50, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'contested', 50, {
+        weight: 1,
+      });
 
       // Simulate concurrent updates that might conflict
       const operations = [];
@@ -971,7 +1099,10 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
 
       for (let i = 0; i < 50; i++) {
         operations.push(
-          service.addItem('player1', `item${i % 10}`, 1, { weight: 1, maxStack: 1 }),
+          service.addItem('player1', `item${i % 10}`, 1, {
+            weight: 1,
+            maxStack: 1,
+          }),
         );
       }
 
@@ -985,7 +1116,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should maintain transaction isolation levels', async () => {
-      const item1 = await addItemAndGetId('player1', 'isolated', 100, { weight: 1 });
+      const item1 = await addItemAndGetId('player1', 'isolated', 100, {
+        weight: 1,
+      });
 
       // Concurrent reads and writes
       const operations = [
@@ -1036,7 +1169,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should ensure transaction atomicity for multi-step operations', async () => {
-      const itemId = await addItemAndGetId('player1', 'material', 100, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'material', 100, {
+        weight: 1,
+      });
 
       // Multi-step operation: remove from player1, add to player2
       const originalTotal =
@@ -1055,11 +1190,16 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
 
     it('should handle retry logic for failed transactions', async () => {
       // Simulate a scenario that might fail and need retry
-      service.createInventory('player3', 'test-game', { maxSlots: 2, maxWeight: 100 });
+      service.createInventory('player3', 'test-game', {
+        maxSlots: 2,
+        maxWeight: 100,
+      });
 
       const operations = [];
       for (let i = 0; i < 5; i++) {
-        operations.push(service.addItem('player3', `item${i}`, 1, { weight: 1, maxStack: 1 }));
+        operations.push(
+          service.addItem('player3', `item${i}`, 1, { weight: 1, maxStack: 1 }),
+        );
       }
 
       const results = await Promise.all(operations);
@@ -1103,7 +1243,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
     });
 
     it('should handle 100+ concurrent transfer requests', async () => {
-      const itemId = await addItemAndGetId('player1', 'mass_item', 1000, { weight: 1 });
+      const itemId = await addItemAndGetId('player1', 'mass_item', 1000, {
+        weight: 1,
+      });
 
       const operations = [];
       for (let i = 0; i < 100; i++) {
@@ -1132,7 +1274,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const operations = [];
 
       for (let i = 0; i < 200; i++) {
-        operations.push(service.addItem('player1', `item${i % 20}`, 1, { weight: 1 }));
+        operations.push(
+          service.addItem('player1', `item${i % 20}`, 1, { weight: 1 }),
+        );
       }
 
       await Promise.all(operations);
@@ -1149,7 +1293,9 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
       const operations = [];
       for (const player of players) {
         for (let i = 0; i < 20; i++) {
-          operations.push(service.addItem(player, `item${i}`, 5, { weight: 1 }));
+          operations.push(
+            service.addItem(player, `item${i}`, 5, { weight: 1 }),
+          );
         }
       }
 
@@ -1164,13 +1310,19 @@ describe('InventoryManagerService - Concurrency & Race Conditions', () => {
 
     it('should handle stress test with mixed operations', async () => {
       // Pre-populate inventories
-      const item1 = await addItemAndGetId('player1', 'item', 100, { weight: 1 });
-      const item2 = await addItemAndGetId('player2', 'weapon', 10, { weight: 5 });
+      const item1 = await addItemAndGetId('player1', 'item', 100, {
+        weight: 1,
+      });
+      const item2 = await addItemAndGetId('player2', 'weapon', 10, {
+        weight: 5,
+      });
 
       const operations = [];
 
       for (let i = 0; i < 50; i++) {
-        operations.push(service.addItem('player1', `new${i}`, 1, { weight: 1 }));
+        operations.push(
+          service.addItem('player1', `new${i}`, 1, { weight: 1 }),
+        );
         operations.push(service.removeItem('player1', item1, 1));
         operations.push(service.transferItem('player2', 'player3', item2, 1));
       }

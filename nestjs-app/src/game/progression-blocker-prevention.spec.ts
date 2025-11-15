@@ -62,7 +62,7 @@ describe('Progression Blocker Prevention', () => {
     objectService = module.get<ObjectService>(ObjectService);
     entityService = module.get<EntityService>(EntityService);
     questManager = module.get<QuestManagerService>(QuestManagerService);
-    eventEmitter = module.get(EventEmitterService) as jest.Mocked<EventEmitterService>;
+    eventEmitter = module.get(EventEmitterService);
   });
 
   afterEach(() => {
@@ -119,7 +119,8 @@ describe('Progression Blocker Prevention', () => {
         if (updatedRoom.connections) {
           // Safety check: Ensure we cannot delete last exit if player is in room
           const playerInRoom = updatedRoom.players.includes(player.id);
-          const hasOnlyOneExit = Object.keys(updatedRoom.connections).length === 1;
+          const hasOnlyOneExit =
+            Object.keys(updatedRoom.connections).length === 1;
 
           if (playerInRoom && hasOnlyOneExit) {
             // This should be prevented
@@ -271,7 +272,9 @@ describe('Progression Blocker Prevention', () => {
         const doorState = objectService.getObject(door.id);
 
         // In production, would check for key before allowing lock
-        const canLockSafely = player.inventory.some((item) => item.name === 'Key');
+        const canLockSafely = player.inventory.some(
+          (item) => item.name === 'Key',
+        );
         expect(canLockSafely).toBe(false); // No key, should not lock
       });
 
@@ -320,8 +323,11 @@ describe('Progression Blocker Prevention', () => {
         entityService.deleteEntity(key.id);
 
         // Check if player can still escape
-        const canEscape = player.inventory.some((item) => item.name === 'Key') ||
-          roomService.getObjectsInRoom(room.id).some((obj) => obj.name === 'Key');
+        const canEscape =
+          player.inventory.some((item) => item.name === 'Key') ||
+          roomService
+            .getObjectsInRoom(room.id)
+            .some((obj) => obj.name === 'Key');
 
         expect(canEscape).toBe(false); // Detected soft-lock
       });
@@ -361,7 +367,8 @@ describe('Progression Blocker Prevention', () => {
 
         // Check if target room has exit back
         const targetRoom = roomService.getRoom(trapRoom.id);
-        const hasReturnPath = targetRoom.connections &&
+        const hasReturnPath =
+          targetRoom.connections &&
           Object.values(targetRoom.connections).includes(safeRoom.id);
 
         // Should warn player about one-way entrance
@@ -427,7 +434,8 @@ describe('Progression Blocker Prevention', () => {
         });
 
         // Before entering, should check if player can leave
-        const canLeaveRestricted = restrictedRoom.connections &&
+        const canLeaveRestricted =
+          restrictedRoom.connections &&
           Object.keys(restrictedRoom.connections).length > 0;
 
         expect(canLeaveRestricted).toBe(true);
@@ -457,7 +465,8 @@ describe('Progression Blocker Prevention', () => {
 
         // Attempt to teleport
         const targetRoom = roomService.getRoom(isolatedRoom.id);
-        const hasValidExits = targetRoom.connections &&
+        const hasValidExits =
+          targetRoom.connections &&
           Object.keys(targetRoom.connections).length > 0;
 
         // Should prevent teleport or warn
@@ -652,7 +661,8 @@ describe('Progression Blocker Prevention', () => {
         });
 
         // Check room accessibility
-        const hasExits = unreachableRoom.connections &&
+        const hasExits =
+          unreachableRoom.connections &&
           Object.keys(unreachableRoom.connections).length > 0;
 
         // Should warn or prevent placing quest items in unreachable rooms
@@ -692,7 +702,8 @@ describe('Progression Blocker Prevention', () => {
         });
 
         // Item in locked container without key
-        const itemAccessible = !lockedChest.state.isLocked || lockedChest.state.isOpen;
+        const itemAccessible =
+          !lockedChest.state.isLocked || lockedChest.state.isOpen;
 
         expect(itemAccessible).toBe(false);
       });
@@ -854,8 +865,8 @@ describe('Progression Blocker Prevention', () => {
 
         // Check room accessibility
         const npcRoom = roomService.getRoom(questNPC.roomId);
-        const hasAccess = npcRoom.connections &&
-          Object.keys(npcRoom.connections).length > 0;
+        const hasAccess =
+          npcRoom.connections && Object.keys(npcRoom.connections).length > 0;
 
         expect(hasAccess).toBe(false);
       });
@@ -894,7 +905,8 @@ describe('Progression Blocker Prevention', () => {
 
         // Detect and fix
         const currentRoom = roomService.getRoom(npc.roomId);
-        const isStuck = !currentRoom.connections ||
+        const isStuck =
+          !currentRoom.connections ||
           Object.keys(currentRoom.connections).length === 0;
 
         if (isStuck && npc.metadata.isQuestCritical) {
@@ -921,7 +933,8 @@ describe('Progression Blocker Prevention', () => {
           },
         });
 
-        const canTalk = hostileNPC.metadata.allowDialogueWhenHostile ||
+        const canTalk =
+          hostileNPC.metadata.allowDialogueWhenHostile ||
           !hostileNPC.metadata.isHostile;
 
         expect(canTalk).toBe(true);
@@ -998,7 +1011,11 @@ describe('Progression Blocker Prevention', () => {
         };
 
         // Try to start quest2 without completing quest1
-        const result = await questManager.startQuest('quest2', 'player1', context);
+        const result = await questManager.startQuest(
+          'quest2',
+          'player1',
+          context,
+        );
 
         expect(result.success).toBe(false);
         expect(result.prerequisitesFailed).toBeDefined();
@@ -1037,8 +1054,12 @@ describe('Progression Blocker Prevention', () => {
         questManager.registerQuest(quest2);
 
         // Both quests require each other - circular dependency
-        const q1PrereqIsQ2 = quest1.prerequisites?.some((p) => p.questId === 'quest2');
-        const q2PrereqIsQ1 = quest2.prerequisites?.some((p) => p.questId === 'quest1');
+        const q1PrereqIsQ2 = quest1.prerequisites?.some(
+          (p) => p.questId === 'quest2',
+        );
+        const q2PrereqIsQ1 = quest2.prerequisites?.some(
+          (p) => p.questId === 'quest1',
+        );
 
         expect(q1PrereqIsQ2).toBe(true);
         expect(q2PrereqIsQ1).toBe(true);
@@ -1133,7 +1154,11 @@ describe('Progression Blocker Prevention', () => {
           completedQuests: [],
         };
 
-        const startResult = await questManager.startQuest('quest1', 'player1', context);
+        const startResult = await questManager.startQuest(
+          'quest1',
+          'player1',
+          context,
+        );
         expect(startResult.success).toBe(true);
 
         const playerQuest = questManager.getPlayerQuest('player1', 'quest1');
@@ -1176,13 +1201,25 @@ describe('Progression Blocker Prevention', () => {
         await questManager.startQuest('quest1', 'player1', context);
 
         // Complete objective
-        await questManager.updateObjective('player1', 'quest1', 'obj1', 1, context);
+        await questManager.updateObjective(
+          'player1',
+          'quest1',
+          'obj1',
+          1,
+          context,
+        );
 
         const playerQuest = questManager.getPlayerQuest('player1', 'quest1');
         expect(playerQuest.state).toBe(QuestState.COMPLETED);
 
         // Try to complete again
-        const result = await questManager.updateObjective('player1', 'quest1', 'obj1', 1, context);
+        const result = await questManager.updateObjective(
+          'player1',
+          'quest1',
+          'obj1',
+          1,
+          context,
+        );
         expect(result.success).toBe(false);
       });
     });
@@ -1247,7 +1284,10 @@ describe('Progression Blocker Prevention', () => {
         await questManager.startQuest('side_quest', 'player1', context);
         await questManager.failQuest('player1', 'side_quest');
 
-        const playerQuest = questManager.getPlayerQuest('player1', 'side_quest');
+        const playerQuest = questManager.getPlayerQuest(
+          'player1',
+          'side_quest',
+        );
         expect(playerQuest.state).toBe(QuestState.FAILED);
 
         // Should allow restart
@@ -1285,7 +1325,8 @@ describe('Progression Blocker Prevention', () => {
 
       const allRooms = roomService.getAllRooms();
       const roomsWithoutExits = allRooms.filter(
-        (room) => !room.connections || Object.keys(room.connections).length === 0,
+        (room) =>
+          !room.connections || Object.keys(room.connections).length === 0,
       );
 
       // In production, should be 0 or have special handling
@@ -1307,7 +1348,8 @@ describe('Progression Blocker Prevention', () => {
 
       // Check if destination exists
       const destinationId = room1.connections.north;
-      const destinationExists = roomService.getRoom(destinationId) !== undefined;
+      const destinationExists =
+        roomService.getRoom(destinationId) !== undefined;
 
       expect(destinationExists).toBe(false);
       // Should detect and warn about broken connections
@@ -1373,7 +1415,8 @@ describe('Progression Blocker Prevention', () => {
       room2.connections = {}; // Explicitly no connections back
 
       // Check if bidirectional
-      const hasConnectionBack = room2.connections &&
+      const hasConnectionBack =
+        room2.connections &&
         Object.values(room2.connections).includes(room1.id);
       const isBidirectional = hasConnectionBack === true;
 
@@ -1403,7 +1446,8 @@ describe('Progression Blocker Prevention', () => {
       roomService.connectRooms(room1.id, exitRoom.id, 'east');
 
       // Verify can reach exit
-      const hasExit = room1.connections && Object.keys(room1.connections).length > 0;
+      const hasExit =
+        room1.connections && Object.keys(room1.connections).length > 0;
       expect(hasExit).toBe(true);
     });
   });
@@ -1425,7 +1469,9 @@ describe('Progression Blocker Prevention', () => {
       });
 
       // No healing items
-      const hasHealing = player.inventory.some((item) => item.objectType === 'consumable');
+      const hasHealing = player.inventory.some(
+        (item) => item.objectType === 'consumable',
+      );
 
       expect(hasHealing).toBe(false);
 
@@ -1522,7 +1568,8 @@ describe('Progression Blocker Prevention', () => {
         canReturnForResources: false,
       };
 
-      const playerReady = player.health >= pointOfNoReturn.requiresMinimumHealth &&
+      const playerReady =
+        player.health >= pointOfNoReturn.requiresMinimumHealth &&
         player.inventory.length >= pointOfNoReturn.requiresMinimumItems;
 
       // Should warn if not ready
@@ -1559,7 +1606,9 @@ describe('Progression Blocker Prevention', () => {
       roomService.connectRooms(room1.id, room2.id, 'east');
 
       // Save state
-      const savedRoom1 = JSON.parse(JSON.stringify(roomService.getRoom(room1.id)));
+      const savedRoom1 = JSON.parse(
+        JSON.stringify(roomService.getRoom(room1.id)),
+      );
 
       // Verify connections preserved
       expect(savedRoom1.connections).toBeDefined();
@@ -1599,9 +1648,27 @@ describe('Progression Blocker Prevention', () => {
       await questManager.startQuest('quest1', 'player1', context);
 
       // Update objective 3 times
-      await questManager.updateObjective('player1', 'quest1', 'obj1', 1, context);
-      await questManager.updateObjective('player1', 'quest1', 'obj1', 1, context);
-      await questManager.updateObjective('player1', 'quest1', 'obj1', 1, context);
+      await questManager.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        1,
+        context,
+      );
+      await questManager.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        1,
+        context,
+      );
+      await questManager.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        1,
+        context,
+      );
 
       const playerQuest = questManager.getPlayerQuest('player1', 'quest1');
 
@@ -1630,7 +1697,9 @@ describe('Progression Blocker Prevention', () => {
       playerService.updatePlayer(player.id, { inventory: player.inventory });
 
       // Save state
-      const savedPlayer = JSON.parse(JSON.stringify(playerService.getPlayer(player.id)));
+      const savedPlayer = JSON.parse(
+        JSON.stringify(playerService.getPlayer(player.id)),
+      );
 
       // Verify inventory preserved
       expect(savedPlayer.inventory.length).toBe(2);
@@ -1656,7 +1725,8 @@ describe('Progression Blocker Prevention', () => {
       };
 
       // Validate save data
-      const isValid = corruptedSave.hasOwnProperty('health') &&
+      const isValid =
+        corruptedSave.hasOwnProperty('health') &&
         corruptedSave.hasOwnProperty('inventory');
 
       expect(isValid).toBe(false);
@@ -1719,7 +1789,8 @@ describe('Progression Blocker Prevention', () => {
       });
 
       // Check unwinnable conditions
-      const cannotEscape = !room.connections || Object.keys(room.connections).length === 0;
+      const cannotEscape =
+        !room.connections || Object.keys(room.connections).length === 0;
       const cannotHeal = player.inventory.length === 0;
       const lowHealth = player.health < player.maxHealth * 0.2;
 
@@ -1805,7 +1876,11 @@ describe('Progression Blocker Prevention', () => {
     });
 
     it('should track progression-critical items', () => {
-      const criticalItems = new Set(['main_quest_key', 'plot_device', 'essential_tool']);
+      const criticalItems = new Set([
+        'main_quest_key',
+        'plot_device',
+        'essential_tool',
+      ]);
 
       const player = playerService.createPlayer({
         name: 'Player',
@@ -1866,8 +1941,10 @@ describe('Progression Blocker Prevention', () => {
       questManager.registerQuest(mainQuest);
 
       // Check if completion is possible
-      const requiredItemExists = entityService.getEntity('required_item') !== undefined;
-      const questCanBeStarted = questManager.getQuest('main_quest') !== undefined;
+      const requiredItemExists =
+        entityService.getEntity('required_item') !== undefined;
+      const questCanBeStarted =
+        questManager.getQuest('main_quest') !== undefined;
 
       const gameIsWinnable = requiredItemExists || questCanBeStarted;
 
@@ -1954,11 +2031,16 @@ describe('Progression Blocker Prevention', () => {
       };
 
       // Start quest
-      const startResult = await questManager.startQuest('test_quest', player.id, context);
+      const startResult = await questManager.startQuest(
+        'test_quest',
+        player.id,
+        context,
+      );
       expect(startResult.success).toBe(true);
 
       // Player can move to quest room
-      const canMove = startRoom.connections && startRoom.connections.east === questRoom.id;
+      const canMove =
+        startRoom.connections && startRoom.connections.east === questRoom.id;
       expect(canMove).toBe(true);
 
       // Item is accessible
@@ -2019,12 +2101,14 @@ describe('Progression Blocker Prevention', () => {
 
       // Attempt to put in chest
       const chestIsLocked = lockedChest.state.isLocked;
-      const roomIsUnreachable = !unreachableRoom.connections ||
+      const roomIsUnreachable =
+        !unreachableRoom.connections ||
         Object.keys(unreachableRoom.connections).length === 0;
       const itemIsCritical = questItem.metadata.isQuestItem;
 
       // Should prevent this scenario
-      const shouldPrevent = chestIsLocked && roomIsUnreachable && itemIsCritical;
+      const shouldPrevent =
+        chestIsLocked && roomIsUnreachable && itemIsCritical;
 
       expect(shouldPrevent).toBe(true);
     });
