@@ -69,7 +69,9 @@ export class DialogueManagerService {
     }
 
     if (tree.npcId !== npcId) {
-      throw new Error(`Dialogue tree '${treeId}' does not belong to NPC '${npcId}'`);
+      throw new Error(
+        `Dialogue tree '${treeId}' does not belong to NPC '${npcId}'`,
+      );
     }
 
     // Create conversation state
@@ -511,7 +513,10 @@ export class DialogueManagerService {
   /**
    * Get all active conversations for a player
    */
-  getPlayerConversations(gameId: string, playerId: string): IConversationState[] {
+  getPlayerConversations(
+    gameId: string,
+    playerId: string,
+  ): IConversationState[] {
     const conversations: IConversationState[] = [];
 
     for (const state of this.activeConversations.values()) {

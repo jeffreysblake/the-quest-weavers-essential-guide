@@ -26,9 +26,7 @@ describe('GameLogicValidatorService', () => {
       ],
     }).compile();
 
-    service = module.get<GameLogicValidatorService>(
-      GameLogicValidatorService,
-    );
+    service = module.get<GameLogicValidatorService>(GameLogicValidatorService);
     fileScannerService = module.get<FileScannerService>(FileScannerService);
   });
 
@@ -53,7 +51,8 @@ describe('GameLogicValidatorService', () => {
 
       mockFs.readdirSync.mockImplementation((path: any) => {
         const pathStr = path.toString();
-        if (pathStr.includes('rooms')) return ['room1.json', 'room2.json'] as any;
+        if (pathStr.includes('rooms'))
+          return ['room1.json', 'room2.json'] as any;
         if (pathStr.includes('objects')) return ['object1.json'] as any;
         if (pathStr.includes('npcs')) return ['npc1.json'] as any;
         return [] as any;
@@ -176,7 +175,9 @@ describe('GameLogicValidatorService', () => {
       const result = await service.validateGameLogic('test-game');
 
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain('Duplicate room ID found: duplicate-room');
+      expect(result.errors).toContain(
+        'Duplicate room ID found: duplicate-room',
+      );
       expect(result.stats?.duplicateIds).toBe(1);
     });
 
@@ -517,7 +518,12 @@ describe('GameLogicValidatorService', () => {
       mockFs.readdirSync.mockImplementation((path: any) => {
         const pathStr = path.toString();
         if (pathStr.includes('rooms'))
-          return ['room1.json', 'room2.json', 'room3.json', 'room4.json'] as any;
+          return [
+            'room1.json',
+            'room2.json',
+            'room3.json',
+            'room4.json',
+          ] as any;
         return [] as any;
       });
 
@@ -597,9 +603,9 @@ describe('GameLogicValidatorService', () => {
       const result = await service.validateGameLogic('test-game');
 
       expect(result.isValid).toBe(true);
-      expect(
-        result.warnings.some((w) => w.includes('unreachable')),
-      ).toBe(false);
+      expect(result.warnings.some((w) => w.includes('unreachable'))).toBe(
+        false,
+      );
       expect(result.stats?.unreachableRooms).toBe(0);
     });
 
@@ -847,7 +853,8 @@ describe('GameLogicValidatorService', () => {
 
       mockFs.readdirSync.mockImplementation((path: any) => {
         const pathStr = path.toString();
-        if (pathStr.includes('rooms')) return ['room1.json', 'room2.json'] as any;
+        if (pathStr.includes('rooms'))
+          return ['room1.json', 'room2.json'] as any;
         return [] as any;
       });
 
@@ -889,7 +896,8 @@ describe('GameLogicValidatorService', () => {
 
       mockFs.readdirSync.mockImplementation((path: any) => {
         const pathStr = path.toString();
-        if (pathStr.includes('rooms')) return ['room1.json', 'room2.json'] as any;
+        if (pathStr.includes('rooms'))
+          return ['room1.json', 'room2.json'] as any;
         return [] as any;
       });
 
@@ -1044,7 +1052,8 @@ describe('GameLogicValidatorService', () => {
 
       mockFs.readdirSync.mockImplementation((path: any) => {
         const pathStr = path.toString();
-        if (pathStr.includes('rooms')) return ['room1.json', 'room2.json'] as any;
+        if (pathStr.includes('rooms'))
+          return ['room1.json', 'room2.json'] as any;
         return [] as any;
       });
 

@@ -84,9 +84,7 @@ export class PhysicsController {
     const success = this.physicsService.removeEntity(id);
     return {
       success,
-      message: success
-        ? 'Physics entity removed'
-        : 'Physics entity not found',
+      message: success ? 'Physics entity removed' : 'Physics entity not found',
     };
   }
 }

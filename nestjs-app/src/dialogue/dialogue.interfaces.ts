@@ -20,7 +20,13 @@ export enum DialogueNodeType {
 export interface IDialogueCondition {
   type: 'flag' | 'variable' | 'item' | 'quest' | 'custom';
   key: string; // Flag name, variable name, item ID, quest ID
-  operator?: 'equals' | 'not_equals' | 'greater' | 'less' | 'contains' | 'exists';
+  operator?:
+    | 'equals'
+    | 'not_equals'
+    | 'greater'
+    | 'less'
+    | 'contains'
+    | 'exists';
   value?: any;
   customCheck?: (context: IDialogueContext) => boolean | Promise<boolean>;
 }

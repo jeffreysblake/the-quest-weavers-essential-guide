@@ -172,9 +172,7 @@ describe('PhysicsService', () => {
 
       service.createEntity(entityWithNegativeHeight);
 
-      expect(CANNON.Sphere).toHaveBeenCalledWith(
-        entityWithNegativeHeight.mass,
-      );
+      expect(CANNON.Sphere).toHaveBeenCalledWith(entityWithNegativeHeight.mass);
     });
 
     it('should handle zero mass entities', () => {

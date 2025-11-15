@@ -242,7 +242,9 @@ export class ValidationService {
     // Validate NPCs
     const npcsDir = path.join(gameDir, 'npcs');
     if (fs.existsSync(npcsDir)) {
-      const npcFiles = fs.readdirSync(npcsDir).filter((f) => f.endsWith('.json'));
+      const npcFiles = fs
+        .readdirSync(npcsDir)
+        .filter((f) => f.endsWith('.json'));
 
       for (const npcFile of npcFiles) {
         try {

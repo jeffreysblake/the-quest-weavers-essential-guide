@@ -114,7 +114,9 @@ describe('ComponentManagerService', () => {
       await service.addComponent(entityId, transform);
       await service.addComponent(entityId, health);
 
-      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(true);
+      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(
+        true,
+      );
       expect(service.hasComponent(entityId, ComponentType.HEALTH)).toBe(true);
       expect(service.getComponentCount(entityId)).toBe(2);
     });
@@ -176,7 +178,9 @@ describe('ComponentManagerService', () => {
       await service.addComponent(entityId, component);
       await service.removeComponent(entityId, ComponentType.TRANSFORM);
 
-      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(false);
+      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(
+        false,
+      );
     });
 
     it('should emit event when component is removed', async () => {
@@ -226,7 +230,9 @@ describe('ComponentManagerService', () => {
       await service.addComponent(entityId, health);
       await service.removeComponent(entityId, ComponentType.TRANSFORM);
 
-      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(false);
+      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(
+        false,
+      );
       expect(service.hasComponent(entityId, ComponentType.HEALTH)).toBe(true);
     });
 
@@ -344,14 +350,16 @@ describe('ComponentManagerService', () => {
 
       await service.addComponent(entityId, component);
 
-      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(true);
+      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(
+        true,
+      );
       expect(service.hasComponent(entityId, ComponentType.HEALTH)).toBe(false);
     });
 
     it('should return false for non-existent entity', () => {
-      expect(service.hasComponent('non-existent', ComponentType.TRANSFORM)).toBe(
-        false,
-      );
+      expect(
+        service.hasComponent('non-existent', ComponentType.TRANSFORM),
+      ).toBe(false);
     });
 
     it('should check if entity has all specified components', async () => {
@@ -480,11 +488,9 @@ describe('ComponentManagerService', () => {
       const entityId = 'entity-1';
       mockEventEmitter.emit.mockClear();
 
-      await service.updateComponent(
-        entityId,
-        ComponentType.HEALTH,
-        { current: 50 },
-      );
+      await service.updateComponent(entityId, ComponentType.HEALTH, {
+        current: 50,
+      });
 
       expect(mockEventEmitter.emit).not.toHaveBeenCalled();
     });
@@ -956,7 +962,9 @@ describe('ComponentManagerService', () => {
 
       expect(service.getComponents(entityId)).toBeUndefined();
       expect(service.getComponentCount(entityId)).toBe(0);
-      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(false);
+      expect(service.hasComponent(entityId, ComponentType.TRANSFORM)).toBe(
+        false,
+      );
     });
 
     it('should handle multiple rapid component additions', async () => {

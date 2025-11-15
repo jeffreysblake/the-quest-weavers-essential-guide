@@ -76,8 +76,12 @@ describe('Entity Reference Validation - Save/Load', () => {
     applyForce: jest.fn(),
     setVelocity: jest.fn(),
     step: jest.fn(),
-    applyEffect: jest.fn().mockReturnValue({ success: true, message: 'Effect applied' }),
-    applyAreaEffect: jest.fn().mockReturnValue({ success: true, message: 'Area effect applied' }),
+    applyEffect: jest
+      .fn()
+      .mockReturnValue({ success: true, message: 'Effect applied' }),
+    applyAreaEffect: jest
+      .fn()
+      .mockReturnValue({ success: true, message: 'Area effect applied' }),
   };
 
   beforeEach(async () => {
@@ -116,7 +120,10 @@ describe('Entity Reference Validation - Save/Load', () => {
   /**
    * Create a test player with valid references
    */
-  function createTestPlayer(roomId: string, gameId: string = testGameId): IPlayer {
+  function createTestPlayer(
+    roomId: string,
+    gameId: string = testGameId,
+  ): IPlayer {
     return playerService.createPlayer({
       name: 'Test Player',
       position: { x: 0, y: 0, z: 0 },
@@ -150,7 +157,11 @@ describe('Entity Reference Validation - Save/Load', () => {
   /**
    * Create a test object
    */
-  function createTestObject(name: string, roomId?: string, gameId: string = testGameId): IObject {
+  function createTestObject(
+    name: string,
+    roomId?: string,
+    gameId: string = testGameId,
+  ): IObject {
     return objectService.createObject({
       name,
       description: `Test object: ${name}`,
@@ -165,7 +176,11 @@ describe('Entity Reference Validation - Save/Load', () => {
   /**
    * Create a test quest
    */
-  function createTestQuest(questId: string, targetRoomId?: string, targetItemId?: string): IQuest {
+  function createTestQuest(
+    questId: string,
+    targetRoomId?: string,
+    targetItemId?: string,
+  ): IQuest {
     return {
       id: questId,
       name: `Quest ${questId}`,
@@ -261,7 +276,8 @@ describe('Entity Reference Validation - Save/Load', () => {
       expect(loadedState.rooms['non-existent-room-id']).toBeUndefined();
 
       // Validation check
-      const isValid = loadedState.rooms[loadedState.player.roomId] !== undefined;
+      const isValid =
+        loadedState.rooms[loadedState.player.roomId] !== undefined;
       expect(isValid).toBe(false);
     });
 
@@ -299,7 +315,11 @@ describe('Entity Reference Validation - Save/Load', () => {
       const player = createTestPlayer(room.id);
 
       // Add valid and invalid items to inventory
-      player.inventory = [validItem.id, 'invalid-item-id-1', 'invalid-item-id-2'];
+      player.inventory = [
+        validItem.id,
+        'invalid-item-id-1',
+        'invalid-item-id-2',
+      ];
 
       // Act: Save game state
       const gameState = await gameStateService.getGameState(testGameId);
@@ -313,7 +333,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid references
       const invalidItems = loadedState.player.inventory.filter(
-        (itemId: string) => !loadedState.items[itemId]
+        (itemId: string) => !loadedState.items[itemId],
       );
       expect(invalidItems.length).toBe(2);
       expect(invalidItems).toContain('invalid-item-id-1');
@@ -343,7 +363,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Equipped items should exist in inventory
-      const equipped = (loadedState.player as any).equipped;
+      const equipped = loadedState.player.equipped;
       if (equipped) {
         Object.values(equipped).forEach((itemId: any) => {
           expect(loadedState.player.inventory).toContain(itemId);
@@ -371,7 +391,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Should detect invalid state
-      const equipped = (loadedState.player as any).equipped;
+      const equipped = loadedState.player.equipped;
       if (equipped?.weapon) {
         const isValid = loadedState.player.inventory.includes(equipped.weapon);
         expect(isValid).toBe(false);
@@ -397,7 +417,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: All active quests should exist
-      const activeQuests = (loadedState.player as any).activeQuests || [];
+      const activeQuests = loadedState.player.activeQuests || [];
       activeQuests.forEach((questId: string) => {
         const quest = questManager.getQuest(questId);
         expect(quest).toBeDefined();
@@ -411,7 +431,11 @@ describe('Entity Reference Validation - Save/Load', () => {
       questManager.registerQuest(validQuest);
 
       const player = createTestPlayer(room.id);
-      (player as any).activeQuests = ['valid-quest', 'invalid-quest-1', 'invalid-quest-2'];
+      (player as any).activeQuests = [
+        'valid-quest',
+        'invalid-quest-1',
+        'invalid-quest-2',
+      ];
 
       // Act: Save and load
       const gameState = await gameStateService.getGameState(testGameId);
@@ -421,8 +445,10 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Should detect invalid quest references
-      const activeQuests = (loadedState.player as any).activeQuests || [];
-      const invalidQuests = activeQuests.filter((questId: string) => !questManager.getQuest(questId));
+      const activeQuests = loadedState.player.activeQuests || [];
+      const invalidQuests = activeQuests.filter(
+        (questId: string) => !questManager.getQuest(questId),
+      );
       expect(invalidQuests.length).toBe(2);
     });
 
@@ -443,7 +469,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Effects should be preserved
-      const effects = (loadedState.player as any).activeEffects || [];
+      const effects = loadedState.player.activeEffects || [];
       expect(effects.length).toBe(2);
       expect(effects[0].id).toBe('effect-1');
       expect(effects[1].id).toBe('effect-2');
@@ -467,7 +493,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Combat target should exist
-      const targetId = (loadedState.player as any).combatTarget;
+      const targetId = loadedState.player.combatTarget;
       if (targetId) {
         expect(loadedState.npcs[targetId]).toBeDefined();
       }
@@ -488,9 +514,10 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Should detect invalid target
-      const targetId = (loadedState.player as any).combatTarget;
+      const targetId = loadedState.player.combatTarget;
       if (targetId) {
-        const isValid = loadedState.npcs && loadedState.npcs[targetId] !== undefined;
+        const isValid =
+          loadedState.npcs && loadedState.npcs[targetId] !== undefined;
         expect(isValid).toBe(false);
       }
     });
@@ -574,11 +601,13 @@ describe('Entity Reference Validation - Save/Load', () => {
       // Assert: Should detect invalid exits
       const invalidExits: string[] = [];
       if (loadedState.rooms[room.id]?.connections) {
-        Object.entries(loadedState.rooms[room.id].connections).forEach(([dir, targetId]: [string, any]) => {
-          if (!loadedState.rooms[targetId]) {
-            invalidExits.push(targetId);
-          }
-        });
+        Object.entries(loadedState.rooms[room.id].connections).forEach(
+          ([dir, targetId]: [string, any]) => {
+            if (!loadedState.rooms[targetId]) {
+              invalidExits.push(targetId);
+            }
+          },
+        );
       }
       expect(invalidExits.length).toBe(2);
       expect(invalidExits).toContain('non-existent-room-id');
@@ -622,7 +651,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid NPCs
       const invalidNpcs = loadedState.rooms[room.id].players.filter(
-        (npcId: string) => !loadedState.npcs || !loadedState.npcs[npcId]
+        (npcId: string) => !loadedState.npcs || !loadedState.npcs[npcId],
       );
       expect(invalidNpcs.length).toBe(2);
     });
@@ -664,7 +693,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid items
       const invalidItems = loadedState.rooms[room.id].objects.filter(
-        (itemId: string) => !loadedState.items[itemId]
+        (itemId: string) => !loadedState.items[itemId],
       );
       expect(invalidItems.length).toBe(2);
     });
@@ -691,16 +720,20 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Detect orphaned rooms
       const orphanedRooms: string[] = [];
-      Object.entries(loadedState.rooms).forEach(([roomId, room]: [string, any]) => {
-        const hasConnections = room.connections && Object.keys(room.connections).length > 0;
-        const isReferenced = Object.values(loadedState.rooms).some((r: any) =>
-          r.connections && Object.values(r.connections).includes(roomId)
-        );
+      Object.entries(loadedState.rooms).forEach(
+        ([roomId, room]: [string, any]) => {
+          const hasConnections =
+            room.connections && Object.keys(room.connections).length > 0;
+          const isReferenced = Object.values(loadedState.rooms).some(
+            (r: any) =>
+              r.connections && Object.values(r.connections).includes(roomId),
+          );
 
-        if (!hasConnections && !isReferenced) {
-          orphanedRooms.push(roomId);
-        }
-      });
+          if (!hasConnections && !isReferenced) {
+            orphanedRooms.push(roomId);
+          }
+        },
+      );
 
       expect(orphanedRooms.length).toBe(1);
       expect(orphanedRooms).toContain(orphanedRoom.id);
@@ -751,23 +784,36 @@ describe('Entity Reference Validation - Save/Load', () => {
         west: 'east',
       };
 
-      const missingConnections: Array<{ from: string; to: string; direction: string }> = [];
+      const missingConnections: Array<{
+        from: string;
+        to: string;
+        direction: string;
+      }> = [];
 
-      Object.entries(loadedState.rooms).forEach(([roomId, room]: [string, any]) => {
-        if (room.connections) {
-          Object.entries(room.connections).forEach(([direction, targetId]: [string, any]) => {
-            const targetRoom = loadedState.rooms[targetId];
-            const reverseDir = reverseDirections[direction];
+      Object.entries(loadedState.rooms).forEach(
+        ([roomId, room]: [string, any]) => {
+          if (room.connections) {
+            Object.entries(room.connections).forEach(
+              ([direction, targetId]: [string, any]) => {
+                const targetRoom = loadedState.rooms[targetId];
+                const reverseDir = reverseDirections[direction];
 
-            if (targetRoom && reverseDir) {
-              const hasReturn = targetRoom.connections?.[reverseDir] === roomId;
-              if (!hasReturn) {
-                missingConnections.push({ from: roomId, to: targetId, direction });
-              }
-            }
-          });
-        }
-      });
+                if (targetRoom && reverseDir) {
+                  const hasReturn =
+                    targetRoom.connections?.[reverseDir] === roomId;
+                  if (!hasReturn) {
+                    missingConnections.push({
+                      from: roomId,
+                      to: targetId,
+                      direction,
+                    });
+                  }
+                }
+              },
+            );
+          }
+        },
+      );
 
       expect(missingConnections.length).toBeGreaterThan(0);
     });
@@ -812,7 +858,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedQuest = questManager.getQuest('quest-1');
       expect(loadedQuest).toBeDefined();
 
-      loadedQuest!.objectives.forEach(obj => {
+      loadedQuest!.objectives.forEach((obj) => {
         if (obj.type === ObjectiveType.GO_TO_LOCATION) {
           expect(loadedState.rooms[obj.targetId!]).toBeDefined();
         } else if (obj.type === ObjectiveType.COLLECT_ITEM) {
@@ -823,7 +869,11 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect quest objectives with invalid entity references', async () => {
       // Arrange: Quest with invalid references
-      const quest = createTestQuest('invalid-quest', 'non-existent-room', 'non-existent-item');
+      const quest = createTestQuest(
+        'invalid-quest',
+        'non-existent-room',
+        'non-existent-item',
+      );
       questManager.registerQuest(quest);
 
       // Act: Save and load
@@ -835,7 +885,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid references
       const loadedQuest = questManager.getQuest('invalid-quest');
-      const invalidObjectives = loadedQuest!.objectives.filter(obj => {
+      const invalidObjectives = loadedQuest!.objectives.filter((obj) => {
         if (obj.type === ObjectiveType.GO_TO_LOCATION) {
           return !loadedState.rooms[obj.targetId!];
         } else if (obj.type === ObjectiveType.COLLECT_ITEM) {
@@ -879,7 +929,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: NPC target should exist
       const loadedQuest = questManager.getQuest('npc-quest');
-      const npcObjective = loadedQuest!.objectives.find(obj => obj.type === ObjectiveType.TALK_TO_NPC);
+      const npcObjective = loadedQuest!.objectives.find(
+        (obj) => obj.type === ObjectiveType.TALK_TO_NPC,
+      );
       expect(loadedState.npcs[npcObjective!.targetId!]).toBeDefined();
     });
 
@@ -911,8 +963,12 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid NPC
       const loadedQuest = questManager.getQuest('invalid-npc-quest');
-      const npcObjective = loadedQuest!.objectives.find(obj => obj.type === ObjectiveType.TALK_TO_NPC);
-      const isValid = loadedState.npcs && loadedState.npcs[npcObjective!.targetId!] !== undefined;
+      const npcObjective = loadedQuest!.objectives.find(
+        (obj) => obj.type === ObjectiveType.TALK_TO_NPC,
+      );
+      const isValid =
+        loadedState.npcs &&
+        loadedState.npcs[npcObjective!.targetId!] !== undefined;
       expect(isValid).toBe(false);
     });
 
@@ -958,8 +1014,10 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: All required items should exist
       const loadedQuest = questManager.getQuest('item-quest');
-      const collectObjectives = loadedQuest!.objectives.filter(obj => obj.type === ObjectiveType.COLLECT_ITEM);
-      collectObjectives.forEach(obj => {
+      const collectObjectives = loadedQuest!.objectives.filter(
+        (obj) => obj.type === ObjectiveType.COLLECT_ITEM,
+      );
+      collectObjectives.forEach((obj) => {
         expect(loadedState.items[obj.targetId!]).toBeDefined();
       });
     });
@@ -1002,8 +1060,10 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid prerequisite
       const loadedQuest = questManager.getQuest('invalid-dep-quest');
-      const invalidPrereqs = loadedQuest!.prerequisites!.filter(prereq => {
-        return prereq.type === 'quest' && !questManager.getQuest(prereq.questId!);
+      const invalidPrereqs = loadedQuest!.prerequisites!.filter((prereq) => {
+        return (
+          prereq.type === 'quest' && !questManager.getQuest(prereq.questId!)
+        );
       });
       expect(invalidPrereqs.length).toBe(1);
     });
@@ -1022,7 +1082,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Objectives are orphaned
       const loadedQuest = questManager.getQuest('orphan-quest');
-      const orphanedObjectives = loadedQuest!.objectives.filter(obj => {
+      const orphanedObjectives = loadedQuest!.objectives.filter((obj) => {
         if (obj.type === ObjectiveType.GO_TO_LOCATION) {
           return !loadedState.rooms[obj.targetId!];
         }
@@ -1050,7 +1110,11 @@ describe('Entity Reference Validation - Save/Load', () => {
       let chainLength = 0;
       const maxChainLength = 10;
 
-      while (currentQuest && currentQuest.nextQuestId && chainLength < maxChainLength) {
+      while (
+        currentQuest &&
+        currentQuest.nextQuestId &&
+        chainLength < maxChainLength
+      ) {
         const nextQuest = questManager.getQuest(currentQuest.nextQuestId);
         expect(nextQuest).toBeDefined();
         currentQuest = nextQuest;
@@ -1074,7 +1138,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Chain should be broken
       const nextQuestId = quest1.nextQuestId;
-      const nextQuestExists = questManager.getQuest(nextQuestId!) !== undefined;
+      const nextQuestExists = questManager.getQuest(nextQuestId) !== undefined;
       expect(nextQuestExists).toBe(false);
     });
   });
@@ -1123,7 +1187,8 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Should detect invalid room
-      const isValid = loadedState.rooms[loadedState.npcs[npc.id].roomId] !== undefined;
+      const isValid =
+        loadedState.rooms[loadedState.npcs[npc.id].roomId] !== undefined;
       expect(isValid).toBe(false);
     });
 
@@ -1178,7 +1243,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid items
       const invalidItems = loadedState.npcs[npc.id].inventory.filter(
-        (itemId: string) => !loadedState.items[itemId]
+        (itemId: string) => !loadedState.items[itemId],
       );
       expect(invalidItems.length).toBe(2);
     });
@@ -1245,7 +1310,8 @@ describe('Entity Reference Validation - Save/Load', () => {
       // Assert: Should detect broken reference
       const dialogue = loadedState.npcs[npc.id].dialogueTree;
       const greeting = dialogue.nodes.greeting;
-      const isValid = greeting.next === null || dialogue.nodes[greeting.next] !== undefined;
+      const isValid =
+        greeting.next === null || dialogue.nodes[greeting.next] !== undefined;
       expect(isValid).toBe(false);
     });
 
@@ -1290,7 +1356,11 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Act: Save and load
       const gameState = await gameStateService.getGameState(testGameId);
-      gameState.rooms = { [room1.id]: room1, [room2.id]: room2, [room3.id]: room3 };
+      gameState.rooms = {
+        [room1.id]: room1,
+        [room2.id]: room2,
+        [room3.id]: room3,
+      };
       gameState.npcs = { [npc.id]: npc };
       await gameStateService.updateGameState(testGameId, gameState);
       const loadedState = await saveAndLoadGame();
@@ -1321,7 +1391,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Assert: Should detect invalid rooms
       const invalidRooms = loadedState.npcs[npc.id].patrolPath.filter(
-        (roomId: string) => !loadedState.rooms[roomId]
+        (roomId: string) => !loadedState.rooms[roomId],
       );
       expect(invalidRooms.length).toBe(2);
     });
@@ -1395,7 +1465,11 @@ describe('Entity Reference Validation - Save/Load', () => {
       const room = createTestRoom('Invalid Container Room');
       const container = createTestObject('Broken Chest', room.id);
       container.isContainer = true;
-      container.containedObjects = ['valid-item', 'invalid-item-1', 'invalid-item-2'];
+      container.containedObjects = [
+        'valid-item',
+        'invalid-item-1',
+        'invalid-item-2',
+      ];
 
       const validItem = createTestObject('Valid Item', room.id);
       validItem.id = 'valid-item';
@@ -1408,9 +1482,10 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Should detect invalid items
-      const invalidItems = loadedState.items[container.id].containedObjects?.filter(
-        (itemId: string) => !loadedState.items[itemId]
-      ) || [];
+      const invalidItems =
+        loadedState.items[container.id].containedObjects?.filter(
+          (itemId: string) => !loadedState.items[itemId],
+        ) || [];
       expect(invalidItems.length).toBe(2);
     });
 
@@ -1436,7 +1511,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Equipped items should be in inventory
-      const equipped = (loadedState.player as any).equipped;
+      const equipped = loadedState.player.equipped;
       if (equipped) {
         Object.values(equipped).forEach((itemId: any) => {
           expect(loadedState.player.inventory).toContain(itemId);
@@ -1467,7 +1542,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Template should exist
-      const templateId = (loadedState.items[itemInstance.id] as any).templateId;
+      const templateId = loadedState.items[itemInstance.id].templateId;
       if (templateId) {
         expect((loadedState as any).itemTemplates[templateId]).toBeDefined();
       }
@@ -1491,7 +1566,7 @@ describe('Entity Reference Validation - Save/Load', () => {
       const loadedState = await saveAndLoadGame();
 
       // Assert: Owner should exist and have item
-      const ownerId = (loadedState.items[item.id] as any).ownedBy;
+      const ownerId = loadedState.items[item.id].ownedBy;
       if (ownerId) {
         expect(loadedState.player.id).toBe(ownerId);
         expect(loadedState.player.inventory).toContain(item.id);
@@ -1572,7 +1647,10 @@ describe('Entity Reference Validation - Save/Load', () => {
       // Act: Save and load
       const gameState = await gameStateService.getGameState(testGameId);
       gameState.rooms = { [room.id]: room };
-      gameState.items = { [containerA.id]: containerA, [containerB.id]: containerB };
+      gameState.items = {
+        [containerA.id]: containerA,
+        [containerB.id]: containerB,
+      };
       await gameStateService.updateGameState(testGameId, gameState);
       const loadedState = await saveAndLoadGame();
 
@@ -1723,11 +1801,11 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Simulate cleanup
       const cleanedInventory = loadedState.player.inventory.filter(
-        (itemId: string) => loadedState.items[itemId] !== undefined
+        (itemId: string) => loadedState.items[itemId] !== undefined,
       );
 
       const cleanedRoomObjects = loadedState.rooms[room.id].objects.filter(
-        (itemId: string) => loadedState.items[itemId] !== undefined
+        (itemId: string) => loadedState.items[itemId] !== undefined,
       );
 
       // Assert: Invalid references removed
@@ -1753,7 +1831,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       if (!loadedState.rooms[loadedState.player.roomId]) {
         errors.push(
-          `Player room reference invalid: room '${loadedState.player.roomId}' does not exist`
+          `Player room reference invalid: room '${loadedState.player.roomId}' does not exist`,
         );
       }
 
@@ -1778,7 +1856,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Simulate fallback
       if (!loadedState.rooms[loadedState.player.roomId]) {
-        loadedState.player.roomId = loadedState.startingRoomId || Object.keys(loadedState.rooms)[0];
+        loadedState.player.roomId =
+          loadedState.startingRoomId || Object.keys(loadedState.rooms)[0];
       }
 
       // Assert: Fallback applied

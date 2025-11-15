@@ -32,13 +32,13 @@ describe('Persistence Performance Tests', () => {
 
   // Test configuration
   const PERFORMANCE_THRESHOLDS = {
-    SAVE_10K_ROOMS_MS: 3000,        // Save 10k rooms in < 3 seconds
-    LOAD_10K_ROOMS_MS: 2000,        // Load 10k rooms in < 2 seconds
-    QUERY_1M_RECORDS_MS: 100,       // Query 1M records in < 100ms
-    TRANSACTIONS_PER_SECOND: 1000,  // Achieve 1000 transactions/sec
-    MEMORY_10K_ROOMS_MB: 1024,      // Use < 1GB for 10k rooms
-    BATCH_INSERT_10K_MS: 5000,      // Batch insert 10k in < 5 seconds
-    MAX_SAVE_FILE_SIZE_MB: 100,     // Save files should be < 100MB
+    SAVE_10K_ROOMS_MS: 3000, // Save 10k rooms in < 3 seconds
+    LOAD_10K_ROOMS_MS: 2000, // Load 10k rooms in < 2 seconds
+    QUERY_1M_RECORDS_MS: 100, // Query 1M records in < 100ms
+    TRANSACTIONS_PER_SECOND: 1000, // Achieve 1000 transactions/sec
+    MEMORY_10K_ROOMS_MB: 1024, // Use < 1GB for 10k rooms
+    BATCH_INSERT_10K_MS: 5000, // Batch insert 10k in < 5 seconds
+    MAX_SAVE_FILE_SIZE_MB: 100, // Save files should be < 100MB
   };
 
   beforeAll(async () => {
@@ -94,7 +94,14 @@ describe('Persistence Performance Tests', () => {
   function generateRooms(gameId: string, count: number): any[] {
     const rooms = [];
     const roomTypes = ['dungeon', 'forest', 'castle', 'cave', 'town', 'ruins'];
-    const adjectives = ['dark', 'bright', 'ancient', 'mysterious', 'haunted', 'peaceful'];
+    const adjectives = [
+      'dark',
+      'bright',
+      'ancient',
+      'mysterious',
+      'haunted',
+      'peaceful',
+    ];
 
     for (let i = 0; i < count; i++) {
       const type = roomTypes[i % roomTypes.length];
@@ -130,7 +137,16 @@ describe('Persistence Performance Tests', () => {
    */
   function generatePlayers(gameId: string, count: number): any[] {
     const players = [];
-    const names = ['Warrior', 'Mage', 'Rogue', 'Cleric', 'Ranger', 'Paladin', 'Druid', 'Bard'];
+    const names = [
+      'Warrior',
+      'Mage',
+      'Rogue',
+      'Cleric',
+      'Ranger',
+      'Paladin',
+      'Druid',
+      'Bard',
+    ];
 
     for (let i = 0; i < count; i++) {
       const className = names[i % names.length];
@@ -145,7 +161,10 @@ describe('Persistence Performance Tests', () => {
         maxHealth: 100 + (i % 100),
         level: (i % 50) + 1,
         experience: i * 100,
-        inventoryData: Array.from({ length: i % 20 }, (_, j) => `item-${i}-${j}`),
+        inventoryData: Array.from(
+          { length: i % 20 },
+          (_, j) => `item-${i}-${j}`,
+        ),
         dialogueTreeData: {},
         attributes: {
           strength: 10 + (i % 10),
@@ -166,8 +185,25 @@ describe('Persistence Performance Tests', () => {
    */
   function generateObjects(gameId: string, count: number): any[] {
     const objects = [];
-    const types = ['weapon', 'armor', 'item', 'container', 'consumable', 'key', 'tool', 'decoration'];
-    const materials = ['wood', 'metal', 'glass', 'stone', 'leather', 'cloth', 'organic'];
+    const types = [
+      'weapon',
+      'armor',
+      'item',
+      'container',
+      'consumable',
+      'key',
+      'tool',
+      'decoration',
+    ];
+    const materials = [
+      'wood',
+      'metal',
+      'glass',
+      'stone',
+      'leather',
+      'cloth',
+      'organic',
+    ];
 
     for (let i = 0; i < count; i++) {
       const type = types[i % types.length];
@@ -230,7 +266,15 @@ describe('Persistence Performance Tests', () => {
           VALUES (?, ?, ?, ?, ?, ?, ?)
         `);
         const now = new Date().toISOString();
-        insertStmt.run(gameId, `Test Game ${gameId}`, 'Performance test game', 1, now, now, 1);
+        insertStmt.run(
+          gameId,
+          `Test Game ${gameId}`,
+          'Performance test game',
+          1,
+          now,
+          now,
+          1,
+        );
       }
     } catch (error) {
       // Ignore errors - game might already exist
@@ -291,11 +335,20 @@ describe('Persistence Performance Tests', () => {
 
         for (const room of rooms) {
           stmt.run(
-            room.id, room.gameId, room.name, room.description, room.longDescription,
-            room.position.x, room.position.y, room.position.z,
-            room.width, room.height, room.depth,
+            room.id,
+            room.gameId,
+            room.name,
+            room.description,
+            room.longDescription,
+            room.position.x,
+            room.position.y,
+            room.position.z,
+            room.width,
+            room.height,
+            room.depth,
             JSON.stringify(room.environmentData),
-            room.version, room.createdAt
+            room.version,
+            room.createdAt,
           );
         }
       });
@@ -303,13 +356,16 @@ describe('Persistence Performance Tests', () => {
       const elapsed = performance.now() - startTime;
       const throughput = rooms.length / (elapsed / 1000);
 
-      console.log(`✓ Saved ${rooms.length} rooms in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} rooms/sec)`);
+      console.log(
+        `✓ Saved ${rooms.length} rooms in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} rooms/sec)`,
+      );
 
       expect(elapsed).toBeLessThan(PERFORMANCE_THRESHOLDS.SAVE_10K_ROOMS_MS);
       expect(throughput).toBeGreaterThan(3000); // At least 3000 rooms/sec
 
       // Verify all rooms were saved
-      const count = databaseService.prepare('SELECT COUNT(*) as count FROM rooms WHERE game_id = ?')
+      const count = databaseService
+        .prepare('SELECT COUNT(*) as count FROM rooms WHERE game_id = ?')
         .get(gameId) as any;
       expect(count.count).toBe(10000);
     }, 10000);
@@ -334,13 +390,23 @@ describe('Persistence Performance Tests', () => {
 
         for (const player of players) {
           stmt.run(
-            player.id, player.gameId, player.name, player.description, player.npcType,
-            player.position.x, player.position.y, player.position.z,
-            player.health, player.maxHealth, player.level, player.experience,
+            player.id,
+            player.gameId,
+            player.name,
+            player.description,
+            player.npcType,
+            player.position.x,
+            player.position.y,
+            player.position.z,
+            player.health,
+            player.maxHealth,
+            player.level,
+            player.experience,
             JSON.stringify(player.inventoryData),
             JSON.stringify(player.dialogueTreeData),
             JSON.stringify(player.attributes),
-            player.version, player.createdAt
+            player.version,
+            player.createdAt,
           );
         }
       });
@@ -348,7 +414,9 @@ describe('Persistence Performance Tests', () => {
       const elapsed = performance.now() - startTime;
       const throughput = players.length / (elapsed / 1000);
 
-      console.log(`✓ Saved ${players.length} players in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} players/sec)`);
+      console.log(
+        `✓ Saved ${players.length} players in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} players/sec)`,
+      );
 
       expect(elapsed).toBeLessThan(2000);
       expect(throughput).toBeGreaterThan(500);
@@ -380,13 +448,27 @@ describe('Persistence Performance Tests', () => {
 
           for (const obj of batch) {
             stmt.run(
-              obj.id, obj.gameId, obj.name, obj.description, obj.objectType,
-              obj.position.x, obj.position.y, obj.position.z,
-              obj.material, JSON.stringify(obj.materialProperties), obj.weight,
-              obj.health, obj.maxHealth, obj.isPortable ? 1 : 0, obj.isContainer ? 1 : 0,
-              obj.canContain ? 1 : 0, obj.containerCapacity,
-              JSON.stringify(obj.stateData), JSON.stringify(obj.properties),
-              obj.version, obj.createdAt
+              obj.id,
+              obj.gameId,
+              obj.name,
+              obj.description,
+              obj.objectType,
+              obj.position.x,
+              obj.position.y,
+              obj.position.z,
+              obj.material,
+              JSON.stringify(obj.materialProperties),
+              obj.weight,
+              obj.health,
+              obj.maxHealth,
+              obj.isPortable ? 1 : 0,
+              obj.isContainer ? 1 : 0,
+              obj.canContain ? 1 : 0,
+              obj.containerCapacity,
+              JSON.stringify(obj.stateData),
+              JSON.stringify(obj.properties),
+              obj.version,
+              obj.createdAt,
             );
           }
         });
@@ -395,7 +477,9 @@ describe('Persistence Performance Tests', () => {
       const elapsed = performance.now() - startTime;
       const throughput = objects.length / (elapsed / 1000);
 
-      console.log(`✓ Saved ${objects.length} objects in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} objects/sec)`);
+      console.log(
+        `✓ Saved ${objects.length} objects in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} objects/sec)`,
+      );
 
       expect(elapsed).toBeLessThan(PERFORMANCE_THRESHOLDS.BATCH_INSERT_10K_MS);
       expect(throughput).toBeGreaterThan(20000); // At least 20k objects/sec
@@ -412,23 +496,84 @@ describe('Persistence Performance Tests', () => {
 
       // Save all data
       databaseService.transaction((db) => {
-        const roomStmt = db.prepare(`INSERT INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => roomStmt.run(r.id, r.gameId, r.name, r.description, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const roomStmt = db.prepare(
+          `INSERT INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          roomStmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.description,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
 
-        const npcStmt = db.prepare(`INSERT INTO npcs (id, game_id, name, description, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        players.forEach(p => npcStmt.run(p.id, p.gameId, p.name, p.description, p.npcType, p.position.x, p.position.y, p.position.z, p.health, p.maxHealth, p.level, p.experience, JSON.stringify(p.inventoryData), JSON.stringify(p.dialogueTreeData), p.version, p.createdAt));
+        const npcStmt = db.prepare(
+          `INSERT INTO npcs (id, game_id, name, description, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        players.forEach((p) =>
+          npcStmt.run(
+            p.id,
+            p.gameId,
+            p.name,
+            p.description,
+            p.npcType,
+            p.position.x,
+            p.position.y,
+            p.position.z,
+            p.health,
+            p.maxHealth,
+            p.level,
+            p.experience,
+            JSON.stringify(p.inventoryData),
+            JSON.stringify(p.dialogueTreeData),
+            p.version,
+            p.createdAt,
+          ),
+        );
 
-        const objStmt = db.prepare(`INSERT INTO objects (id, game_id, name, description, object_type, position_x, position_y, position_z, material, weight, is_portable, is_container, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        objects.forEach(o => objStmt.run(o.id, o.gameId, o.name, o.description, o.objectType, o.position.x, o.position.y, o.position.z, o.material, o.weight, o.isPortable ? 1 : 0, o.isContainer ? 1 : 0, o.version, o.createdAt));
+        const objStmt = db.prepare(
+          `INSERT INTO objects (id, game_id, name, description, object_type, position_x, position_y, position_z, material, weight, is_portable, is_container, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        objects.forEach((o) =>
+          objStmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.description,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.material,
+            o.weight,
+            o.isPortable ? 1 : 0,
+            o.isContainer ? 1 : 0,
+            o.version,
+            o.createdAt,
+          ),
+        );
       });
 
       // Check database file size
       const stats = fs.statSync(testDbPath);
       const sizeInMB = stats.size / (1024 * 1024);
 
-      console.log(`✓ Database size: ${sizeInMB.toFixed(2)}MB for ${rooms.length} rooms, ${players.length} players, ${objects.length} objects`);
+      console.log(
+        `✓ Database size: ${sizeInMB.toFixed(2)}MB for ${rooms.length} rooms, ${players.length} players, ${objects.length} objects`,
+      );
 
-      expect(sizeInMB).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_SAVE_FILE_SIZE_MB);
+      expect(sizeInMB).toBeLessThan(
+        PERFORMANCE_THRESHOLDS.MAX_SAVE_FILE_SIZE_MB,
+      );
     }, 30000);
 
     it('should perform incremental saves efficiently', async () => {
@@ -439,23 +584,46 @@ describe('Persistence Performance Tests', () => {
       const initialRooms = generateRooms(gameId, 1000);
       const initialStart = performance.now();
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        initialRooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.description, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const stmt = db.prepare(
+          `INSERT INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        initialRooms.forEach((r) =>
+          stmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.description,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
       });
       const initialTime = performance.now() - initialStart;
 
       // Incremental save: Update 100 existing rooms
       const incrementalStart = performance.now();
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`UPDATE rooms SET description = ?, version = version + 1 WHERE id = ?`);
+        const stmt = db.prepare(
+          `UPDATE rooms SET description = ?, version = version + 1 WHERE id = ?`,
+        );
         for (let i = 0; i < 100; i++) {
           stmt.run(`Updated description ${i}`, initialRooms[i].id);
         }
       });
       const incrementalTime = performance.now() - incrementalStart;
 
-      console.log(`✓ Initial save: ${initialTime.toFixed(0)}ms, Incremental save: ${incrementalTime.toFixed(0)}ms`);
-      console.log(`✓ Incremental save is ${(initialTime / incrementalTime).toFixed(1)}x faster`);
+      console.log(
+        `✓ Initial save: ${initialTime.toFixed(0)}ms, Incremental save: ${incrementalTime.toFixed(0)}ms`,
+      );
+      console.log(
+        `✓ Incremental save is ${(initialTime / incrementalTime).toFixed(1)}x faster`,
+      );
 
       // Incremental should be at least 5x faster than initial
       expect(incrementalTime).toBeLessThan(initialTime / 5);
@@ -475,20 +643,76 @@ describe('Persistence Performance Tests', () => {
 
       // Save everything in one transaction
       databaseService.transaction((db) => {
-        const roomStmt = db.prepare(`INSERT INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => roomStmt.run(r.id, r.gameId, r.name, r.description, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const roomStmt = db.prepare(
+          `INSERT INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          roomStmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.description,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
 
-        const npcStmt = db.prepare(`INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        players.forEach(p => npcStmt.run(p.id, p.gameId, p.name, p.npcType, p.position.x, p.position.y, p.position.z, p.health, p.maxHealth, p.level, p.experience, JSON.stringify(p.inventoryData), JSON.stringify(p.dialogueTreeData), p.version, p.createdAt));
+        const npcStmt = db.prepare(
+          `INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        players.forEach((p) =>
+          npcStmt.run(
+            p.id,
+            p.gameId,
+            p.name,
+            p.npcType,
+            p.position.x,
+            p.position.y,
+            p.position.z,
+            p.health,
+            p.maxHealth,
+            p.level,
+            p.experience,
+            JSON.stringify(p.inventoryData),
+            JSON.stringify(p.dialogueTreeData),
+            p.version,
+            p.createdAt,
+          ),
+        );
 
-        const objStmt = db.prepare(`INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, material, weight, is_portable, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        objects.forEach(o => objStmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.material, o.weight, o.isPortable ? 1 : 0, o.version, o.createdAt));
+        const objStmt = db.prepare(
+          `INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, material, weight, is_portable, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        objects.forEach((o) =>
+          objStmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.material,
+            o.weight,
+            o.isPortable ? 1 : 0,
+            o.version,
+            o.createdAt,
+          ),
+        );
       });
 
       const elapsed = performance.now() - startTime;
       const totalEntities = rooms.length + players.length + objects.length;
 
-      console.log(`✓ Saved ${totalEntities} entities in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ Saved ${totalEntities} entities in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(elapsed).toBeLessThan(5000);
     }, 15000);
@@ -505,8 +729,24 @@ describe('Persistence Performance Tests', () => {
         const rooms = generateRooms(`${gameId}-${i}`, 100);
 
         await databaseService.transactionWithRetryAsync((db) => {
-          const stmt = db.prepare(`INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-          rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+          const stmt = db.prepare(
+            `INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          );
+          rooms.forEach((r) =>
+            stmt.run(
+              r.id,
+              r.gameId,
+              r.name,
+              r.position.x,
+              r.position.y,
+              r.position.z,
+              r.width,
+              r.height,
+              r.depth,
+              r.version,
+              r.createdAt,
+            ),
+          );
         });
       });
 
@@ -515,10 +755,14 @@ describe('Persistence Performance Tests', () => {
       const elapsed = performance.now() - startTime;
 
       // Verify all rooms were saved correctly
-      const count = databaseService.prepare('SELECT COUNT(*) as count FROM rooms').get() as any;
+      const count = databaseService
+        .prepare('SELECT COUNT(*) as count FROM rooms')
+        .get() as any;
       expect(count.count).toBe(numConcurrent * 100);
 
-      console.log(`✓ ${numConcurrent} concurrent saves completed in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ ${numConcurrent} concurrent saves completed in ${elapsed.toFixed(0)}ms`,
+      );
       expect(elapsed).toBeLessThan(10000);
     }, 20000);
 
@@ -530,8 +774,24 @@ describe('Persistence Performance Tests', () => {
       const startTime = performance.now();
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const stmt = db.prepare(
+          `INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          stmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
       });
 
       const elapsed = performance.now() - startTime;
@@ -551,8 +811,25 @@ describe('Persistence Performance Tests', () => {
       const rooms = generateRooms(gameId, 10000);
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT OR IGNORE INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.description, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const stmt = db.prepare(
+          `INSERT OR IGNORE INTO rooms (id, game_id, name, description, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          stmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.description,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
       });
     });
 
@@ -562,12 +839,16 @@ describe('Persistence Performance Tests', () => {
 
       const startTime = performance.now();
 
-      const rooms = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all(gameId) as any[];
+      const rooms = databaseService
+        .prepare('SELECT * FROM rooms WHERE game_id = ?')
+        .all(gameId) as any[];
 
       const elapsed = performance.now() - startTime;
       const throughput = rooms.length / (elapsed / 1000);
 
-      console.log(`✓ Loaded ${rooms.length} rooms in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} rooms/sec)`);
+      console.log(
+        `✓ Loaded ${rooms.length} rooms in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} rooms/sec)`,
+      );
 
       expect(rooms.length).toBe(10000);
       expect(elapsed).toBeLessThan(PERFORMANCE_THRESHOLDS.LOAD_10K_ROOMS_MS);
@@ -581,16 +862,40 @@ describe('Persistence Performance Tests', () => {
 
       // Save players
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        players.forEach(p => stmt.run(p.id, p.gameId, p.name, p.npcType, p.position.x, p.position.y, p.position.z, p.health, p.maxHealth, p.level, p.experience, JSON.stringify(p.inventoryData), JSON.stringify(p.dialogueTreeData), p.version, p.createdAt));
+        const stmt = db.prepare(
+          `INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        players.forEach((p) =>
+          stmt.run(
+            p.id,
+            p.gameId,
+            p.name,
+            p.npcType,
+            p.position.x,
+            p.position.y,
+            p.position.z,
+            p.health,
+            p.maxHealth,
+            p.level,
+            p.experience,
+            JSON.stringify(p.inventoryData),
+            JSON.stringify(p.dialogueTreeData),
+            p.version,
+            p.createdAt,
+          ),
+        );
       });
 
       // Load players
       const startTime = performance.now();
-      const loadedPlayers = databaseService.prepare('SELECT * FROM npcs WHERE game_id = ?').all(gameId) as any[];
+      const loadedPlayers = databaseService
+        .prepare('SELECT * FROM npcs WHERE game_id = ?')
+        .all(gameId) as any[];
       const elapsed = performance.now() - startTime;
 
-      console.log(`✓ Loaded ${loadedPlayers.length} players in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ Loaded ${loadedPlayers.length} players in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(loadedPlayers.length).toBe(1000);
       expect(elapsed).toBeLessThan(1000);
@@ -606,17 +911,38 @@ describe('Persistence Performance Tests', () => {
       for (let i = 0; i < objects.length; i += BATCH_SIZE) {
         const batch = objects.slice(i, i + BATCH_SIZE);
         databaseService.transaction((db) => {
-          const stmt = db.prepare(`INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, material, weight, is_portable, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-          batch.forEach(o => stmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.material, o.weight, o.isPortable ? 1 : 0, o.version, o.createdAt));
+          const stmt = db.prepare(
+            `INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, material, weight, is_portable, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          );
+          batch.forEach((o) =>
+            stmt.run(
+              o.id,
+              o.gameId,
+              o.name,
+              o.objectType,
+              o.position.x,
+              o.position.y,
+              o.position.z,
+              o.material,
+              o.weight,
+              o.isPortable ? 1 : 0,
+              o.version,
+              o.createdAt,
+            ),
+          );
         });
       }
 
       // Load all objects
       const startTime = performance.now();
-      const loadedObjects = databaseService.prepare('SELECT * FROM objects WHERE game_id = ?').all(gameId) as any[];
+      const loadedObjects = databaseService
+        .prepare('SELECT * FROM objects WHERE game_id = ?')
+        .all(gameId) as any[];
       const elapsed = performance.now() - startTime;
 
-      console.log(`✓ Loaded ${loadedObjects.length} objects in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ Loaded ${loadedObjects.length} objects in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(loadedObjects.length).toBe(100000);
       expect(elapsed).toBeLessThan(5000);
@@ -628,26 +954,49 @@ describe('Persistence Performance Tests', () => {
       const rooms = generateRooms(gameId, 1000);
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT OR IGNORE INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const stmt = db.prepare(
+          `INSERT OR IGNORE INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          stmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
       });
 
       // Eager loading: Load all at once
       const eagerStart = performance.now();
-      const allRooms = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all(gameId);
+      const allRooms = databaseService
+        .prepare('SELECT * FROM rooms WHERE game_id = ?')
+        .all(gameId);
       const eagerTime = performance.now() - eagerStart;
 
       // Lazy loading: Load one at a time (simulating on-demand loading)
       const lazyStart = performance.now();
-      const stmt = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ? LIMIT 1 OFFSET ?');
-      for (let i = 0; i < 100; i++) { // Only load first 100 for comparison
+      const stmt = databaseService.prepare(
+        'SELECT * FROM rooms WHERE game_id = ? LIMIT 1 OFFSET ?',
+      );
+      for (let i = 0; i < 100; i++) {
+        // Only load first 100 for comparison
         stmt.get(gameId, i);
       }
       const lazyTime = performance.now() - lazyStart;
 
       console.log(`✓ Eager loading (all 1000): ${eagerTime.toFixed(0)}ms`);
       console.log(`✓ Lazy loading (first 100): ${lazyTime.toFixed(0)}ms`);
-      console.log(`✓ Eager is ${(lazyTime / eagerTime).toFixed(1)}x faster for bulk operations`);
+      console.log(
+        `✓ Eager is ${(lazyTime / eagerTime).toFixed(1)}x faster for bulk operations`,
+      );
 
       expect(eagerTime).toBeLessThan(1000);
       expect(allRooms.length).toBe(1000);
@@ -659,8 +1008,24 @@ describe('Persistence Performance Tests', () => {
       const rooms = generateRooms(gameId, 5000);
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT OR IGNORE INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const stmt = db.prepare(
+          `INSERT OR IGNORE INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          stmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
       });
 
       // Individual queries
@@ -675,13 +1040,17 @@ describe('Persistence Performance Tests', () => {
       const batchStart = performance.now();
       const ids = Array.from({ length: 100 }, (_, i) => `room-${gameId}-${i}`);
       const placeholders = ids.map(() => '?').join(',');
-      const batchStmt = databaseService.prepare(`SELECT * FROM rooms WHERE id IN (${placeholders})`);
+      const batchStmt = databaseService.prepare(
+        `SELECT * FROM rooms WHERE id IN (${placeholders})`,
+      );
       const batchResults = batchStmt.all(...ids);
       const batchTime = performance.now() - batchStart;
 
       console.log(`✓ Individual queries: ${individualTime.toFixed(0)}ms`);
       console.log(`✓ Batched query: ${batchTime.toFixed(0)}ms`);
-      console.log(`✓ Batching is ${(individualTime / batchTime).toFixed(1)}x faster`);
+      console.log(
+        `✓ Batching is ${(individualTime / batchTime).toFixed(1)}x faster`,
+      );
 
       expect(batchResults.length).toBe(100);
       expect(batchTime).toBeLessThan(individualTime / 5); // At least 5x faster
@@ -693,16 +1062,24 @@ describe('Persistence Performance Tests', () => {
 
       // Query without index (using a non-indexed column)
       const withoutIndexStart = performance.now();
-      const withoutIndexResults = databaseService.prepare('SELECT * FROM rooms WHERE name LIKE ?').all('%dark%');
+      const withoutIndexResults = databaseService
+        .prepare('SELECT * FROM rooms WHERE name LIKE ?')
+        .all('%dark%');
       const withoutIndexTime = performance.now() - withoutIndexStart;
 
       // Query with index (using game_id which has an index)
       const withIndexStart = performance.now();
-      const withIndexResults = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all('load-test-game');
+      const withIndexResults = databaseService
+        .prepare('SELECT * FROM rooms WHERE game_id = ?')
+        .all('load-test-game');
       const withIndexTime = performance.now() - withIndexStart;
 
-      console.log(`✓ Without index: ${withoutIndexTime.toFixed(0)}ms (${withoutIndexResults.length} results)`);
-      console.log(`✓ With index: ${withIndexTime.toFixed(0)}ms (${withIndexResults.length} results)`);
+      console.log(
+        `✓ Without index: ${withoutIndexTime.toFixed(0)}ms (${withoutIndexResults.length} results)`,
+      );
+      console.log(
+        `✓ With index: ${withIndexTime.toFixed(0)}ms (${withIndexResults.length} results)`,
+      );
 
       // Indexed query should be faster (or at least not slower)
       expect(withIndexTime).toBeLessThan(1000);
@@ -714,18 +1091,38 @@ describe('Persistence Performance Tests', () => {
       const rooms = generateRooms(gameId, 1000);
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const stmt = db.prepare(
+          `INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          stmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
       });
 
       // Cold start: First query
       const coldStart = performance.now();
-      const coldResults = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all(gameId);
+      const coldResults = databaseService
+        .prepare('SELECT * FROM rooms WHERE game_id = ?')
+        .all(gameId);
       const coldTime = performance.now() - coldStart;
 
       // Warm cache: Second identical query
       const warmStart = performance.now();
-      const warmResults = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all(gameId);
+      const warmResults = databaseService
+        .prepare('SELECT * FROM rooms WHERE game_id = ?')
+        .all(gameId);
       const warmTime = performance.now() - warmStart;
 
       console.log(`✓ Cold start: ${coldTime.toFixed(0)}ms`);
@@ -742,17 +1139,35 @@ describe('Persistence Performance Tests', () => {
 
       // Sequential loading
       const seqStart = performance.now();
-      const rooms = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ? LIMIT 1000').all('load-test-game');
-      const players = databaseService.prepare('SELECT * FROM npcs WHERE game_id = ? LIMIT 100').all('player-load-test');
-      const objects = databaseService.prepare('SELECT * FROM objects WHERE game_id = ? LIMIT 1000').all('inventory-load-test');
+      const rooms = databaseService
+        .prepare('SELECT * FROM rooms WHERE game_id = ? LIMIT 1000')
+        .all('load-test-game');
+      const players = databaseService
+        .prepare('SELECT * FROM npcs WHERE game_id = ? LIMIT 100')
+        .all('player-load-test');
+      const objects = databaseService
+        .prepare('SELECT * FROM objects WHERE game_id = ? LIMIT 1000')
+        .all('inventory-load-test');
       const seqTime = performance.now() - seqStart;
 
       // Parallel loading
       const parStart = performance.now();
       await Promise.all([
-        Promise.resolve(databaseService.prepare('SELECT * FROM rooms WHERE game_id = ? LIMIT 1000').all('load-test-game')),
-        Promise.resolve(databaseService.prepare('SELECT * FROM npcs WHERE game_id = ? LIMIT 100').all('player-load-test')),
-        Promise.resolve(databaseService.prepare('SELECT * FROM objects WHERE game_id = ? LIMIT 1000').all('inventory-load-test')),
+        Promise.resolve(
+          databaseService
+            .prepare('SELECT * FROM rooms WHERE game_id = ? LIMIT 1000')
+            .all('load-test-game'),
+        ),
+        Promise.resolve(
+          databaseService
+            .prepare('SELECT * FROM npcs WHERE game_id = ? LIMIT 100')
+            .all('player-load-test'),
+        ),
+        Promise.resolve(
+          databaseService
+            .prepare('SELECT * FROM objects WHERE game_id = ? LIMIT 1000')
+            .all('inventory-load-test'),
+        ),
       ]);
       const parTime = performance.now() - parStart;
 
@@ -768,10 +1183,14 @@ describe('Persistence Performance Tests', () => {
 
     it('should benchmark: 10k rooms loaded in < 2 seconds', async () => {
       const startTime = performance.now();
-      const rooms = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all('load-test-game');
+      const rooms = databaseService
+        .prepare('SELECT * FROM rooms WHERE game_id = ?')
+        .all('load-test-game');
       const elapsed = performance.now() - startTime;
 
-      console.log(`✓ BENCHMARK: ${rooms.length} rooms loaded in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ BENCHMARK: ${rooms.length} rooms loaded in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(rooms.length).toBe(10000);
       expect(elapsed).toBeLessThan(2000);
@@ -797,20 +1216,41 @@ describe('Persistence Performance Tests', () => {
         }));
 
         databaseService.transaction((db) => {
-          const stmt = db.prepare(`INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-          batch.forEach(o => stmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+          const stmt = db.prepare(
+            `INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          );
+          batch.forEach((o) =>
+            stmt.run(
+              o.id,
+              o.gameId,
+              o.name,
+              o.objectType,
+              o.position.x,
+              o.position.y,
+              o.position.z,
+              o.weight,
+              o.version,
+              o.createdAt,
+            ),
+          );
         });
       }
 
       // Test query performance
       const queryStart = performance.now();
-      const results = databaseService.prepare('SELECT COUNT(*) as count FROM objects WHERE game_id = ?').get(gameId) as any;
+      const results = databaseService
+        .prepare('SELECT COUNT(*) as count FROM objects WHERE game_id = ?')
+        .get(gameId) as any;
       const queryTime = performance.now() - queryStart;
 
-      console.log(`✓ Queried ${results.count} records in ${queryTime.toFixed(0)}ms`);
+      console.log(
+        `✓ Queried ${results.count} records in ${queryTime.toFixed(0)}ms`,
+      );
 
       expect(results.count).toBe(recordCount);
-      expect(queryTime).toBeLessThan(PERFORMANCE_THRESHOLDS.QUERY_1M_RECORDS_MS);
+      expect(queryTime).toBeLessThan(
+        PERFORMANCE_THRESHOLDS.QUERY_1M_RECORDS_MS,
+      );
     }, 60000);
 
     it('should verify index effectiveness on large tables', async () => {
@@ -820,16 +1260,35 @@ describe('Persistence Performance Tests', () => {
       // Create test data
       const objects = generateObjects(gameId, 10000);
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        objects.forEach(o => stmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+        const stmt = db.prepare(
+          `INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        objects.forEach((o) =>
+          stmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.weight,
+            o.version,
+            o.createdAt,
+          ),
+        );
       });
 
       // Query using indexed column (game_id)
       const indexedStart = performance.now();
-      const indexedResults = databaseService.prepare('SELECT * FROM objects WHERE game_id = ?').all(gameId);
+      const indexedResults = databaseService
+        .prepare('SELECT * FROM objects WHERE game_id = ?')
+        .all(gameId);
       const indexedTime = performance.now() - indexedStart;
 
-      console.log(`✓ Indexed query: ${indexedTime.toFixed(0)}ms for ${indexedResults.length} records`);
+      console.log(
+        `✓ Indexed query: ${indexedTime.toFixed(0)}ms for ${indexedResults.length} records`,
+      );
 
       expect(indexedResults.length).toBe(10000);
       expect(indexedTime).toBeLessThan(500);
@@ -844,14 +1303,47 @@ describe('Persistence Performance Tests', () => {
       const objects = generateObjects(gameId, 5000);
 
       databaseService.transaction((db) => {
-        const roomStmt = db.prepare(`INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        rooms.forEach(r => roomStmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const roomStmt = db.prepare(
+          `INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        rooms.forEach((r) =>
+          roomStmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
 
-        const objStmt = db.prepare(`INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        objects.forEach(o => objStmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+        const objStmt = db.prepare(
+          `INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        objects.forEach((o) =>
+          objStmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.weight,
+            o.version,
+            o.createdAt,
+          ),
+        );
 
         // Create room-object relationships
-        const relStmt = db.prepare(`INSERT INTO room_objects (room_id, object_id) VALUES (?, ?)`);
+        const relStmt = db.prepare(
+          `INSERT INTO room_objects (room_id, object_id) VALUES (?, ?)`,
+        );
         for (let i = 0; i < 5000; i++) {
           const roomIdx = i % 1000;
           relStmt.run(rooms[roomIdx].id, objects[i].id);
@@ -860,17 +1352,23 @@ describe('Persistence Performance Tests', () => {
 
       // Complex JOIN query
       const joinStart = performance.now();
-      const joinResults = databaseService.prepare(`
+      const joinResults = databaseService
+        .prepare(
+          `
         SELECT r.id as room_id, r.name as room_name, COUNT(ro.object_id) as object_count
         FROM rooms r
         LEFT JOIN room_objects ro ON r.id = ro.room_id
         WHERE r.game_id = ?
         GROUP BY r.id
         LIMIT 100
-      `).all(gameId);
+      `,
+        )
+        .all(gameId);
       const joinTime = performance.now() - joinStart;
 
-      console.log(`✓ Complex JOIN query: ${joinTime.toFixed(0)}ms for ${joinResults.length} results`);
+      console.log(
+        `✓ Complex JOIN query: ${joinTime.toFixed(0)}ms for ${joinResults.length} results`,
+      );
 
       expect(joinResults.length).toBe(100);
       expect(joinTime).toBeLessThan(500);
@@ -881,10 +1379,14 @@ describe('Persistence Performance Tests', () => {
       ensureGameExists(gameId);
 
       // Test EXPLAIN QUERY PLAN to verify index usage
-      const explainResult = databaseService.prepare(`
+      const explainResult = databaseService
+        .prepare(
+          `
         EXPLAIN QUERY PLAN
         SELECT * FROM rooms WHERE game_id = ?
-      `).all(gameId);
+      `,
+        )
+        .all(gameId);
 
       const planText = JSON.stringify(explainResult);
       console.log(`✓ Query plan: ${planText}`);
@@ -901,14 +1403,31 @@ describe('Persistence Performance Tests', () => {
       const startTime = performance.now();
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        objects.forEach(o => stmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+        const stmt = db.prepare(
+          `INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        objects.forEach((o) =>
+          stmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.weight,
+            o.version,
+            o.createdAt,
+          ),
+        );
       });
 
       const elapsed = performance.now() - startTime;
       const throughput = objects.length / (elapsed / 1000);
 
-      console.log(`✓ Batch inserted ${objects.length} records in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} records/sec)`);
+      console.log(
+        `✓ Batch inserted ${objects.length} records in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} records/sec)`,
+      );
 
       expect(elapsed).toBeLessThan(PERFORMANCE_THRESHOLDS.BATCH_INSERT_10K_MS);
       expect(throughput).toBeGreaterThan(2000);
@@ -921,22 +1440,41 @@ describe('Persistence Performance Tests', () => {
 
       // Insert first
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-        objects.forEach(o => stmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+        const stmt = db.prepare(
+          `INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        );
+        objects.forEach((o) =>
+          stmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.weight,
+            o.version,
+            o.createdAt,
+          ),
+        );
       });
 
       // Batch update
       const startTime = performance.now();
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare(`UPDATE objects SET weight = weight + 1, version = version + 1 WHERE id = ?`);
-        objects.forEach(o => stmt.run(o.id));
+        const stmt = db.prepare(
+          `UPDATE objects SET weight = weight + 1, version = version + 1 WHERE id = ?`,
+        );
+        objects.forEach((o) => stmt.run(o.id));
       });
 
       const elapsed = performance.now() - startTime;
       const throughput = objects.length / (elapsed / 1000);
 
-      console.log(`✓ Batch updated ${objects.length} records in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} records/sec)`);
+      console.log(
+        `✓ Batch updated ${objects.length} records in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} records/sec)`,
+      );
 
       expect(elapsed).toBeLessThan(5000);
       expect(throughput).toBeGreaterThan(2000);
@@ -948,10 +1486,14 @@ describe('Persistence Performance Tests', () => {
 
       // Use existing data from previous tests
       const startTime = performance.now();
-      const count = databaseService.prepare('SELECT COUNT(*) as count FROM objects WHERE game_id LIKE ?').get('query-opt-test%') as any;
+      const count = databaseService
+        .prepare('SELECT COUNT(*) as count FROM objects WHERE game_id LIKE ?')
+        .get('query-opt-test%') as any;
       const elapsed = performance.now() - startTime;
 
-      console.log(`✓ BENCHMARK: Counted ${count.count} records in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ BENCHMARK: Counted ${count.count} records in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(elapsed).toBeLessThan(PERFORMANCE_THRESHOLDS.QUERY_1M_RECORDS_MS);
     }, 5000);
@@ -966,17 +1508,33 @@ describe('Persistence Performance Tests', () => {
 
       for (let i = 0; i < numTransactions; i++) {
         databaseService.transaction((db) => {
-          db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-            .run(`txn-obj-${i}`, 'txn-test', `Object ${i}`, 'item', 0, 0, 0, 1.0, 1, new Date().toISOString());
+          db.prepare(
+            'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          ).run(
+            `txn-obj-${i}`,
+            'txn-test',
+            `Object ${i}`,
+            'item',
+            0,
+            0,
+            0,
+            1.0,
+            1,
+            new Date().toISOString(),
+          );
         });
       }
 
       const elapsed = performance.now() - startTime;
       const throughput = numTransactions / (elapsed / 1000);
 
-      console.log(`✓ Completed ${numTransactions} transactions in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} txn/sec)`);
+      console.log(
+        `✓ Completed ${numTransactions} transactions in ${elapsed.toFixed(0)}ms (${throughput.toFixed(0)} txn/sec)`,
+      );
 
-      expect(throughput).toBeGreaterThan(PERFORMANCE_THRESHOLDS.TRANSACTIONS_PER_SECOND);
+      expect(throughput).toBeGreaterThan(
+        PERFORMANCE_THRESHOLDS.TRANSACTIONS_PER_SECOND,
+      );
     }, 20000);
 
     it('should handle lock contention with concurrent transactions', async () => {
@@ -985,24 +1543,45 @@ describe('Persistence Performance Tests', () => {
 
       const startTime = performance.now();
 
-      const promises = Array.from({ length: numConcurrent }, async (_, threadId) => {
-        for (let i = 0; i < opsPerThread; i++) {
-          await databaseService.transactionWithRetryAsync((db) => {
-            db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-              .run(`lock-obj-${threadId}-${i}`, 'lock-test', `Object ${threadId}-${i}`, 'item', 0, 0, 0, 1.0, 1, new Date().toISOString());
-          });
-        }
-      });
+      const promises = Array.from(
+        { length: numConcurrent },
+        async (_, threadId) => {
+          for (let i = 0; i < opsPerThread; i++) {
+            await databaseService.transactionWithRetryAsync((db) => {
+              db.prepare(
+                'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+              ).run(
+                `lock-obj-${threadId}-${i}`,
+                'lock-test',
+                `Object ${threadId}-${i}`,
+                'item',
+                0,
+                0,
+                0,
+                1.0,
+                1,
+                new Date().toISOString(),
+              );
+            });
+          }
+        },
+      );
 
       await Promise.all(promises);
 
       const elapsed = performance.now() - startTime;
       const totalOps = numConcurrent * opsPerThread;
 
-      console.log(`✓ ${numConcurrent} concurrent threads completed ${totalOps} operations in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ ${numConcurrent} concurrent threads completed ${totalOps} operations in ${elapsed.toFixed(0)}ms`,
+      );
 
       // Verify all operations completed
-      const count = databaseService.prepare("SELECT COUNT(*) as count FROM objects WHERE game_id = 'lock-test'").get() as any;
+      const count = databaseService
+        .prepare(
+          "SELECT COUNT(*) as count FROM objects WHERE game_id = 'lock-test'",
+        )
+        .get() as any;
       expect(count.count).toBe(totalOps);
     }, 30000);
 
@@ -1013,12 +1592,36 @@ describe('Persistence Performance Tests', () => {
       for (let i = 0; i < numRollbacks; i++) {
         try {
           databaseService.transaction((db) => {
-            db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-              .run(`rollback-obj-${i}`, 'rollback-test', `Object ${i}`, 'item', 0, 0, 0, 1.0, 1, new Date().toISOString());
+            db.prepare(
+              'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            ).run(
+              `rollback-obj-${i}`,
+              'rollback-test',
+              `Object ${i}`,
+              'item',
+              0,
+              0,
+              0,
+              1.0,
+              1,
+              new Date().toISOString(),
+            );
 
             // Force rollback by violating constraint
-            db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-              .run(`rollback-obj-${i}`, 'rollback-test', `Object ${i}`, 'item', 0, 0, 0, 1.0, 1, new Date().toISOString()); // Duplicate ID
+            db.prepare(
+              'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            ).run(
+              `rollback-obj-${i}`,
+              'rollback-test',
+              `Object ${i}`,
+              'item',
+              0,
+              0,
+              0,
+              1.0,
+              1,
+              new Date().toISOString(),
+            ); // Duplicate ID
           });
         } catch (error) {
           // Expected to fail
@@ -1027,10 +1630,16 @@ describe('Persistence Performance Tests', () => {
 
       const elapsed = performance.now() - startTime;
 
-      console.log(`✓ ${numRollbacks} rollbacks completed in ${elapsed.toFixed(0)}ms (${(elapsed / numRollbacks).toFixed(1)}ms per rollback)`);
+      console.log(
+        `✓ ${numRollbacks} rollbacks completed in ${elapsed.toFixed(0)}ms (${(elapsed / numRollbacks).toFixed(1)}ms per rollback)`,
+      );
 
       // Verify no partial commits
-      const count = databaseService.prepare("SELECT COUNT(*) as count FROM objects WHERE game_id = 'rollback-test'").get() as any;
+      const count = databaseService
+        .prepare(
+          "SELECT COUNT(*) as count FROM objects WHERE game_id = 'rollback-test'",
+        )
+        .get() as any;
       expect(count.count).toBe(0);
     }, 10000);
 
@@ -1039,26 +1648,47 @@ describe('Persistence Performance Tests', () => {
       const startTime = performance.now();
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        const stmt = db.prepare(
+          'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        );
 
         for (let i = 0; i < opsInTransaction; i++) {
-          stmt.run(`large-txn-obj-${i}`, 'large-txn-test', `Object ${i}`, 'item', 0, 0, 0, 1.0, 1, new Date().toISOString());
+          stmt.run(
+            `large-txn-obj-${i}`,
+            'large-txn-test',
+            `Object ${i}`,
+            'item',
+            0,
+            0,
+            0,
+            1.0,
+            1,
+            new Date().toISOString(),
+          );
         }
       });
 
       const elapsed = performance.now() - startTime;
 
-      console.log(`✓ Large transaction (${opsInTransaction} ops) completed in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ Large transaction (${opsInTransaction} ops) completed in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(elapsed).toBeLessThan(10000);
 
-      const count = databaseService.prepare("SELECT COUNT(*) as count FROM objects WHERE game_id = 'large-txn-test'").get() as any;
+      const count = databaseService
+        .prepare(
+          "SELECT COUNT(*) as count FROM objects WHERE game_id = 'large-txn-test'",
+        )
+        .get() as any;
       expect(count.count).toBe(opsInTransaction);
     }, 20000);
 
     it('should verify WAL mode performance benefits', async () => {
       // Check current journal mode
-      const journalMode = databaseService.prepare('PRAGMA journal_mode').get() as any;
+      const journalMode = databaseService
+        .prepare('PRAGMA journal_mode')
+        .get() as any;
       console.log(`✓ Current journal mode: ${journalMode.journal_mode}`);
 
       // WAL mode should be enabled in production (DELETE mode in tests due to temp database)
@@ -1070,8 +1700,23 @@ describe('Persistence Performance Tests', () => {
       const objects = generateObjects('checkpoint-test', 5000);
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        objects.forEach(o => stmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+        const stmt = db.prepare(
+          'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        );
+        objects.forEach((o) =>
+          stmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.weight,
+            o.version,
+            o.createdAt,
+          ),
+        );
       });
 
       // Manual checkpoint
@@ -1090,8 +1735,20 @@ describe('Persistence Performance Tests', () => {
 
       for (let i = 0; i < numTransactions; i++) {
         databaseService.transaction((db) => {
-          db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-            .run(`bench-txn-${i}`, 'bench-test', `Obj ${i}`, 'item', 0, 0, 0, 1, 1, new Date().toISOString());
+          db.prepare(
+            'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          ).run(
+            `bench-txn-${i}`,
+            'bench-test',
+            `Obj ${i}`,
+            'item',
+            0,
+            0,
+            0,
+            1,
+            1,
+            new Date().toISOString(),
+          );
         });
       }
 
@@ -1115,15 +1772,21 @@ describe('Persistence Performance Tests', () => {
       const initialMemory = getMemoryUsageMB();
 
       // Load rooms into memory
-      const loadedRooms = rooms.map(r => ({ ...r }));
+      const loadedRooms = rooms.map((r) => ({ ...r }));
 
       const afterLoadMemory = getMemoryUsageMB();
       const memoryUsed = afterLoadMemory - initialMemory;
 
-      console.log(`✓ Memory usage for 10,000 rooms: ${memoryUsed.toFixed(2)}MB`);
-      console.log(`✓ Average memory per room: ${(memoryUsed / 10000 * 1024).toFixed(2)}KB`);
+      console.log(
+        `✓ Memory usage for 10,000 rooms: ${memoryUsed.toFixed(2)}MB`,
+      );
+      console.log(
+        `✓ Average memory per room: ${((memoryUsed / 10000) * 1024).toFixed(2)}KB`,
+      );
 
-      expect(memoryUsed).toBeLessThan(PERFORMANCE_THRESHOLDS.MEMORY_10K_ROOMS_MB);
+      expect(memoryUsed).toBeLessThan(
+        PERFORMANCE_THRESHOLDS.MEMORY_10K_ROOMS_MB,
+      );
       expect(loadedRooms.length).toBe(10000);
     }, 10000);
 
@@ -1139,12 +1802,30 @@ describe('Persistence Performance Tests', () => {
         const rooms = generateRooms(gameId, 100);
         databaseService.transaction((db) => {
           db.prepare('DELETE FROM rooms WHERE game_id = ?').run(gameId);
-          const stmt = db.prepare('INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+          const stmt = db.prepare(
+            'INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          );
+          rooms.forEach((r) =>
+            stmt.run(
+              r.id,
+              r.gameId,
+              r.name,
+              r.position.x,
+              r.position.y,
+              r.position.z,
+              r.width,
+              r.height,
+              r.depth,
+              r.version,
+              r.createdAt,
+            ),
+          );
         });
 
         // Load
-        const loaded = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all(gameId);
+        const loaded = databaseService
+          .prepare('SELECT * FROM rooms WHERE game_id = ?')
+          .all(gameId);
 
         // Force garbage collection if available
         if (global.gc) {
@@ -1155,7 +1836,9 @@ describe('Persistence Performance Tests', () => {
       const finalMemory = getMemoryUsageMB();
       const memoryGrowth = finalMemory - initialMemory;
 
-      console.log(`✓ Memory growth after ${iterations} save/load cycles: ${memoryGrowth.toFixed(2)}MB`);
+      console.log(
+        `✓ Memory growth after ${iterations} save/load cycles: ${memoryGrowth.toFixed(2)}MB`,
+      );
 
       // Memory growth should be minimal (< 50MB)
       expect(memoryGrowth).toBeLessThan(50);
@@ -1179,10 +1862,15 @@ describe('Persistence Performance Tests', () => {
         }
 
         const afterGC = getMemoryUsageMB();
-        gcStats.push({ before: beforeGC, after: afterGC, freed: beforeGC - afterGC });
+        gcStats.push({
+          before: beforeGC,
+          after: afterGC,
+          freed: beforeGC - afterGC,
+        });
       }
 
-      const avgFreed = gcStats.reduce((sum, s) => sum + s.freed, 0) / iterations;
+      const avgFreed =
+        gcStats.reduce((sum, s) => sum + s.freed, 0) / iterations;
       console.log(`✓ Average memory freed per GC: ${avgFreed.toFixed(2)}MB`);
 
       expect(gcStats.length).toBe(iterations);
@@ -1194,21 +1882,43 @@ describe('Persistence Performance Tests', () => {
       const rooms = generateRooms(gameId, 1000);
 
       databaseService.transaction((db) => {
-        const stmt = db.prepare('INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const stmt = db.prepare(
+          'INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        );
+        rooms.forEach((r) =>
+          stmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
       });
 
       // First query (cache miss)
       const miss1 = performance.now();
-      databaseService.prepare('SELECT * FROM rooms WHERE id = ?').get(rooms[0].id);
+      databaseService
+        .prepare('SELECT * FROM rooms WHERE id = ?')
+        .get(rooms[0].id);
       const missTime1 = performance.now() - miss1;
 
       // Second query (potential cache hit)
       const hit1 = performance.now();
-      databaseService.prepare('SELECT * FROM rooms WHERE id = ?').get(rooms[0].id);
+      databaseService
+        .prepare('SELECT * FROM rooms WHERE id = ?')
+        .get(rooms[0].id);
       const hitTime1 = performance.now() - hit1;
 
-      console.log(`✓ First query: ${missTime1.toFixed(2)}ms, Second query: ${hitTime1.toFixed(2)}ms`);
+      console.log(
+        `✓ First query: ${missTime1.toFixed(2)}ms, Second query: ${hitTime1.toFixed(2)}ms`,
+      );
       console.log(`✓ Cache speedup: ${(missTime1 / hitTime1).toFixed(1)}x`);
 
       expect(hitTime1).toBeLessThan(missTime1 * 2); // Should be at least as fast
@@ -1241,8 +1951,24 @@ describe('Persistence Performance Tests', () => {
         const rooms = generateRooms(gameId, 500);
 
         databaseService.transaction((db) => {
-          const stmt = db.prepare('INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+          const stmt = db.prepare(
+            'INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          );
+          rooms.forEach((r) =>
+            stmt.run(
+              r.id,
+              r.gameId,
+              r.name,
+              r.position.x,
+              r.position.y,
+              r.position.z,
+              r.width,
+              r.height,
+              r.depth,
+              r.version,
+              r.createdAt,
+            ),
+          );
         });
 
         measurements.push(getMemoryUsageMB());
@@ -1250,7 +1976,9 @@ describe('Persistence Performance Tests', () => {
 
       const growth = measurements[measurements.length - 1] - measurements[0];
       console.log(`✓ Heap growth over 5 iterations: ${growth.toFixed(2)}MB`);
-      console.log(`✓ Measurements: ${measurements.map(m => m.toFixed(1)).join(' → ')} MB`);
+      console.log(
+        `✓ Measurements: ${measurements.map((m) => m.toFixed(1)).join(' → ')} MB`,
+      );
 
       // Heap should grow linearly, not exponentially
       expect(growth).toBeLessThan(100);
@@ -1262,11 +1990,13 @@ describe('Persistence Performance Tests', () => {
       const rooms = generateRooms(gameId, 10000);
 
       const initialMemory = getMemoryUsageMB();
-      const loadedRooms = rooms.map(r => ({ ...r }));
+      const loadedRooms = rooms.map((r) => ({ ...r }));
       const finalMemory = getMemoryUsageMB();
       const memoryUsed = finalMemory - initialMemory;
 
-      console.log(`✓ BENCHMARK: ${memoryUsed.toFixed(2)}MB for ${loadedRooms.length} rooms`);
+      console.log(
+        `✓ BENCHMARK: ${memoryUsed.toFixed(2)}MB for ${loadedRooms.length} rooms`,
+      );
 
       expect(memoryUsed).toBeLessThan(1024);
       expect(loadedRooms.length).toBe(10000);
@@ -1298,20 +2028,73 @@ describe('Persistence Performance Tests', () => {
       const objects = generateObjects(gameId, 5000);
 
       databaseService.transaction((db) => {
-        const roomStmt = db.prepare('INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        rooms.forEach(r => roomStmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+        const roomStmt = db.prepare(
+          'INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        );
+        rooms.forEach((r) =>
+          roomStmt.run(
+            r.id,
+            r.gameId,
+            r.name,
+            r.position.x,
+            r.position.y,
+            r.position.z,
+            r.width,
+            r.height,
+            r.depth,
+            r.version,
+            r.createdAt,
+          ),
+        );
 
-        const playerStmt = db.prepare('INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        players.forEach(p => playerStmt.run(p.id, p.gameId, p.name, p.npcType, p.position.x, p.position.y, p.position.z, p.health, p.maxHealth, p.level, p.experience, JSON.stringify(p.inventoryData), JSON.stringify(p.dialogueTreeData), p.version, p.createdAt));
+        const playerStmt = db.prepare(
+          'INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        );
+        players.forEach((p) =>
+          playerStmt.run(
+            p.id,
+            p.gameId,
+            p.name,
+            p.npcType,
+            p.position.x,
+            p.position.y,
+            p.position.z,
+            p.health,
+            p.maxHealth,
+            p.level,
+            p.experience,
+            JSON.stringify(p.inventoryData),
+            JSON.stringify(p.dialogueTreeData),
+            p.version,
+            p.createdAt,
+          ),
+        );
 
-        const objStmt = db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        objects.forEach(o => objStmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+        const objStmt = db.prepare(
+          'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        );
+        objects.forEach((o) =>
+          objStmt.run(
+            o.id,
+            o.gameId,
+            o.name,
+            o.objectType,
+            o.position.x,
+            o.position.y,
+            o.position.z,
+            o.weight,
+            o.version,
+            o.createdAt,
+          ),
+        );
       });
 
       const stats = fs.statSync(testDbPath);
       const sizeMB = stats.size / (1024 * 1024);
 
-      console.log(`✓ Save file size: ${sizeMB.toFixed(2)}MB (${rooms.length} rooms, ${players.length} players, ${objects.length} objects)`);
+      console.log(
+        `✓ Save file size: ${sizeMB.toFixed(2)}MB (${rooms.length} rooms, ${players.length} players, ${objects.length} objects)`,
+      );
 
       expect(sizeMB).toBeLessThan(100);
     }, 30000);
@@ -1335,8 +2118,24 @@ describe('Persistence Performance Tests', () => {
       for (let i = 0; i < rooms.length; i += BATCH_SIZE) {
         const batch = rooms.slice(i, i + BATCH_SIZE);
         databaseService.transaction((db) => {
-          const stmt = db.prepare('INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          batch.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+          const stmt = db.prepare(
+            'INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          );
+          batch.forEach((r) =>
+            stmt.run(
+              r.id,
+              r.gameId,
+              r.name,
+              r.position.x,
+              r.position.y,
+              r.position.z,
+              r.width,
+              r.height,
+              r.depth,
+              r.version,
+              r.createdAt,
+            ),
+          );
         });
       }
 
@@ -1344,21 +2143,58 @@ describe('Persistence Performance Tests', () => {
       for (let i = 0; i < objects.length; i += BATCH_SIZE) {
         const batch = objects.slice(i, i + BATCH_SIZE);
         databaseService.transaction((db) => {
-          const stmt = db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          batch.forEach(o => stmt.run(o.id, o.gameId, o.name, o.objectType, o.position.x, o.position.y, o.position.z, o.weight, o.version, o.createdAt));
+          const stmt = db.prepare(
+            'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          );
+          batch.forEach((o) =>
+            stmt.run(
+              o.id,
+              o.gameId,
+              o.name,
+              o.objectType,
+              o.position.x,
+              o.position.y,
+              o.position.z,
+              o.weight,
+              o.version,
+              o.createdAt,
+            ),
+          );
         });
       }
 
       // Insert players
       databaseService.transaction((db) => {
-        const stmt = db.prepare('INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        players.forEach(p => stmt.run(p.id, p.gameId, p.name, p.npcType, p.position.x, p.position.y, p.position.z, p.health, p.maxHealth, p.level, p.experience, JSON.stringify(p.inventoryData), JSON.stringify(p.dialogueTreeData), p.version, p.createdAt));
+        const stmt = db.prepare(
+          'INSERT INTO npcs (id, game_id, name, npc_type, position_x, position_y, position_z, health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        );
+        players.forEach((p) =>
+          stmt.run(
+            p.id,
+            p.gameId,
+            p.name,
+            p.npcType,
+            p.position.x,
+            p.position.y,
+            p.position.z,
+            p.health,
+            p.maxHealth,
+            p.level,
+            p.experience,
+            JSON.stringify(p.inventoryData),
+            JSON.stringify(p.dialogueTreeData),
+            p.version,
+            p.createdAt,
+          ),
+        );
       });
 
       const elapsed = performance.now() - startTime;
       const actualTotal = rooms.length + objects.length + players.length;
 
-      console.log(`✓ Created ${actualTotal} entities in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ Created ${actualTotal} entities in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(actualTotal).toBeGreaterThan(40000);
       expect(elapsed).toBeLessThan(60000);
@@ -1374,8 +2210,20 @@ describe('Persistence Performance Tests', () => {
       const promises = Array.from({ length: numOperations }, async (_, i) => {
         return new Promise<void>((resolve) => {
           databaseService.transaction((db) => {
-            db.prepare('INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-              .run(`conn-obj-${i}`, 'conn-test', `Obj ${i}`, 'item', 0, 0, 0, 1, 1, new Date().toISOString());
+            db.prepare(
+              'INSERT INTO objects (id, game_id, name, object_type, position_x, position_y, position_z, weight, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            ).run(
+              `conn-obj-${i}`,
+              'conn-test',
+              `Obj ${i}`,
+              'item',
+              0,
+              0,
+              0,
+              1,
+              1,
+              new Date().toISOString(),
+            );
           });
           resolve();
         });
@@ -1385,7 +2233,9 @@ describe('Persistence Performance Tests', () => {
 
       const elapsed = performance.now() - startTime;
 
-      console.log(`✓ ${numOperations} operations completed in ${elapsed.toFixed(0)}ms`);
+      console.log(
+        `✓ ${numOperations} operations completed in ${elapsed.toFixed(0)}ms`,
+      );
 
       expect(elapsed).toBeLessThan(10000);
     }, 20000);
@@ -1399,20 +2249,44 @@ describe('Persistence Performance Tests', () => {
         const rooms = generateRooms(gameId, size);
 
         databaseService.transaction((db) => {
-          const stmt = db.prepare('INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+          const stmt = db.prepare(
+            'INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          );
+          rooms.forEach((r) =>
+            stmt.run(
+              r.id,
+              r.gameId,
+              r.name,
+              r.position.x,
+              r.position.y,
+              r.position.z,
+              r.width,
+              r.height,
+              r.depth,
+              r.version,
+              r.createdAt,
+            ),
+          );
         });
 
         const queryStart = performance.now();
-        const loaded = databaseService.prepare('SELECT * FROM rooms WHERE game_id = ?').all(gameId);
+        const loaded = databaseService
+          .prepare('SELECT * FROM rooms WHERE game_id = ?')
+          .all(gameId);
         const queryTime = performance.now() - queryStart;
 
-        results.push({ size, time: queryTime, throughput: size / (queryTime / 1000) });
+        results.push({
+          size,
+          time: queryTime,
+          throughput: size / (queryTime / 1000),
+        });
       }
 
       console.log(`✓ Query performance at scale:`);
-      results.forEach(r => {
-        console.log(`  ${r.size} rooms: ${r.time.toFixed(0)}ms (${r.throughput.toFixed(0)} rooms/sec)`);
+      results.forEach((r) => {
+        console.log(
+          `  ${r.size} rooms: ${r.time.toFixed(0)}ms (${r.throughput.toFixed(0)} rooms/sec)`,
+        );
       });
 
       // Verify linear scaling (not exponential degradation)
@@ -1448,7 +2322,9 @@ describe('Persistence Performance Tests', () => {
         const backupStats = fs.statSync(backupPath);
         const backupSizeMB = backupStats.size / (1024 * 1024);
 
-        console.log(`✓ Backup completed in ${backupTime.toFixed(0)}ms (${backupSizeMB.toFixed(2)}MB)`);
+        console.log(
+          `✓ Backup completed in ${backupTime.toFixed(0)}ms (${backupSizeMB.toFixed(2)}MB)`,
+        );
 
         expect(backupTime).toBeLessThan(5000);
         expect(backupExists).toBe(true);
@@ -1474,8 +2350,24 @@ describe('Persistence Performance Tests', () => {
 
         const startTime = performance.now();
         databaseService.transaction((db) => {
-          const stmt = db.prepare('INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          rooms.forEach(r => stmt.run(r.id, r.gameId, r.name, r.position.x, r.position.y, r.position.z, r.width, r.height, r.depth, r.version, r.createdAt));
+          const stmt = db.prepare(
+            'INSERT INTO rooms (id, game_id, name, position_x, position_y, position_z, width, height, depth, version, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          );
+          rooms.forEach((r) =>
+            stmt.run(
+              r.id,
+              r.gameId,
+              r.name,
+              r.position.x,
+              r.position.y,
+              r.position.z,
+              r.width,
+              r.height,
+              r.depth,
+              r.version,
+              r.createdAt,
+            ),
+          );
         });
         const elapsed = performance.now() - startTime;
 
@@ -1483,8 +2375,10 @@ describe('Persistence Performance Tests', () => {
       }
 
       console.log(`✓ BENCHMARK: Scaling performance:`);
-      timings.forEach(t => {
-        console.log(`  ${t.count} entities: ${t.time.toFixed(0)}ms (${t.rate.toFixed(0)} entities/sec)`);
+      timings.forEach((t) => {
+        console.log(
+          `  ${t.count} entities: ${t.time.toFixed(0)}ms (${t.rate.toFixed(0)} entities/sec)`,
+        );
       });
 
       // Verify roughly linear scaling
@@ -1492,7 +2386,9 @@ describe('Persistence Performance Tests', () => {
       const rate10k = timings[2].rate;
       const degradation = (rate1k - rate10k) / rate1k;
 
-      console.log(`✓ Performance degradation: ${(degradation * 100).toFixed(1)}%`);
+      console.log(
+        `✓ Performance degradation: ${(degradation * 100).toFixed(1)}%`,
+      );
 
       expect(degradation).toBeLessThan(0.5); // < 50% degradation
     }, 60000);

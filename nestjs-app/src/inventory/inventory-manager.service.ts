@@ -14,56 +14,90 @@ import {
 import { EventEmitterService } from '../events/event-emitter.service';
 import { GameEventType } from '../events/event.interfaces';
 import { v4 as uuidv4 } from 'uuid';
+import { Mutex, withTimeout } from 'async-mutex';
 
 /**
  * Manages runtime inventory operations for players and NPCs
+ *
+ * CONCURRENCY PROTECTION:
+ * - Uses Mutex locks to prevent race conditions in inventory operations
+ * - Map-level lock protects the inventories Map from concurrent modifications
+ * - Per-inventory locks prevent concurrent modifications to individual inventories
+ * - Transfer operations acquire locks in sorted order (by ownerId) to prevent deadlocks
+ * - All locks have 5-second timeout to prevent permanent deadlocks
  */
 @Injectable()
 export class InventoryManagerService {
   private readonly logger = new Logger(InventoryManagerService.name);
   private inventories: Map<string, IInventory> = new Map(); // ownerId -> inventory
 
+  // Concurrency protection
+  private readonly mapLock = withTimeout(new Mutex(), 5000); // Protects inventories Map
+  private readonly inventoryLocks = new Map<string, Mutex>(); // Per-inventory locks
+  private readonly LOCK_TIMEOUT = 5000; // 5 seconds
+
   constructor(private readonly eventEmitter: EventEmitterService) {}
 
   /**
-   * Create an inventory for a player or NPC
+   * Get or create a lock for a specific inventory
+   * This ensures each inventory has its own lock for fine-grained concurrency control
    */
-  createInventory(ownerId: string, gameId: string, config: IInventoryConfig): IInventory {
-    const now = new Date().toISOString();
+  private getInventoryLock(ownerId: string): Mutex {
+    if (!this.inventoryLocks.has(ownerId)) {
+      this.inventoryLocks.set(ownerId, new Mutex());
+    }
+    return this.inventoryLocks.get(ownerId)!;
+  }
 
-    const inventory: IInventory = {
-      ownerId,
-      gameId,
-      items: [],
-      equippedItems: new Map(),
-      config: {
-        maxSlots: config.maxSlots || 50,
-        maxWeight: config.maxWeight || 1000,
-        allowStacking: config.allowStacking ?? true,
-        allowEquipment: config.allowEquipment ?? true,
-        equipmentSlots: config.equipmentSlots || [
-          EquipmentSlot.HEAD,
-          EquipmentSlot.CHEST,
-          EquipmentSlot.HANDS,
-          EquipmentSlot.LEGS,
-          EquipmentSlot.FEET,
-          EquipmentSlot.MAIN_HAND,
-          EquipmentSlot.OFF_HAND,
-        ],
-      },
-      currentWeight: 0,
-      createdAt: now,
-      updatedAt: now,
-    };
+  /**
+   * Create an inventory for a player or NPC
+   * THREAD-SAFE: Acquires map lock to prevent concurrent Map modifications
+   */
+  async createInventory(
+    ownerId: string,
+    gameId: string,
+    config: IInventoryConfig,
+  ): Promise<IInventory> {
+    return await this.mapLock.runExclusive(async () => {
+      const now = new Date().toISOString();
 
-    this.inventories.set(ownerId, inventory);
-    this.logger.log(`Created inventory for ${ownerId} with ${config.maxSlots || 50} slots`);
+      const inventory: IInventory = {
+        ownerId,
+        gameId,
+        items: [],
+        equippedItems: new Map(),
+        config: {
+          maxSlots: config.maxSlots || 50,
+          maxWeight: config.maxWeight || 1000,
+          allowStacking: config.allowStacking ?? true,
+          allowEquipment: config.allowEquipment ?? true,
+          equipmentSlots: config.equipmentSlots || [
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.HANDS,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET,
+            EquipmentSlot.MAIN_HAND,
+            EquipmentSlot.OFF_HAND,
+          ],
+        },
+        currentWeight: 0,
+        createdAt: now,
+        updatedAt: now,
+      };
 
-    return inventory;
+      this.inventories.set(ownerId, inventory);
+      this.logger.log(
+        `Created inventory for ${ownerId} with ${config.maxSlots || 50} slots`,
+      );
+
+      return inventory;
+    });
   }
 
   /**
    * Add item to inventory
+   * THREAD-SAFE: Acquires inventory lock to prevent concurrent modifications
    */
   async addItem(
     ownerId: string,
@@ -71,343 +105,445 @@ export class InventoryManagerService {
     quantity: number = 1,
     itemData?: Partial<IInventoryItem>,
   ): Promise<IInventoryResult> {
-    const inventory = this.inventories.get(ownerId);
+    const lock = this.getInventoryLock(ownerId);
 
-    if (!inventory) {
-      return {
-        success: false,
-        message: `Inventory not found for ${ownerId}`,
-      };
-    }
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const inventory = this.inventories.get(ownerId);
 
-    // Bug Fix 2: Validate quantity and weight
-    if (quantity <= 0) {
-      return {
-        success: false,
-        message: 'Quantity must be greater than 0',
-      };
-    }
+          if (!inventory) {
+            return {
+              success: false,
+              message: `Inventory not found for ${ownerId}`,
+            };
+          }
 
-    const itemWeight = itemData?.weight || 1;
+          // Bug Fix 2: Validate quantity and weight
+          if (quantity <= 0) {
+            return {
+              success: false,
+              message: 'Quantity must be greater than 0',
+            };
+          }
 
-    if (itemWeight < 0) {
-      return {
-        success: false,
-        message: 'Weight cannot be negative',
-      };
-    }
+          const itemWeight = itemData?.weight || 1;
 
-    const totalWeight = itemWeight * quantity;
+          if (itemWeight < 0) {
+            return {
+              success: false,
+              message: 'Weight cannot be negative',
+            };
+          }
 
-    // Check weight limit
-    if (inventory.config.maxWeight) {
-      if (inventory.currentWeight + totalWeight > inventory.config.maxWeight) {
-        return {
-          success: false,
-          message: 'Inventory weight limit exceeded',
-        };
-      }
-    }
+          const totalWeight = itemWeight * quantity;
 
-    const maxStack = itemData?.maxStack || 99;
+          // Check weight limit
+          if (inventory.config.maxWeight) {
+            if (
+              inventory.currentWeight + totalWeight >
+              inventory.config.maxWeight
+            ) {
+              return {
+                success: false,
+                message: 'Inventory weight limit exceeded',
+              };
+            }
+          }
 
-    // Check if we can stack with existing items
-    if (inventory.config.allowStacking) {
-      const existingItem = inventory.items.find(
-        (item) => item.itemId === itemId && item.quantity < maxStack && !item.equipped,
-      );
+          const maxStack = itemData?.maxStack || 99;
 
-      if (existingItem) {
-        const availableSpace = maxStack - existingItem.quantity;
-        const quantityToAdd = Math.min(quantity, availableSpace);
-        const remaining = quantity - quantityToAdd;
+          // Check if we can stack with existing items
+          if (inventory.config.allowStacking) {
+            const existingItem = inventory.items.find(
+              (item) =>
+                item.itemId === itemId &&
+                item.quantity < maxStack &&
+                !item.equipped,
+            );
 
-        existingItem.quantity += quantityToAdd;
-        inventory.currentWeight += itemWeight * quantityToAdd;
-        inventory.updatedAt = new Date().toISOString();
+            if (existingItem) {
+              const availableSpace = maxStack - existingItem.quantity;
+              const quantityToAdd = Math.min(quantity, availableSpace);
+              const remaining = quantity - quantityToAdd;
 
-        await this.eventEmitter.emit(
-          GameEventType.CUSTOM_EVENT,
-          {
-            action: 'item_added',
-            ownerId,
+              existingItem.quantity += quantityToAdd;
+              inventory.currentWeight += itemWeight * quantityToAdd;
+              inventory.updatedAt = new Date().toISOString();
+
+              await this.eventEmitter.emit(
+                GameEventType.CUSTOM_EVENT,
+                {
+                  action: 'item_added',
+                  ownerId,
+                  itemId,
+                  quantity: quantityToAdd,
+                },
+                inventory.gameId,
+              );
+
+              // If there's remaining quantity, create new stack
+              if (remaining > 0) {
+                return await this.addItem(ownerId, itemId, remaining, itemData);
+              }
+
+              return {
+                success: true,
+                message: `Added ${quantityToAdd} ${itemId} to existing stack`,
+                item: existingItem,
+                weightChanged: itemWeight * quantityToAdd,
+              };
+            }
+          }
+
+          // Check slot limit
+          if (inventory.config.maxSlots) {
+            if (inventory.items.length >= inventory.config.maxSlots) {
+              return {
+                success: false,
+                message: 'Inventory is full',
+              };
+            }
+          }
+
+          // Create new inventory item
+          const newItem: IInventoryItem = {
+            instanceId: uuidv4(),
             itemId,
-            quantity: quantityToAdd,
-          },
-          inventory.gameId,
-        );
+            quantity,
+            maxStack,
+            weight: itemWeight,
+            equipped: false,
+            metadata: itemData?.metadata || {},
+            containerItems: itemData?.containerItems, // Preserve container items
+          };
 
-        // If there's remaining quantity, create new stack
-        if (remaining > 0) {
-          return await this.addItem(ownerId, itemId, remaining, itemData);
-        }
+          inventory.items.push(newItem);
+          inventory.currentWeight += totalWeight;
+          inventory.updatedAt = new Date().toISOString();
 
-        return {
-          success: true,
-          message: `Added ${quantityToAdd} ${itemId} to existing stack`,
-          item: existingItem,
-          weightChanged: itemWeight * quantityToAdd,
-        };
-      }
-    }
+          await this.eventEmitter.emit(
+            GameEventType.CUSTOM_EVENT,
+            {
+              action: 'item_added',
+              ownerId,
+              itemId,
+              quantity,
+            },
+            inventory.gameId,
+          );
 
-    // Check slot limit
-    if (inventory.config.maxSlots) {
-      if (inventory.items.length >= inventory.config.maxSlots) {
+          this.logger.log(
+            `Added ${quantity} ${itemId} to ${ownerId}'s inventory`,
+          );
+
+          return {
+            success: true,
+            message: `Added ${quantity} ${itemId}`,
+            item: newItem,
+            weightChanged: totalWeight,
+          };
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(`Lock timeout adding item to inventory ${ownerId}`);
         return {
           success: false,
-          message: 'Inventory is full',
+          message: 'Operation timed out, please try again',
         };
       }
+      throw error;
     }
-
-    // Create new inventory item
-    const newItem: IInventoryItem = {
-      instanceId: uuidv4(),
-      itemId,
-      quantity,
-      maxStack,
-      weight: itemWeight,
-      equipped: false,
-      metadata: itemData?.metadata || {},
-      containerItems: itemData?.containerItems, // Preserve container items
-    };
-
-    inventory.items.push(newItem);
-    inventory.currentWeight += totalWeight;
-    inventory.updatedAt = new Date().toISOString();
-
-    await this.eventEmitter.emit(
-      GameEventType.CUSTOM_EVENT,
-      {
-        action: 'item_added',
-        ownerId,
-        itemId,
-        quantity,
-      },
-      inventory.gameId,
-    );
-
-    this.logger.log(`Added ${quantity} ${itemId} to ${ownerId}'s inventory`);
-
-    return {
-      success: true,
-      message: `Added ${quantity} ${itemId}`,
-      item: newItem,
-      weightChanged: totalWeight,
-    };
   }
 
   /**
    * Remove item from inventory
+   * THREAD-SAFE: Acquires inventory lock to prevent concurrent modifications
    */
   async removeItem(
     ownerId: string,
     itemInstanceId: string,
     quantity: number = 1,
   ): Promise<IInventoryResult> {
-    const inventory = this.inventories.get(ownerId);
+    const lock = this.getInventoryLock(ownerId);
 
-    if (!inventory) {
-      return {
-        success: false,
-        message: `Inventory not found for ${ownerId}`,
-      };
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const inventory = this.inventories.get(ownerId);
+
+          if (!inventory) {
+            return {
+              success: false,
+              message: `Inventory not found for ${ownerId}`,
+            };
+          }
+
+          const itemIndex = inventory.items.findIndex(
+            (item) => item.instanceId === itemInstanceId,
+          );
+
+          if (itemIndex === -1) {
+            return {
+              success: false,
+              message: 'Item not found in inventory',
+            };
+          }
+
+          const item = inventory.items[itemIndex];
+
+          if (item.quantity < quantity) {
+            return {
+              success: false,
+              message: `Insufficient quantity (have ${item.quantity}, need ${quantity})`,
+            };
+          }
+
+          // Bug Fix 1: Unequip item before removing if it's equipped
+          if (item.equipped && item.equipSlot) {
+            await this.unequipItem(ownerId, item.equipSlot);
+          }
+
+          const weightReduced = (item.weight || 0) * quantity;
+
+          if (item.quantity === quantity) {
+            // Remove entire stack
+            inventory.items.splice(itemIndex, 1);
+          } else {
+            // Reduce quantity
+            item.quantity -= quantity;
+          }
+
+          inventory.currentWeight -= weightReduced;
+          inventory.updatedAt = new Date().toISOString();
+
+          await this.eventEmitter.emit(
+            GameEventType.CUSTOM_EVENT,
+            {
+              action: 'item_removed',
+              ownerId,
+              itemId: item.itemId,
+              quantity,
+            },
+            inventory.gameId,
+          );
+
+          this.logger.log(
+            `Removed ${quantity} ${item.itemId} from ${ownerId}'s inventory`,
+          );
+
+          return {
+            success: true,
+            message: `Removed ${quantity} ${item.itemId}`,
+            item,
+            weightChanged: -weightReduced,
+          };
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(
+          `Lock timeout removing item from inventory ${ownerId}`,
+        );
+        return {
+          success: false,
+          message: 'Operation timed out, please try again',
+        };
+      }
+      throw error;
     }
-
-    const itemIndex = inventory.items.findIndex((item) => item.instanceId === itemInstanceId);
-
-    if (itemIndex === -1) {
-      return {
-        success: false,
-        message: 'Item not found in inventory',
-      };
-    }
-
-    const item = inventory.items[itemIndex];
-
-    if (item.quantity < quantity) {
-      return {
-        success: false,
-        message: `Insufficient quantity (have ${item.quantity}, need ${quantity})`,
-      };
-    }
-
-    // Bug Fix 1: Unequip item before removing if it's equipped
-    if (item.equipped && item.equipSlot) {
-      await this.unequipItem(ownerId, item.equipSlot);
-    }
-
-    const weightReduced = (item.weight || 0) * quantity;
-
-    if (item.quantity === quantity) {
-      // Remove entire stack
-      inventory.items.splice(itemIndex, 1);
-    } else {
-      // Reduce quantity
-      item.quantity -= quantity;
-    }
-
-    inventory.currentWeight -= weightReduced;
-    inventory.updatedAt = new Date().toISOString();
-
-    await this.eventEmitter.emit(
-      GameEventType.CUSTOM_EVENT,
-      {
-        action: 'item_removed',
-        ownerId,
-        itemId: item.itemId,
-        quantity,
-      },
-      inventory.gameId,
-    );
-
-    this.logger.log(`Removed ${quantity} ${item.itemId} from ${ownerId}'s inventory`);
-
-    return {
-      success: true,
-      message: `Removed ${quantity} ${item.itemId}`,
-      item,
-      weightChanged: -weightReduced,
-    };
   }
 
   /**
    * Equip an item
+   * THREAD-SAFE: Acquires inventory lock to prevent concurrent equipment changes
    */
-  async equipItem(ownerId: string, itemInstanceId: string, slot: EquipmentSlot): Promise<IInventoryResult> {
-    const inventory = this.inventories.get(ownerId);
+  async equipItem(
+    ownerId: string,
+    itemInstanceId: string,
+    slot: EquipmentSlot,
+  ): Promise<IInventoryResult> {
+    const lock = this.getInventoryLock(ownerId);
 
-    if (!inventory) {
-      return {
-        success: false,
-        message: `Inventory not found for ${ownerId}`,
-      };
-    }
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const inventory = this.inventories.get(ownerId);
 
-    if (!inventory.config.allowEquipment) {
-      return {
-        success: false,
-        message: 'Equipment not allowed in this inventory',
-      };
-    }
+          if (!inventory) {
+            return {
+              success: false,
+              message: `Inventory not found for ${ownerId}`,
+            };
+          }
 
-    if (!inventory.config.equipmentSlots?.includes(slot)) {
-      return {
-        success: false,
-        message: `Equipment slot ${slot} not available`,
-      };
-    }
+          if (!inventory.config.allowEquipment) {
+            return {
+              success: false,
+              message: 'Equipment not allowed in this inventory',
+            };
+          }
 
-    // Try to find by instanceId first, then by itemId as fallback
-    let item = inventory.items.find((item) => item.instanceId === itemInstanceId);
+          if (!inventory.config.equipmentSlots?.includes(slot)) {
+            return {
+              success: false,
+              message: `Equipment slot ${slot} not available`,
+            };
+          }
 
-    if (!item) {
-      // Fallback: try to find by itemId
-      item = inventory.items.find((item) => item.itemId === itemInstanceId);
-    }
+          // Try to find by instanceId first, then by itemId as fallback
+          let item = inventory.items.find(
+            (item) => item.instanceId === itemInstanceId,
+          );
 
-    if (!item) {
-      return {
-        success: false,
-        message: 'Item not found in inventory',
-      };
-    }
+          if (!item) {
+            // Fallback: try to find by itemId
+            item = inventory.items.find(
+              (item) => item.itemId === itemInstanceId,
+            );
+          }
 
-    if (item.equipped) {
-      return {
-        success: false,
-        message: 'Item is already equipped',
-      };
-    }
+          if (!item) {
+            return {
+              success: false,
+              message: 'Item not found in inventory',
+            };
+          }
 
-    // BUG FIX #3: Unequip current item in slot and properly clear its state
-    const currentEquipped = inventory.equippedItems.get(slot);
-    if (currentEquipped) {
-      // Find the old item in the items array and clear its flags
-      const oldItem = inventory.items.find(i => i.instanceId === currentEquipped.instanceId);
-      if (oldItem) {
-        oldItem.equipped = false;
-        oldItem.equipSlot = undefined;
+          if (item.equipped) {
+            return {
+              success: false,
+              message: 'Item is already equipped',
+            };
+          }
+
+          // Auto-unequip current item in slot if one exists
+          const currentEquipped = inventory.equippedItems.get(slot);
+          if (currentEquipped) {
+            currentEquipped.equipped = false;
+            currentEquipped.equipSlot = undefined;
+            inventory.equippedItems.delete(slot);
+          }
+
+          // Equip new item
+          item.equipped = true;
+          item.equipSlot = slot;
+          inventory.equippedItems.set(slot, item);
+          inventory.updatedAt = new Date().toISOString();
+
+          await this.eventEmitter.emit(
+            GameEventType.CUSTOM_EVENT,
+            {
+              action: 'item_equipped',
+              ownerId,
+              itemId: item.itemId,
+              slot,
+            },
+            inventory.gameId,
+          );
+
+          this.logger.log(`${ownerId} equipped ${item.itemId} in ${slot}`);
+
+          return {
+            success: true,
+            message: `Equipped ${item.itemId} in ${slot}`,
+            item,
+          };
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(
+          `Lock timeout equipping item in inventory ${ownerId}`,
+        );
+        return {
+          success: false,
+          message: 'Operation timed out, please try again',
+        };
       }
-      inventory.equippedItems.delete(slot);
+      throw error;
     }
-
-    // Equip new item
-    item.equipped = true;
-    item.equipSlot = slot;
-    inventory.equippedItems.set(slot, item);
-    inventory.updatedAt = new Date().toISOString();
-
-    await this.eventEmitter.emit(
-      GameEventType.CUSTOM_EVENT,
-      {
-        action: 'item_equipped',
-        ownerId,
-        itemId: item.itemId,
-        slot,
-      },
-      inventory.gameId,
-    );
-
-    this.logger.log(`${ownerId} equipped ${item.itemId} in ${slot}`);
-
-    return {
-      success: true,
-      message: `Equipped ${item.itemId} in ${slot}`,
-      item,
-    };
   }
 
   /**
    * Unequip an item
+   * THREAD-SAFE: Acquires inventory lock to prevent concurrent equipment changes
    */
-  async unequipItem(ownerId: string, slot: EquipmentSlot): Promise<IInventoryResult> {
-    const inventory = this.inventories.get(ownerId);
+  async unequipItem(
+    ownerId: string,
+    slot: EquipmentSlot,
+  ): Promise<IInventoryResult> {
+    const lock = this.getInventoryLock(ownerId);
 
-    if (!inventory) {
-      return {
-        success: false,
-        message: `Inventory not found for ${ownerId}`,
-      };
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const inventory = this.inventories.get(ownerId);
+
+          if (!inventory) {
+            return {
+              success: false,
+              message: `Inventory not found for ${ownerId}`,
+            };
+          }
+
+          const item = inventory.equippedItems.get(slot);
+
+          if (!item) {
+            return {
+              success: false,
+              message: `No item equipped in ${slot}`,
+            };
+          }
+
+          item.equipped = false;
+          item.equipSlot = undefined;
+          inventory.equippedItems.delete(slot);
+          inventory.updatedAt = new Date().toISOString();
+
+          await this.eventEmitter.emit(
+            GameEventType.CUSTOM_EVENT,
+            {
+              action: 'item_unequipped',
+              ownerId,
+              itemId: item.itemId,
+              slot,
+            },
+            inventory.gameId,
+          );
+
+          this.logger.log(`${ownerId} unequipped ${item.itemId} from ${slot}`);
+
+          return {
+            success: true,
+            message: `Unequipped ${item.itemId} from ${slot}`,
+            item,
+          };
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(
+          `Lock timeout unequipping item in inventory ${ownerId}`,
+        );
+        return {
+          success: false,
+          message: 'Operation timed out, please try again',
+        };
+      }
+      throw error;
     }
-
-    const item = inventory.equippedItems.get(slot);
-
-    if (!item) {
-      return {
-        success: false,
-        message: `No item equipped in ${slot}`,
-      };
-    }
-
-    item.equipped = false;
-    item.equipSlot = undefined;
-    inventory.equippedItems.delete(slot);
-    inventory.updatedAt = new Date().toISOString();
-
-    await this.eventEmitter.emit(
-      GameEventType.CUSTOM_EVENT,
-      {
-        action: 'item_unequipped',
-        ownerId,
-        itemId: item.itemId,
-        slot,
-      },
-      inventory.gameId,
-    );
-
-    this.logger.log(`${ownerId} unequipped ${item.itemId} from ${slot}`);
-
-    return {
-      success: true,
-      message: `Unequipped ${item.itemId} from ${slot}`,
-      item,
-    };
   }
 
   /**
    * Transfer item between inventories
+   * THREAD-SAFE: Acquires locks on BOTH inventories in sorted order to prevent deadlocks
+   *
+   * DEADLOCK PREVENTION:
+   * - Always acquire locks in sorted order (by ownerId)
+   * - This ensures consistent lock ordering across all transfer operations
+   * - Example: Transfer A->B and B->A both acquire locks in [A, B] order
    */
   async transferItem(
     fromOwnerId: string,
@@ -415,98 +551,140 @@ export class InventoryManagerService {
     itemInstanceId: string,
     quantity: number = 1,
   ): Promise<IInventoryResult> {
-    const fromInventory = this.inventories.get(fromOwnerId);
-    const toInventory = this.inventories.get(toOwnerId);
+    // Acquire locks in sorted order to prevent deadlocks
+    const [firstOwner, secondOwner] = [fromOwnerId, toOwnerId].sort();
+    const firstLock = this.getInventoryLock(firstOwner);
+    const secondLock = this.getInventoryLock(secondOwner);
 
-    if (!fromInventory) {
-      return {
-        success: false,
-        message: `Source inventory not found`,
-      };
-    }
+    try {
+      return await withTimeout(firstLock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          return await withTimeout(secondLock, this.LOCK_TIMEOUT).runExclusive(
+            async () => {
+              const fromInventory = this.inventories.get(fromOwnerId);
+              const toInventory = this.inventories.get(toOwnerId);
 
-    if (!toInventory) {
-      return {
-        success: false,
-        message: `Destination inventory not found`,
-      };
-    }
+              if (!fromInventory) {
+                return {
+                  success: false,
+                  message: `Source inventory not found`,
+                };
+              }
 
-    const item = fromInventory.items.find((item) => item.instanceId === itemInstanceId);
+              if (!toInventory) {
+                return {
+                  success: false,
+                  message: `Destination inventory not found`,
+                };
+              }
 
-    if (!item) {
-      return {
-        success: false,
-        message: 'Item not found in source inventory',
-      };
-    }
+              const item = fromInventory.items.find(
+                (item) => item.instanceId === itemInstanceId,
+              );
 
-    if (item.equipped) {
-      return {
-        success: false,
-        message: 'Cannot transfer equipped items',
-      };
-    }
+              if (!item) {
+                return {
+                  success: false,
+                  message: 'Item not found in source inventory',
+                };
+              }
 
-    // Store original item state for potential rollback (deep copy to avoid mutation)
-    const originalItem = JSON.parse(JSON.stringify(item));
-    const originalQuantity = item.quantity;
+              if (item.equipped) {
+                return {
+                  success: false,
+                  message: 'Cannot transfer equipped items',
+                };
+              }
 
-    // Remove from source
-    const removeResult = await this.removeItem(fromOwnerId, itemInstanceId, quantity);
+              // Store original item state for potential rollback (deep copy to avoid mutation)
+              const originalItem = JSON.parse(JSON.stringify(item));
+              const originalQuantity = item.quantity;
 
-    if (!removeResult.success) {
-      return removeResult;
-    }
+              // Remove from source
+              const removeResult = await this.removeItem(
+                fromOwnerId,
+                itemInstanceId,
+                quantity,
+              );
 
-    // Add to destination
-    const addResult = await this.addItem(toOwnerId, item.itemId, quantity, {
-      weight: item.weight,
-      maxStack: item.maxStack,
-      metadata: item.metadata,
-    });
+              if (!removeResult.success) {
+                return removeResult;
+              }
 
-    if (!addResult.success) {
-      // BUG FIX #4: Rollback - restore original item state
-      // Find the item in the inventory (it may have reduced quantity or been completely removed)
-      const itemIndex = fromInventory.items.findIndex(i => i.instanceId === itemInstanceId);
+              // Add to destination
+              const addResult = await this.addItem(
+                toOwnerId,
+                item.itemId,
+                quantity,
+                {
+                  weight: item.weight,
+                  maxStack: item.maxStack,
+                  metadata: item.metadata,
+                },
+              );
 
-      if (itemIndex >= 0) {
-        // Item still exists (partial removal) - restore original quantity
-        fromInventory.items[itemIndex] = originalItem;
-      } else {
-        // Item was completely removed - add it back
-        fromInventory.items.push(originalItem);
+              if (!addResult.success) {
+                // BUG FIX #4: Rollback - restore original item state
+                // Find the item in the inventory (it may have reduced quantity or been completely removed)
+                const itemIndex = fromInventory.items.findIndex(
+                  (i) => i.instanceId === itemInstanceId,
+                );
+
+                if (itemIndex >= 0) {
+                  // Item still exists (partial removal) - restore original quantity
+                  fromInventory.items[itemIndex] = originalItem;
+                } else {
+                  // Item was completely removed - add it back
+                  fromInventory.items.push(originalItem);
+                }
+
+                fromInventory.currentWeight +=
+                  (originalItem.weight || 0) * quantity;
+                fromInventory.updatedAt = new Date().toISOString();
+
+                return {
+                  success: false,
+                  message: `Transfer failed: ${addResult.message}`,
+                };
+              }
+
+              await this.eventEmitter.emit(
+                GameEventType.CUSTOM_EVENT,
+                {
+                  action: 'item_transferred',
+                  fromOwnerId,
+                  toOwnerId,
+                  itemId: item.itemId,
+                  quantity,
+                },
+                fromInventory.gameId,
+              );
+
+              this.logger.log(
+                `Transferred ${quantity} ${item.itemId} from ${fromOwnerId} to ${toOwnerId}`,
+              );
+
+              return {
+                success: true,
+                message: `Transferred ${quantity} ${item.itemId}`,
+                item: addResult.item,
+              };
+            },
+          );
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(
+          `Lock timeout transferring item between inventories ${fromOwnerId} -> ${toOwnerId}`,
+        );
+        return {
+          success: false,
+          message: 'Operation timed out, please try again',
+        };
       }
-
-      fromInventory.currentWeight += (originalItem.weight || 0) * quantity;
-      fromInventory.updatedAt = new Date().toISOString();
-
-      return {
-        success: false,
-        message: `Transfer failed: ${addResult.message}`,
-      };
+      throw error;
     }
-
-    await this.eventEmitter.emit(
-      GameEventType.CUSTOM_EVENT,
-      {
-        action: 'item_transferred',
-        fromOwnerId,
-        toOwnerId,
-        itemId: item.itemId,
-        quantity,
-      },
-      fromInventory.gameId,
-    );
-
-    this.logger.log(`Transferred ${quantity} ${item.itemId} from ${fromOwnerId} to ${toOwnerId}`);
-
-    return {
-      success: true,
-      message: `Transferred ${quantity} ${item.itemId}`,
-      item: addResult.item,
-    };
   }
 
   /**
@@ -524,9 +702,12 @@ export class InventoryManagerService {
     if (filter) {
       items = items.filter((item) => {
         if (filter.itemId && item.itemId !== filter.itemId) return false;
-        if (filter.equipped !== undefined && item.equipped !== filter.equipped) return false;
-        if (filter.minWeight && (item.weight || 0) < filter.minWeight) return false;
-        if (filter.maxWeight && (item.weight || 0) > filter.maxWeight) return false;
+        if (filter.equipped !== undefined && item.equipped !== filter.equipped)
+          return false;
+        if (filter.minWeight && (item.weight || 0) < filter.minWeight)
+          return false;
+        if (filter.maxWeight && (item.weight || 0) > filter.maxWeight)
+          return false;
         if (filter.customFilter && !filter.customFilter(item)) return false;
         return true;
       });
@@ -538,7 +719,11 @@ export class InventoryManagerService {
   /**
    * Sort inventory items
    */
-  sortItems(ownerId: string, criteria: SortCriteria, order: SortOrder = SortOrder.ASC): void {
+  sortItems(
+    ownerId: string,
+    criteria: SortCriteria,
+    order: SortOrder = SortOrder.ASC,
+  ): void {
     const inventory = this.inventories.get(ownerId);
 
     if (!inventory) {
@@ -579,7 +764,10 @@ export class InventoryManagerService {
       return undefined;
     }
 
-    const totalItems = inventory.items.reduce((sum, item) => sum + item.quantity, 0);
+    const totalItems = inventory.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
     const uniqueItems = inventory.items.length;
     const equippedItems = inventory.equippedItems.size;
     const maxSlots = inventory.config.maxSlots || 0;
@@ -594,7 +782,8 @@ export class InventoryManagerService {
       maxSlots,
       equippedItems,
       availableSlots: maxSlots - uniqueItems,
-      weightPercentage: maxWeight > 0 ? (inventory.currentWeight / maxWeight) * 100 : 0,
+      weightPercentage:
+        maxWeight > 0 ? (inventory.currentWeight / maxWeight) * 100 : 0,
     };
   }
 

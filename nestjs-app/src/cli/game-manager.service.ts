@@ -229,7 +229,7 @@ export class GameManagerService {
           break;
 
         case 'player':
-          entity = this.playerService.createPlayer({
+          entity = await this.playerService.createPlayer({
             ...baseEntity,
             health: 100,
             level: 1,
@@ -501,10 +501,14 @@ export class GameManagerService {
       if (result.success) {
         this.logger.log(`Auto-exported game ${gameId} to files`);
       } else {
-        this.logger.warn(`Auto-export failed for game ${gameId}: ${result.message}`);
+        this.logger.warn(
+          `Auto-export failed for game ${gameId}: ${result.message}`,
+        );
       }
     } catch (error) {
-      this.logger.warn(`Auto-export error for game ${gameId}: ${error.message}`);
+      this.logger.warn(
+        `Auto-export error for game ${gameId}: ${error.message}`,
+      );
       // Don't throw - export failure shouldn't break the main operation
     }
   }
@@ -548,24 +552,15 @@ export class GameManagerService {
         try {
           switch (entity.type) {
             case 'room':
-              await this.roomService.saveRoomVersion(
-                entity.id,
-                fullReason,
-              );
+              await this.roomService.saveRoomVersion(entity.id, fullReason);
               savedCount++;
               break;
             case 'object':
-              await this.objectService.saveObjectVersion(
-                entity.id,
-                fullReason,
-              );
+              await this.objectService.saveObjectVersion(entity.id, fullReason);
               savedCount++;
               break;
             case 'player':
-              await this.playerService.savePlayerVersion(
-                entity.id,
-                fullReason,
-              );
+              await this.playerService.savePlayerVersion(entity.id, fullReason);
               savedCount++;
               break;
           }

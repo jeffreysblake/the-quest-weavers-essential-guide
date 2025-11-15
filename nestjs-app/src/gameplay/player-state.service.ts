@@ -145,9 +145,7 @@ export class PlayerStateService {
         gameId,
       );
 
-      this.logger.log(
-        `Saved player state: ${playerId} in slot ${slotNumber}`,
-      );
+      this.logger.log(`Saved player state: ${playerId} in slot ${slotNumber}`);
 
       return saveState;
     } catch (error) {
@@ -218,10 +216,7 @@ export class PlayerStateService {
   /**
    * Get all save slots for a player
    */
-  async getSaveSlots(
-    gameId: string,
-    playerId: string,
-  ): Promise<ISaveSlot[]> {
+  async getSaveSlots(gameId: string, playerId: string): Promise<ISaveSlot[]> {
     const slots: ISaveSlot[] = [];
 
     for (let i = 1; i <= this.maxSaveSlots; i++) {

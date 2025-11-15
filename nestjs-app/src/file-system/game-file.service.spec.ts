@@ -70,7 +70,10 @@ describe('GameFileService', () => {
         { provide: ObjectService, useValue: mockObjectService },
         { provide: PlayerService, useValue: mockPlayerService },
         { provide: ValidationService, useValue: mockValidationService },
-        { provide: GameLogicValidatorService, useValue: mockGameLogicValidatorService },
+        {
+          provide: GameLogicValidatorService,
+          useValue: mockGameLogicValidatorService,
+        },
       ],
     }).compile();
 

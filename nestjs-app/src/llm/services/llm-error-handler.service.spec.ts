@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LLMErrorHandlerService, LLMError, RetryConfig } from './llm-error-handler.service';
+import {
+  LLMErrorHandlerService,
+  LLMError,
+  RetryConfig,
+} from './llm-error-handler.service';
 
 describe('LLMErrorHandlerService', () => {
   let service: LLMErrorHandlerService;
@@ -75,7 +79,9 @@ describe('LLMErrorHandlerService', () => {
 
         expect(llmError.type).toBe('timeout');
         expect(llmError.retryable).toBe(true);
-        expect(llmError.suggestedAction).toBe('Reduce request complexity or increase timeout');
+        expect(llmError.suggestedAction).toBe(
+          'Reduce request complexity or increase timeout',
+        );
       });
 
       it('should classify "timed out" message as timeout', () => {
@@ -113,7 +119,9 @@ describe('LLMErrorHandlerService', () => {
 
         expect(llmError.type).toBe('validation');
         expect(llmError.retryable).toBe(false);
-        expect(llmError.suggestedAction).toBe('Check request format and parameters');
+        expect(llmError.suggestedAction).toBe(
+          'Check request format and parameters',
+        );
       });
 
       it('should classify invalid parameter error', () => {
@@ -132,7 +140,9 @@ describe('LLMErrorHandlerService', () => {
 
         expect(llmError.type).toBe('parsing');
         expect(llmError.retryable).toBe(true);
-        expect(llmError.suggestedAction).toBe('Retry or adjust prompt for better structure');
+        expect(llmError.suggestedAction).toBe(
+          'Retry or adjust prompt for better structure',
+        );
       });
 
       it('should classify JSON error as parsing error', () => {
@@ -151,7 +161,9 @@ describe('LLMErrorHandlerService', () => {
 
         expect(llmError.type).toBe('provider');
         expect(llmError.retryable).toBe(true);
-        expect(llmError.suggestedAction).toBe('Try again later or use fallback provider');
+        expect(llmError.suggestedAction).toBe(
+          'Try again later or use fallback provider',
+        );
       });
 
       it('should classify 500 status as provider error', () => {
@@ -160,7 +172,9 @@ describe('LLMErrorHandlerService', () => {
 
         expect(llmError.type).toBe('provider');
         expect(llmError.retryable).toBe(true);
-        expect(llmError.suggestedAction).toBe('Server error - retry after delay');
+        expect(llmError.suggestedAction).toBe(
+          'Server error - retry after delay',
+        );
       });
 
       it('should classify 502 status as provider error', () => {
@@ -278,7 +292,9 @@ describe('LLMErrorHandlerService', () => {
 
     describe('Failed Retry Scenarios', () => {
       it('should fail after max retries exhausted', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Network error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Network error'));
 
         try {
           await service.withRetry(operation, {
@@ -294,7 +310,9 @@ describe('LLMErrorHandlerService', () => {
       });
 
       it('should track failed retry stats', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Network error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Network error'));
 
         const initialStats = service.getErrorStats();
         const initialFailed = initialStats.failedRetries;
@@ -314,7 +332,9 @@ describe('LLMErrorHandlerService', () => {
       });
 
       it('should enhance error with attempt count', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Network error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Network error'));
 
         try {
           await service.withRetry(operation, {
@@ -331,7 +351,9 @@ describe('LLMErrorHandlerService', () => {
 
     describe('Non-Retryable Errors', () => {
       it('should fail immediately for validation errors', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Validation failed'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Validation failed'));
 
         try {
           await service.withRetry(operation);
@@ -344,7 +366,9 @@ describe('LLMErrorHandlerService', () => {
       });
 
       it('should fail immediately for quota errors', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Quota exceeded'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Quota exceeded'));
 
         try {
           await service.withRetry(operation);
@@ -357,7 +381,9 @@ describe('LLMErrorHandlerService', () => {
       });
 
       it('should not retry internal errors by default', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Unknown error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Unknown error'));
 
         try {
           await service.withRetry(operation);
@@ -423,7 +449,9 @@ describe('LLMErrorHandlerService', () => {
 
     describe('Custom Retry Configuration', () => {
       it('should respect custom maxRetries', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Network error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Network error'));
 
         try {
           await service.withRetry(operation, {
@@ -439,7 +467,9 @@ describe('LLMErrorHandlerService', () => {
       });
 
       it('should use custom retryable error types', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Custom error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Custom error'));
 
         const config: Partial<RetryConfig> = {
           retryableErrors: ['internal'],
@@ -479,10 +509,12 @@ describe('LLMErrorHandlerService', () => {
         const originalSetTimeout = global.setTimeout;
 
         // Spy on setTimeout to capture delays
-        jest.spyOn(global, 'setTimeout').mockImplementation((callback: any, delay: number) => {
-          delays.push(delay);
-          return originalSetTimeout(callback, 0) as any;
-        });
+        jest
+          .spyOn(global, 'setTimeout')
+          .mockImplementation((callback: any, delay: number) => {
+            delays.push(delay);
+            return originalSetTimeout(callback, 0) as any;
+          });
 
         const operation = jest
           .fn()
@@ -507,7 +539,6 @@ describe('LLMErrorHandlerService', () => {
   });
 
   describe('Circuit Breaker - createCircuitBreaker', () => {
-
     describe('Closed State', () => {
       it('should allow operations in closed state', async () => {
         const operation = jest.fn().mockResolvedValue('success');
@@ -537,7 +568,9 @@ describe('LLMErrorHandlerService', () => {
 
     describe('Closed to Open Transition', () => {
       it('should open after threshold failures', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Service error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Service error'));
         const circuitBreaker = service.createCircuitBreaker(operation, {
           failureThreshold: 3,
           resetTimeout: 60000,
@@ -550,11 +583,15 @@ describe('LLMErrorHandlerService', () => {
         await expect(circuitBreaker()).rejects.toThrow('Service error');
 
         // Next call should fail with circuit open
-        await expect(circuitBreaker()).rejects.toThrow('Circuit breaker is open');
+        await expect(circuitBreaker()).rejects.toThrow(
+          'Circuit breaker is open',
+        );
       });
 
       it('should track failures correctly', async () => {
-        const operation = jest.fn().mockRejectedValue(new Error('Service error'));
+        const operation = jest
+          .fn()
+          .mockRejectedValue(new Error('Service error'));
         const circuitBreaker = service.createCircuitBreaker(operation, {
           failureThreshold: 5,
           resetTimeout: 60000,
@@ -570,7 +607,9 @@ describe('LLMErrorHandlerService', () => {
         await expect(circuitBreaker()).rejects.toThrow('Service error');
 
         // Verify circuit is open
-        await expect(circuitBreaker()).rejects.toThrow('Circuit breaker is open');
+        await expect(circuitBreaker()).rejects.toThrow(
+          'Circuit breaker is open',
+        );
       });
     });
 
@@ -595,7 +634,9 @@ describe('LLMErrorHandlerService', () => {
         await expect(circuitBreaker()).rejects.toThrow();
         await expect(circuitBreaker()).rejects.toThrow();
         await expect(circuitBreaker()).rejects.toThrow();
-        await expect(circuitBreaker()).rejects.toThrow('Circuit breaker is open');
+        await expect(circuitBreaker()).rejects.toThrow(
+          'Circuit breaker is open',
+        );
 
         // Advance time past reset timeout
         jest.advanceTimersByTime(60001);
@@ -620,13 +661,17 @@ describe('LLMErrorHandlerService', () => {
         // Open the circuit
         await expect(circuitBreaker()).rejects.toThrow('Error');
         await expect(circuitBreaker()).rejects.toThrow('Error');
-        await expect(circuitBreaker()).rejects.toThrow('Circuit breaker is open');
+        await expect(circuitBreaker()).rejects.toThrow(
+          'Circuit breaker is open',
+        );
 
         // Advance time but not enough
         jest.advanceTimersByTime(30000);
 
         // Should still be open
-        await expect(circuitBreaker()).rejects.toThrow('Circuit breaker is open');
+        await expect(circuitBreaker()).rejects.toThrow(
+          'Circuit breaker is open',
+        );
 
         jest.useRealTimers();
       });
@@ -802,7 +847,9 @@ describe('LLMErrorHandlerService', () => {
         await expect(circuitBreaker()).rejects.toThrow('Error');
 
         // Verify it's open
-        await expect(circuitBreaker()).rejects.toThrow('Circuit breaker is open');
+        await expect(circuitBreaker()).rejects.toThrow(
+          'Circuit breaker is open',
+        );
 
         // Advance past monitoring period
         jest.advanceTimersByTime(300001);
@@ -905,7 +952,9 @@ describe('LLMErrorHandlerService', () => {
       });
 
       const finalStats = service.getErrorStats();
-      expect(finalStats.successfulRetries).toBe(initialStats.successfulRetries + 1);
+      expect(finalStats.successfulRetries).toBe(
+        initialStats.successfulRetries + 1,
+      );
     });
 
     it('should track failed retries', async () => {
@@ -949,7 +998,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('The AI service is temporarily unavailable. Please try again in a few moments.');
+      expect(message).toBe(
+        'The AI service is temporarily unavailable. Please try again in a few moments.',
+      );
     });
 
     it('should return friendly message for rate limit errors', () => {
@@ -961,7 +1012,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('Too many requests. Please wait a moment before trying again.');
+      expect(message).toBe(
+        'Too many requests. Please wait a moment before trying again.',
+      );
     });
 
     it('should return friendly message for quota errors', () => {
@@ -973,7 +1026,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('AI service quota exceeded. Please contact an administrator.');
+      expect(message).toBe(
+        'AI service quota exceeded. Please contact an administrator.',
+      );
     });
 
     it('should return friendly message for validation errors', () => {
@@ -985,7 +1040,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('The request format is invalid. Please check your input and try again.');
+      expect(message).toBe(
+        'The request format is invalid. Please check your input and try again.',
+      );
     });
 
     it('should return friendly message for timeout errors', () => {
@@ -997,7 +1054,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('The request took too long to process. Please try again with a shorter prompt.');
+      expect(message).toBe(
+        'The request took too long to process. Please try again with a shorter prompt.',
+      );
     });
 
     it('should return friendly message for network errors', () => {
@@ -1009,7 +1068,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('Network connection issue. Please check your internet connection.');
+      expect(message).toBe(
+        'Network connection issue. Please check your internet connection.',
+      );
     });
 
     it('should return friendly message for parsing errors', () => {
@@ -1021,7 +1082,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('Failed to process the AI response. Please try again.');
+      expect(message).toBe(
+        'Failed to process the AI response. Please try again.',
+      );
     });
 
     it('should return friendly message for internal errors', () => {
@@ -1033,7 +1096,9 @@ describe('LLMErrorHandlerService', () => {
       };
 
       const message = service.getUserFriendlyMessage(error);
-      expect(message).toBe('An unexpected error occurred. Please try again or contact support.');
+      expect(message).toBe(
+        'An unexpected error occurred. Please try again or contact support.',
+      );
     });
   });
 
@@ -1063,7 +1128,9 @@ describe('LLMErrorHandlerService', () => {
       const suggestions = service.getRecoverySuggestions(error);
       expect(suggestions).toContain('Wait before making another request');
       expect(suggestions).toContain('Reduce the frequency of your requests');
-      expect(suggestions).toContain('Consider upgrading your plan for higher limits');
+      expect(suggestions).toContain(
+        'Consider upgrading your plan for higher limits',
+      );
     });
 
     it('should provide suggestions for validation errors', () => {
@@ -1077,7 +1144,9 @@ describe('LLMErrorHandlerService', () => {
       const suggestions = service.getRecoverySuggestions(error);
       expect(suggestions).toContain('Check your input format');
       expect(suggestions).toContain('Ensure all required fields are provided');
-      expect(suggestions).toContain('Verify that values are within acceptable ranges');
+      expect(suggestions).toContain(
+        'Verify that values are within acceptable ranges',
+      );
     });
 
     it('should provide suggestions for timeout errors', () => {
@@ -1105,7 +1174,9 @@ describe('LLMErrorHandlerService', () => {
       const suggestions = service.getRecoverySuggestions(error);
       expect(suggestions).toContain('Check your internet connection');
       expect(suggestions).toContain('Try again in a few moments');
-      expect(suggestions).toContain('Contact your network administrator if the problem persists');
+      expect(suggestions).toContain(
+        'Contact your network administrator if the problem persists',
+      );
     });
 
     it('should provide default suggestions for other errors', () => {
@@ -1266,9 +1337,14 @@ describe('LLMErrorHandlerService', () => {
     });
 
     it('should handle concurrent error handling', async () => {
-      const errors = Array.from({ length: 50 }, (_, i) => new Error(`Concurrent error ${i}`));
+      const errors = Array.from(
+        { length: 50 },
+        (_, i) => new Error(`Concurrent error ${i}`),
+      );
 
-      await Promise.all(errors.map(error => Promise.resolve(service.handleError(error))));
+      await Promise.all(
+        errors.map((error) => Promise.resolve(service.handleError(error))),
+      );
 
       const stats = service.getErrorStats();
       expect(stats.totalErrors).toBe(50);
@@ -1300,7 +1376,9 @@ describe('LLMErrorHandlerService', () => {
       service.handleError(new Error('Direct error'));
 
       // Error from withRetry (non-retryable error - fails immediately, no timers)
-      const operation = jest.fn().mockRejectedValue(new Error('Validation failed'));
+      const operation = jest
+        .fn()
+        .mockRejectedValue(new Error('Validation failed'));
 
       try {
         await service.withRetry(operation, { maxRetries: 1 });

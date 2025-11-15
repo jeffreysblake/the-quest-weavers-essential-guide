@@ -585,7 +585,9 @@ describe('PhysicsService - Combat System Tests', () => {
 
       // Even if somehow healing happened, health shouldn't exceed max
       const updatedTarget = objectService.getObject(target.id);
-      expect(updatedTarget?.health).toBeLessThanOrEqual(updatedTarget?.maxHealth || 50);
+      expect(updatedTarget?.health).toBeLessThanOrEqual(
+        updatedTarget?.maxHealth || 50,
+      );
     });
 
     it('should handle object with undefined health values', () => {

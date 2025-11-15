@@ -15,6 +15,7 @@ import {
 } from '../database/database.interfaces';
 import { IRoom } from '../entity/room.interface';
 import { IObject } from '../entity/object.interface';
+import Database from 'better-sqlite3';
 // Removed unused import - using NPCData interface instead
 
 @Injectable()
@@ -99,10 +100,20 @@ export class GameFileService {
     const configPath = `${this.fileScannerService.getGamesDirectory()}/${gameId}/game-config.json`;
     const content = await this.fileScannerService.getFileContent(configPath);
 
+    // RESOURCE LIMIT: Max file size 10MB for game-config.json
+    const MAX_CONFIG_SIZE = 10 * 1024 * 1024; // 10MB
+    const fileSize = Buffer.byteLength(content, 'utf8');
+    if (fileSize > MAX_CONFIG_SIZE) {
+      throw new Error(
+        `Game config file too large: ${(fileSize / 1024 / 1024).toFixed(2)}MB exceeds maximum of 10MB`,
+      );
+    }
+
     const rawConfig = JSON.parse(content);
 
     // Validate against JSON schema
-    const validationResult = this.validationService.validateGameConfig(rawConfig);
+    const validationResult =
+      this.validationService.validateGameConfig(rawConfig);
     if (!validationResult.isValid) {
       throw new Error(
         `Game config validation failed: ${validationResult.errors.join(', ')}`,
@@ -140,6 +151,17 @@ export class GameFileService {
           const roomPath = `${roomsDir}/${roomFile}`;
           const content =
             await this.fileScannerService.getFileContent(roomPath);
+
+          // RESOURCE LIMIT: Max file size 5MB for room JSON files
+          const MAX_ROOM_SIZE = 5 * 1024 * 1024; // 5MB
+          const fileSize = Buffer.byteLength(content, 'utf8');
+          if (fileSize > MAX_ROOM_SIZE) {
+            this.logger.error(
+              `Room file ${roomFile} too large: ${(fileSize / 1024 / 1024).toFixed(2)}MB exceeds maximum of 5MB`,
+            );
+            continue; // Skip oversized room
+          }
+
           const rawRoom = JSON.parse(content);
 
           // Validate against JSON schema
@@ -197,10 +219,22 @@ export class GameFileService {
           const objectPath = `${objectsDir}/${objectFile}`;
           const content =
             await this.fileScannerService.getFileContent(objectPath);
+
+          // RESOURCE LIMIT: Max file size 5MB for object JSON files
+          const MAX_OBJECT_SIZE = 5 * 1024 * 1024; // 5MB
+          const fileSize = Buffer.byteLength(content, 'utf8');
+          if (fileSize > MAX_OBJECT_SIZE) {
+            this.logger.error(
+              `Object file ${objectFile} too large: ${(fileSize / 1024 / 1024).toFixed(2)}MB exceeds maximum of 5MB`,
+            );
+            continue; // Skip oversized object
+          }
+
           const rawObject = JSON.parse(content);
 
           // Validate against JSON schema
-          const validationResult = this.validationService.validateObject(rawObject);
+          const validationResult =
+            this.validationService.validateObject(rawObject);
           if (!validationResult.isValid) {
             this.logger.error(
               `Object validation failed for ${objectFile}: ${validationResult.errors.join(', ')}`,
@@ -263,6 +297,17 @@ export class GameFileService {
         try {
           const npcPath = `${npcsDir}/${npcFile}`;
           const content = await this.fileScannerService.getFileContent(npcPath);
+
+          // RESOURCE LIMIT: Max file size 5MB for NPC JSON files
+          const MAX_NPC_SIZE = 5 * 1024 * 1024; // 5MB
+          const fileSize = Buffer.byteLength(content, 'utf8');
+          if (fileSize > MAX_NPC_SIZE) {
+            this.logger.error(
+              `NPC file ${npcFile} too large: ${(fileSize / 1024 / 1024).toFixed(2)}MB exceeds maximum of 5MB`,
+            );
+            continue; // Skip oversized NPC
+          }
+
           const rawNpc = JSON.parse(content);
 
           // Validate against JSON schema
@@ -356,9 +401,28 @@ export class GameFileService {
     npcs: NPCData[],
     connections: RoomConnection[],
   ): void {
-    this.databaseService.transaction((db) => {
-      // Save game config
-      if (gameData) {
+    // RESOURCE LIMIT: Max 1000 entities per transaction, split large operations into batches
+    const BATCH_SIZE = 1000;
+
+    // Helper function to process entities in batches
+    const processBatches = <T>(
+      entities: T[],
+      processor: (batch: T[], db: Database.Database) => void,
+    ) => {
+      for (let i = 0; i < entities.length; i += BATCH_SIZE) {
+        const batch = entities.slice(i, i + BATCH_SIZE);
+        this.databaseService.transaction((db) => {
+          processor(batch, db);
+        });
+        this.logger.log(
+          `Processed batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(entities.length / BATCH_SIZE)}`,
+        );
+      }
+    };
+
+    // Save game config first (always single item)
+    if (gameData) {
+      this.databaseService.transaction((db) => {
         const insertGame = db.prepare(`
           INSERT OR REPLACE INTO games (id, name, description, version, created_at, updated_at, is_active)
           VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -382,149 +446,180 @@ export class GameFileService {
           'file_loader',
           'Loaded from files',
         );
-      }
+      });
+    }
 
-      // Save rooms
-      const insertRoom = db.prepare(`
-        INSERT OR REPLACE INTO rooms (
-          id, game_id, name, description, long_description, position_x, position_y, position_z,
-          width, height, depth, environment_data, version, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
+    // Save rooms in batches
+    if (rooms.length > 0) {
+      this.logger.log(
+        `Saving ${rooms.length} rooms in batches of ${BATCH_SIZE}...`,
+      );
+      processBatches(rooms, (batch, db) => {
+        const insertRoom = db.prepare(`
+          INSERT OR REPLACE INTO rooms (
+            id, game_id, name, description, long_description, position_x, position_y, position_z,
+            width, height, depth, environment_data, version, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
 
-      for (const room of rooms) {
-        insertRoom.run(
-          room.id,
-          room.gameId,
-          room.name,
-          room.description,
-          room.longDescription,
-          room.position.x,
-          room.position.y,
-          room.position.z,
-          room.width,
-          room.height,
-          room.depth,
-          JSON.stringify(room.environmentData),
-          room.version,
-          room.createdAt,
-        );
+        for (const room of batch) {
+          insertRoom.run(
+            room.id,
+            room.gameId,
+            room.name,
+            room.description,
+            room.longDescription,
+            room.position.x,
+            room.position.y,
+            room.position.z,
+            room.width,
+            room.height,
+            room.depth,
+            JSON.stringify(room.environmentData),
+            room.version,
+            room.createdAt,
+          );
 
-        this.databaseService.saveVersion(
-          'room',
-          room.id,
-          room,
-          'file_loader',
-          'Loaded from files',
-        );
-      }
+          this.databaseService.saveVersion(
+            'room',
+            room.id,
+            room,
+            'file_loader',
+            'Loaded from files',
+          );
+        }
+      });
+    }
 
-      // Save objects
-      const insertObject = db.prepare(`
-        INSERT OR REPLACE INTO objects (
-          id, game_id, name, description, object_type, position_x, position_y, position_z,
-          material, material_properties, weight, health, max_health, is_portable, is_container,
-          can_contain, container_capacity, state_data, properties, version, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
+    // Save objects in batches
+    if (objects.length > 0) {
+      this.logger.log(
+        `Saving ${objects.length} objects in batches of ${BATCH_SIZE}...`,
+      );
+      processBatches(objects, (batch, db) => {
+        const insertObject = db.prepare(`
+          INSERT OR REPLACE INTO objects (
+            id, game_id, name, description, object_type, position_x, position_y, position_z,
+            material, material_properties, weight, health, max_health, is_portable, is_container,
+            can_contain, container_capacity, state_data, properties, version, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
 
-      for (const object of objects) {
-        insertObject.run(
-          object.id,
-          object.gameId,
-          object.name,
-          object.description,
-          object.objectType,
-          object.position.x,
-          object.position.y,
-          object.position.z,
-          object.material,
-          JSON.stringify(object.materialProperties),
-          object.weight,
-          object.health,
-          object.maxHealth,
-          object.isPortable,
-          object.isContainer,
-          object.canContain,
-          object.containerCapacity,
-          JSON.stringify(object.stateData),
-          JSON.stringify(object.properties),
-          object.version,
-          object.createdAt,
-        );
+        for (const object of batch) {
+          insertObject.run(
+            object.id,
+            object.gameId,
+            object.name,
+            object.description,
+            object.objectType,
+            object.position.x,
+            object.position.y,
+            object.position.z,
+            object.material,
+            JSON.stringify(object.materialProperties),
+            object.weight,
+            object.health,
+            object.maxHealth,
+            object.isPortable,
+            object.isContainer,
+            object.canContain,
+            object.containerCapacity,
+            JSON.stringify(object.stateData),
+            JSON.stringify(object.properties),
+            object.version,
+            object.createdAt,
+          );
 
-        this.databaseService.saveVersion(
-          'object',
-          object.id,
-          object,
-          'file_loader',
-          'Loaded from files',
-        );
-      }
+          this.databaseService.saveVersion(
+            'object',
+            object.id,
+            object,
+            'file_loader',
+            'Loaded from files',
+          );
+        }
+      });
+    }
 
-      // Save NPCs
-      const insertNpc = db.prepare(`
-        INSERT OR REPLACE INTO npcs (
-          id, game_id, name, description, npc_type, position_x, position_y, position_z,
-          health, max_health, level, experience, inventory_data, dialogue_tree_data,
-          behavior_config, attributes, version, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
+    // Save NPCs in batches
+    if (npcs.length > 0) {
+      this.logger.log(
+        `Saving ${npcs.length} NPCs in batches of ${BATCH_SIZE}...`,
+      );
+      processBatches(npcs, (batch, db) => {
+        const insertNpc = db.prepare(`
+          INSERT OR REPLACE INTO npcs (
+            id, game_id, name, description, npc_type, position_x, position_y, position_z,
+            health, max_health, level, experience, inventory_data, dialogue_tree_data,
+            behavior_config, attributes, version, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
 
-      for (const npc of npcs) {
-        insertNpc.run(
-          npc.id,
-          npc.gameId,
-          npc.name,
-          npc.description,
-          npc.npcType,
-          npc.position.x,
-          npc.position.y,
-          npc.position.z,
-          npc.health,
-          npc.maxHealth,
-          npc.level,
-          npc.experience,
-          JSON.stringify(npc.inventoryData),
-          JSON.stringify(npc.dialogueTreeData),
-          JSON.stringify(npc.behaviorConfig),
-          JSON.stringify(npc.attributes),
-          npc.version,
-          npc.createdAt,
-        );
+        for (const npc of batch) {
+          insertNpc.run(
+            npc.id,
+            npc.gameId,
+            npc.name,
+            npc.description,
+            npc.npcType,
+            npc.position.x,
+            npc.position.y,
+            npc.position.z,
+            npc.health,
+            npc.maxHealth,
+            npc.level,
+            npc.experience,
+            JSON.stringify(npc.inventoryData),
+            JSON.stringify(npc.dialogueTreeData),
+            JSON.stringify(npc.behaviorConfig),
+            JSON.stringify(npc.attributes),
+            npc.version,
+            npc.createdAt,
+          );
 
-        this.databaseService.saveVersion(
-          'npc',
-          npc.id,
-          npc,
-          'file_loader',
-          'Loaded from files',
-        );
-      }
+          this.databaseService.saveVersion(
+            'npc',
+            npc.id,
+            npc,
+            'file_loader',
+            'Loaded from files',
+          );
+        }
+      });
+    }
 
-      // Clear existing connections for this game
-      db.prepare(
-        'DELETE FROM room_connections WHERE room_id IN (SELECT id FROM rooms WHERE game_id = ?)',
-      ).run(gameData?.id);
+    // Save connections in batches
+    if (connections.length > 0) {
+      this.logger.log(
+        `Saving ${connections.length} connections in batches of ${BATCH_SIZE}...`,
+      );
 
-      // Save connections
-      const insertConnection = db.prepare(`
-        INSERT INTO room_connections (room_id, connected_room_id, direction, description, is_locked, required_key_id, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `);
+      // Clear existing connections for this game first
+      this.databaseService.transaction((db) => {
+        db.prepare(
+          'DELETE FROM room_connections WHERE room_id IN (SELECT id FROM rooms WHERE game_id = ?)',
+        ).run(gameData?.id);
+      });
 
-      for (const connection of connections) {
-        insertConnection.run(
-          connection.roomId,
-          connection.connectedRoomId,
-          connection.direction,
-          connection.description,
-          connection.isLocked,
-          connection.requiredKeyId,
-          connection.createdAt,
-        );
-      }
-    });
+      processBatches(connections, (batch, db) => {
+        const insertConnection = db.prepare(`
+          INSERT INTO room_connections (room_id, connected_room_id, direction, description, is_locked, required_key_id, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        for (const connection of batch) {
+          insertConnection.run(
+            connection.roomId,
+            connection.connectedRoomId,
+            connection.direction,
+            connection.description,
+            connection.isLocked,
+            connection.requiredKeyId,
+            connection.createdAt,
+          );
+        }
+      });
+    }
   }
 
   async exportGameToFiles(
@@ -877,7 +972,9 @@ export class GameFileService {
       JSON.stringify(connectionsJson, null, 2),
     );
 
-    this.logger.log(`Exported ${connections.length} connections to ${connectionsPath}`);
+    this.logger.log(
+      `Exported ${connections.length} connections to ${connectionsPath}`,
+    );
   }
 
   private sanitizeFilename(filename: string): string {
@@ -911,8 +1008,10 @@ export class GameFileService {
 
       // Perform JSON Schema validation
       const gameDir = `${this.fileScannerService.getGamesDirectory()}/${gameId}`;
-      const schemaValidation =
-        await this.validationService.validateGameFiles(gameId, gameDir);
+      const schemaValidation = await this.validationService.validateGameFiles(
+        gameId,
+        gameDir,
+      );
 
       if (!schemaValidation.isValid) {
         schemaValidation.errors.forEach((error) => {

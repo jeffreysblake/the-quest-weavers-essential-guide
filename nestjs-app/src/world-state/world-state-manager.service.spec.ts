@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WorldStateManagerService } from './world-state-manager.service';
 import { EventEmitterService } from '../events/event-emitter.service';
+import { DatabaseService } from '../database/database.service';
 import {
   IWorldState,
   IDoorState,
@@ -16,11 +17,22 @@ import { GameEventType } from '../events/event.interfaces';
 describe('WorldStateManagerService', () => {
   let service: WorldStateManagerService;
   let mockEventEmitter: jest.Mocked<EventEmitterService>;
+  let mockDatabaseService: jest.Mocked<Partial<DatabaseService>>;
 
   beforeEach(async () => {
     // Create mock event emitter
     mockEventEmitter = {
       emit: jest.fn().mockResolvedValue(undefined),
+    } as any;
+
+    // Create mock database service
+    mockDatabaseService = {
+      getDatabase: jest.fn().mockReturnValue({
+        prepare: jest.fn().mockReturnValue({
+          get: jest.fn().mockReturnValue(undefined),
+          run: jest.fn(),
+        }),
+      }),
     } as any;
 
     const module: TestingModule = await Test.createTestingModule({
@@ -29,6 +41,10 @@ describe('WorldStateManagerService', () => {
         {
           provide: EventEmitterService,
           useValue: mockEventEmitter,
+        },
+        {
+          provide: DatabaseService,
+          useValue: mockDatabaseService,
         },
       ],
     }).compile();
@@ -53,10 +69,10 @@ describe('WorldStateManagerService', () => {
   });
 
   describe('World State Initialization', () => {
-    it('should initialize world state for a game', () => {
+    it('should initialize world state for a game', async () => {
       const gameId = 'game-1';
 
-      const worldState = service.initializeWorldState(gameId);
+      const worldState = await service.initializeWorldState(gameId);
 
       expect(worldState).toBeDefined();
       expect(worldState.gameId).toBe(gameId);
@@ -69,31 +85,31 @@ describe('WorldStateManagerService', () => {
       expect(worldState.lastUpdated).toBeDefined();
     });
 
-    it('should store initialized world state', () => {
+    it('should store initialized world state', async () => {
       const gameId = 'game-1';
 
-      service.initializeWorldState(gameId);
+      await service.initializeWorldState(gameId);
       const retrieved = service.getWorldState(gameId);
 
       expect(retrieved).toBeDefined();
       expect(retrieved?.gameId).toBe(gameId);
     });
 
-    it('should initialize change history', () => {
+    it('should initialize change history', async () => {
       const gameId = 'game-1';
 
-      service.initializeWorldState(gameId);
+      await service.initializeWorldState(gameId);
       const changes = service.queryStateChanges(gameId);
 
       expect(changes).toEqual([]);
     });
 
-    it('should support multiple game world states', () => {
+    it('should support multiple game world states', async () => {
       const game1 = 'game-1';
       const game2 = 'game-2';
 
-      service.initializeWorldState(game1);
-      service.initializeWorldState(game2);
+      await service.initializeWorldState(game1);
+      await service.initializeWorldState(game2);
 
       const state1 = service.getWorldState(game1);
       const state2 = service.getWorldState(game2);
@@ -1349,7 +1365,7 @@ describe('WorldStateManagerService', () => {
 
     it('should update lastUpdated timestamp on state changes', async () => {
       const gameId = 'game-1';
-      service.initializeWorldState(gameId);
+      await service.initializeWorldState(gameId);
 
       const initialState = service.getWorldState(gameId);
       const initialTimestamp = initialState?.lastUpdated;

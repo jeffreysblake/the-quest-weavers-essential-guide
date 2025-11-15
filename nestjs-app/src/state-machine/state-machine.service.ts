@@ -244,13 +244,15 @@ export class StateMachineService {
   /**
    * Get machine info
    */
-  getMachineInfo(machineId: string): {
-    id: string;
-    currentState: string;
-    previousState?: string;
-    stateCount: number;
-    transitionCount: number;
-  } | undefined {
+  getMachineInfo(machineId: string):
+    | {
+        id: string;
+        currentState: string;
+        previousState?: string;
+        stateCount: number;
+        transitionCount: number;
+      }
+    | undefined {
     const machine = this.machines.get(machineId);
 
     if (!machine) {

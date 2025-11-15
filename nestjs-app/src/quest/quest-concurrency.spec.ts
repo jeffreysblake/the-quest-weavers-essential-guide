@@ -35,7 +35,7 @@ describe('QuestManagerService - Concurrency Tests', () => {
     }).compile();
 
     service = module.get<QuestManagerService>(QuestManagerService);
-    eventEmitter = module.get(EventEmitterService) as jest.Mocked<EventEmitterService>;
+    eventEmitter = module.get(EventEmitterService);
   });
 
   afterEach(() => {
@@ -49,7 +49,10 @@ describe('QuestManagerService - Concurrency Tests', () => {
   /**
    * Create a basic quest context for a player
    */
-  const createContext = (playerId: string, overrides: Partial<IQuestContext> = {}): IQuestContext => {
+  const createContext = (
+    playerId: string,
+    overrides: Partial<IQuestContext> = {},
+  ): IQuestContext => {
     return {
       gameId: 'test-game',
       playerId,
@@ -64,7 +67,10 @@ describe('QuestManagerService - Concurrency Tests', () => {
   /**
    * Create a quest with multiple objectives
    */
-  const createMultiObjectiveQuest = (questId: string, objectiveCount: number): IQuest => {
+  const createMultiObjectiveQuest = (
+    questId: string,
+    objectiveCount: number,
+  ): IQuest => {
     const objectives: IQuestObjective[] = [];
     for (let i = 0; i < objectiveCount; i++) {
       objectives.push({
@@ -144,7 +150,8 @@ describe('QuestManagerService - Concurrency Tests', () => {
   /**
    * Sleep helper for timing tests
    */
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
 
   // ============================================================================
   // 1. Concurrent Quest Progress Updates (10 tests)
@@ -156,7 +163,7 @@ describe('QuestManagerService - Concurrency Tests', () => {
       service.registerQuest(quest);
 
       const playerIds = ['p1', 'p2', 'p3', 'p4'];
-      const contexts = playerIds.map(id => createContext(id));
+      const contexts = playerIds.map((id) => createContext(id));
 
       // All players start the quest
       for (let i = 0; i < playerIds.length; i++) {
@@ -165,13 +172,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // All players update the same objective concurrently (each adds 10)
       const results = await Promise.all(
-        playerIds.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'shared-obj1', 10, createContext(playerId))
-        )
+        playerIds.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'shared-obj1',
+            10,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // Verify all updates succeeded
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.success).toBe(true);
       });
 
@@ -200,7 +213,7 @@ describe('QuestManagerService - Concurrency Tests', () => {
       ]);
 
       // All updates should succeed
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.success).toBe(true);
       });
 
@@ -275,8 +288,20 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Both players try to complete simultaneously
       const results = await Promise.all([
-        service.updateObjective('player1', quest.id, 'race-obj', 1, createContext('player1')),
-        service.updateObjective('player2', quest.id, 'race-obj', 1, createContext('player2')),
+        service.updateObjective(
+          'player1',
+          quest.id,
+          'race-obj',
+          1,
+          createContext('player1'),
+        ),
+        service.updateObjective(
+          'player2',
+          quest.id,
+          'race-obj',
+          1,
+          createContext('player2'),
+        ),
       ]);
 
       // Both should succeed (separate quest instances per player)
@@ -304,7 +329,7 @@ describe('QuestManagerService - Concurrency Tests', () => {
       ]);
 
       // One should succeed, one should fail (depending on race condition)
-      const successCount = results.filter(r => r.success).length;
+      const successCount = results.filter((r) => r.success).length;
       expect(successCount).toBeGreaterThanOrEqual(1);
     });
 
@@ -332,7 +357,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Make 10 concurrent updates of 10 each (total should be 100 or less)
       const updates = Array.from({ length: 10 }, () =>
-        service.updateObjective('player1', quest.id, 'progress-obj', 10, context)
+        service.updateObjective(
+          'player1',
+          quest.id,
+          'progress-obj',
+          10,
+          context,
+        ),
       );
 
       await Promise.all(updates);
@@ -374,13 +405,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // All players collect items concurrently
       const results = await Promise.all(
-        playerIds.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'collect-obj', 3, createContext(playerId))
-        )
+        playerIds.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'collect-obj',
+            3,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // All should succeed (each has own quest state)
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.success).toBe(true);
       });
     });
@@ -409,14 +446,22 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Update to completion and fail quest concurrently
       const results = await Promise.all([
-        service.updateObjective('player1', quest.id, 'transition-obj', 5, context),
+        service.updateObjective(
+          'player1',
+          quest.id,
+          'transition-obj',
+          5,
+          context,
+        ),
         service.failQuest('player1', quest.id),
       ]);
 
       const playerQuest = service.getPlayerQuest('player1', quest.id);
 
       // Quest should be in either COMPLETED or FAILED state
-      expect([QuestState.COMPLETED, QuestState.FAILED]).toContain(playerQuest?.state);
+      expect([QuestState.COMPLETED, QuestState.FAILED]).toContain(
+        playerQuest?.state,
+      );
     });
 
     it('should handle progress rollback on concurrent failure', async () => {
@@ -443,8 +488,20 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Update progress and fail concurrently
       await Promise.all([
-        service.updateObjective('player1', quest.id, 'rollback-obj', 5, context),
-        service.updateObjective('player1', quest.id, 'rollback-obj', 3, context),
+        service.updateObjective(
+          'player1',
+          quest.id,
+          'rollback-obj',
+          5,
+          context,
+        ),
+        service.updateObjective(
+          'player1',
+          quest.id,
+          'rollback-obj',
+          3,
+          context,
+        ),
         service.failQuest('player1', quest.id),
       ]);
 
@@ -452,7 +509,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // If failed, updates should not be allowed
       if (playerQuest?.state === QuestState.FAILED) {
-        const result = await service.updateObjective('player1', quest.id, 'rollback-obj', 1, context);
+        const result = await service.updateObjective(
+          'player1',
+          quest.id,
+          'rollback-obj',
+          1,
+          context,
+        );
         expect(result.success).toBe(false);
       }
     });
@@ -481,7 +544,7 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // 100 concurrent updates of 1 each
       const updates = Array.from({ length: 100 }, () =>
-        service.updateObjective('player1', quest.id, 'stress-obj', 1, context)
+        service.updateObjective('player1', quest.id, 'stress-obj', 1, context),
       );
 
       await Promise.all(updates);
@@ -515,12 +578,12 @@ describe('QuestManagerService - Concurrency Tests', () => {
       ]);
 
       // Only one should succeed
-      const successCount = results.filter(r => r.success).length;
+      const successCount = results.filter((r) => r.success).length;
       expect(successCount).toBe(1);
 
       // Player should have exactly one instance
       const playerQuests = service.getPlayerQuests('player1');
-      expect(playerQuests.filter(q => q.questId === quest.id).length).toBe(1);
+      expect(playerQuests.filter((q) => q.questId === quest.id).length).toBe(1);
     });
 
     it('should handle abandoning quest during progress update', async () => {
@@ -581,7 +644,9 @@ describe('QuestManagerService - Concurrency Tests', () => {
       const playerQuest = service.getPlayerQuest('player1', quest.id);
 
       // Quest may be failed or updated depending on timing
-      expect([QuestState.ACTIVE, QuestState.FAILED]).toContain(playerQuest?.state);
+      expect([QuestState.ACTIVE, QuestState.FAILED]).toContain(
+        playerQuest?.state,
+      );
     });
 
     it('should handle quest dependency resolution with concurrent operations', async () => {
@@ -686,18 +751,18 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // All players try to start quest from same giver concurrently
       const results = await Promise.all(
-        playerIds.map(playerId =>
-          service.startQuest(quest.id, playerId, createContext(playerId))
-        )
+        playerIds.map((playerId) =>
+          service.startQuest(quest.id, playerId, createContext(playerId)),
+        ),
       );
 
       // All should succeed (separate instances per player)
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.success).toBe(true);
       });
 
       // Each player should have the quest
-      playerIds.forEach(playerId => {
+      playerIds.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest).toBeDefined();
         expect(playerQuest?.state).toBe(QuestState.ACTIVE);
@@ -709,7 +774,7 @@ describe('QuestManagerService - Concurrency Tests', () => {
       service.registerQuest(quest);
 
       const playerIds = ['p1', 'p2', 'p3'];
-      const contexts = playerIds.map(id => createContext(id));
+      const contexts = playerIds.map((id) => createContext(id));
 
       // All players start and complete quest concurrently
       for (let i = 0; i < playerIds.length; i++) {
@@ -719,12 +784,18 @@ describe('QuestManagerService - Concurrency Tests', () => {
       // Complete quests concurrently
       const results = await Promise.all(
         playerIds.map((playerId, i) =>
-          service.updateObjective(playerId, quest.id, 'reward-obj1', 1, contexts[i])
-        )
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'reward-obj1',
+            1,
+            contexts[i],
+          ),
+        ),
       );
 
       // All should complete successfully
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.questCompleted).toBe(true);
       });
 
@@ -798,13 +869,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Each member contributes to objective concurrently
       await Promise.all(
-        partyMembers.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'shared-obj1', 25, createContext(playerId))
-        )
+        partyMembers.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'shared-obj1',
+            25,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // Each player has their own progress (current implementation)
-      partyMembers.forEach(playerId => {
+      partyMembers.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.objectives[0].currentCount).toBe(25);
       });
@@ -839,14 +916,20 @@ describe('QuestManagerService - Concurrency Tests', () => {
       // Simulate killing 10 dragons - all party members get credit concurrently
       for (let i = 0; i < 10; i++) {
         await Promise.all(
-          partyMembers.map(playerId =>
-            service.updateObjective(playerId, quest.id, 'kill-obj', 1, createContext(playerId))
-          )
+          partyMembers.map((playerId) =>
+            service.updateObjective(
+              playerId,
+              quest.id,
+              'kill-obj',
+              1,
+              createContext(playerId),
+            ),
+          ),
         );
       }
 
       // Each member should have credit for 10 kills
-      partyMembers.forEach(playerId => {
+      partyMembers.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.objectives[0].currentCount).toBe(10);
       });
@@ -880,13 +963,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Each member collects herbs concurrently
       await Promise.all(
-        partyMembers.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'collect-obj', 20, createContext(playerId))
-        )
+        partyMembers.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'collect-obj',
+            20,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // Verify progress for each member
-      partyMembers.forEach(playerId => {
+      partyMembers.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.objectives[0].currentCount).toBe(20);
       });
@@ -920,8 +1009,20 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Concurrent item collection
       await Promise.all([
-        service.updateObjective('p1', quest.id, 'share-obj', 7, createContext('p1')),
-        service.updateObjective('p2', quest.id, 'share-obj', 5, createContext('p2')),
+        service.updateObjective(
+          'p1',
+          quest.id,
+          'share-obj',
+          7,
+          createContext('p1'),
+        ),
+        service.updateObjective(
+          'p2',
+          quest.id,
+          'share-obj',
+          5,
+          createContext('p2'),
+        ),
       ]);
 
       // Each has own progress
@@ -967,8 +1068,20 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Update different objectives concurrently
       await Promise.all([
-        service.updateObjective('p1', quest.id, 'conflict-obj1', 5, createContext('p1')),
-        service.updateObjective('p2', quest.id, 'conflict-obj2', 10, createContext('p2')),
+        service.updateObjective(
+          'p1',
+          quest.id,
+          'conflict-obj1',
+          5,
+          createContext('p1'),
+        ),
+        service.updateObjective(
+          'p2',
+          quest.id,
+          'conflict-obj2',
+          10,
+          createContext('p2'),
+        ),
       ]);
 
       // Each player has their own progress
@@ -991,9 +1104,21 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Member leaves (abandons) while others update progress
       await Promise.all([
-        service.updateObjective('p1', quest.id, 'shared-obj1', 10, createContext('p1')),
+        service.updateObjective(
+          'p1',
+          quest.id,
+          'shared-obj1',
+          10,
+          createContext('p1'),
+        ),
         service.abandonQuest('p2', quest.id),
-        service.updateObjective('p3', quest.id, 'shared-obj1', 10, createContext('p3')),
+        service.updateObjective(
+          'p3',
+          quest.id,
+          'shared-obj1',
+          10,
+          createContext('p3'),
+        ),
       ]);
 
       // p2 should not have quest anymore
@@ -1039,16 +1164,28 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Update both objectives concurrently for all members
       await Promise.all([
-        ...partyMembers.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'party-obj', 5, createContext(playerId))
+        ...partyMembers.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'party-obj',
+            5,
+            createContext(playerId),
+          ),
         ),
-        ...partyMembers.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'solo-obj', 2, createContext(playerId))
+        ...partyMembers.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'solo-obj',
+            2,
+            createContext(playerId),
+          ),
         ),
       ]);
 
       // Verify all members have updates
-      partyMembers.forEach(playerId => {
+      partyMembers.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.objectives[0].currentCount).toBe(5);
         expect(playerQuest?.objectives[1].currentCount).toBe(2);
@@ -1084,13 +1221,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // All update concurrently (each contributes 1)
       await Promise.all(
-        playerIds.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'global-obj', 1, createContext(playerId))
-        )
+        playerIds.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'global-obj',
+            1,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // Each player should have their own progress
-      playerIds.forEach(playerId => {
+      playerIds.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.objectives[0].currentCount).toBe(1);
       });
@@ -1123,9 +1266,27 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // One member completes while others are updating
       await Promise.all([
-        service.updateObjective('p1', quest.id, 'complete-obj', 10, createContext('p1')),
-        service.updateObjective('p2', quest.id, 'complete-obj', 5, createContext('p2')),
-        service.updateObjective('p3', quest.id, 'complete-obj', 3, createContext('p3')),
+        service.updateObjective(
+          'p1',
+          quest.id,
+          'complete-obj',
+          10,
+          createContext('p1'),
+        ),
+        service.updateObjective(
+          'p2',
+          quest.id,
+          'complete-obj',
+          5,
+          createContext('p2'),
+        ),
+        service.updateObjective(
+          'p3',
+          quest.id,
+          'complete-obj',
+          3,
+          createContext('p3'),
+        ),
       ]);
 
       // p1 should be completed
@@ -1133,8 +1294,12 @@ describe('QuestManagerService - Concurrency Tests', () => {
       expect(p1Quest?.state).toBe(QuestState.COMPLETED);
 
       // Others still active
-      expect(service.getPlayerQuest('p2', quest.id)?.state).toBe(QuestState.ACTIVE);
-      expect(service.getPlayerQuest('p3', quest.id)?.state).toBe(QuestState.ACTIVE);
+      expect(service.getPlayerQuest('p2', quest.id)?.state).toBe(
+        QuestState.ACTIVE,
+      );
+      expect(service.getPlayerQuest('p3', quest.id)?.state).toBe(
+        QuestState.ACTIVE,
+      );
     });
 
     it('should handle shared quest with concurrent completions', async () => {
@@ -1164,13 +1329,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // All members try to complete simultaneously
       await Promise.all(
-        partyMembers.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'shared-complete-obj', 5, createContext(playerId))
-        )
+        partyMembers.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'shared-complete-obj',
+            5,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // All should complete successfully
-      partyMembers.forEach(playerId => {
+      partyMembers.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.state).toBe(QuestState.COMPLETED);
       });
@@ -1218,7 +1389,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
       context.playerInventory = [];
 
       // Try to update quest
-      const result = await service.updateObjective('player1', quest.id, 'item-obj', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        quest.id,
+        'item-obj',
+        1,
+        context,
+      );
 
       // Should still work (prerequisite only checked at start)
       expect(result.success).toBe(true);
@@ -1238,7 +1415,9 @@ describe('QuestManagerService - Concurrency Tests', () => {
       ]);
 
       // Count legendary swords in inventory
-      const swordCount = context.playerInventory.filter(item => item === 'legendary-sword').length;
+      const swordCount = context.playerInventory.filter(
+        (item) => item === 'legendary-sword',
+      ).length;
 
       // Should only have 1 sword (no duplication)
       expect(swordCount).toBe(1);
@@ -1277,8 +1456,12 @@ describe('QuestManagerService - Concurrency Tests', () => {
       ]);
 
       // Each should have their own progress
-      expect(service.getPlayerQuest('p1', quest.id)?.objectives[0].currentCount).toBe(5);
-      expect(service.getPlayerQuest('p2', quest.id)?.objectives[0].currentCount).toBe(5);
+      expect(
+        service.getPlayerQuest('p1', quest.id)?.objectives[0].currentCount,
+      ).toBe(5);
+      expect(
+        service.getPlayerQuest('p2', quest.id)?.objectives[0].currentCount,
+      ).toBe(5);
     });
 
     it('should handle required item consumption race', async () => {
@@ -1314,7 +1497,7 @@ describe('QuestManagerService - Concurrency Tests', () => {
       ]);
 
       // Both updates succeed
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.success).toBe(true);
       });
     });
@@ -1347,13 +1530,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Multiple players try to collect same respawning item
       await Promise.all(
-        playerIds.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'respawn-obj', 1, createContext(playerId))
-        )
+        playerIds.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'respawn-obj',
+            1,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // Each player gets their own instance
-      playerIds.forEach(playerId => {
+      playerIds.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.objectives[0].currentCount).toBe(1);
       });
@@ -1387,13 +1576,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // All try to loot same item concurrently
       await Promise.all(
-        playerIds.map(playerId =>
-          service.updateObjective(playerId, quest.id, 'loot-obj', 1, createContext(playerId))
-        )
+        playerIds.map((playerId) =>
+          service.updateObjective(
+            playerId,
+            quest.id,
+            'loot-obj',
+            1,
+            createContext(playerId),
+          ),
+        ),
       );
 
       // All should get the item (instanced loot)
-      playerIds.forEach(playerId => {
+      playerIds.forEach((playerId) => {
         const playerQuest = service.getPlayerQuest(playerId, quest.id);
         expect(playerQuest?.objectives[0].currentCount).toBe(1);
       });
@@ -1429,10 +1624,18 @@ describe('QuestManagerService - Concurrency Tests', () => {
       await service.startQuest(quest.id, 'player1', context);
 
       // Complete quest
-      await service.updateObjective('player1', quest.id, 'stack-obj', 1, context);
+      await service.updateObjective(
+        'player1',
+        quest.id,
+        'stack-obj',
+        1,
+        context,
+      );
 
       // Should have 99 items
-      const itemCount = context.playerInventory.filter(item => item === 'stackable-item').length;
+      const itemCount = context.playerInventory.filter(
+        (item) => item === 'stackable-item',
+      ).length;
       expect(itemCount).toBe(99);
     });
 
@@ -1466,16 +1669,32 @@ describe('QuestManagerService - Concurrency Tests', () => {
       const updates = [];
       for (let i = 0; i < 20; i++) {
         updates.push(
-          service.updateObjective('p1', quest.id, 'drop-obj', 1, createContext('p1')),
-          service.updateObjective('p2', quest.id, 'drop-obj', 1, createContext('p2'))
+          service.updateObjective(
+            'p1',
+            quest.id,
+            'drop-obj',
+            1,
+            createContext('p1'),
+          ),
+          service.updateObjective(
+            'p2',
+            quest.id,
+            'drop-obj',
+            1,
+            createContext('p2'),
+          ),
         );
       }
 
       await Promise.all(updates);
 
       // Each player should have 20 items
-      expect(service.getPlayerQuest('p1', quest.id)?.objectives[0].currentCount).toBe(20);
-      expect(service.getPlayerQuest('p2', quest.id)?.objectives[0].currentCount).toBe(20);
+      expect(
+        service.getPlayerQuest('p1', quest.id)?.objectives[0].currentCount,
+      ).toBe(20);
+      expect(
+        service.getPlayerQuest('p2', quest.id)?.objectives[0].currentCount,
+      ).toBe(20);
     });
   });
 
@@ -1508,7 +1727,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Try to complete and fail simultaneously
       await Promise.all([
-        service.updateObjective('player1', quest.id, 'conflict-obj', 1, context),
+        service.updateObjective(
+          'player1',
+          quest.id,
+          'conflict-obj',
+          1,
+          context,
+        ),
         service.failQuest('player1', quest.id),
       ]);
 
@@ -1516,7 +1741,9 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Should be in one state only (not both)
       expect(playerQuest?.state).toBeDefined();
-      expect([QuestState.COMPLETED, QuestState.FAILED]).toContain(playerQuest?.state);
+      expect([QuestState.COMPLETED, QuestState.FAILED]).toContain(
+        playerQuest?.state,
+      );
     });
 
     it('should prevent duplicate quest instances', async () => {
@@ -1528,17 +1755,19 @@ describe('QuestManagerService - Concurrency Tests', () => {
       // Try to start quest 10 times concurrently
       const results = await Promise.all(
         Array.from({ length: 10 }, () =>
-          service.startQuest(quest.id, 'player1', context)
-        )
+          service.startQuest(quest.id, 'player1', context),
+        ),
       );
 
       // Only one should succeed
-      const successCount = results.filter(r => r.success).length;
+      const successCount = results.filter((r) => r.success).length;
       expect(successCount).toBe(1);
 
       // Should have exactly one quest instance
       const playerQuests = service.getPlayerQuests('player1');
-      const questCount = playerQuests.filter(q => q.questId === quest.id).length;
+      const questCount = playerQuests.filter(
+        (q) => q.questId === quest.id,
+      ).length;
       expect(questCount).toBe(1);
     });
 
@@ -1574,7 +1803,9 @@ describe('QuestManagerService - Concurrency Tests', () => {
       const playerQuest = service.getPlayerQuest('player1', quest.id);
 
       // Should be in exactly one final state
-      expect([QuestState.COMPLETED, QuestState.FAILED]).toContain(playerQuest?.state);
+      expect([QuestState.COMPLETED, QuestState.FAILED]).toContain(
+        playerQuest?.state,
+      );
     });
 
     it('should prevent objective counts from going negative', async () => {
@@ -1600,7 +1831,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
       await service.startQuest(quest.id, 'player1', context);
 
       // Try to subtract (using negative increment)
-      const result = await service.updateObjective('player1', quest.id, 'negative-obj', -5, context);
+      const result = await service.updateObjective(
+        'player1',
+        quest.id,
+        'negative-obj',
+        -5,
+        context,
+      );
 
       const playerQuest = service.getPlayerQuest('player1', quest.id);
 
@@ -1631,7 +1868,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
       await service.startQuest(quest.id, 'player1', context);
 
       // Try to add more than target
-      await service.updateObjective('player1', quest.id, 'overflow-obj', 50, context);
+      await service.updateObjective(
+        'player1',
+        quest.id,
+        'overflow-obj',
+        50,
+        context,
+      );
 
       const playerQuest = service.getPlayerQuest('player1', quest.id);
 
@@ -1682,7 +1925,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
 
       // Complete quest1
       await service.startQuest(quest1.id, 'player1', context);
-      await service.updateObjective('player1', quest1.id, 'dep-obj1', 1, context);
+      await service.updateObjective(
+        'player1',
+        quest1.id,
+        'dep-obj1',
+        1,
+        context,
+      );
 
       // Update context with completed quest
       context.completedQuests.push(quest1.id);
@@ -1727,7 +1976,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
       await service.startQuest(quest1.id, 'player1', context);
 
       // Complete quest1
-      const result = await service.updateObjective('player1', quest1.id, 'chain-obj1', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        quest1.id,
+        'chain-obj1',
+        1,
+        context,
+      );
 
       // Quest2 should auto-start
       expect(result.nextQuestUnlocked).toBe(quest2.id);
@@ -1762,7 +2017,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
       await service.failQuest('player1', quest.id);
 
       // Try to update after failure
-      const result = await service.updateObjective('player1', quest.id, 'immutable-obj', 5, context);
+      const result = await service.updateObjective(
+        'player1',
+        quest.id,
+        'immutable-obj',
+        5,
+        context,
+      );
 
       // Should not allow updates
       expect(result.success).toBe(false);
@@ -1794,7 +2055,13 @@ describe('QuestManagerService - Concurrency Tests', () => {
       await service.startQuest(quest.id, 'player1', context);
 
       // Complete the quest
-      await service.updateObjective('player1', quest.id, 'immutable-complete-obj', 1, context);
+      await service.updateObjective(
+        'player1',
+        quest.id,
+        'immutable-complete-obj',
+        1,
+        context,
+      );
 
       // Try to fail after completion
       const result = await service.failQuest('player1', quest.id);

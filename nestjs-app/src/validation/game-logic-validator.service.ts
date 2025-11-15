@@ -39,9 +39,7 @@ export class GameLogicValidatorService {
   /**
    * Validate game logic for a game directory
    */
-  async validateGameLogic(
-    gameId: string,
-  ): Promise<GameLogicValidationResult> {
+  async validateGameLogic(gameId: string): Promise<GameLogicValidationResult> {
     this.logger.log(`Validating game logic for ${gameId}`);
 
     const errors: string[] = [];
@@ -161,9 +159,8 @@ export class GameLogicValidatorService {
       }
 
       // 6. Check for bidirectional connections
-      const bidirectional = this.findMissingBidirectionalConnections(
-        connections,
-      );
+      const bidirectional =
+        this.findMissingBidirectionalConnections(connections);
       if (bidirectional.length > 0) {
         warnings.push(
           `${bidirectional.length} connection(s) may be missing return paths`,
@@ -182,9 +179,7 @@ export class GameLogicValidatorService {
       if (rooms.length === 0) {
         errors.push('Game has no rooms defined');
       } else if (rooms.length === 1) {
-        warnings.push(
-          'Game only has one room - consider adding more content',
-        );
+        warnings.push('Game only has one room - consider adding more content');
       }
 
       if (connections.length === 0 && rooms.length > 1) {
@@ -256,7 +251,9 @@ export class GameLogicValidatorService {
       return entities;
     }
 
-    const files = fs.readdirSync(entitiesDir).filter((f) => f.endsWith('.json'));
+    const files = fs
+      .readdirSync(entitiesDir)
+      .filter((f) => f.endsWith('.json'));
 
     for (const file of files) {
       try {

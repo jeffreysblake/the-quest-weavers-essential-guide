@@ -459,7 +459,9 @@ describe('ValidationService', () => {
       const result = service.validateRoom(invalidRoom);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors[0]).toContain("missing required property 'description'");
+      expect(result.errors[0]).toContain(
+        "missing required property 'description'",
+      );
     });
 
     it('should reject room without required position', () => {
@@ -473,7 +475,9 @@ describe('ValidationService', () => {
       const result = service.validateRoom(invalidRoom);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors[0]).toContain("missing required property 'position'");
+      expect(result.errors[0]).toContain(
+        "missing required property 'position'",
+      );
     });
 
     it('should reject room without required size', () => {
@@ -600,7 +604,9 @@ describe('ValidationService', () => {
       const result = service.validateObject(invalidObject);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors[0]).toContain("missing required property 'description'");
+      expect(result.errors[0]).toContain(
+        "missing required property 'description'",
+      );
     });
 
     it('should validate object with optional properties', () => {
@@ -679,7 +685,9 @@ describe('ValidationService', () => {
       const result = service.validateNPC(invalidNPC);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors[0]).toContain("missing required property 'description'");
+      expect(result.errors[0]).toContain(
+        "missing required property 'description'",
+      );
     });
 
     it('should validate NPC with optional properties', () => {
@@ -746,7 +754,9 @@ describe('ValidationService', () => {
       const result = service.validateConnections(invalidConnections);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors[0]).toContain("missing required property 'connections'");
+      expect(result.errors[0]).toContain(
+        "missing required property 'connections'",
+      );
     });
 
     it('should reject connection without required from_room', () => {
@@ -1077,7 +1087,8 @@ describe('ValidationService', () => {
       mockFs.existsSync.mockReturnValue(true);
       mockFs.readdirSync.mockImplementation((path: any) => {
         const pathStr = path.toString();
-        if (pathStr.includes('rooms')) return ['room1.json', 'room2.json'] as any;
+        if (pathStr.includes('rooms'))
+          return ['room1.json', 'room2.json'] as any;
         if (pathStr.includes('objects'))
           return ['object1.json', 'object2.json'] as any;
         if (pathStr.includes('npcs')) return ['npc1.json', 'npc2.json'] as any;

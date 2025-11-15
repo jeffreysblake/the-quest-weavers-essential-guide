@@ -82,7 +82,9 @@ export interface IGameEvent<T = any> {
 /**
  * Event subscriber callback function
  */
-export type EventCallback<T = any> = (event: IGameEvent<T>) => void | Promise<void>;
+export type EventCallback<T = any> = (
+  event: IGameEvent<T>,
+) => void | Promise<void>;
 
 /**
  * Event subscription handle for unsubscribing

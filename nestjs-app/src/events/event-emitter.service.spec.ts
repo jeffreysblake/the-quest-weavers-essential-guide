@@ -103,9 +103,21 @@ describe('EventEmitterService', () => {
 
       service.onAny(callback, filter);
 
-      await service.emit(GameEventType.GAME_CREATED, { test: 'data' }, 'specific-game');
-      await service.emit(GameEventType.GAME_SAVED, { test: 'data' }, 'other-game');
-      await service.emit(GameEventType.ENTITY_CREATED, { test: 'data' }, 'specific-game');
+      await service.emit(
+        GameEventType.GAME_CREATED,
+        { test: 'data' },
+        'specific-game',
+      );
+      await service.emit(
+        GameEventType.GAME_SAVED,
+        { test: 'data' },
+        'other-game',
+      );
+      await service.emit(
+        GameEventType.ENTITY_CREATED,
+        { test: 'data' },
+        'specific-game',
+      );
 
       expect(callback).toHaveBeenCalledTimes(2);
     });
@@ -156,7 +168,7 @@ describe('EventEmitterService', () => {
 
     it('should work with async callbacks', async () => {
       const asyncCallback = jest.fn(async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       });
 
       service.once(GameEventType.GAME_CREATED, asyncCallback);
@@ -251,7 +263,12 @@ describe('EventEmitterService', () => {
       service.on(GameEventType.CUSTOM_EVENT, callback);
 
       const metadata = { source: 'test', priority: 'high' };
-      await service.emit(GameEventType.CUSTOM_EVENT, { test: 'data' }, undefined, metadata);
+      await service.emit(
+        GameEventType.CUSTOM_EVENT,
+        { test: 'data' },
+        undefined,
+        metadata,
+      );
 
       expect(callback).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -281,10 +298,10 @@ describe('EventEmitterService', () => {
 
     it('should notify all subscribers in parallel', async () => {
       const callback1 = jest.fn(async () => {
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
       const callback2 = jest.fn(async () => {
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       service.on(GameEventType.GAME_CREATED, callback1);
@@ -309,7 +326,7 @@ describe('EventEmitterService', () => {
       service.on(GameEventType.GAME_CREATED, successCallback);
 
       await expect(
-        service.emit(GameEventType.GAME_CREATED, { test: 'data' })
+        service.emit(GameEventType.GAME_CREATED, { test: 'data' }),
       ).resolves.not.toThrow();
 
       expect(errorCallback).toHaveBeenCalled();
@@ -331,7 +348,7 @@ describe('EventEmitterService', () => {
 
     it('should handle emitting to event with no subscribers', async () => {
       await expect(
-        service.emit(GameEventType.GAME_DELETED, { test: 'data' })
+        service.emit(GameEventType.GAME_DELETED, { test: 'data' }),
       ).resolves.not.toThrow();
     });
 
@@ -371,9 +388,17 @@ describe('EventEmitterService', () => {
     });
 
     it('should filter history by gameId', async () => {
-      await service.emit(GameEventType.GAME_CREATED, { test: 'data1' }, 'game1');
+      await service.emit(
+        GameEventType.GAME_CREATED,
+        { test: 'data1' },
+        'game1',
+      );
       await service.emit(GameEventType.GAME_SAVED, { test: 'data2' }, 'game2');
-      await service.emit(GameEventType.GAME_CREATED, { test: 'data3' }, 'game1');
+      await service.emit(
+        GameEventType.GAME_CREATED,
+        { test: 'data3' },
+        'game1',
+      );
 
       const history = service.getHistory(undefined, 'game1');
       expect(history.length).toBe(2);
@@ -405,10 +430,22 @@ describe('EventEmitterService', () => {
     });
 
     it('should filter by both event type and gameId', async () => {
-      await service.emit(GameEventType.GAME_CREATED, { test: 'data1' }, 'game1');
+      await service.emit(
+        GameEventType.GAME_CREATED,
+        { test: 'data1' },
+        'game1',
+      );
       await service.emit(GameEventType.GAME_SAVED, { test: 'data2' }, 'game1');
-      await service.emit(GameEventType.GAME_CREATED, { test: 'data3' }, 'game2');
-      await service.emit(GameEventType.GAME_CREATED, { test: 'data4' }, 'game1');
+      await service.emit(
+        GameEventType.GAME_CREATED,
+        { test: 'data3' },
+        'game2',
+      );
+      await service.emit(
+        GameEventType.GAME_CREATED,
+        { test: 'data4' },
+        'game1',
+      );
 
       const history = service.getHistory(GameEventType.GAME_CREATED, 'game1');
       expect(history.length).toBe(2);
@@ -422,14 +459,23 @@ describe('EventEmitterService', () => {
         await service.emit(GameEventType.GAME_SAVED, { index: i }, 'game1');
       }
 
-      const history = service.getHistory(GameEventType.GAME_CREATED, 'game1', 3);
+      const history = service.getHistory(
+        GameEventType.GAME_CREATED,
+        'game1',
+        3,
+      );
       expect(history.length).toBe(3);
-      expect(history.every(e => e.type === GameEventType.GAME_CREATED)).toBe(true);
-      expect(history.every(e => e.gameId === 'game1')).toBe(true);
+      expect(history.every((e) => e.type === GameEventType.GAME_CREATED)).toBe(
+        true,
+      );
+      expect(history.every((e) => e.gameId === 'game1')).toBe(true);
     });
 
     it('should return empty array when no events match', () => {
-      const history = service.getHistory(GameEventType.GAME_CREATED, 'nonexistent-game');
+      const history = service.getHistory(
+        GameEventType.GAME_CREATED,
+        'nonexistent-game',
+      );
       expect(history).toEqual([]);
     });
 
@@ -629,13 +675,19 @@ describe('EventEmitterService', () => {
     });
 
     it('should reject on timeout', async () => {
-      const promise = service.waitFor(GameEventType.GAME_CREATED, undefined, 50);
+      const promise = service.waitFor(
+        GameEventType.GAME_CREATED,
+        undefined,
+        50,
+      );
 
       await expect(promise).rejects.toThrow('Timeout waiting for event');
     });
 
     it('should clean up subscription after resolving', async () => {
-      const initialCount = service.getSubscriberCount(GameEventType.GAME_CREATED);
+      const initialCount = service.getSubscriberCount(
+        GameEventType.GAME_CREATED,
+      );
 
       const promise = service.waitFor(GameEventType.GAME_CREATED);
 
@@ -650,9 +702,15 @@ describe('EventEmitterService', () => {
     });
 
     it('should clean up subscription after timeout', async () => {
-      const initialCount = service.getSubscriberCount(GameEventType.GAME_CREATED);
+      const initialCount = service.getSubscriberCount(
+        GameEventType.GAME_CREATED,
+      );
 
-      const promise = service.waitFor(GameEventType.GAME_CREATED, undefined, 50);
+      const promise = service.waitFor(
+        GameEventType.GAME_CREATED,
+        undefined,
+        50,
+      );
 
       await expect(promise).rejects.toThrow();
 
@@ -765,7 +823,7 @@ describe('EventEmitterService', () => {
     it('should handle async and sync subscribers together', async () => {
       const syncCallback = jest.fn();
       const asyncCallback = jest.fn(async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       });
 
       service.on(GameEventType.GAME_CREATED, syncCallback);
@@ -779,11 +837,13 @@ describe('EventEmitterService', () => {
 
     it('should handle large event payloads', async () => {
       const largeData = {
-        items: Array(1000).fill(null).map((_, i) => ({
-          id: `item-${i}`,
-          name: `Item ${i}`,
-          properties: { value: i, rarity: 'common' },
-        })),
+        items: Array(1000)
+          .fill(null)
+          .map((_, i) => ({
+            id: `item-${i}`,
+            name: `Item ${i}`,
+            properties: { value: i, rarity: 'common' },
+          })),
       };
 
       const callback = jest.fn();
@@ -845,7 +905,7 @@ describe('EventEmitterService', () => {
       service.on(GameEventType.CUSTOM_EVENT, callback, badFilter);
 
       await expect(
-        service.emit(GameEventType.CUSTOM_EVENT, { test: 'data' })
+        service.emit(GameEventType.CUSTOM_EVENT, { test: 'data' }),
       ).rejects.toThrow();
     });
 
@@ -864,7 +924,11 @@ describe('EventEmitterService', () => {
       await service.emit(GameEventType.GAME_CREATED, { test: 'data' });
 
       // This should wait for the next emission
-      const promise = service.waitFor(GameEventType.GAME_CREATED, undefined, 100);
+      const promise = service.waitFor(
+        GameEventType.GAME_CREATED,
+        undefined,
+        100,
+      );
 
       setTimeout(() => {
         service.emit(GameEventType.GAME_CREATED, { test: 'data2' });

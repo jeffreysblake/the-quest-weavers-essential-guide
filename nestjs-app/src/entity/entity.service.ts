@@ -10,7 +10,9 @@ export class EntityService {
 
   constructor(private readonly databaseService?: DatabaseService) {}
 
-  createEntity(entityData: Omit<IEntity, 'id'> | IEntity): IEntity {
+  async createEntity(
+    entityData: Omit<IEntity, 'id'> | IEntity,
+  ): Promise<IEntity> {
     const entity: IEntity = {
       ...entityData,
       id: (entityData as any).id || this.generateId(),
@@ -20,12 +22,19 @@ export class EntityService {
 
     // Save to database if available
     if (this.databaseService) {
-      this.saveEntityToDatabase(entity).catch((error) => {
+      try {
+        await this.saveEntityToDatabase(entity);
+      } catch (error) {
+        // Remove from memory since database save failed
+        this.entities.delete(entity.id);
         this.logger.error(
           `Failed to save entity ${entity.id} to database:`,
           error,
         );
-      });
+        throw new Error(
+          `Failed to save entity ${entity.id} to database: ${error.message}`,
+        );
+      }
     }
 
     return entity;
@@ -93,36 +102,57 @@ export class EntityService {
     return inMemoryEntities;
   }
 
-  updateEntity(id: string, updates: Partial<IEntity>): boolean {
+  async updateEntity(id: string, updates: Partial<IEntity>): Promise<boolean> {
     const entity = this.entities.get(id);
     if (!entity) return false;
+
+    // Store original entity in case we need to rollback
+    const originalEntity = { ...entity };
 
     Object.assign(entity, updates);
 
     // Save updated entity to database if available
     if (this.databaseService) {
-      this.saveEntityToDatabase(entity).catch((error) => {
+      try {
+        await this.saveEntityToDatabase(entity);
+      } catch (error) {
+        // Rollback in-memory changes since database update failed
+        Object.assign(entity, originalEntity);
         this.logger.error(
           `Failed to update entity ${entity.id} in database:`,
           error,
         );
-      });
+        throw new Error(
+          `Failed to update entity ${entity.id} in database: ${error.message}`,
+        );
+      }
     }
 
     return true;
   }
 
-  deleteEntity(id: string): boolean {
+  async deleteEntity(id: string): Promise<boolean> {
+    const entity = this.entities.get(id);
+    if (!entity) return false;
+
+    // Remove from memory first
     const deleted = this.entities.delete(id);
 
     // Remove from database if available
     if (deleted && this.databaseService) {
-      this.deleteEntityFromDatabase(id).catch((error) => {
+      try {
+        await this.deleteEntityFromDatabase(id);
+      } catch (error) {
+        // Restore in-memory entity since database deletion failed
+        this.entities.set(id, entity);
         this.logger.error(
           `Failed to delete entity ${id} from database:`,
           error,
         );
-      });
+        throw new Error(
+          `Failed to delete entity ${id} from database: ${error.message}`,
+        );
+      }
     }
 
     return deleted;
@@ -246,7 +276,7 @@ export class EntityService {
 
     // This is a generic save - specific services will handle their own table schemas
     // For now, we'll save to version history for tracking
-    this.databaseService.saveVersion(
+    await this.databaseService.saveVersion(
       this.getEntityType(entity),
       entity.id,
       entity,

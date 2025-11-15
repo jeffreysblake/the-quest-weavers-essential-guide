@@ -105,20 +105,14 @@ export class ComponentManagerService {
   /**
    * Check if entity has all specified components
    */
-  hasAllComponents(
-    entityId: string,
-    componentTypes: ComponentType[],
-  ): boolean {
+  hasAllComponents(entityId: string, componentTypes: ComponentType[]): boolean {
     return componentTypes.every((type) => this.hasComponent(entityId, type));
   }
 
   /**
    * Check if entity has any of the specified components
    */
-  hasAnyComponent(
-    entityId: string,
-    componentTypes: ComponentType[],
-  ): boolean {
+  hasAnyComponent(entityId: string, componentTypes: ComponentType[]): boolean {
     return componentTypes.some((type) => this.hasComponent(entityId, type));
   }
 
@@ -165,8 +159,7 @@ export class ComponentManagerService {
 
       // Check "all" constraint
       if (query.all && query.all.length > 0) {
-        matches =
-          matches && query.all.every((type) => components.has(type));
+        matches = matches && query.all.every((type) => components.has(type));
       }
 
       // Check "any" constraint
@@ -176,8 +169,7 @@ export class ComponentManagerService {
 
       // Check "none" constraint
       if (query.none && query.none.length > 0) {
-        matches =
-          matches && !query.none.some((type) => components.has(type));
+        matches = matches && !query.none.some((type) => components.has(type));
       }
 
       if (matches) {
@@ -198,10 +190,7 @@ export class ComponentManagerService {
   /**
    * Remove all components for an entity
    */
-  async removeAllComponents(
-    entityId: string,
-    gameId?: string,
-  ): Promise<void> {
+  async removeAllComponents(entityId: string, gameId?: string): Promise<void> {
     this.entityComponents.delete(entityId);
 
     this.logger.debug(`Removed all components for entity ${entityId}`);
@@ -304,8 +293,7 @@ export class ComponentManagerService {
       stats.totalComponents += components.size;
 
       for (const [type] of components) {
-        stats.componentsByType[type] =
-          (stats.componentsByType[type] || 0) + 1;
+        stats.componentsByType[type] = (stats.componentsByType[type] || 0) + 1;
       }
     }
 

@@ -26,10 +26,6 @@ import { PlayerModule } from '../entity/player.module';
     PlayerStateService,
     MovementActionHandler,
   ],
-  exports: [
-    ActionResolverService,
-    CommandParserService,
-    PlayerStateService,
-  ],
+  exports: [ActionResolverService, CommandParserService, PlayerStateService],
 })
 export class GameplayModule {}

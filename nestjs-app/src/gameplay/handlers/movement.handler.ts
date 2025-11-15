@@ -39,9 +39,7 @@ export class MovementActionHandler implements IActionHandler {
 
     try {
       // Get current room
-      const currentRoom = await this.roomService.getRoom(
-        context.currentRoomId,
-      );
+      const currentRoom = await this.roomService.getRoom(context.currentRoomId);
       if (!currentRoom) {
         return {
           success: false,

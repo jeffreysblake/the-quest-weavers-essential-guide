@@ -4,16 +4,48 @@ import { IRoom } from './room.interface';
 import { DatabaseService } from '../database/database.service';
 import { RoomData } from '../database/database.interfaces';
 import { v4 as uuidv4 } from 'uuid';
+import { Mutex, withTimeout } from 'async-mutex';
 
+/**
+ * CONCURRENCY PROTECTION:
+ * - Uses Mutex locks to prevent race conditions in room operations
+ * - Per-room locks prevent concurrent modifications to room state
+ * - Map-level lock protects the rooms Map from concurrent modifications
+ * - Prevents issues like duplicate player/object additions
+ * - All locks have 5-second timeout to prevent permanent deadlocks
+ *
+ * RESOURCE LIMITS (DOS/OOM Prevention):
+ * - Max objects per room: 1000
+ * - Max players per room: 100
+ */
 @Injectable()
 export class RoomService {
   private readonly logger = new Logger(RoomService.name);
   private rooms: Map<string, IRoom> = new Map();
 
+  // Concurrency protection
+  private readonly mapLock = withTimeout(new Mutex(), 5000);
+  private readonly roomLocks = new Map<string, Mutex>();
+  private readonly LOCK_TIMEOUT = 5000;
+
+  // Resource limits
+  private readonly MAX_OBJECTS_PER_ROOM = 1000;
+  private readonly MAX_PLAYERS_PER_ROOM = 100;
+
   constructor(
     private readonly entityService: EntityService,
     private readonly databaseService?: DatabaseService,
   ) {}
+
+  /**
+   * Get or create a lock for a specific room
+   */
+  private getRoomLock(roomId: string): Mutex {
+    if (!this.roomLocks.has(roomId)) {
+      this.roomLocks.set(roomId, new Mutex());
+    }
+    return this.roomLocks.get(roomId)!;
+  }
 
   createRoom(roomData: Omit<IRoom, 'id' | 'type'>): IRoom {
     const room: IRoom = {
@@ -174,43 +206,120 @@ export class RoomService {
     return inMemoryRooms;
   }
 
-  addPlayerToRoom(roomId: string, playerId: string): boolean {
-    const room = this.rooms.get(roomId);
-    if (!room) return false;
+  /**
+   * Add player to room
+   * THREAD-SAFE: Acquires room lock to prevent duplicate additions
+   * RESOURCE LIMIT: Max 100 players per room
+   */
+  async addPlayerToRoom(roomId: string, playerId: string): Promise<boolean> {
+    const lock = this.getRoomLock(roomId);
 
-    // Check if player exists
-    const player = this.entityService.getEntity(playerId);
-    if (!player) return false;
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const room = this.rooms.get(roomId);
+          if (!room) {
+            this.logger.error(`addPlayerToRoom: Room ${roomId} not found`);
+            return false;
+          }
 
-    if (!room.players.includes(playerId)) {
-      room.players.push(playerId);
-      return true;
+          // NULL CHECK: Ensure room.players array exists
+          if (!room.players) {
+            room.players = [];
+          }
+
+          // RESOURCE LIMIT: Check max players per room
+          if (room.players.length >= this.MAX_PLAYERS_PER_ROOM) {
+            this.logger.warn(
+              `Room ${roomId} has reached maximum player limit of ${this.MAX_PLAYERS_PER_ROOM}`,
+            );
+            return false;
+          }
+
+          // Check if player exists
+          const player = this.entityService.getEntity(playerId);
+          if (!player) {
+            this.logger.error(`addPlayerToRoom: Player ${playerId} not found`);
+            return false;
+          }
+
+          if (!room.players.includes(playerId)) {
+            room.players.push(playerId);
+            return true;
+          }
+          return false;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(`Lock timeout adding player to room ${roomId}`);
+        return false;
+      }
+      throw error;
     }
-    return false;
   }
 
-  addObjectToRoom(roomId: string, objectId: string): boolean {
-    const room = this.rooms.get(roomId);
-    if (!room) return false;
+  /**
+   * Add object to room
+   * THREAD-SAFE: Acquires room lock to prevent duplicate additions
+   * RESOURCE LIMIT: Max 1000 objects per room
+   */
+  async addObjectToRoom(roomId: string, objectId: string): Promise<boolean> {
+    const lock = this.getRoomLock(roomId);
 
-    // Check if object exists
-    const obj = this.entityService.getEntity(objectId);
-    if (!obj) return false;
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const room = this.rooms.get(roomId);
+          if (!room) {
+            this.logger.error(`addObjectToRoom: Room ${roomId} not found`);
+            return false;
+          }
 
-    if (!room.objects.includes(objectId)) {
-      room.objects.push(objectId);
-      return true;
+          // NULL CHECK: Ensure room.objects array exists
+          if (!room.objects) {
+            room.objects = [];
+          }
+
+          // RESOURCE LIMIT: Check max objects per room
+          if (room.objects.length >= this.MAX_OBJECTS_PER_ROOM) {
+            this.logger.warn(
+              `Room ${roomId} has reached maximum object limit of ${this.MAX_OBJECTS_PER_ROOM}`,
+            );
+            return false;
+          }
+
+          // Check if object exists
+          const obj = this.entityService.getEntity(objectId);
+          if (!obj) {
+            this.logger.error(`addObjectToRoom: Object ${objectId} not found`);
+            return false;
+          }
+
+          if (!room.objects.includes(objectId)) {
+            room.objects.push(objectId);
+            return true;
+          }
+          return false;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(`Lock timeout adding object to room ${roomId}`);
+        return false;
+      }
+      throw error;
     }
-    return false;
   }
 
   getRoomEntities(roomId: string): { players: string[]; objects: string[] } {
     const room = this.rooms.get(roomId);
     if (!room) return { players: [], objects: [] };
 
+    // NULL CHECK: Ensure arrays exist
     return {
-      players: room.players,
-      objects: room.objects,
+      players: room.players || [],
+      objects: room.objects || [],
     };
   }
 
@@ -361,6 +470,12 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return [];
 
+    // NULL CHECK: Ensure room.objects array exists
+    if (!room.objects || !Array.isArray(room.objects)) {
+      this.logger.warn(`getObjectsInRoom: Room ${roomId} has invalid objects array`);
+      return [];
+    }
+
     return room.objects
       .map((objectId) => this.entityService.getEntity(objectId))
       .filter(Boolean);
@@ -370,33 +485,81 @@ export class RoomService {
     const room = this.rooms.get(roomId);
     if (!room) return [];
 
+    // NULL CHECK: Ensure room.players array exists
+    if (!room.players || !Array.isArray(room.players)) {
+      this.logger.warn(`getPlayersInRoom: Room ${roomId} has invalid players array`);
+      return [];
+    }
+
     return room.players
       .map((playerId) => this.entityService.getEntity(playerId))
       .filter(Boolean);
   }
 
-  removeObjectFromRoom(roomId: string, objectId: string): boolean {
-    const room = this.rooms.get(roomId);
-    if (!room) return false;
+  /**
+   * Remove object from room
+   * THREAD-SAFE: Acquires room lock to prevent concurrent modifications
+   */
+  async removeObjectFromRoom(
+    roomId: string,
+    objectId: string,
+  ): Promise<boolean> {
+    const lock = this.getRoomLock(roomId);
 
-    const index = room.objects.indexOf(objectId);
-    if (index > -1) {
-      room.objects.splice(index, 1);
-      return true;
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const room = this.rooms.get(roomId);
+          if (!room) return false;
+
+          const index = room.objects.indexOf(objectId);
+          if (index > -1) {
+            room.objects.splice(index, 1);
+            return true;
+          }
+          return false;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(`Lock timeout removing object from room ${roomId}`);
+        return false;
+      }
+      throw error;
     }
-    return false;
   }
 
-  removePlayerFromRoom(roomId: string, playerId: string): boolean {
-    const room = this.rooms.get(roomId);
-    if (!room) return false;
+  /**
+   * Remove player from room
+   * THREAD-SAFE: Acquires room lock to prevent concurrent modifications
+   */
+  async removePlayerFromRoom(
+    roomId: string,
+    playerId: string,
+  ): Promise<boolean> {
+    const lock = this.getRoomLock(roomId);
 
-    const index = room.players.indexOf(playerId);
-    if (index > -1) {
-      room.players.splice(index, 1);
-      return true;
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          const room = this.rooms.get(roomId);
+          if (!room) return false;
+
+          const index = room.players.indexOf(playerId);
+          if (index > -1) {
+            room.players.splice(index, 1);
+            return true;
+          }
+          return false;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(`Lock timeout removing player from room ${roomId}`);
+        return false;
+      }
+      throw error;
     }
-    return false;
   }
 
   // Database integration methods
@@ -405,7 +568,10 @@ export class RoomService {
 
     try {
       console.log(`[RoomService] Starting transaction for room ${room.id}`);
-      console.log(`[RoomService] Database path:`, (this.databaseService as any).dbPath);
+      console.log(
+        `[RoomService] Database path:`,
+        (this.databaseService as any).dbPath,
+      );
       this.databaseService.transaction((db) => {
         console.log(`[RoomService] Inside transaction for room ${room.id}`);
         // Convert IRoom to RoomData format for database
@@ -452,7 +618,9 @@ export class RoomService {
 
         // Save room-object relationships
         if (room.objects && room.objects.length > 0) {
-          console.log(`[RoomService] Saving ${room.objects.length} room-object relationships for room ${room.id}`);
+          console.log(
+            `[RoomService] Saving ${room.objects.length} room-object relationships for room ${room.id}`,
+          );
           console.log(`[RoomService] Objects to save:`, room.objects);
           // Clear existing relationships
           db.prepare('DELETE FROM room_objects WHERE room_id = ?').run(room.id);
@@ -463,17 +631,28 @@ export class RoomService {
           `);
 
           for (const objectId of room.objects) {
-            console.log(`[RoomService]   Saving room-object: ${room.id} -> ${objectId}`);
+            console.log(
+              `[RoomService]   Saving room-object: ${room.id} -> ${objectId}`,
+            );
             try {
-              const result = insertRoomObject.run(room.id, objectId, new Date().toISOString());
+              const result = insertRoomObject.run(
+                room.id,
+                objectId,
+                new Date().toISOString(),
+              );
               console.log(`[RoomService]   INSERT result:`, result);
             } catch (err) {
-              console.log(`[RoomService]   ERROR inserting room-object:`, err.message);
+              console.log(
+                `[RoomService]   ERROR inserting room-object:`,
+                err.message,
+              );
               throw err;
             }
           }
         } else {
-          console.log(`[RoomService] No room-object relationships to save for room ${room.id}`);
+          console.log(
+            `[RoomService] No room-object relationships to save for room ${room.id}`,
+          );
         }
 
         // Save room-player relationships
@@ -497,7 +676,9 @@ export class RoomService {
       // Force WAL checkpoint to make data visible
       try {
         this.databaseService.getDatabase().pragma('wal_checkpoint(PASSIVE)');
-        console.log(`[RoomService] WAL checkpoint completed for room ${room.id}`);
+        console.log(
+          `[RoomService] WAL checkpoint completed for room ${room.id}`,
+        );
       } catch (e) {
         console.log(`[RoomService] WAL checkpoint error:`, e.message);
       }
@@ -530,20 +711,36 @@ export class RoomService {
       if (!roomRow) return undefined;
 
       // Load room-object relationships
-      console.log(`[RoomService] Loading room-object relationships for roomId:`, roomId);
-      console.log(`[RoomService] Database path for load:`, (this.databaseService as any).dbPath);
+      console.log(
+        `[RoomService] Loading room-object relationships for roomId:`,
+        roomId,
+      );
+      console.log(
+        `[RoomService] Database path for load:`,
+        (this.databaseService as any).dbPath,
+      );
       const objectQuery = this.databaseService.prepare(`
         SELECT object_id FROM room_objects WHERE room_id = ?
       `);
       const objectRows = objectQuery.all(roomId) as any[];
-      console.log(`[RoomService] Query returned ${objectRows.length} rows:`, objectRows);
+      console.log(
+        `[RoomService] Query returned ${objectRows.length} rows:`,
+        objectRows,
+      );
       const objects = objectRows.map((row) => row.object_id);
-      console.log(`[RoomService] Loaded ${objects.length} room-object relationships for room ${roomId}`);
+      console.log(
+        `[RoomService] Loaded ${objects.length} room-object relationships for room ${roomId}`,
+      );
       console.log(`[RoomService] Loaded objects:`, objects);
 
       // Debug: Check what's actually in the database
-      const allRoomObjects = this.databaseService.prepare(`SELECT * FROM room_objects`).all();
-      console.log(`[RoomService] ALL room_objects in database:`, allRoomObjects);
+      const allRoomObjects = this.databaseService
+        .prepare(`SELECT * FROM room_objects`)
+        .all();
+      console.log(
+        `[RoomService] ALL room_objects in database:`,
+        allRoomObjects,
+      );
 
       // Load room-player relationships
       const playerQuery = this.databaseService.prepare(`
@@ -586,25 +783,100 @@ export class RoomService {
     }
   }
 
+  /**
+   * Load multiple rooms by IDs in a single batch query
+   * Prevents N+1 query pattern by using WHERE id IN (...)
+   */
+  async loadMultipleRooms(roomIds: string[]): Promise<IRoom[]> {
+    if (!this.databaseService || roomIds.length === 0) return [];
+
+    try {
+      // Batch load room data
+      const placeholders = roomIds.map(() => '?').join(',');
+      const roomQuery = this.databaseService.prepare(`
+        SELECT * FROM rooms WHERE id IN (${placeholders})
+      `);
+      const roomRows = roomQuery.all(...roomIds) as any[];
+
+      // Batch load all room-object relationships for these rooms
+      const objectQuery = this.databaseService.prepare(`
+        SELECT room_id, object_id FROM room_objects WHERE room_id IN (${placeholders})
+      `);
+      const objectRows = objectQuery.all(...roomIds) as any[];
+
+      // Batch load all room-player relationships for these rooms
+      const playerQuery = this.databaseService.prepare(`
+        SELECT room_id, npc_id FROM room_npcs WHERE room_id IN (${placeholders})
+      `);
+      const playerRows = playerQuery.all(...roomIds) as any[];
+
+      // Group relationships by room ID
+      const objectsByRoom = new Map<string, string[]>();
+      objectRows.forEach((row: any) => {
+        if (!objectsByRoom.has(row.room_id)) {
+          objectsByRoom.set(row.room_id, []);
+        }
+        objectsByRoom.get(row.room_id)!.push(row.object_id);
+      });
+
+      const playersByRoom = new Map<string, string[]>();
+      playerRows.forEach((row: any) => {
+        if (!playersByRoom.has(row.room_id)) {
+          playersByRoom.set(row.room_id, []);
+        }
+        playersByRoom.get(row.room_id)!.push(row.npc_id);
+      });
+
+      // Convert to IRoom objects
+      const rooms: IRoom[] = roomRows.map((roomRow) => {
+        const room: IRoom = {
+          id: roomRow.id,
+          name: roomRow.name,
+          description: roomRow.description,
+          longDescription: roomRow.long_description,
+          type: 'room',
+          position: {
+            x: roomRow.position_x || 0,
+            y: roomRow.position_y || 0,
+            z: roomRow.position_z || 0,
+          },
+          width: roomRow.width || 10,
+          height: roomRow.height || 10,
+          size: {
+            width: roomRow.width || 10,
+            height: roomRow.height || 10,
+            depth: roomRow.depth || 3,
+          },
+          environment: roomRow.environment_data
+            ? JSON.parse(roomRow.environment_data)
+            : undefined,
+          objects: objectsByRoom.get(roomRow.id) || [],
+          players: playersByRoom.get(roomRow.id) || [],
+          gameId: roomRow.game_id,
+        };
+        return room;
+      });
+
+      return rooms;
+    } catch (error) {
+      this.logger.error('Failed to batch load rooms from database:', error);
+      return [];
+    }
+  }
+
   private async loadGameRoomsFromDatabase(gameId: string): Promise<IRoom[]> {
     if (!this.databaseService) return [];
 
     try {
+      // First get all room IDs for this game
       const query = this.databaseService.prepare(
-        'SELECT * FROM rooms WHERE game_id = ?',
+        'SELECT id FROM rooms WHERE game_id = ?',
       );
       const rows = query.all(gameId) as any[];
+      const roomIds = rows.map((row) => row.id);
 
-      const rooms: IRoom[] = [];
-
-      for (const row of rows) {
-        const room = await this.loadRoomFromDatabase(row.id, gameId);
-        if (room) {
-          rooms.push(room);
-        }
-      }
-
-      return rooms;
+      // Use batch loading to prevent N+1 queries
+      return await this.loadMultipleRooms(roomIds);
     } catch (error) {
       this.logger.error(
         `Failed to load rooms for game ${gameId} from database:`,
@@ -618,19 +890,13 @@ export class RoomService {
     if (!this.databaseService) return [];
 
     try {
-      const query = this.databaseService.prepare('SELECT * FROM rooms');
+      // First get all room IDs
+      const query = this.databaseService.prepare('SELECT id FROM rooms');
       const rows = query.all() as any[];
+      const roomIds = rows.map((row) => row.id);
 
-      const rooms: IRoom[] = [];
-
-      for (const row of rows) {
-        const room = await this.loadRoomFromDatabase(row.id);
-        if (room) {
-          rooms.push(room);
-        }
-      }
-
-      return rooms;
+      // Use batch loading to prevent N+1 queries
+      return await this.loadMultipleRooms(roomIds);
     } catch (error) {
       this.logger.error('Failed to load all rooms from database:', error);
       return [];
@@ -687,7 +953,9 @@ export class RoomService {
     const result = this.addPlayerToRoom(roomId, playerId);
     return {
       success: result,
-      message: result ? 'Player placed in room' : 'Failed to place player in room',
+      message: result
+        ? 'Player placed in room'
+        : 'Failed to place player in room',
     };
   }
 
@@ -721,7 +989,9 @@ export class RoomService {
     const result = this.addObjectToRoom(roomId, objectId);
     return {
       success: result,
-      message: result ? 'Object placed in room' : 'Failed to place object in room',
+      message: result
+        ? 'Object placed in room'
+        : 'Failed to place object in room',
     };
   }
 

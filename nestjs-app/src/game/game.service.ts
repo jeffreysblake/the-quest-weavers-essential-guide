@@ -7,6 +7,7 @@ import { PlayerService } from '../entity/player.service';
 import { ObjectService } from '../entity/object.service';
 import { DatabaseService } from '../database/database.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Mutex, withTimeout } from 'async-mutex';
 
 export interface GameSession {
   gameId: string;
@@ -34,11 +35,39 @@ export interface CommandResult {
     text: string;
     choices?: string[];
   };
+  combatResult?: {
+    damage?: number;
+    targetDefeated?: boolean;
+    targetHealthRemaining?: number;
+    targetMaxHealth?: number;
+    experienceGained?: number;
+    leveledUp?: boolean;
+    newLevel?: number;
+  };
 }
 
+/**
+ * CONCURRENCY PROTECTION:
+ * - Uses Mutex locks to prevent race conditions in game session management
+ * - Map-level lock protects the gameSessions Map from concurrent modifications
+ * - Prevents duplicate game sessions and lost updates
+ * - All locks have 5-second timeout to prevent permanent deadlocks
+ *
+ * RESOURCE LIMITS (DOS/OOM Prevention):
+ * - Max sessions: 10000 (LRU eviction when exceeded)
+ * - Auto-cleanup sessions inactive > 24 hours
+ */
 @Injectable()
 export class GameService {
   private gameSessions = new Map<string, GameSession>();
+
+  // Concurrency protection
+  private readonly mapLock = withTimeout(new Mutex(), 5000);
+  private readonly LOCK_TIMEOUT = 5000;
+
+  // Resource limits
+  private readonly MAX_SESSIONS = 10000;
+  private readonly SESSION_INACTIVE_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours in ms
 
   constructor(
     private gameStateService: GameStateService,
@@ -51,41 +80,71 @@ export class GameService {
   ) {}
 
   // Create a new game session
+  // THREAD-SAFE: Acquires map lock to prevent duplicate game session creation
+  // RESOURCE LIMIT: Max 10000 sessions with LRU eviction
   async createGame(): Promise<{ gameId: string; gameState: any }> {
-    const gameId = uuidv4();
+    return await this.mapLock.runExclusive(async () => {
+      // RESOURCE LIMIT: Auto-cleanup inactive sessions before creating new one
+      this.cleanupInactiveSessions(this.SESSION_INACTIVE_TIMEOUT);
 
-    // First, save the game record to the database to satisfy foreign key constraints
-    await this.saveGameToDatabase(gameId);
+      // RESOURCE LIMIT: If at max sessions, evict least recently used session
+      if (this.gameSessions.size >= this.MAX_SESSIONS) {
+        this.evictLRUSession();
+      }
 
-    // Create initial player with gameId
-    const player = this.playerService.createPlayer({
-      name: 'Adventurer',
-      position: { x: 0, y: 0, z: 0 },
-      health: 100,
-      inventory: [],
-      level: 1,
-      experience: 0,
-      gameId: gameId,
+      const gameId = uuidv4();
+
+      // First, save the game record to the database to satisfy foreign key constraints
+      await this.saveGameToDatabase(gameId);
+
+      // Create initial player with gameId
+      const player = await this.playerService.createPlayer({
+        name: 'Adventurer',
+        position: { x: 0, y: 0, z: 0 },
+        health: 100,
+        inventory: [],
+        level: 1,
+        experience: 0,
+        gameId: gameId,
+      });
+
+      // Load or create initial game world
+      await this.initializeGameWorld(gameId);
+
+      // Create game session
+      const session: GameSession = {
+        gameId,
+        playerId: player.id,
+        createdAt: new Date(),
+        lastActive: new Date(),
+      };
+
+      this.gameSessions.set(gameId, session);
+
+      // Get initial game state
+      let gameState = await this.gameStateService.getGameState(gameId);
+
+      // Defensive null check - create initial state if null/undefined
+      if (!gameState) {
+        console.error(
+          `[GameService] getGameState returned null for gameId: ${gameId}, creating new state`,
+        );
+        gameState = {
+          gameId,
+          rooms: {},
+          npcs: {},
+          items: {},
+          metadata: {
+            version: '2.1.0',
+            initialized: false,
+          },
+        };
+      }
+
+      gameState.player = player;
+
+      return { gameId, gameState };
     });
-
-    // Load or create initial game world
-    await this.initializeGameWorld(gameId);
-
-    // Create game session
-    const session: GameSession = {
-      gameId,
-      playerId: player.id,
-      createdAt: new Date(),
-      lastActive: new Date(),
-    };
-
-    this.gameSessions.set(gameId, session);
-
-    // Get initial game state
-    const gameState = await this.gameStateService.getGameState(gameId);
-    gameState.player = player;
-
-    return { gameId, gameState };
   }
 
   // Get existing game session
@@ -99,7 +158,25 @@ export class GameService {
     session.lastActive = new Date();
 
     // Get current game state
-    const gameState = await this.gameStateService.getGameState(gameId);
+    let gameState = await this.gameStateService.getGameState(gameId);
+
+    // Defensive null check - create initial state if null/undefined
+    if (!gameState) {
+      console.error(
+        `[GameService] getGameState returned null for gameId: ${gameId}, creating new state`,
+      );
+      gameState = {
+        gameId,
+        rooms: {},
+        npcs: {},
+        items: {},
+        metadata: {
+          version: '2.1.0',
+          initialized: false,
+        },
+      };
+    }
+
     const player = this.playerService.getPlayer(session.playerId);
     gameState.player = player;
 
@@ -405,9 +482,13 @@ export class GameService {
     };
   }
 
-  // Clean up inactive sessions
-  cleanupInactiveSessions(maxInactiveTime: number = 3600000): number {
-    // 1 hour default
+  /**
+   * Clean up inactive sessions
+   * RESOURCE LIMIT: Auto-cleanup sessions inactive > specified time (default 24 hours)
+   */
+  cleanupInactiveSessions(
+    maxInactiveTime: number = this.SESSION_INACTIVE_TIMEOUT,
+  ): number {
     const now = new Date();
     let cleaned = 0;
 
@@ -415,10 +496,40 @@ export class GameService {
       if (now.getTime() - session.lastActive.getTime() > maxInactiveTime) {
         this.gameSessions.delete(gameId);
         cleaned++;
+        this.logger.log(
+          `Cleaned up inactive session ${gameId} (inactive for ${((now.getTime() - session.lastActive.getTime()) / 1000 / 60 / 60).toFixed(1)} hours)`,
+        );
       }
     }
 
+    if (cleaned > 0) {
+      this.logger.log(`Cleaned up ${cleaned} inactive sessions`);
+    }
+
     return cleaned;
+  }
+
+  /**
+   * Evict least recently used session when max sessions limit is reached
+   * RESOURCE LIMIT: Part of max 10000 sessions enforcement
+   */
+  private evictLRUSession(): void {
+    let oldestSession: { gameId: string; lastActive: Date } | null = null;
+
+    // Find the least recently used session
+    for (const [gameId, session] of this.gameSessions.entries()) {
+      if (!oldestSession || session.lastActive < oldestSession.lastActive) {
+        oldestSession = { gameId, lastActive: session.lastActive };
+      }
+    }
+
+    // Evict the oldest session
+    if (oldestSession) {
+      this.gameSessions.delete(oldestSession.gameId);
+      this.logger.warn(
+        `Evicted LRU session ${oldestSession.gameId} to maintain max sessions limit of ${this.MAX_SESSIONS}`,
+      );
+    }
   }
 
   // Save game record to database to satisfy foreign key constraints

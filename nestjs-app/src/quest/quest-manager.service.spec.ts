@@ -34,7 +34,7 @@ describe('QuestManagerService', () => {
     }).compile();
 
     service = module.get<QuestManagerService>(QuestManagerService);
-    eventEmitter = module.get(EventEmitterService) as jest.Mocked<EventEmitterService>;
+    eventEmitter = module.get(EventEmitterService);
   });
 
   afterEach(() => {
@@ -173,7 +173,11 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      const result = await service.startQuest('nonexistent', 'player1', context);
+      const result = await service.startQuest(
+        'nonexistent',
+        'player1',
+        context,
+      );
 
       expect(result.success).toBe(false);
       expect(result.message).toContain('not found');
@@ -301,7 +305,9 @@ describe('QuestManagerService', () => {
       const result = await service.startQuest('quest2', 'player1', context);
 
       expect(result.success).toBe(false);
-      expect(result.prerequisitesFailed).toContain('Quest quest1 must be completed');
+      expect(result.prerequisitesFailed).toContain(
+        'Quest quest1 must be completed',
+      );
     });
 
     it('should allow quest start when quest prerequisite is met', async () => {
@@ -408,7 +414,8 @@ describe('QuestManagerService', () => {
         prerequisites: [
           {
             type: 'custom',
-            customCheck: async (context) => context.playerId === 'special_player',
+            customCheck: async (context) =>
+              context.playerId === 'special_player',
           },
         ],
       };
@@ -537,7 +544,13 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      const result = await service.updateObjective('player1', 'quest1', 'obj1', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        1,
+        context,
+      );
 
       expect(result.success).toBe(true);
       expect(result.objectiveCompleted).toBe(false);
@@ -556,7 +569,13 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      const result = await service.updateObjective('player1', 'quest1', 'obj1', 5, context);
+      const result = await service.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        5,
+        context,
+      );
 
       expect(result.success).toBe(true);
       // When quest auto-completes, result comes from completeQuest() which has questCompleted but not objectiveCompleted
@@ -593,7 +612,13 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      const result = await service.updateObjective('player1', 'nonexistent', 'obj1', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        'nonexistent',
+        'obj1',
+        1,
+        context,
+      );
 
       expect(result.success).toBe(false);
       expect(result.message).toContain('not found');
@@ -609,7 +634,13 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      const result = await service.updateObjective('player1', 'quest1', 'nonexistent', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        'quest1',
+        'nonexistent',
+        1,
+        context,
+      );
 
       expect(result.success).toBe(false);
       expect(result.message).toContain('not found');
@@ -654,12 +685,24 @@ describe('QuestManagerService', () => {
       };
 
       await service.startQuest('multi-quest', 'player2', context);
-      await service.updateObjective('player2', 'multi-quest', 'obj1', 5, context);
+      await service.updateObjective(
+        'player2',
+        'multi-quest',
+        'obj1',
+        5,
+        context,
+      );
 
       // Clear the mock to check only the next call
       eventEmitter.emit.mockClear();
 
-      const result = await service.updateObjective('player2', 'multi-quest', 'obj1', 1, context);
+      const result = await service.updateObjective(
+        'player2',
+        'multi-quest',
+        'obj1',
+        1,
+        context,
+      );
 
       expect(result.success).toBe(false);
       expect(result.message).toContain('already completed');
@@ -728,7 +771,13 @@ describe('QuestManagerService', () => {
       await service.startQuest('quest2', 'player2', context);
 
       await service.updateObjective('player2', 'quest2', 'obj1', 5, context);
-      const result = await service.updateObjective('player2', 'quest2', 'obj2', 1, context);
+      const result = await service.updateObjective(
+        'player2',
+        'quest2',
+        'obj2',
+        1,
+        context,
+      );
 
       expect(result.questCompleted).toBe(true);
     });
@@ -771,7 +820,13 @@ describe('QuestManagerService', () => {
 
       await service.startQuest('quest3', 'player3', context);
 
-      const result = await service.updateObjective('player3', 'quest3', 'obj1', 1, context);
+      const result = await service.updateObjective(
+        'player3',
+        'quest3',
+        'obj1',
+        1,
+        context,
+      );
 
       expect(result.questCompleted).toBe(true);
     });
@@ -790,7 +845,13 @@ describe('QuestManagerService', () => {
       await service.updateObjective('player1', 'quest1', 'obj1', 5, context);
 
       // Try to update again
-      const result = await service.updateObjective('player1', 'quest1', 'obj1', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        1,
+        context,
+      );
 
       expect(result.success).toBe(false);
     });
@@ -836,7 +897,9 @@ describe('QuestManagerService', () => {
       await service.updateObjective('player1', 'quest1', 'obj1', 1, context);
 
       expect(context.playerInventory.length).toBe(10);
-      expect(context.playerInventory.filter((item) => item === 'gold_coin').length).toBe(10);
+      expect(
+        context.playerInventory.filter((item) => item === 'gold_coin').length,
+      ).toBe(10);
     });
 
     it('should grant flag rewards', async () => {
@@ -1046,7 +1109,13 @@ describe('QuestManagerService', () => {
       };
 
       await service.startQuest('quest1', 'player1', context);
-      const result = await service.updateObjective('player1', 'quest1', 'obj1', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        1,
+        context,
+      );
 
       expect(result.nextQuestUnlocked).toBe('quest2');
 
@@ -1094,7 +1163,13 @@ describe('QuestManagerService', () => {
       };
 
       await service.startQuest('quest1', 'player1', context);
-      const result = await service.updateObjective('player1', 'quest1', 'obj1', 1, context);
+      const result = await service.updateObjective(
+        'player1',
+        'quest1',
+        'obj1',
+        1,
+        context,
+      );
 
       expect(result.nextQuestUnlocked).toBeUndefined();
 
@@ -1292,7 +1367,11 @@ describe('QuestManagerService', () => {
       // Wait for time limit to expire
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const failed = await service.checkFailConditions('player1', 'quest1', context);
+      const failed = await service.checkFailConditions(
+        'player1',
+        'quest1',
+        context,
+      );
 
       expect(failed).toBe(true);
 
@@ -1323,7 +1402,11 @@ describe('QuestManagerService', () => {
 
       await service.startQuest('quest1', 'player1', context);
 
-      const failed = await service.checkFailConditions('player1', 'quest1', context);
+      const failed = await service.checkFailConditions(
+        'player1',
+        'quest1',
+        context,
+      );
 
       expect(failed).toBe(false);
     });
@@ -1356,9 +1439,16 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      await service.startQuest('quest1', 'player1', { ...context, playerFlags: {} });
+      await service.startQuest('quest1', 'player1', {
+        ...context,
+        playerFlags: {},
+      });
 
-      const failed = await service.checkFailConditions('player1', 'quest1', context);
+      const failed = await service.checkFailConditions(
+        'player1',
+        'quest1',
+        context,
+      );
 
       expect(failed).toBe(true);
     });
@@ -1373,7 +1463,11 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      const failed = await service.checkFailConditions('player1', 'nonexistent', context);
+      const failed = await service.checkFailConditions(
+        'player1',
+        'nonexistent',
+        context,
+      );
 
       expect(failed).toBe(false);
     });
@@ -1398,7 +1492,11 @@ describe('QuestManagerService', () => {
         completedQuests: [],
       };
 
-      const failed = await service.checkFailConditions('player1', 'quest1', context);
+      const failed = await service.checkFailConditions(
+        'player1',
+        'quest1',
+        context,
+      );
 
       expect(failed).toBe(false);
     });
@@ -1520,8 +1618,14 @@ describe('QuestManagerService', () => {
       await service.startQuest('quest2', 'player1', context);
       await service.updateObjective('player1', 'quest1', 'obj1', 1, context);
 
-      const activeQuests = service.getPlayerQuests('player1', QuestState.ACTIVE);
-      const completedQuests = service.getPlayerQuests('player1', QuestState.COMPLETED);
+      const activeQuests = service.getPlayerQuests(
+        'player1',
+        QuestState.ACTIVE,
+      );
+      const completedQuests = service.getPlayerQuests(
+        'player1',
+        QuestState.COMPLETED,
+      );
 
       expect(activeQuests.length).toBe(1);
       expect(completedQuests.length).toBe(1);

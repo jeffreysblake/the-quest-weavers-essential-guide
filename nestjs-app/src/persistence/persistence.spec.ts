@@ -16,7 +16,9 @@ describe('Persistence System Integration', () => {
       onModuleDestroy: jest.fn().mockResolvedValue(undefined),
       healthCheck: jest.fn().mockResolvedValue(true),
       saveVersion: jest.fn().mockReturnValue(1),
-      getVersion: jest.fn().mockResolvedValue({ name: 'Test Room', description: 'A test room' }),
+      getVersion: jest
+        .fn()
+        .mockResolvedValue({ name: 'Test Room', description: 'A test room' }),
       listVersions: jest.fn().mockReturnValue([]),
       saveEntity: jest.fn().mockResolvedValue(undefined),
       getEntity: jest.fn().mockResolvedValue(null),

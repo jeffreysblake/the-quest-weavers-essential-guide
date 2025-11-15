@@ -84,7 +84,14 @@ export interface IEnvironmentState {
   lighting?: number; // 0-100 brightness
   temperature?: number;
   weather?: 'clear' | 'rain' | 'snow' | 'storm' | 'fog';
-  timeOfDay?: 'dawn' | 'morning' | 'noon' | 'afternoon' | 'dusk' | 'night' | 'midnight';
+  timeOfDay?:
+    | 'dawn'
+    | 'morning'
+    | 'noon'
+    | 'afternoon'
+    | 'dusk'
+    | 'night'
+    | 'midnight';
   customState: Record<string, any>;
   lastModified: string;
 }

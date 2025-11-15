@@ -187,7 +187,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         };
 
         // Should still work because importGameState sets the gameId
-        await service.importGameState('test-game', JSON.stringify(corruptedState));
+        await service.importGameState(
+          'test-game',
+          JSON.stringify(corruptedState),
+        );
         const state = await service.getGameState('test-game');
         expect(state.gameId).toBe('test-game');
       });
@@ -200,7 +203,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           items: {},
         };
 
-        await service.importGameState('test-game', JSON.stringify(corruptedState));
+        await service.importGameState(
+          'test-game',
+          JSON.stringify(corruptedState),
+        );
         const state = await service.getGameState('test-game');
         expect(state.player).toBeNull();
       });
@@ -212,7 +218,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           items: {},
         };
 
-        await service.importGameState('test-game', JSON.stringify(corruptedState));
+        await service.importGameState(
+          'test-game',
+          JSON.stringify(corruptedState),
+        );
         const state = await service.getGameState('test-game');
         expect(state.rooms).toBeUndefined();
       });
@@ -224,7 +233,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           rooms: {},
         };
 
-        await service.importGameState('test-game', JSON.stringify(corruptedState));
+        await service.importGameState(
+          'test-game',
+          JSON.stringify(corruptedState),
+        );
         const state = await service.getGameState('test-game');
         expect(state.items).toBeUndefined();
       });
@@ -242,7 +254,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           items: {},
         };
 
-        await service.importGameState('test-game', JSON.stringify(corruptedState));
+        await service.importGameState(
+          'test-game',
+          JSON.stringify(corruptedState),
+        );
         const state = await service.getGameState('test-game');
         expect(state.player.id).toBe('player-1');
       });
@@ -259,7 +274,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           },
         };
 
-        await service.importGameState('test-game', JSON.stringify(corruptedState));
+        await service.importGameState(
+          'test-game',
+          JSON.stringify(corruptedState),
+        );
         const state = await service.getGameState('test-game');
         expect(state.rooms['room-1'].position).toBe('invalid');
       });
@@ -277,7 +295,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           },
         };
 
-        await service.importGameState('test-game', JSON.stringify(corruptedState));
+        await service.importGameState(
+          'test-game',
+          JSON.stringify(corruptedState),
+        );
         const state = await service.getGameState('test-game');
         expect(state.items['item-1'].name).toBe(123);
       });
@@ -304,9 +325,9 @@ describe('Save File Corruption Detection and Recovery', () => {
       });
 
       it('should handle empty string as save data', async () => {
-        await expect(
-          service.importGameState('test-game', ''),
-        ).rejects.toThrow('Failed to import game state');
+        await expect(service.importGameState('test-game', '')).rejects.toThrow(
+          'Failed to import game state',
+        );
       });
     });
   });
@@ -372,7 +393,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           // Missing rooms, items, npcs
         };
 
-        await service.importGameState('partial-test', JSON.stringify(partialState));
+        await service.importGameState(
+          'partial-test',
+          JSON.stringify(partialState),
+        );
         const state = await service.getGameState('partial-test');
 
         expect(state.player).toBeDefined();
@@ -408,7 +432,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           },
         };
 
-        await service.importGameState('metadata-test', JSON.stringify(stateWithMetadata));
+        await service.importGameState(
+          'metadata-test',
+          JSON.stringify(stateWithMetadata),
+        );
         const state = await service.getGameState('metadata-test');
 
         expect(state.metadata.version).toBe('2.1.0');
@@ -424,7 +451,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           player: { id: 'p1', name: 'Hero' },
         };
 
-        await service.importGameState('correct-id', JSON.stringify(wrongGameId));
+        await service.importGameState(
+          'correct-id',
+          JSON.stringify(wrongGameId),
+        );
         const state = await service.getGameState('correct-id');
 
         // GameStateService auto-corrects the gameId
@@ -439,7 +469,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           anotherField: { nested: 'data' },
         };
 
-        await service.importGameState('extra-test', JSON.stringify(stateWithExtra));
+        await service.importGameState(
+          'extra-test',
+          JSON.stringify(stateWithExtra),
+        );
         const state = await service.getGameState('extra-test');
 
         expect(state['unknownField']).toBe('unknown-value');
@@ -481,7 +514,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         const invalidState = createValidGameState();
         invalidState.player.roomId = 'non-existent-room';
 
-        await service.importGameState('validation-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'validation-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('validation-test');
 
         // The state loads but has invalid reference
@@ -493,7 +529,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         const invalidState = createValidGameState();
         invalidState.rooms['room-1'].objects = ['item-1', 'non-existent-item'];
 
-        await service.importGameState('validation-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'validation-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('validation-test');
 
         expect(state.rooms['room-1'].objects).toContain('non-existent-item');
@@ -504,7 +543,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         const invalidState = createValidGameState();
         invalidState.player.inventory = ['item-1', 'fake-item', 'item-2'];
 
-        await service.importGameState('validation-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'validation-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('validation-test');
 
         expect(state.player.inventory).toContain('fake-item');
@@ -522,7 +564,10 @@ describe('Save File Corruption Detection and Recovery', () => {
           position: { x: 0, y: 0, z: 0 },
         };
 
-        await service.importGameState('validation-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'validation-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('validation-test');
 
         expect(state.items['orphan-item']).toBeDefined();
@@ -546,7 +591,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         circularState.rooms['room-2'].connections = { north: 'room-3' };
         circularState.rooms['room-3'].connections = { north: 'room-1' };
 
-        await service.importGameState('circular-test', JSON.stringify(circularState));
+        await service.importGameState(
+          'circular-test',
+          JSON.stringify(circularState),
+        );
         const state = await service.getGameState('circular-test');
 
         // Circular references are valid in this case (rooms can connect in loops)
@@ -560,7 +608,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         // Room connects to itself
         selfRefState.rooms['room-1'].connections = { north: 'room-1' };
 
-        await service.importGameState('self-ref-test', JSON.stringify(selfRefState));
+        await service.importGameState(
+          'self-ref-test',
+          JSON.stringify(selfRefState),
+        );
         const state = await service.getGameState('self-ref-test');
 
         expect(state.rooms['room-1'].connections.north).toBe('room-1');
@@ -572,7 +623,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         const invalidState = createValidGameState();
         invalidState.player.health = -50;
 
-        await service.importGameState('range-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'range-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('range-test');
 
         // The invalid value is preserved (no automatic validation)
@@ -584,7 +638,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         invalidState.player.health = 150;
         invalidState.player.maxHealth = 100;
 
-        await service.importGameState('range-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'range-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('range-test');
 
         expect(state.player.health).toBe(150);
@@ -596,7 +653,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         const invalidState = createValidGameState();
         invalidState.player.position = { x: NaN, y: Infinity, z: -Infinity };
 
-        await service.importGameState('coord-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'coord-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('coord-test');
 
         // JSON.stringify converts NaN and Infinity to null
@@ -609,7 +669,10 @@ describe('Save File Corruption Detection and Recovery', () => {
         const invalidState = createValidGameState();
         delete invalidState.player.roomId;
 
-        await service.importGameState('relationship-test', JSON.stringify(invalidState));
+        await service.importGameState(
+          'relationship-test',
+          JSON.stringify(invalidState),
+        );
         const state = await service.getGameState('relationship-test');
 
         expect(state.player.roomId).toBeUndefined();
@@ -636,7 +699,10 @@ describe('Save File Corruption Detection and Recovery', () => {
       it('should handle save file with only gameId', async () => {
         const minimalState = { gameId: 'minimal-game' };
 
-        await service.importGameState('minimal-game', JSON.stringify(minimalState));
+        await service.importGameState(
+          'minimal-game',
+          JSON.stringify(minimalState),
+        );
         const state = await service.getGameState('minimal-game');
 
         expect(state.gameId).toBe('minimal-game');
@@ -652,10 +718,16 @@ describe('Save File Corruption Detection and Recovery', () => {
           futureFeature: 'some-value',
         };
 
-        await service.importGameState('unknown-test', JSON.stringify(stateWithUnknown));
+        await service.importGameState(
+          'unknown-test',
+          JSON.stringify(stateWithUnknown),
+        );
         const state = await service.getGameState('unknown-test');
 
-        expect(state['customData']).toEqual({ score: 1000, achievements: ['first-kill'] });
+        expect(state['customData']).toEqual({
+          score: 1000,
+          achievements: ['first-kill'],
+        });
         expect(state['futureFeature']).toBe('some-value');
       });
     });
@@ -794,9 +866,7 @@ describe('Save File Corruption Detection and Recovery', () => {
               containedObjects: [
                 {
                   id: 'nested-1',
-                  containedObjects: [
-                    { id: 'nested-2', data: 'deep value' },
-                  ],
+                  containedObjects: [{ id: 'nested-2', data: 'deep value' }],
                 },
               ],
             },
@@ -807,7 +877,9 @@ describe('Save File Corruption Detection and Recovery', () => {
       await service.importGameState('deep-test', JSON.stringify(deepState));
       const state = await service.getGameState('deep-test');
 
-      expect(state.player.inventory[0].containedObjects[0].containedObjects[0].data).toBe('deep value');
+      expect(
+        state.player.inventory[0].containedObjects[0].containedObjects[0].data,
+      ).toBe('deep value');
     });
 
     it('should handle deleting and re-creating save slots', async () => {
@@ -849,8 +921,12 @@ describe('Save File Corruption Detection and Recovery', () => {
       // Compare (excluding gameId which changes, and dates which are added)
       expect(importedState.player.name).toBe(originalState.player.name);
       expect(importedState.player.health).toBe(originalState.player.health);
-      expect(Object.keys(importedState.rooms).length).toBe(Object.keys(originalState.rooms).length);
-      expect(Object.keys(importedState.items).length).toBe(Object.keys(originalState.items).length);
+      expect(Object.keys(importedState.rooms).length).toBe(
+        Object.keys(originalState.rooms).length,
+      );
+      expect(Object.keys(importedState.items).length).toBe(
+        Object.keys(originalState.items).length,
+      );
     });
 
     it('should handle cleanup of game states without affecting save slots', async () => {
