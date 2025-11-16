@@ -369,10 +369,10 @@ describe('ObjectService (Integration)', () => {
   });
 
   describe('Object Updates', () => {
-    it('should update object properties', () => {
+    it('should update object properties', async () => {
       const obj = service.createObject({ name: 'Test', objectType: 'item' });
 
-      const success = service.updateObject(obj.id, {
+      const success = await service.updateObject(obj.id, {
         name: 'Updated Name',
         description: 'New description',
       });
@@ -384,20 +384,20 @@ describe('ObjectService (Integration)', () => {
       expect(updated?.description).toBe('New description');
     });
 
-    it('should return false when updating non-existent object', () => {
-      const success = service.updateObject('non-existent', { name: 'Test' });
+    it('should return false when updating non-existent object', async () => {
+      const success = await service.updateObject('non-existent', { name: 'Test' });
       expect(success).toBe(false);
     });
 
-    it('should use update alias', () => {
+    it('should use update alias', async () => {
       const obj = service.createObject({ name: 'Test', objectType: 'item' });
-      const success = service.update(obj.id, { name: 'Updated' });
+      const success = await service.update(obj.id, { name: 'Updated' });
 
       expect(success).toBe(true);
       expect(service.getObject(obj.id)?.name).toBe('Updated');
     });
 
-    it('should update object position', () => {
+    it('should update object position', async () => {
       const obj = service.createObject({
         name: 'Test',
         objectType: 'item',
@@ -405,16 +405,16 @@ describe('ObjectService (Integration)', () => {
       });
 
       const newPosition = { x: 10, y: 20, z: 30 };
-      const success = service.updateObjectPosition(obj.id, newPosition);
+      const success = await service.updateObjectPosition(obj.id, newPosition);
 
       expect(success).toBe(true);
       const updated = service.getObject(obj.id);
       expect(updated?.position).toEqual(newPosition);
     });
 
-    it('should preserve object type when updating', () => {
+    it('should preserve object type when updating', async () => {
       const obj = service.createObject({ name: 'Test', objectType: 'item' });
-      service.updateObject(obj.id, { name: 'Updated' });
+      await service.updateObject(obj.id, { name: 'Updated' });
 
       const updated = service.getObject(obj.id);
       expect(updated?.type).toBe('object');
@@ -422,17 +422,17 @@ describe('ObjectService (Integration)', () => {
   });
 
   describe('Room Placement', () => {
-    it('should place object in room', () => {
+    it('should place object in room', async () => {
       const obj = service.createObject({ name: 'Sword', objectType: 'weapon' });
-      const success = service.placeInRoom(obj.id, 'room-123');
+      const success = await service.placeInRoom(obj.id, 'room-123');
 
       expect(success).toBe(true);
       const updated = service.getObject(obj.id);
       expect(updated?.roomId).toBe('room-123');
     });
 
-    it('should return false when placing non-existent object', () => {
-      const success = service.placeInRoom('non-existent', 'room-123');
+    it('should return false when placing non-existent object', async () => {
+      const success = await service.placeInRoom('non-existent', 'room-123');
       expect(success).toBe(false);
     });
 
@@ -448,7 +448,7 @@ describe('ObjectService (Integration)', () => {
   });
 
   describe('Spatial Relationships', () => {
-    it('should place object inside container', () => {
+    it('should place object inside container', async () => {
       const container = service.createObject({
         name: 'Chest',
         objectType: 'container',
@@ -462,7 +462,7 @@ describe('ObjectService (Integration)', () => {
         objectType: 'item',
       });
 
-      const success = service.placeObject(item.id, {
+      const success = await service.placeObject(item.id, {
         targetId: container.id,
         relationshipType: 'inside',
       });
@@ -478,7 +478,7 @@ describe('ObjectService (Integration)', () => {
       expect(updatedContainer?.containedObjects).toContain(item.id);
     });
 
-    it('should place object on top of furniture', () => {
+    it('should place object on top of furniture', async () => {
       const table = service.createObject({
         name: 'Table',
         objectType: 'furniture',
@@ -489,7 +489,7 @@ describe('ObjectService (Integration)', () => {
         objectType: 'item',
       });
 
-      const success = service.placeObject(book.id, {
+      const success = await service.placeObject(book.id, {
         targetId: table.id,
         relationshipType: 'on_top_of',
       });
@@ -501,7 +501,7 @@ describe('ObjectService (Integration)', () => {
       );
     });
 
-    it('should place object next to another object', () => {
+    it('should place object next to another object', async () => {
       const obj1 = service.createObject({
         name: 'Chair',
         objectType: 'furniture',
@@ -511,7 +511,7 @@ describe('ObjectService (Integration)', () => {
         objectType: 'furniture',
       });
 
-      const success = service.placeObject(obj1.id, {
+      const success = await service.placeObject(obj1.id, {
         targetId: obj2.id,
         relationshipType: 'next_to',
       });
@@ -519,14 +519,14 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(true);
     });
 
-    it('should place object underneath another object', () => {
+    it('should place object underneath another object', async () => {
       const rug = service.createObject({ name: 'Rug', objectType: 'item' });
       const table = service.createObject({
         name: 'Table',
         objectType: 'furniture',
       });
 
-      const success = service.placeObject(rug.id, {
+      const success = await service.placeObject(rug.id, {
         targetId: table.id,
         relationshipType: 'underneath',
       });
@@ -534,14 +534,14 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(true);
     });
 
-    it('should attach object to another object', () => {
+    it('should attach object to another object', async () => {
       const torch = service.createObject({ name: 'Torch', objectType: 'item' });
       const wall = service.createObject({
         name: 'Wall',
         objectType: 'furniture',
       });
 
-      const success = service.placeObject(torch.id, {
+      const success = await service.placeObject(torch.id, {
         targetId: wall.id,
         relationshipType: 'attached_to',
       });
@@ -549,7 +549,7 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(true);
     });
 
-    it('should not place object inside itself', () => {
+    it('should not place object inside itself', async () => {
       const container = service.createObject({
         name: 'Chest',
         objectType: 'container',
@@ -557,7 +557,7 @@ describe('ObjectService (Integration)', () => {
         canContain: true,
       });
 
-      const success = service.placeObject(container.id, {
+      const success = await service.placeObject(container.id, {
         targetId: container.id,
         relationshipType: 'inside',
       });
@@ -565,14 +565,14 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(false);
     });
 
-    it('should not place object inside non-container', () => {
+    it('should not place object inside non-container', async () => {
       const item = service.createObject({ name: 'Key', objectType: 'item' });
       const nonContainer = service.createObject({
         name: 'Rock',
         objectType: 'item',
       });
 
-      const success = service.placeObject(item.id, {
+      const success = await service.placeObject(item.id, {
         targetId: nonContainer.id,
         relationshipType: 'inside',
       });
@@ -580,7 +580,7 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(false);
     });
 
-    it('should not place object in locked container', () => {
+    it('should not place object in locked container', async () => {
       const container = service.createObject({
         name: 'Chest',
         objectType: 'container',
@@ -591,7 +591,7 @@ describe('ObjectService (Integration)', () => {
 
       const item = service.createObject({ name: 'Key', objectType: 'item' });
 
-      const success = service.placeObject(item.id, {
+      const success = await service.placeObject(item.id, {
         targetId: container.id,
         relationshipType: 'inside',
       });
@@ -599,7 +599,7 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(false);
     });
 
-    it('should not place object in closed container', () => {
+    it('should not place object in closed container', async () => {
       const container = service.createObject({
         name: 'Chest',
         objectType: 'container',
@@ -610,7 +610,7 @@ describe('ObjectService (Integration)', () => {
 
       const item = service.createObject({ name: 'Key', objectType: 'item' });
 
-      const success = service.placeObject(item.id, {
+      const success = await service.placeObject(item.id, {
         targetId: container.id,
         relationshipType: 'inside',
       });
@@ -618,7 +618,7 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(false);
     });
 
-    it('should respect container capacity limits', () => {
+    it('should respect container capacity limits', async () => {
       const container = service.createObject({
         name: 'Small Box',
         objectType: 'container',
@@ -642,30 +642,30 @@ describe('ObjectService (Integration)', () => {
       });
 
       expect(
-        service.placeObject(item1.id, {
+        await service.placeObject(item1.id, {
           targetId: container.id,
           relationshipType: 'inside',
         }),
       ).toBe(true);
       expect(
-        service.placeObject(item2.id, {
+        await service.placeObject(item2.id, {
           targetId: container.id,
           relationshipType: 'inside',
         }),
       ).toBe(true);
       expect(
-        service.placeObject(item3.id, {
+        await service.placeObject(item3.id, {
           targetId: container.id,
           relationshipType: 'inside',
         }),
       ).toBe(false);
     });
 
-    it('should not place on top of non-furniture objects', () => {
+    it('should not place on top of non-furniture objects', async () => {
       const item = service.createObject({ name: 'Item', objectType: 'item' });
       const book = service.createObject({ name: 'Book', objectType: 'item' });
 
-      const success = service.placeObject(book.id, {
+      const success = await service.placeObject(book.id, {
         targetId: item.id,
         relationshipType: 'on_top_of',
       });
@@ -673,7 +673,7 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(false);
     });
 
-    it('should return false for invalid relationship types', () => {
+    it('should return false for invalid relationship types', async () => {
       const obj1 = service.createObject({
         name: 'Object 1',
         objectType: 'item',
@@ -683,7 +683,7 @@ describe('ObjectService (Integration)', () => {
         objectType: 'item',
       });
 
-      const success = service.placeObject(obj1.id, {
+      const success = await service.placeObject(obj1.id, {
         targetId: obj2.id,
         relationshipType: 'invalid_type' as any,
       });
@@ -691,7 +691,7 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(false);
     });
 
-    it('should return false when placing non-existent object', () => {
+    it('should return false when placing non-existent object', async () => {
       const container = service.createObject({
         name: 'Chest',
         objectType: 'container',
@@ -699,7 +699,7 @@ describe('ObjectService (Integration)', () => {
         canContain: true,
       });
 
-      const success = service.placeObject('non-existent', {
+      const success = await service.placeObject('non-existent', {
         targetId: container.id,
         relationshipType: 'inside',
       });
@@ -707,10 +707,10 @@ describe('ObjectService (Integration)', () => {
       expect(success).toBe(false);
     });
 
-    it('should return false when placing into non-existent target', () => {
+    it('should return false when placing into non-existent target', async () => {
       const item = service.createObject({ name: 'Key', objectType: 'item' });
 
-      const success = service.placeObject(item.id, {
+      const success = await service.placeObject(item.id, {
         targetId: 'non-existent',
         relationshipType: 'inside',
       });
@@ -752,7 +752,7 @@ describe('ObjectService (Integration)', () => {
   });
 
   describe('Container Management', () => {
-    it('should remove object from container', () => {
+    it('should remove object from container', async () => {
       const container = service.createObject({
         name: 'Chest',
         objectType: 'container',
@@ -763,12 +763,12 @@ describe('ObjectService (Integration)', () => {
 
       const item = service.createObject({ name: 'Key', objectType: 'item' });
 
-      service.placeObject(item.id, {
+      await service.placeObject(item.id, {
         targetId: container.id,
         relationshipType: 'inside',
       });
 
-      const success = service.removeObjectFromContainer(item.id, container.id);
+      const success = await service.removeObjectFromContainer(item.id, container.id);
 
       expect(success).toBe(true);
 
@@ -779,16 +779,16 @@ describe('ObjectService (Integration)', () => {
       expect(updatedItem?.spatialRelationship).toBeUndefined();
     });
 
-    it('should return false when removing from non-existent container', () => {
+    it('should return false when removing from non-existent container', async () => {
       const item = service.createObject({ name: 'Key', objectType: 'item' });
-      const success = service.removeObjectFromContainer(
+      const success = await service.removeObjectFromContainer(
         item.id,
         'non-existent',
       );
       expect(success).toBe(false);
     });
 
-    it('should return false when removing object not in container', () => {
+    it('should return false when removing object not in container', async () => {
       const container = service.createObject({
         name: 'Chest',
         objectType: 'container',
@@ -799,7 +799,7 @@ describe('ObjectService (Integration)', () => {
 
       const item = service.createObject({ name: 'Key', objectType: 'item' });
 
-      const success = service.removeObjectFromContainer(item.id, container.id);
+      const success = await service.removeObjectFromContainer(item.id, container.id);
       expect(success).toBe(false);
     });
 
@@ -1226,9 +1226,9 @@ describe('ObjectService (Integration)', () => {
       expect(obj.health).toBeUndefined();
     });
 
-    it('should handle updating with empty updates object', () => {
+    it('should handle updating with empty updates object', async () => {
       const obj = service.createObject({ name: 'Test', objectType: 'item' });
-      const success = service.updateObject(obj.id, {});
+      const success = await service.updateObject(obj.id, {});
 
       expect(success).toBe(true);
     });
