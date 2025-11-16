@@ -43,7 +43,7 @@ describe('PlayerService (Integration)', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a player with proper properties', () => {
+  it('should create a player with proper properties', async () => {
     const playerData = {
       name: 'Test Player',
       position: { x: 0, y: 0, z: 0 },
@@ -53,7 +53,7 @@ describe('PlayerService (Integration)', () => {
       experience: 0,
     };
 
-    const result = service.createPlayer(playerData);
+    const result = await service.createPlayer(playerData);
 
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();

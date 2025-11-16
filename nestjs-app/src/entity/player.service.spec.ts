@@ -85,7 +85,7 @@ describe('PlayerService with Persistence', () => {
         ...playerData,
       });
 
-      const result = service.createPlayer(playerData);
+      const result = await service.createPlayer(playerData);
 
       expect(result).toBeDefined();
       expect(result.name).toBe('Test Player');
@@ -113,7 +113,7 @@ describe('PlayerService with Persistence', () => {
       });
 
       // Should still create player even if database fails
-      const result = service.createPlayer(playerData);
+      const result = await service.createPlayer(playerData);
 
       expect(result).toBeDefined();
       expect(result.name).toBe('Test Player');

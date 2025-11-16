@@ -65,7 +65,7 @@ describe('RoomService', () => {
     expect(retrievedRoom?.id).toBe(createdRoom.id);
   });
 
-  it('should add player to room', () => {
+  it('should add player to room', async () => {
     // Create a test room
     const roomData = {
       name: 'Test Room',
@@ -82,15 +82,15 @@ describe('RoomService', () => {
       type: 'object' as const,
     };
 
-    const createdPlayer = entityService.createEntity(playerData);
+    const createdPlayer = await entityService.createEntity(playerData);
 
     // Add player to room
-    const result = service.addPlayerToRoom(createdRoom.id, createdPlayer.id);
+    const result = await service.addPlayerToRoom(createdRoom.id, createdPlayer.id);
 
     expect(result).toBe(true);
   });
 
-  it('should add object to room', () => {
+  it('should add object to room', async () => {
     // Create a test room
     const roomData = {
       name: 'Test Room',
@@ -107,10 +107,10 @@ describe('RoomService', () => {
       type: 'object' as const,
     };
 
-    const createdObject = entityService.createEntity(objectData);
+    const createdObject = await entityService.createEntity(objectData);
 
     // Add object to room
-    const result = service.addObjectToRoom(createdRoom.id, createdObject.id);
+    const result = await service.addObjectToRoom(createdRoom.id, createdObject.id);
 
     expect(result).toBe(true);
   });
