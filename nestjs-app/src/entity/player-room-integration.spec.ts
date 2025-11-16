@@ -56,7 +56,7 @@ describe('Player-Room Integration Tests', () => {
     physicsService = module.get<PhysicsService>(PhysicsService);
   });
 
-  it('should create a player and add them to a room', () => {
+  it('should create a player and add them to a room', async () => {
     // Create a room
     const roomData = {
       name: 'Test Room',
@@ -83,7 +83,7 @@ describe('Player-Room Integration Tests', () => {
     expect(createdPlayer.id).toBeDefined();
 
     // Add player to room
-    const result = roomService.addPlayerToRoom(
+    const result = await roomService.addPlayerToRoom(
       createdRoom.id,
       createdPlayer.id,
     );
@@ -94,7 +94,7 @@ describe('Player-Room Integration Tests', () => {
     expect(roomEntities.players).toContain(createdPlayer.id);
   });
 
-  it('should create objects and add them to a room', () => {
+  it('should create objects and add them to a room', async () => {
     // Create a room
     const roomData = {
       name: 'Test Room',
@@ -123,7 +123,7 @@ describe('Player-Room Integration Tests', () => {
     expect(createdObject.id).toBeDefined();
 
     // Add object to room
-    const result = roomService.addObjectToRoom(
+    const result = await roomService.addObjectToRoom(
       createdRoom.id,
       createdObject.id,
     );
@@ -134,7 +134,7 @@ describe('Player-Room Integration Tests', () => {
     expect(roomEntities.objects).toContain(createdObject.id);
   });
 
-  it('should move a player between rooms', () => {
+  it('should move a player between rooms', async () => {
     // Create two rooms
     const room1Data = {
       name: 'Living Room',
@@ -168,7 +168,7 @@ describe('Player-Room Integration Tests', () => {
     expect(createdPlayer).toBeDefined();
 
     // Add player to first room
-    const result1 = roomService.addPlayerToRoom(
+    const result1 = await roomService.addPlayerToRoom(
       createdRoom1.id,
       createdPlayer.id,
     );
@@ -182,14 +182,14 @@ describe('Player-Room Integration Tests', () => {
     expect(entitiesInRoom1.players).toContain(createdPlayer.id);
 
     // Add player to second room (simulating movement)
-    const result2 = roomService.addPlayerToRoom(
+    const result2 = await roomService.addPlayerToRoom(
       createdRoom2.id,
       createdPlayer.id,
     );
     expect(result2).toBe(true);
   });
 
-  it('should handle container state persistence', () => {
+  it('should handle container state persistence', async () => {
     // Create a room
     const roomData = {
       name: 'Test Room',
@@ -217,7 +217,7 @@ describe('Player-Room Integration Tests', () => {
     expect(container.id).toBeDefined();
 
     // Add container to room
-    const result = roomService.addObjectToRoom(createdRoom.id, container.id);
+    const result = await roomService.addObjectToRoom(createdRoom.id, container.id);
     expect(result).toBe(true);
 
     // Verify initial state
@@ -225,7 +225,7 @@ describe('Player-Room Integration Tests', () => {
 
     // Modify the container's state (simulating player interaction)
     container.state = { ...container.state, isOpen: false };
-    const updateResult = objectService.updateObject(container.id, {
+    const updateResult = await objectService.updateObject(container.id, {
       state: container.state,
     });
     expect(updateResult).toBe(true);
@@ -235,7 +235,7 @@ describe('Player-Room Integration Tests', () => {
     expect(updatedContainer?.state?.isOpen).toBe(false);
   });
 
-  it('should handle player inventory persistence', () => {
+  it('should handle player inventory persistence', async () => {
     // Create a room
     const roomData = {
       name: 'Test Room',
@@ -260,7 +260,7 @@ describe('Player-Room Integration Tests', () => {
     expect(createdPlayer.id).toBeDefined();
 
     // Add player to room
-    const result = roomService.addPlayerToRoom(
+    const result = await roomService.addPlayerToRoom(
       createdRoom.id,
       createdPlayer.id,
     );
@@ -278,7 +278,7 @@ describe('Player-Room Integration Tests', () => {
     expect(updatedPlayer?.inventory).toContain(newItem);
   });
 
-  it('should handle object placement persistence', () => {
+  it('should handle object placement persistence', async () => {
     // Create a room
     const roomData = {
       name: 'Test Room',
@@ -322,8 +322,8 @@ describe('Player-Room Integration Tests', () => {
     expect(item.id).toBeDefined();
 
     // Add both objects to room
-    roomService.addObjectToRoom(createdRoom.id, container.id);
-    roomService.addObjectToRoom(createdRoom.id, item.id);
+    await roomService.addObjectToRoom(createdRoom.id, container.id);
+    await roomService.addObjectToRoom(createdRoom.id, item.id);
 
     // Place the item inside the container (simulating player interaction)
     const relationship = {
@@ -331,7 +331,7 @@ describe('Player-Room Integration Tests', () => {
       targetId: container.id,
     };
 
-    const placeResult = objectService.placeObject(item.id, relationship);
+    const placeResult = await objectService.placeObject(item.id, relationship);
     expect(placeResult).toBe(true);
 
     // Verify that the item is now placed inside the container
