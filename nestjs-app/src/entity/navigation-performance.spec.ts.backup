@@ -889,10 +889,10 @@ describe('Navigation Performance Tests', () => {
   // ============================================================================
 
   describe('3. Entity Lookup Performance', () => {
-    it('3.1 should find player in world of 1000+ rooms quickly', async () => {
+    it('3.1 should find player in world of 1000+ rooms quickly', () => {
       const rooms = generateGridWorld(32, 'lookup-test-1'); // 1024 rooms
 
-      const player = await playerService.createPlayer({
+      const player = playerService.createPlayer({
         name: 'TestPlayer',
         position: { x: 500, y: 500, z: 0 },
         health: 100,
@@ -911,8 +911,8 @@ describe('Navigation Performance Tests', () => {
       expect(elapsed).toBeLessThan(10);
     });
 
-    it('3.2 should handle object lookup in large inventory (1000+ items)', async () => {
-      const player = await playerService.createPlayer({
+    it('3.2 should handle object lookup in large inventory (1000+ items)', () => {
+      const player = playerService.createPlayer({
         name: 'HoarderPlayer',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -924,7 +924,7 @@ describe('Navigation Performance Tests', () => {
       // Create 1000 objects
       const objects: IObject[] = [];
       for (let i = 0; i < 1000; i++) {
-        const obj = await objectService.createObject({
+        const obj = objectService.createObject({
           name: `Item_${i}`,
           description: `Test item ${i}`,
           objectType: 'item',
@@ -932,13 +932,13 @@ describe('Navigation Performance Tests', () => {
           isPortable: true,
         });
         objects.push(obj);
-        await playerService.addInventoryItem(player.id, obj);
+        playerService.addToInventory(player.id, obj.id);
       }
 
       const targetObject = objects[999]; // Last item
 
       const elapsed = measureTime(() => {
-        const inventory = player.inventory;
+        const inventory = playerService.getInventory(player.id);
         expect(inventory.length).toBe(1000);
 
         const found = inventory.find((item) => item.id === targetObject.id);
@@ -977,13 +977,13 @@ describe('Navigation Performance Tests', () => {
       expect(elapsed).toBeLessThan(100);
     });
 
-    it('3.4 should perform spatial queries (find entities within radius)', async () => {
+    it('3.4 should perform spatial queries (find entities within radius)', () => {
       const rooms = generateGridWorld(20, 'lookup-test-4'); // 400 rooms
 
       // Create 50 players scattered across the world
       const players: IPlayer[] = [];
       for (let i = 0; i < 50; i++) {
-        const player = await playerService.createPlayer({
+        const player = playerService.createPlayer({
           name: `Player_${i}`,
           position: {
             x: Math.floor(Math.random() * 300),
@@ -1018,11 +1018,11 @@ describe('Navigation Performance Tests', () => {
       expect(elapsed).toBeLessThan(10);
     });
 
-    it('3.5 should test entity indexing with hash map lookup', async () => {
+    it('3.5 should test entity indexing with hash map lookup', () => {
       // Create 1000 entities
       const entityIds: string[] = [];
       for (let i = 0; i < 1000; i++) {
-        const player = await playerService.createPlayer({
+        const player = playerService.createPlayer({
           name: `IndexedPlayer_${i}`,
           position: { x: i, y: i, z: 0 },
           health: 100,
@@ -1371,13 +1371,13 @@ describe('Navigation Performance Tests', () => {
       expect(elapsed).toBeLessThan(1000);
     });
 
-    it('4.8 should test navigation with player-to-room assignments', async () => {
+    it('4.8 should test navigation with player-to-room assignments', () => {
       const rooms = generateGridWorld(20, 'nav-test-8'); // 400 rooms
       const players: IPlayer[] = [];
 
       // Create 100 players
       for (let i = 0; i < 100; i++) {
-        const player = await playerService.createPlayer({
+        const player = playerService.createPlayer({
           name: `AssignedPlayer_${i}`,
           position: { x: 0, y: 0, z: 0 },
           health: 100,
@@ -1388,21 +1388,20 @@ describe('Navigation Performance Tests', () => {
         players.push(player);
       }
 
-      const start = performance.now();
-      for (let i = 0; i < players.length; i++) {
-        const targetRoom = rooms[i % rooms.length];
-        await roomService.addPlayerToRoom(targetRoom.id, players[i].id);
-      }
-      const elapsed = performance.now() - start;
+      const elapsed = measureTime(() => {
+        players.forEach((player, index) => {
+          const targetRoom = rooms[index % rooms.length];
+          roomService.addPlayerToRoom(targetRoom.id, player.id);
+        });
 
-      // Verify assignments
-      let totalPlayersInRooms = 0;
-      rooms.forEach((room) => {
-        const updatedRoom = roomService.getRoom(room.id);
-        totalPlayersInRooms += (updatedRoom?.players.length || 0);
+        // Verify assignments
+        let totalPlayersInRooms = 0;
+        rooms.forEach((room) => {
+          totalPlayersInRooms += room.players.length;
+        });
+
+        expect(totalPlayersInRooms).toBe(100);
       });
-
-      expect(totalPlayersInRooms).toBe(100);
 
       console.log(`100 player-room assignments: ${elapsed.toFixed(2)}ms`);
       expect(elapsed).toBeLessThan(100);
@@ -1426,8 +1425,8 @@ describe('Navigation Performance Tests', () => {
       expect(elapsed).toBeLessThan(10000); // < 10 seconds
     });
 
-    it('5.2 should handle maximum objects per room (1,000 objects)', async () => {
-      const room = await roomService.createRoom({
+    it('5.2 should handle maximum objects per room (1,000 objects)', () => {
+      const room = roomService.createRoom({
         name: 'Hoarder Room',
         description: 'A room filled with objects',
         width: 100,
@@ -1439,27 +1438,26 @@ describe('Navigation Performance Tests', () => {
         gameId: 'limit-test-2',
       });
 
-      const start = performance.now();
-      for (let i = 0; i < 1000; i++) {
-        const obj = await objectService.createObject({
-          name: `Item_${i}`,
-          description: `Object ${i}`,
-          objectType: 'item',
-          position: { x: i % 100, y: Math.floor(i / 100), z: 0 },
-          isPortable: true,
-        });
-        await roomService.addObjectToRoom(room.id, obj.id);
-      }
-      const elapsed = performance.now() - start;
+      const elapsed = measureTime(() => {
+        for (let i = 0; i < 1000; i++) {
+          const obj = objectService.createObject({
+            name: `Item_${i}`,
+            description: `Object ${i}`,
+            objectType: 'item',
+            position: { x: i % 100, y: Math.floor(i / 100), z: 0 },
+            isPortable: true,
+          });
+          roomService.addObjectToRoom(room.id, obj.id);
+        }
+      });
 
-      const updatedRoom = roomService.getRoom(room.id);
-      expect(updatedRoom?.objects.length).toBe(1000);
+      expect(room.objects.length).toBe(1000);
       console.log(`Adding 1000 objects to room took: ${elapsed.toFixed(2)}ms`);
       expect(elapsed).toBeLessThan(5000); // < 5 seconds
     });
 
-    it('5.3 should handle maximum players per room (100 players)', async () => {
-      const room = await roomService.createRoom({
+    it('5.3 should handle maximum players per room (100 players)', () => {
+      const room = roomService.createRoom({
         name: 'Crowded Room',
         description: 'A very crowded room',
         width: 50,
@@ -1471,22 +1469,21 @@ describe('Navigation Performance Tests', () => {
         gameId: 'limit-test-3',
       });
 
-      const start = performance.now();
-      for (let i = 0; i < 100; i++) {
-        const player = await playerService.createPlayer({
-          name: `CrowdPlayer_${i}`,
-          position: { x: i % 50, y: Math.floor(i / 50), z: 0 },
-          health: 100,
-          inventory: [],
-          level: 1,
-          experience: 0,
-        });
-        await roomService.addPlayerToRoom(room.id, player.id);
-      }
-      const elapsed = performance.now() - start;
+      const elapsed = measureTime(() => {
+        for (let i = 0; i < 100; i++) {
+          const player = playerService.createPlayer({
+            name: `CrowdPlayer_${i}`,
+            position: { x: i % 50, y: Math.floor(i / 50), z: 0 },
+            health: 100,
+            inventory: [],
+            level: 1,
+            experience: 0,
+          });
+          roomService.addPlayerToRoom(room.id, player.id);
+        }
+      });
 
-      const updatedRoom = roomService.getRoom(room.id);
-      expect(updatedRoom?.players.length).toBe(100);
+      expect(room.players.length).toBe(100);
       console.log(`Adding 100 players to room took: ${elapsed.toFixed(2)}ms`);
       expect(elapsed).toBeLessThan(1000);
     });
