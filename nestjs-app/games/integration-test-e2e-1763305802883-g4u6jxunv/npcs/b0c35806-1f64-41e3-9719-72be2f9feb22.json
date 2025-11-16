@@ -1,0 +1,17 @@
+{
+  "id": "b0c35806-1f64-41e3-9719-72be2f9feb22",
+  "name": "Test Hero",
+  "description": "A brave hero",
+  "npc_type": "player",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "health": 100,
+  "max_health": 100,
+  "level": 1,
+  "experience": 0,
+  "inventory_data": [],
+  "dialogue_tree_data": {}
+}

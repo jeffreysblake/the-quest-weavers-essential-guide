@@ -1,0 +1,20 @@
+{
+  "id": "3f0ea9ec-4cca-4099-82b4-62508a214402",
+  "name": "Workflow Test Object",
+  "description": "An object for workflow testing",
+  "object_type": "item",
+  "position": {
+    "x": 5,
+    "y": 5,
+    "z": 0
+  },
+  "material": null,
+  "weight": 0,
+  "health": null,
+  "max_health": null,
+  "is_portable": true,
+  "is_container": false,
+  "can_contain": false,
+  "container_capacity": 0,
+  "properties": {}
+}

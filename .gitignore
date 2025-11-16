@@ -17,25 +17,6 @@ nestjs-app/dist/
 .env.test.local
 .env.production.local
 
-# Claude Code documentation (contains development guidance)
-CLAUDE.md
-
-# Dependencies
-node_modules/
-nestjs-app/node_modules/
-
-# Build outputs
-dist/
-build/
-nestjs-app/dist/
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
 # Logs
 logs/
 *.log
@@ -106,73 +87,7 @@ config/development.json
 config/production.json
 
 # Project documentation and development files
-progress.md
 .roo/
-example-usage.md
-README.md
-
-# Ignore all .md files except README.md
-*.md
-!README.md
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDEs and editors
-.vscode/
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-*.sublime-project
-
-# Editor backups and temp files
-*~
-*.swp
-*.swo
-*.tmp
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Yarn Integrity file
-.yarn-integrity
-
-# Output of 'npm pack'
-*.tgz
-
-# Temporary folders
-tmp/
-temp/
-
-# Local configuration files that might contain sensitive data
-config/local.json
-config/development.json
-config/production.json
-
-# Project documentation and development files
-progress.md
-.roo/
-example-usage.md
 
 # Database files - these can get very large and should not be committed
 nestjs-app/data/
@@ -181,6 +96,3 @@ nestjs-app/data/
 *.sqlite3
 *.db-wal
 *.db-shm
-
-# Integration test artifacts - temporary game directories created during testing
-games/

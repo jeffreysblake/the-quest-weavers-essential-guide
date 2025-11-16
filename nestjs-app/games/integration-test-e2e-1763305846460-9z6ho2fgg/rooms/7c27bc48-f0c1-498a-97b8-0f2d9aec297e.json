@@ -1,0 +1,16 @@
+{
+  "id": "7c27bc48-f0c1-498a-97b8-0f2d9aec297e",
+  "name": "Test Room",
+  "description": "A room for testing",
+  "long_description": null,
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 3
+  }
+}
