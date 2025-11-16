@@ -313,7 +313,7 @@ describe('EffectManagerService - Combat System Tests', () => {
         });
       }
 
-      const effects = service.getActiveEffects('player-1');
+      const effects = service.getActiveEffects('game-1', 'player-1');
       expect(effects.length).toBe(1);
       expect(effects[0].stacks).toBe(100);
     });
@@ -339,14 +339,14 @@ describe('EffectManagerService - Combat System Tests', () => {
         targetStats: { [StatType.HEALTH]: 100 },
       });
 
-      const effects = service.getActiveEffects('player-1');
+      const effects = service.getActiveEffects('game-1', 'player-1');
       expect(effects.length).toBe(1);
       expect(effects[0].ticksRemaining).toBe(3);
 
       // Wait for ticks to complete
       await new Promise((resolve) => setTimeout(resolve, 400));
 
-      const effectsAfter = service.getActiveEffects('player-1');
+      const effectsAfter = service.getActiveEffects('game-1', 'player-1');
       // Effect should be removed after ticks complete
       expect(effectsAfter.length).toBe(0);
     });
@@ -373,7 +373,7 @@ describe('EffectManagerService - Combat System Tests', () => {
       // Wait for duration to expire
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      const effects = service.getActiveEffects('player-1');
+      const effects = service.getActiveEffects('game-1', 'player-1');
       expect(effects.length).toBe(0);
     });
 
@@ -396,13 +396,13 @@ describe('EffectManagerService - Combat System Tests', () => {
         targetStats: { [StatType.HEALTH]: 100 },
       });
 
-      const paused = service.setEffectPaused('player-1', 'pausable', true);
+      const paused = service.setEffectPaused('game-1', 'player-1', 'pausable', true);
       expect(paused).toBe(true);
 
-      const effects = service.getActiveEffects('player-1');
+      const effects = service.getActiveEffects('game-1', 'player-1');
       expect(effects[0].paused).toBe(true);
 
-      const unpaused = service.setEffectPaused('player-1', 'pausable', false);
+      const unpaused = service.setEffectPaused('game-1', 'player-1', 'pausable', false);
       expect(unpaused).toBe(true);
     });
   });
@@ -540,7 +540,7 @@ describe('EffectManagerService - Combat System Tests', () => {
         targetStats: {},
       });
 
-      const modifiers = service.getTotalStatModifiers('player-1');
+      const modifiers = service.getTotalStatModifiers('game-1', 'player-1');
       expect(modifiers[StatType.ATTACK]).toBe(20); // 10 + 15 - 5
     });
   });
@@ -564,13 +564,13 @@ describe('EffectManagerService - Combat System Tests', () => {
         targetStats: {},
       });
 
-      let effects = service.getActiveEffects('player-1');
+      let effects = service.getActiveEffects('game-1', 'player-1');
       expect(effects.length).toBe(1);
 
-      const removed = await service.removeEffect('player-1', 'removable');
+      const removed = await service.removeEffect('game-1', 'player-1', 'removable');
       expect(removed).toBe(true);
 
-      effects = service.getActiveEffects('player-1');
+      effects = service.getActiveEffects('game-1', 'player-1');
       expect(effects.length).toBe(0);
     });
 
@@ -607,15 +607,16 @@ describe('EffectManagerService - Combat System Tests', () => {
         targetStats: {},
       });
 
-      const count = await service.removeAllEffects('player-1');
+      const count = await service.removeAllEffects('game-1', 'player-1');
       expect(count).toBe(2);
 
-      const effects = service.getActiveEffects('player-1');
+      const effects = service.getActiveEffects('game-1', 'player-1');
       expect(effects.length).toBe(0);
     });
 
     it('should handle removing nonexistent effect', async () => {
       const removed = await service.removeEffect(
+        'game-1',
         'nonexistent-player',
         'nonexistent-effect',
       );
@@ -758,7 +759,7 @@ describe('EffectManagerService - Combat System Tests', () => {
         targetStats: { [StatType.HEALTH]: 100 },
       });
 
-      const stats = service.getEffectStats('player-1');
+      const stats = service.getEffectStats('game-1', 'player-1');
       expect(stats.activeEffects).toBe(3);
       expect(stats.buffs).toBeGreaterThanOrEqual(1);
       expect(stats.debuffs).toBeGreaterThanOrEqual(1);
@@ -790,7 +791,7 @@ describe('EffectManagerService - Combat System Tests', () => {
 
       // Each should have received the effect independently
       targets.forEach((target) => {
-        const effects = service.getActiveEffects(target);
+        const effects = service.getActiveEffects('game-1', target);
         // Instant effects don't persist, so should be 0
         expect(effects.length).toBe(0);
       });

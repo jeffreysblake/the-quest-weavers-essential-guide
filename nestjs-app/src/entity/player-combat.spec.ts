@@ -42,8 +42,8 @@ describe('PlayerService - Combat System Tests', () => {
   });
 
   describe('Player Death and Respawn', () => {
-    it('should handle player death (health reaches 0)', () => {
-      const player = service.createPlayer({
+    it('should handle player death (health reaches 0)', async () => {
+      const player = await service.createPlayer({
         name: 'Test Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -59,8 +59,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(updatedPlayer?.health).toBe(0);
     });
 
-    it('should handle multiple deaths in succession', () => {
-      const player = service.createPlayer({
+    it('should handle multiple deaths in succession', async () => {
+      const player = await service.createPlayer({
         name: 'Unlucky Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -89,8 +89,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(updatedPlayer?.level).toBe(1);
     });
 
-    it('should preserve inventory items on death', () => {
-      const player = service.createPlayer({
+    it('should preserve inventory items on death', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -99,7 +99,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 0,
       });
 
-      const item = objectService.createObject({
+      const item = await objectService.createObject({
         name: 'Magic Sword',
         objectType: 'weapon',
         position: { x: 0, y: 0, z: 0 },
@@ -114,8 +114,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(deadPlayer?.inventory).toContain(item.id);
     });
 
-    it('should handle death with negative health', () => {
-      const player = service.createPlayer({
+    it('should handle death with negative health', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -132,8 +132,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(updatedPlayer?.health).toBeLessThanOrEqual(0);
     });
 
-    it('should validate respawn location', () => {
-      const player = service.createPlayer({
+    it('should validate respawn location', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 0, // Dead
@@ -142,7 +142,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 0,
       });
 
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'Respawn Room',
         description: 'Safe room',
         position: { x: 10, y: 10, z: 0 },
@@ -167,8 +167,8 @@ describe('PlayerService - Combat System Tests', () => {
   });
 
   describe('Health Edge Cases', () => {
-    it('should not allow health to exceed maxHealth', () => {
-      const player = service.createPlayer({
+    it('should not allow health to exceed maxHealth', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 50,
@@ -188,8 +188,8 @@ describe('PlayerService - Combat System Tests', () => {
       );
     });
 
-    it('should handle health with undefined maxHealth', () => {
-      const player = service.createPlayer({
+    it('should handle health with undefined maxHealth', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -203,8 +203,8 @@ describe('PlayerService - Combat System Tests', () => {
       // maxHealth should default or be undefined
     });
 
-    it('should handle zero health edge case', () => {
-      const player = service.createPlayer({
+    it('should handle zero health edge case', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 0,
@@ -216,8 +216,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(player.health).toBe(0);
     });
 
-    it('should handle MAX_SAFE_INTEGER health', () => {
-      const player = service.createPlayer({
+    it('should handle MAX_SAFE_INTEGER health', async () => {
+      const player = await service.createPlayer({
         name: 'Immortal',
         position: { x: 0, y: 0, z: 0 },
         health: Number.MAX_SAFE_INTEGER,
@@ -232,8 +232,8 @@ describe('PlayerService - Combat System Tests', () => {
   });
 
   describe('Spell Casting and Combat', () => {
-    it('should cast spell on target successfully', () => {
-      const player = service.createPlayer({
+    it('should cast spell on target successfully', async () => {
+      const player = await service.createPlayer({
         name: 'Mage',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -242,7 +242,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 100,
       });
 
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Enemy',
         objectType: 'item',
         position: { x: 1, y: 1, z: 0 },
@@ -257,8 +257,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(result.message).toContain('Fireball');
     });
 
-    it('should handle spell casting with invalid target', () => {
-      const player = service.createPlayer({
+    it('should handle spell casting with invalid target', async () => {
+      const player = await service.createPlayer({
         name: 'Mage',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -278,8 +278,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(result).toBeDefined();
     });
 
-    it('should handle spell casting with zero intensity', () => {
-      const player = service.createPlayer({
+    it('should handle spell casting with zero intensity', async () => {
+      const player = await service.createPlayer({
         name: 'Mage',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -288,7 +288,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 100,
       });
 
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Enemy',
         objectType: 'item',
         position: { x: 1, y: 1, z: 0 },
@@ -302,8 +302,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(result).toBeDefined();
     });
 
-    it('should handle area spell casting', () => {
-      const player = service.createPlayer({
+    it('should handle area spell casting', async () => {
+      const player = await service.createPlayer({
         name: 'Mage',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -312,7 +312,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 100,
       });
 
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'Battle Room',
         description: 'A room for combat',
         position: { x: 0, y: 0, z: 0 },
@@ -329,8 +329,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(result.message).toContain('Fireball');
     });
 
-    it('should handle spell casting by nonexistent player', () => {
-      const target = objectService.createObject({
+    it('should handle spell casting by nonexistent player', async () => {
+      const target = await objectService.createObject({
         name: 'Enemy',
         objectType: 'item',
         position: { x: 1, y: 1, z: 0 },
@@ -350,8 +350,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(result.message).toContain('not found');
     });
 
-    it('should handle extreme spell intensity', () => {
-      const player = service.createPlayer({
+    it('should handle extreme spell intensity', async () => {
+      const player = await service.createPlayer({
         name: 'Archmage',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -360,7 +360,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 999999,
       });
 
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Boss',
         objectType: 'item',
         position: { x: 1, y: 1, z: 0 },
@@ -377,8 +377,8 @@ describe('PlayerService - Combat System Tests', () => {
   });
 
   describe('Inventory Management in Combat', () => {
-    it('should handle using weapon from inventory', () => {
-      const player = service.createPlayer({
+    it('should handle using weapon from inventory', async () => {
+      const player = await service.createPlayer({
         name: 'Warrior',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -387,7 +387,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 100,
       });
 
-      const weapon = objectService.createObject({
+      const weapon = await objectService.createObject({
         name: 'Sword',
         objectType: 'weapon',
         position: { x: 0, y: 0, z: 0 },
@@ -405,8 +405,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(result.message).toContain('Sword');
     });
 
-    it('should handle consumable item usage in combat', () => {
-      const player = service.createPlayer({
+    it('should handle consumable item usage in combat', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 50,
@@ -415,7 +415,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 0,
       });
 
-      const potion = objectService.createObject({
+      const potion = await objectService.createObject({
         name: 'Health Potion',
         objectType: 'consumable',
         position: { x: 0, y: 0, z: 0 },
@@ -432,8 +432,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(updatedPlayer?.inventory).not.toContain(potion.id);
     });
 
-    it('should handle dropping item during combat', () => {
-      const player = service.createPlayer({
+    it('should handle dropping item during combat', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -443,7 +443,7 @@ describe('PlayerService - Combat System Tests', () => {
         roomId: 'room-1',
       });
 
-      const item = objectService.createObject({
+      const item = await objectService.createObject({
         name: 'Heavy Shield',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -459,8 +459,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(updatedPlayer?.inventory).not.toContain(item.id);
     });
 
-    it('should handle inventory overflow', () => {
-      const player = service.createPlayer({
+    it('should handle inventory overflow', async () => {
+      const player = await service.createPlayer({
         name: 'Hoarder',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -471,7 +471,7 @@ describe('PlayerService - Combat System Tests', () => {
 
       // Add many items
       for (let i = 0; i < 100; i++) {
-        const item = objectService.createObject({
+        const item = await objectService.createObject({
           name: `Item ${i}`,
           objectType: 'item',
           position: { x: 0, y: 0, z: 0 },
@@ -485,8 +485,8 @@ describe('PlayerService - Combat System Tests', () => {
   });
 
   describe('Player Object Interactions', () => {
-    it('should examine object in combat scenario', () => {
-      const player = service.createPlayer({
+    it('should examine object in combat scenario', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -495,7 +495,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 0,
       });
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Goblin',
         objectType: 'item',
         position: { x: 1, y: 1, z: 0 },
@@ -508,8 +508,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(result.message).toContain('Goblin');
     });
 
-    it('should take object during combat', () => {
-      const player = service.createPlayer({
+    it('should take object during combat', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -518,7 +518,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 0,
       });
 
-      const loot = objectService.createObject({
+      const loot = await objectService.createObject({
         name: 'Gold Coin',
         objectType: 'item',
         position: { x: 1, y: 1, z: 0 },
@@ -533,8 +533,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(updatedPlayer?.inventory).toContain(loot.id);
     });
 
-    it('should handle interacting with locked container in combat', () => {
-      const player = service.createPlayer({
+    it('should handle interacting with locked container in combat', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -543,7 +543,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 0,
       });
 
-      const chest = objectService.createObject({
+      const chest = await objectService.createObject({
         name: 'Locked Chest',
         objectType: 'container',
         position: { x: 1, y: 1, z: 0 },
@@ -559,8 +559,8 @@ describe('PlayerService - Combat System Tests', () => {
   });
 
   describe('Player State Corruption Prevention', () => {
-    it('should handle player with missing required fields', () => {
-      const player = service.createPlayer({
+    it('should handle player with missing required fields', async () => {
+      const player = await service.createPlayer({
         name: 'Broken Hero',
         position: { x: 0, y: 0, z: 0 },
         // Missing health, should use default
@@ -573,8 +573,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(player.health).toBe(100); // Default value
     });
 
-    it('should handle concurrent player updates', () => {
-      const player = service.createPlayer({
+    it('should handle concurrent player updates', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -594,8 +594,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(updatedPlayer?.experience).toBe(100);
     });
 
-    it('should handle player in invalid position', () => {
-      const player = service.createPlayer({
+    it('should handle player in invalid position', async () => {
+      const player = await service.createPlayer({
         name: 'Lost Hero',
         position: { x: NaN, y: NaN, z: NaN },
         health: 100,
@@ -608,8 +608,8 @@ describe('PlayerService - Combat System Tests', () => {
       // Position should still be set even if invalid
     });
 
-    it('should get inventory stats without errors', () => {
-      const player = service.createPlayer({
+    it('should get inventory stats without errors', async () => {
+      const player = await service.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -618,7 +618,7 @@ describe('PlayerService - Combat System Tests', () => {
         experience: 0,
       });
 
-      const item1 = objectService.createObject({
+      const item1 = await objectService.createObject({
         name: 'Sword',
         objectType: 'weapon',
         position: { x: 0, y: 0, z: 0 },
@@ -626,7 +626,7 @@ describe('PlayerService - Combat System Tests', () => {
         properties: { value: 100 },
       });
 
-      const item2 = objectService.createObject({
+      const item2 = await objectService.createObject({
         name: 'Shield',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -646,8 +646,8 @@ describe('PlayerService - Combat System Tests', () => {
   });
 
   describe('Player Level and Experience', () => {
-    it('should handle experience overflow', () => {
-      const player = service.createPlayer({
+    it('should handle experience overflow', async () => {
+      const player = await service.createPlayer({
         name: 'Max Level Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -659,8 +659,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(player.experience).toBe(Number.MAX_SAFE_INTEGER);
     });
 
-    it('should handle negative experience', () => {
-      const player = service.createPlayer({
+    it('should handle negative experience', async () => {
+      const player = await service.createPlayer({
         name: 'Cursed Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -672,8 +672,8 @@ describe('PlayerService - Combat System Tests', () => {
       expect(player.experience).toBe(-100);
     });
 
-    it('should handle level 0 edge case', () => {
-      const player = service.createPlayer({
+    it('should handle level 0 edge case', async () => {
+      const player = await service.createPlayer({
         name: 'Newborn Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
