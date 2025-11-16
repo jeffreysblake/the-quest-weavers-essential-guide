@@ -31,6 +31,8 @@ describe('Player-Room Integration Tests', () => {
         all: jest.fn(() => []),
       })),
       exec: jest.fn(),
+      saveVersion: jest.fn().mockResolvedValue(1),
+      getVersion: jest.fn().mockResolvedValue(null),
     };
 
     const module: TestingModule = await Test.createTestingModule({
