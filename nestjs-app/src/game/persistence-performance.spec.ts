@@ -724,9 +724,12 @@ describe('Persistence Performance Tests', () => {
 
       const startTime = performance.now();
 
-      // Create concurrent save operations
+      // Create concurrent save operations with unique room IDs per thread
       const promises = Array.from({ length: numConcurrent }, async (_, i) => {
-        const rooms = generateRooms(`${gameId}-${i}`, 100);
+        const rooms = generateRooms(gameId, 100).map((r, idx) => ({
+          ...r,
+          id: `room-${gameId}-${i}-${idx}`, // Make IDs unique per thread
+        }));
 
         await databaseService.transactionWithRetryAsync((db) => {
           const stmt = db.prepare(
@@ -756,8 +759,8 @@ describe('Persistence Performance Tests', () => {
 
       // Verify all rooms were saved correctly
       const count = databaseService
-        .prepare('SELECT COUNT(*) as count FROM rooms')
-        .get() as any;
+        .prepare('SELECT COUNT(*) as count FROM rooms WHERE game_id = ?')
+        .get(gameId) as any;
       expect(count.count).toBe(numConcurrent * 100);
 
       console.log(
@@ -1503,6 +1506,7 @@ describe('Persistence Performance Tests', () => {
 
   describe('Transaction Performance', () => {
     it('should measure transaction throughput (transactions/second)', async () => {
+      ensureGameExists('txn-test');
       const numTransactions = 1000;
       const startTime = performance.now();
 
@@ -1538,6 +1542,7 @@ describe('Persistence Performance Tests', () => {
     }, 20000);
 
     it('should handle lock contention with concurrent transactions', async () => {
+      ensureGameExists('lock-test');
       const numConcurrent = 20;
       const opsPerThread = 50;
 
@@ -1586,6 +1591,7 @@ describe('Persistence Performance Tests', () => {
     }, 30000);
 
     it('should test rollback performance', async () => {
+      ensureGameExists('rollback-test');
       const numRollbacks = 100;
       const startTime = performance.now();
 
@@ -1644,6 +1650,7 @@ describe('Persistence Performance Tests', () => {
     }, 10000);
 
     it('should handle large transaction size (10k operations)', async () => {
+      ensureGameExists('large-txn-test');
       const opsInTransaction = 10000;
       const startTime = performance.now();
 
@@ -1696,6 +1703,7 @@ describe('Persistence Performance Tests', () => {
     }, 5000);
 
     it('should test database checkpoint frequency', async () => {
+      ensureGameExists('checkpoint-test');
       // Insert data to trigger checkpoint
       const objects = generateObjects('checkpoint-test', 5000);
 
@@ -1730,6 +1738,7 @@ describe('Persistence Performance Tests', () => {
     }, 10000);
 
     it('should benchmark: achieve 1000 transactions/second', async () => {
+      ensureGameExists('bench-test');
       const numTransactions = 2000;
       const startTime = performance.now();
 
@@ -1948,6 +1957,7 @@ describe('Persistence Performance Tests', () => {
 
       for (let i = 0; i < 5; i++) {
         const gameId = `heap-${i}`;
+        ensureGameExists(gameId);
         const rooms = generateRooms(gameId, 500);
 
         databaseService.transaction((db) => {
@@ -2201,6 +2211,7 @@ describe('Persistence Performance Tests', () => {
     }, 90000);
 
     it('should test maximum concurrent database connections', async () => {
+      ensureGameExists('conn-test');
       // Note: better-sqlite3 doesn't support multiple connections to same DB
       // This test verifies serial operations don't degrade
       const numOperations = 100;
@@ -2246,6 +2257,7 @@ describe('Persistence Performance Tests', () => {
 
       for (const size of sizes) {
         const gameId = `scale-${size}`;
+        ensureGameExists(gameId);
         const rooms = generateRooms(gameId, size);
 
         databaseService.transaction((db) => {
@@ -2346,6 +2358,7 @@ describe('Persistence Performance Tests', () => {
 
       for (const count of samples) {
         const gameId = `linear-${count}`;
+        ensureGameExists(gameId);
         const rooms = generateRooms(gameId, count);
 
         const startTime = performance.now();

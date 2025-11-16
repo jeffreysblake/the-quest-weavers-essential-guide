@@ -78,7 +78,7 @@ describe('Player-Room Integration Tests', () => {
       experience: 0,
     };
 
-    const createdPlayer = playerService.createPlayer(playerData);
+    const createdPlayer = await playerService.createPlayer(playerData);
     expect(createdPlayer).toBeDefined();
     expect(createdPlayer.id).toBeDefined();
 
@@ -164,7 +164,7 @@ describe('Player-Room Integration Tests', () => {
       experience: 0,
     };
 
-    const createdPlayer = playerService.createPlayer(playerData);
+    const createdPlayer = await playerService.createPlayer(playerData);
     expect(createdPlayer).toBeDefined();
 
     // Add player to first room
@@ -255,7 +255,7 @@ describe('Player-Room Integration Tests', () => {
       experience: 0,
     };
 
-    const createdPlayer = playerService.createPlayer(playerData);
+    const createdPlayer = await playerService.createPlayer(playerData);
     expect(createdPlayer).toBeDefined();
     expect(createdPlayer.id).toBeDefined();
 
