@@ -4,6 +4,9 @@ import { PlayerService } from '../entity/player.service';
 import { RoomService } from '../entity/room.service';
 import { ObjectService } from '../entity/object.service';
 import { EntityService } from '../entity/entity.service';
+import { EventEmitterService } from '../events/event-emitter.service';
+import { DialogueManagerService } from '../dialogue/dialogue-manager.service';
+import { GameStateService } from './game-state.service';
 
 describe('CommandProcessorService - Navigation Fixes', () => {
   let service: CommandProcessorService;
@@ -90,6 +93,44 @@ describe('CommandProcessorService - Navigation Fixes', () => {
           provide: EntityService,
           useValue: {
             getEntity: jest.fn(),
+          },
+        },
+        {
+          provide: EventEmitterService,
+          useValue: {
+            emit: jest.fn().mockResolvedValue(undefined),
+            on: jest.fn(),
+            once: jest.fn(),
+            off: jest.fn(),
+            waitFor: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: DialogueManagerService,
+          useValue: {
+            registerDialogueTree: jest.fn(),
+            startConversation: jest.fn(),
+            getCurrentDialogue: jest.fn(),
+            makeChoice: jest.fn(),
+            endConversation: jest.fn(),
+            getConversationState: jest.fn(),
+            getPlayerConversations: jest.fn().mockReturnValue([]),
+            getDialogueTree: jest.fn(),
+            getNpcDialogueTrees: jest.fn(),
+          },
+        },
+        {
+          provide: GameStateService,
+          useValue: {
+            getGameState: jest.fn().mockResolvedValue({
+              gameId: 'test-game',
+              npcs: {},
+              rooms: {},
+              items: {},
+            }),
+            updateGameState: jest.fn().mockResolvedValue(undefined),
+            saveGameState: jest.fn().mockResolvedValue(undefined),
+            loadGameState: jest.fn().mockResolvedValue(undefined),
           },
         },
       ],

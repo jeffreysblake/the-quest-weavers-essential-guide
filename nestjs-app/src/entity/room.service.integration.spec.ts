@@ -15,6 +15,7 @@ describe('RoomService (Integration)', () => {
       getEntity: jest.fn().mockResolvedValue(null),
       deleteEntity: jest.fn().mockResolvedValue(undefined),
       getAllEntities: jest.fn().mockResolvedValue([]),
+      saveVersion: jest.fn().mockResolvedValue(1),
     };
 
     const module: TestingModule = await Test.createTestingModule({

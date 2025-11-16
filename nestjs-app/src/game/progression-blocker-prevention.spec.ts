@@ -52,7 +52,13 @@ describe('Progression Blocker Prevention', () => {
         },
         {
           provide: DatabaseService,
-          useValue: null,
+          useValue: {
+            saveEntity: jest.fn().mockResolvedValue(undefined),
+            getEntity: jest.fn().mockResolvedValue(null),
+            deleteEntity: jest.fn().mockResolvedValue(undefined),
+            getAllEntities: jest.fn().mockResolvedValue([]),
+            saveVersion: jest.fn().mockResolvedValue(1),
+          },
         },
       ],
     }).compile();
@@ -75,9 +81,9 @@ describe('Progression Blocker Prevention', () => {
    */
   describe('Category 1: Player Stuck in Room Prevention', () => {
     describe('All exits deleted/removed', () => {
-      it('should prevent deletion of only exit from room', () => {
+      it('should prevent deletion of only exit from room', async () => {
         // Create a room with only one exit
-        const room1 = roomService.createRoom({
+        const room1 = await roomService.createRoom({
           name: 'Isolated Room',
           description: 'A room with only one exit',
           position: { x: 0, y: 0, z: 0 },
@@ -87,7 +93,7 @@ describe('Progression Blocker Prevention', () => {
           connections: { north: 'room2' },
         });
 
-        const room2 = roomService.createRoom({
+        const room2 = await roomService.createRoom({
           name: 'Exit Room',
           description: 'Connected room',
           position: { x: 0, y: 10, z: 0 },
@@ -97,7 +103,7 @@ describe('Progression Blocker Prevention', () => {
           connections: { south: room1.id },
         });
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Test Player',
           position: { x: 0, y: 0, z: 0 },
           health: 100,
@@ -129,9 +135,9 @@ describe('Progression Blocker Prevention', () => {
         }
       });
 
-      it('should warn when creating room with no exits', () => {
+      it('should warn when creating room with no exits', async () => {
         // Create a room with no connections
-        const isolatedRoom = roomService.createRoom({
+        const isolatedRoom = await roomService.createRoom({
           name: 'Isolated Room',
           description: 'A room with no exits',
           position: { x: 100, y: 100, z: 0 },
@@ -141,7 +147,7 @@ describe('Progression Blocker Prevention', () => {
           connections: {},
         });
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Trapped Player',
           position: { x: 100, y: 100, z: 0 },
           health: 100,
@@ -160,9 +166,9 @@ describe('Progression Blocker Prevention', () => {
         // In production, this should trigger a warning or prevent player placement
       });
 
-      it('should detect when all exits become unreachable', () => {
+      it('should detect when all exits become unreachable', async () => {
         // Create connected rooms
-        const room1 = roomService.createRoom({
+        const room1 = await roomService.createRoom({
           name: 'Room 1',
           description: 'First room',
           position: { x: 0, y: 0, z: 0 },
@@ -185,8 +191,8 @@ describe('Progression Blocker Prevention', () => {
     });
 
     describe('Exits locked without available key', () => {
-      it('should prevent locking only exit without key in room', () => {
-        const room = roomService.createRoom({
+      it('should prevent locking only exit without key in room', async () => {
+        const room = await roomService.createRoom({
           name: 'Locked Room',
           description: 'Room with lockable door',
           position: { x: 0, y: 0, z: 0 },
@@ -196,7 +202,7 @@ describe('Progression Blocker Prevention', () => {
           connections: { north: 'room2' },
         });
 
-        const door = objectService.createObject({
+        const door = await objectService.createObject({
           name: 'Door',
           description: 'A lockable door',
           position: { x: 0, y: 5, z: 0 },
@@ -208,7 +214,7 @@ describe('Progression Blocker Prevention', () => {
           roomId: room.id,
         });
 
-        const key = objectService.createObject({
+        const key = await objectService.createObject({
           name: 'Key',
           description: 'A key for the door',
           position: { x: 5, y: 5, z: 0 },
@@ -218,10 +224,10 @@ describe('Progression Blocker Prevention', () => {
         });
 
         // Add door and key to room
-        roomService.addObjectToRoom(room.id, door.id);
-        roomService.addObjectToRoom(room.id, key.id);
+        await roomService.addObjectToRoom(room.id, door.id);
+        await roomService.addObjectToRoom(room.id, key.id);
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Player',
           position: { x: 5, y: 5, z: 0 },
           health: 100,
@@ -239,8 +245,8 @@ describe('Progression Blocker Prevention', () => {
         expect(keyInRoom.canTake).toBe(true);
       });
 
-      it('should ensure key is available before allowing door lock', () => {
-        const room = roomService.createRoom({
+      it('should ensure key is available before allowing door lock', async () => {
+        const room = await roomService.createRoom({
           name: 'Test Room',
           description: 'Test',
           position: { x: 0, y: 0, z: 0 },
@@ -249,7 +255,7 @@ describe('Progression Blocker Prevention', () => {
           size: { width: 10, height: 10, depth: 3 },
         });
 
-        const door = objectService.createObject({
+        const door = await objectService.createObject({
           name: 'Exit Door',
           description: 'The only exit',
           position: { x: 0, y: 0, z: 0 },
@@ -258,7 +264,7 @@ describe('Progression Blocker Prevention', () => {
           roomId: room.id,
         });
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Player',
           position: { x: 5, y: 5, z: 0 },
           health: 100,
@@ -278,8 +284,8 @@ describe('Progression Blocker Prevention', () => {
         expect(canLockSafely).toBe(false); // No key, should not lock
       });
 
-      it('should detect soft-lock when key is deleted after locking door', () => {
-        const room = roomService.createRoom({
+      it('should detect soft-lock when key is deleted after locking door', async () => {
+        const room = await roomService.createRoom({
           name: 'Trapped Room',
           description: 'Room with locked door',
           position: { x: 0, y: 0, z: 0 },
@@ -288,7 +294,7 @@ describe('Progression Blocker Prevention', () => {
           size: { width: 10, height: 10, depth: 3 },
         });
 
-        const door = objectService.createObject({
+        const door = await objectService.createObject({
           name: 'Locked Door',
           description: 'A locked door',
           position: { x: 0, y: 0, z: 0 },
@@ -297,7 +303,7 @@ describe('Progression Blocker Prevention', () => {
           roomId: room.id,
         });
 
-        const key = objectService.createObject({
+        const key = await objectService.createObject({
           name: 'Key',
           description: 'Door key',
           position: { x: 5, y: 5, z: 0 },
@@ -306,10 +312,10 @@ describe('Progression Blocker Prevention', () => {
           roomId: room.id,
         });
 
-        roomService.addObjectToRoom(room.id, door.id);
-        roomService.addObjectToRoom(room.id, key.id);
+        await roomService.addObjectToRoom(room.id, door.id);
+        await roomService.addObjectToRoom(room.id, key.id);
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Player',
           position: { x: 5, y: 5, z: 0 },
           health: 100,
@@ -334,8 +340,8 @@ describe('Progression Blocker Prevention', () => {
     });
 
     describe('One-way entrances and exits', () => {
-      it('should warn before entering one-way room', () => {
-        const safeRoom = roomService.createRoom({
+      it('should warn before entering one-way room', async () => {
+        const safeRoom = await roomService.createRoom({
           name: 'Safe Room',
           description: 'Safe room',
           position: { x: 0, y: 0, z: 0 },
@@ -345,7 +351,7 @@ describe('Progression Blocker Prevention', () => {
           connections: { north: 'trapRoom' },
         });
 
-        const trapRoom = roomService.createRoom({
+        const trapRoom = await roomService.createRoom({
           name: 'Trap Room',
           description: 'One-way trap',
           position: { x: 0, y: 10, z: 0 },
@@ -355,7 +361,7 @@ describe('Progression Blocker Prevention', () => {
           connections: {}, // No exit back!
         });
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Player',
           position: { x: 5, y: 5, z: 0 },
           health: 100,
@@ -375,8 +381,8 @@ describe('Progression Blocker Prevention', () => {
         expect(hasReturnPath).toBe(false);
       });
 
-      it('should detect drop-down rooms with no return path', () => {
-        const upperRoom = roomService.createRoom({
+      it('should detect drop-down rooms with no return path', async () => {
+        const upperRoom = await roomService.createRoom({
           name: 'Upper Room',
           description: 'Room with hole',
           position: { x: 0, y: 0, z: 10 },
@@ -386,7 +392,7 @@ describe('Progression Blocker Prevention', () => {
           connections: { down: 'lowerRoom' },
         });
 
-        const lowerRoom = roomService.createRoom({
+        const lowerRoom = await roomService.createRoom({
           name: 'Lower Room',
           description: 'Bottom of pit',
           position: { x: 0, y: 0, z: 0 },
@@ -401,8 +407,8 @@ describe('Progression Blocker Prevention', () => {
         expect(hasWayBack).toBeUndefined();
       });
 
-      it('should validate exit requirements before allowing entry', () => {
-        const entryRoom = roomService.createRoom({
+      it('should validate exit requirements before allowing entry', async () => {
+        const entryRoom = await roomService.createRoom({
           name: 'Entry',
           description: 'Entry room',
           position: { x: 0, y: 0, z: 0 },
@@ -411,7 +417,7 @@ describe('Progression Blocker Prevention', () => {
           size: { width: 10, height: 10, depth: 3 },
         });
 
-        const restrictedRoom = roomService.createRoom({
+        const restrictedRoom = await roomService.createRoom({
           name: 'Restricted',
           description: 'Requires key to exit',
           position: { x: 10, y: 0, z: 0 },
@@ -423,7 +429,7 @@ describe('Progression Blocker Prevention', () => {
         // Connect rooms
         roomService.connectRooms(entryRoom.id, restrictedRoom.id, 'east');
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Player',
           position: { x: 5, y: 5, z: 0 },
           health: 100,
@@ -443,8 +449,8 @@ describe('Progression Blocker Prevention', () => {
     });
 
     describe('Teleport to inaccessible room', () => {
-      it('should prevent teleport to room with no exits', () => {
-        const isolatedRoom = roomService.createRoom({
+      it('should prevent teleport to room with no exits', async () => {
+        const isolatedRoom = await roomService.createRoom({
           name: 'Isolated',
           description: 'No exits',
           position: { x: 100, y: 100, z: 0 },
@@ -454,7 +460,7 @@ describe('Progression Blocker Prevention', () => {
           connections: {},
         });
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Player',
           position: { x: 0, y: 0, z: 0 },
           health: 100,
@@ -473,8 +479,8 @@ describe('Progression Blocker Prevention', () => {
         expect(hasValidExits).toBe(false);
       });
 
-      it('should verify destination room accessibility before teleport', () => {
-        const room1 = roomService.createRoom({
+      it('should verify destination room accessibility before teleport', async () => {
+        const room1 = await roomService.createRoom({
           name: 'Room 1',
           description: 'Starting room',
           position: { x: 0, y: 0, z: 0 },
@@ -483,7 +489,7 @@ describe('Progression Blocker Prevention', () => {
           size: { width: 10, height: 10, depth: 3 },
         });
 
-        const room2 = roomService.createRoom({
+        const room2 = await roomService.createRoom({
           name: 'Room 2',
           description: 'Destination',
           position: { x: 10, y: 0, z: 0 },
@@ -493,7 +499,7 @@ describe('Progression Blocker Prevention', () => {
           connections: { west: room1.id },
         });
 
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: 'Player',
           position: { x: 0, y: 0, z: 0 },
           health: 100,
@@ -517,8 +523,8 @@ describe('Progression Blocker Prevention', () => {
    */
   describe('Category 2: Required Quest Item Protection', () => {
     describe('Quest item deletion prevention', () => {
-      it('should prevent deletion of quest-critical items', () => {
-        const room = roomService.createRoom({
+      it('should prevent deletion of quest-critical items', async () => {
+        const room = await roomService.createRoom({
           name: 'Quest Room',
           description: 'Room with quest item',
           position: { x: 0, y: 0, z: 0 },
@@ -527,7 +533,7 @@ describe('Progression Blocker Prevention', () => {
           size: { width: 10, height: 10, depth: 3 },
         });
 
-        const questItem = objectService.createObject({
+        const questItem = await objectService.createObject({
           name: 'Sacred Amulet',
           description: 'Required for main quest',
           position: { x: 5, y: 5, z: 0 },
@@ -569,8 +575,8 @@ describe('Progression Blocker Prevention', () => {
         expect(canDelete).toBe(false);
       });
 
-      it('should mark unique quest items as non-destroyable', () => {
-        const uniqueItem = objectService.createObject({
+      it('should mark unique quest items as non-destroyable', async () => {
+        const uniqueItem = await objectService.createObject({
           name: 'Plot Device',
           description: 'Critical to story progression',
           position: { x: 0, y: 0, z: 0 },
@@ -588,8 +594,8 @@ describe('Progression Blocker Prevention', () => {
         expect(uniqueItem.metadata.isQuestItem).toBe(true);
       });
 
-      it('should restore quest items if accidentally deleted', () => {
-        const room = roomService.createRoom({
+      it('should restore quest items if accidentally deleted', async () => {
+        const room = await roomService.createRoom({
           name: 'Room',
           description: 'Test room',
           position: { x: 0, y: 0, z: 0 },
@@ -598,7 +604,7 @@ describe('Progression Blocker Prevention', () => {
           size: { width: 10, height: 10, depth: 3 },
         });
 
-        const questItem = objectService.createObject({
+        const questItem = await objectService.createObject({
           name: 'Quest Item',
           description: 'Important item',
           position: { x: 0, y: 0, z: 0 },
@@ -611,7 +617,7 @@ describe('Progression Blocker Prevention', () => {
           },
         });
 
-        roomService.addObjectToRoom(room.id, questItem.id);
+        await roomService.addObjectToRoom(room.id, questItem.id);
 
         // Store original state for restoration
         const originalState = {
@@ -628,7 +634,7 @@ describe('Progression Blocker Prevention', () => {
         expect(entityService.getEntity(questItem.id)).toBeUndefined();
 
         // Restore mechanism
-        const restoredItem = objectService.createObject({
+        const restoredItem = await objectService.createObject({
           ...originalState,
           description: 'Important item',
           objectType: 'item',
@@ -640,8 +646,8 @@ describe('Progression Blocker Prevention', () => {
     });
 
     describe('Quest item in unreachable location', () => {
-      it('should prevent quest items from being in unreachable rooms', () => {
-        const unreachableRoom = roomService.createRoom({
+      it('should prevent quest items from being in unreachable rooms', async () => {
+        const unreachableRoom = await roomService.createRoom({
           name: 'Unreachable',
           description: 'No way to get here',
           position: { x: 1000, y: 1000, z: 0 },
@@ -651,7 +657,7 @@ describe('Progression Blocker Prevention', () => {
           connections: {},
         });
 
-        const questItem = objectService.createObject({
+        const questItem = await objectService.createObject({
           name: 'Key Item',
           description: 'Required for progression',
           position: { x: 1000, y: 1000, z: 0 },
@@ -669,8 +675,8 @@ describe('Progression Blocker Prevention', () => {
         expect(hasExits).toBe(false);
       });
 
-      it('should detect when quest item falls into inaccessible container', () => {
-        const room = roomService.createRoom({
+      it('should detect when quest item falls into inaccessible container', async () => {
+        const room = await roomService.createRoom({
           name: 'Room',
           description: 'Test',
           position: { x: 0, y: 0, z: 0 },
@@ -679,7 +685,7 @@ describe('Progression Blocker Prevention', () => {
           size: { width: 10, height: 10, depth: 3 },
         });
 
-        const lockedChest = objectService.createObject({
+        const lockedChest = await objectService.createObject({
           name: 'Locked Chest',
           description: 'Cannot be opened',
           position: { x: 5, y: 5, z: 0 },
@@ -692,7 +698,7 @@ describe('Progression Blocker Prevention', () => {
           roomId: room.id,
         });
 
-        const questItem = objectService.createObject({
+        const questItem = await objectService.createObject({
           name: 'Quest Item',
           description: 'Important',
           position: { x: 5, y: 5, z: 0 },
@@ -710,8 +716,8 @@ describe('Progression Blocker Prevention', () => {
     });
 
     describe('Quest item destroyed during combat', () => {
-      it('should protect quest items from combat destruction', () => {
-        const questItem = objectService.createObject({
+      it('should protect quest items from combat destruction', async () => {
+        const questItem = await objectService.createObject({
           name: 'Ancient Scroll',
           description: 'Needed for quest',
           position: { x: 0, y: 0, z: 0 },
@@ -730,8 +736,8 @@ describe('Progression Blocker Prevention', () => {
         expect(isProtected).toBe(true);
       });
 
-      it('should prevent quest items from being sold or traded', () => {
-        const questItem = objectService.createObject({
+      it('should prevent quest items from being sold or traded', async () => {
+        const questItem = await objectService.createObject({
           name: 'Royal Seal',
           description: 'Cannot be sold',
           position: { x: 0, y: 0, z: 0 },
@@ -756,7 +762,7 @@ describe('Progression Blocker Prevention', () => {
    */
   describe('Category 3: NPC Critical Path Protection', () => {
     describe('Required NPC killed', () => {
-      it('should prevent killing quest-critical NPCs', () => {
+      it('should prevent killing quest-critical NPCs', async () => {
         const questGiver = entityService.createEntity({
           id: 'quest_npc',
           name: 'Quest Giver',
@@ -795,7 +801,7 @@ describe('Progression Blocker Prevention', () => {
         expect(questGiver.metadata.cannotDie).toBe(true);
       });
 
-      it('should make essential NPCs unkillable', () => {
+      it('should make essential NPCs unkillable', async () => {
         const essentialNPC = entityService.createEntity({
           id: 'essential_npc',
           name: 'Main Character',
@@ -812,7 +818,7 @@ describe('Progression Blocker Prevention', () => {
         expect(canKill).toBe(false);
       });
 
-      it('should revive essential NPCs if killed through bug', () => {
+      it('should revive essential NPCs if killed through bug', async () => {
         const npc = entityService.createEntity({
           id: 'npc1',
           name: 'Essential NPC',
@@ -841,8 +847,8 @@ describe('Progression Blocker Prevention', () => {
     });
 
     describe('NPC stuck in unreachable location', () => {
-      it('should detect when quest NPC is in inaccessible room', () => {
-        const unreachableRoom = roomService.createRoom({
+      it('should detect when quest NPC is in inaccessible room', async () => {
+        const unreachableRoom = await roomService.createRoom({
           name: 'Unreachable',
           description: 'No access',
           position: { x: 100, y: 100, z: 0 },
@@ -871,8 +877,8 @@ describe('Progression Blocker Prevention', () => {
         expect(hasAccess).toBe(false);
       });
 
-      it('should teleport stuck quest NPCs to accessible location', () => {
-        const inaccessibleRoom = roomService.createRoom({
+      it('should teleport stuck quest NPCs to accessible location', async () => {
+        const inaccessibleRoom = await roomService.createRoom({
           name: 'Stuck Room',
           description: 'No access',
           position: { x: 100, y: 100, z: 0 },
@@ -882,7 +888,7 @@ describe('Progression Blocker Prevention', () => {
           connections: {},
         });
 
-        const safeRoom = roomService.createRoom({
+        const safeRoom = await roomService.createRoom({
           name: 'Safe Room',
           description: 'Accessible',
           position: { x: 0, y: 0, z: 0 },
@@ -920,7 +926,7 @@ describe('Progression Blocker Prevention', () => {
     });
 
     describe('NPC aggression prevents interaction', () => {
-      it('should allow dialogue with hostile NPCs for quests', () => {
+      it('should allow dialogue with hostile NPCs for quests', async () => {
         const hostileNPC = entityService.createEntity({
           id: 'npc1',
           name: 'Hostile NPC',
@@ -940,7 +946,7 @@ describe('Progression Blocker Prevention', () => {
         expect(canTalk).toBe(true);
       });
 
-      it('should prevent permanent NPC hostility for quest givers', () => {
+      it('should prevent permanent NPC hostility for quest givers', async () => {
         const questGiver = entityService.createEntity({
           id: 'npc1',
           name: 'Quest Giver',
@@ -1021,7 +1027,7 @@ describe('Progression Blocker Prevention', () => {
         expect(result.prerequisitesFailed).toBeDefined();
       });
 
-      it('should detect circular quest dependencies', () => {
+      it('should detect circular quest dependencies', async () => {
         const quest1: IQuest = {
           id: 'quest1',
           name: 'Quest 1',
@@ -1302,8 +1308,8 @@ describe('Progression Blocker Prevention', () => {
    * Tests room connectivity and exit validation
    */
   describe('Category 5: Room Exit Validation', () => {
-    it('should validate all rooms have at least one exit', () => {
-      const room1 = roomService.createRoom({
+    it('should validate all rooms have at least one exit', async () => {
+      const room1 = await roomService.createRoom({
         name: 'Connected Room',
         description: 'Has exits',
         position: { x: 0, y: 0, z: 0 },
@@ -1312,7 +1318,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const room2 = roomService.createRoom({
+      const room2 = await roomService.createRoom({
         name: 'Another Room',
         description: 'Also has exits',
         position: { x: 10, y: 0, z: 0 },
@@ -1333,8 +1339,8 @@ describe('Progression Blocker Prevention', () => {
       expect(roomsWithoutExits.length).toBeLessThanOrEqual(allRooms.length);
     });
 
-    it('should validate exit destinations exist', () => {
-      const room1 = roomService.createRoom({
+    it('should validate exit destinations exist', async () => {
+      const room1 = await roomService.createRoom({
         name: 'Room 1',
         description: 'First room',
         position: { x: 0, y: 0, z: 0 },
@@ -1355,9 +1361,9 @@ describe('Progression Blocker Prevention', () => {
       // Should detect and warn about broken connections
     });
 
-    it('should detect orphaned room networks', () => {
+    it('should detect orphaned room networks', async () => {
       // Create two separate networks
-      const network1Room1 = roomService.createRoom({
+      const network1Room1 = await roomService.createRoom({
         name: 'Network 1 Room 1',
         description: 'First network',
         position: { x: 0, y: 0, z: 0 },
@@ -1366,7 +1372,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const network1Room2 = roomService.createRoom({
+      const network1Room2 = await roomService.createRoom({
         name: 'Network 1 Room 2',
         description: 'First network',
         position: { x: 10, y: 0, z: 0 },
@@ -1375,7 +1381,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const network2Room1 = roomService.createRoom({
+      const network2Room1 = await roomService.createRoom({
         name: 'Network 2 Room 1',
         description: 'Second network',
         position: { x: 100, y: 100, z: 0 },
@@ -1391,8 +1397,8 @@ describe('Progression Blocker Prevention', () => {
       expect(allRooms.length).toBeGreaterThanOrEqual(3);
     });
 
-    it('should warn before creating one-way connections', () => {
-      const room1 = roomService.createRoom({
+    it('should warn before creating one-way connections', async () => {
+      const room1 = await roomService.createRoom({
         name: 'Room 1',
         description: 'Start',
         position: { x: 0, y: 0, z: 0 },
@@ -1401,7 +1407,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const room2 = roomService.createRoom({
+      const room2 = await roomService.createRoom({
         name: 'Room 2',
         description: 'End',
         position: { x: 10, y: 0, z: 0 },
@@ -1424,8 +1430,8 @@ describe('Progression Blocker Prevention', () => {
       // Should warn about one-way connection
     });
 
-    it('should guarantee escape route from all rooms', () => {
-      const room1 = roomService.createRoom({
+    it('should guarantee escape route from all rooms', async () => {
+      const room1 = await roomService.createRoom({
         name: 'Room 1',
         description: 'Has escape',
         position: { x: 0, y: 0, z: 0 },
@@ -1434,7 +1440,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const exitRoom = roomService.createRoom({
+      const exitRoom = await roomService.createRoom({
         name: 'Exit',
         description: 'Safe exit',
         position: { x: 10, y: 0, z: 0 },
@@ -1457,8 +1463,8 @@ describe('Progression Blocker Prevention', () => {
    * Tests scenarios where player runs out of resources
    */
   describe('Category 6: Resource Depletion Prevention', () => {
-    it('should prevent soft-lock when all consumables used', () => {
-      const player = playerService.createPlayer({
+    it('should prevent soft-lock when all consumables used', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 10,
@@ -1480,8 +1486,8 @@ describe('Progression Blocker Prevention', () => {
       expect(canRecover).toBe(true);
     });
 
-    it('should ensure renewable resources for critical items', () => {
-      const room = roomService.createRoom({
+    it('should ensure renewable resources for critical items', async () => {
+      const room = await roomService.createRoom({
         name: 'Shop',
         description: 'Has renewable items',
         position: { x: 0, y: 0, z: 0 },
@@ -1506,8 +1512,8 @@ describe('Progression Blocker Prevention', () => {
       expect(vendor.metadata.sellsInfiniteItems).toBe(true);
     });
 
-    it('should detect when player cannot afford required item', () => {
-      const player = playerService.createPlayer({
+    it('should detect when player cannot afford required item', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1531,8 +1537,8 @@ describe('Progression Blocker Prevention', () => {
       // Should provide alternative ways to get item
     });
 
-    it('should provide alternative solutions when resources depleted', () => {
-      const player = playerService.createPlayer({
+    it('should provide alternative solutions when resources depleted', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1552,8 +1558,8 @@ describe('Progression Blocker Prevention', () => {
       expect(puzzle.alternativeMethods.length).toBeGreaterThan(0);
     });
 
-    it('should warn before point of no return with limited resources', () => {
-      const player = playerService.createPlayer({
+    it('should warn before point of no return with limited resources', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1584,8 +1590,8 @@ describe('Progression Blocker Prevention', () => {
    * Tests save/load state consistency
    */
   describe('Category 7: Save/Load State Consistency', () => {
-    it('should preserve room connections on save/load', () => {
-      const room1 = roomService.createRoom({
+    it('should preserve room connections on save/load', async () => {
+      const room1 = await roomService.createRoom({
         name: 'Room 1',
         description: 'First room',
         position: { x: 0, y: 0, z: 0 },
@@ -1594,7 +1600,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const room2 = roomService.createRoom({
+      const room2 = await roomService.createRoom({
         name: 'Room 2',
         description: 'Second room',
         position: { x: 10, y: 0, z: 0 },
@@ -1680,8 +1686,8 @@ describe('Progression Blocker Prevention', () => {
       expect(savedQuest.state).toBe(QuestState.ACTIVE);
     });
 
-    it('should preserve inventory state on save/load', () => {
-      const player = playerService.createPlayer({
+    it('should preserve inventory state on save/load', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1707,8 +1713,8 @@ describe('Progression Blocker Prevention', () => {
       expect(savedPlayer.inventory).toContainEqual(item2);
     });
 
-    it('should detect corrupted save state', () => {
-      const validPlayer = playerService.createPlayer({
+    it('should detect corrupted save state', async () => {
+      const validPlayer = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1732,8 +1738,8 @@ describe('Progression Blocker Prevention', () => {
       expect(isValid).toBe(false);
     });
 
-    it('should restore from backup if main save is corrupted', () => {
-      const player = playerService.createPlayer({
+    it('should restore from backup if main save is corrupted', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1766,8 +1772,8 @@ describe('Progression Blocker Prevention', () => {
    * Tests detection and prevention of unwinnable states
    */
   describe('Category 8: Unwinnable State Detection', () => {
-    it('should detect when player is in unwinnable state', () => {
-      const room = roomService.createRoom({
+    it('should detect when player is in unwinnable state', async () => {
+      const room = await roomService.createRoom({
         name: 'Trap Room',
         description: 'No escape',
         position: { x: 0, y: 0, z: 0 },
@@ -1777,7 +1783,7 @@ describe('Progression Blocker Prevention', () => {
         connections: {},
       });
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 10,
@@ -1799,8 +1805,8 @@ describe('Progression Blocker Prevention', () => {
       expect(isUnwinnable).toBe(true);
     });
 
-    it('should provide warning before point of no return', () => {
-      const safeRoom = roomService.createRoom({
+    it('should provide warning before point of no return', async () => {
+      const safeRoom = await roomService.createRoom({
         name: 'Safe Room',
         description: 'Can return here',
         position: { x: 0, y: 0, z: 0 },
@@ -1809,7 +1815,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const pointOfNoReturn = roomService.createRoom({
+      const pointOfNoReturn = await roomService.createRoom({
         name: 'Point of No Return',
         description: 'Cannot return after entering',
         position: { x: 10, y: 0, z: 0 },
@@ -1830,8 +1836,8 @@ describe('Progression Blocker Prevention', () => {
       expect(pointOfNoReturn.metadata.warningMessage).toBeDefined();
     });
 
-    it('should create auto-save before critical actions', () => {
-      const player = playerService.createPlayer({
+    it('should create auto-save before critical actions', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1852,8 +1858,8 @@ describe('Progression Blocker Prevention', () => {
       expect(savePoint).toBeDefined();
     });
 
-    it('should provide rewind capability for blocked states', () => {
-      const player = playerService.createPlayer({
+    it('should provide rewind capability for blocked states', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1875,14 +1881,14 @@ describe('Progression Blocker Prevention', () => {
       expect(rewindedPlayer.health).toBe(100);
     });
 
-    it('should track progression-critical items', () => {
+    it('should track progression-critical items', async () => {
       const criticalItems = new Set([
         'main_quest_key',
         'plot_device',
         'essential_tool',
       ]);
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1900,8 +1906,8 @@ describe('Progression Blocker Prevention', () => {
       expect(hasCriticalItems).toBe(false);
     });
 
-    it('should validate game completion is still possible', () => {
-      const room = roomService.createRoom({
+    it('should validate game completion is still possible', async () => {
+      const room = await roomService.createRoom({
         name: 'Room',
         description: 'Test',
         position: { x: 0, y: 0, z: 0 },
@@ -1910,7 +1916,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1959,7 +1965,7 @@ describe('Progression Blocker Prevention', () => {
   describe('Integration: Complex Progression Scenarios', () => {
     it('should handle complete quest progression without blocking', async () => {
       // Create connected world
-      const startRoom = roomService.createRoom({
+      const startRoom = await roomService.createRoom({
         name: 'Start',
         description: 'Starting area',
         position: { x: 0, y: 0, z: 0 },
@@ -1968,7 +1974,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const questRoom = roomService.createRoom({
+      const questRoom = await roomService.createRoom({
         name: 'Quest Room',
         description: 'Quest area',
         position: { x: 10, y: 0, z: 0 },
@@ -1980,7 +1986,7 @@ describe('Progression Blocker Prevention', () => {
       roomService.connectRooms(startRoom.id, questRoom.id, 'east');
 
       // Create player
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1991,7 +1997,7 @@ describe('Progression Blocker Prevention', () => {
       });
 
       // Create quest item
-      const questItem = objectService.createObject({
+      const questItem = await objectService.createObject({
         name: 'Quest Item',
         description: 'Needed for quest',
         position: { x: 10, y: 5, z: 0 },
@@ -2061,10 +2067,10 @@ describe('Progression Blocker Prevention', () => {
       expect(updateResult.questCompleted).toBe(true);
     });
 
-    it('should prevent multi-step soft-lock scenario', () => {
+    it('should prevent multi-step soft-lock scenario', async () => {
       // Scenario: Player drops quest item in locked container in unreachable room
 
-      const unreachableRoom = roomService.createRoom({
+      const unreachableRoom = await roomService.createRoom({
         name: 'Unreachable',
         description: 'No access',
         position: { x: 100, y: 100, z: 0 },
@@ -2074,7 +2080,7 @@ describe('Progression Blocker Prevention', () => {
         connections: {},
       });
 
-      const lockedChest = objectService.createObject({
+      const lockedChest = await objectService.createObject({
         name: 'Locked Chest',
         description: 'Cannot open',
         position: { x: 100, y: 100, z: 0 },
@@ -2087,7 +2093,7 @@ describe('Progression Blocker Prevention', () => {
         roomId: unreachableRoom.id,
       });
 
-      const questItem = objectService.createObject({
+      const questItem = await objectService.createObject({
         name: 'Critical Quest Item',
         description: 'Needed to win',
         position: { x: 0, y: 0, z: 0 },
@@ -2113,7 +2119,7 @@ describe('Progression Blocker Prevention', () => {
       expect(shouldPrevent).toBe(true);
     });
 
-    it('should detect and warn about complex progression blockers', () => {
+    it('should detect and warn about complex progression blockers', async () => {
       // Complex scenario: Quest chain with missing prerequisite items
 
       const quest1: IQuest = {

@@ -1,0 +1,34 @@
+{
+  "id": "1ab71ee4-d051-4134-843d-9f2c476f1368",
+  "name": "Storage Box",
+  "description": "A box for storing items",
+  "object_type": "container",
+  "position": {
+    "x": 5,
+    "y": 5,
+    "z": 0
+  },
+  "material": "wood",
+  "material_properties": {
+    "material": "wood",
+    "density": 0.6,
+    "conductivity": 0.1,
+    "flammability": 7,
+    "brittleness": 3,
+    "resistances": {
+      "ice": 2,
+      "lightning": 5
+    }
+  },
+  "weight": 0,
+  "health": null,
+  "max_health": null,
+  "is_portable": false,
+  "is_container": true,
+  "can_contain": false,
+  "container_capacity": 0,
+  "state_data": {
+    "isOpen": true
+  },
+  "properties": {}
+}

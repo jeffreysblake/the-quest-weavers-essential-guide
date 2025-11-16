@@ -84,6 +84,14 @@ export class ObjectService {
         brittleness: 2,
         resistances: { fire: 3, ice: 3 },
       },
+      organic: {
+        material: 'organic',
+        density: 0.8,
+        conductivity: 0.3,
+        flammability: 6,
+        brittleness: 4,
+        resistances: { ice: 2 },
+      },
     };
 
     return (

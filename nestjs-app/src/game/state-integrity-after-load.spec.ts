@@ -76,12 +76,21 @@ describe('GameStateService - State Integrity After Load', () => {
       off: jest.fn(),
     };
 
+    const mockDbMethods = {
+      prepare: jest.fn().mockReturnValue({
+        run: jest.fn(),
+        get: jest.fn(),
+        all: jest.fn().mockReturnValue([]),
+      }),
+    };
+
     const mockDatabaseService = {
       prepare: jest.fn().mockReturnValue({
         run: jest.fn(),
         get: jest.fn(),
         all: jest.fn().mockReturnValue([]),
       }),
+      getDatabase: jest.fn().mockReturnValue(mockDbMethods),
       transaction: jest.fn((fn) => fn(mockDatabaseService)),
       saveVersion: jest.fn().mockResolvedValue(1),
       getVersion: jest.fn().mockResolvedValue(null),
@@ -952,7 +961,7 @@ describe('GameStateService - State Integrity After Load', () => {
       });
 
       const npcPosition = { x: 10, y: 10, z: 0 };
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const npcState: INpcState = {
         npcId: 'guard1',
@@ -993,7 +1002,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const npcState: INpcState = {
         npcId: 'merchant1',
@@ -1022,7 +1031,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve NPC patrol paths after load', async () => {
       const gameId = 'game-npc-3';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const patrolPath = [
         { x: 0, y: 0, z: 0 },
@@ -1060,7 +1069,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve NPC health and stats within valid ranges', async () => {
       const gameId = 'game-npc-4';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const npcState: INpcState = {
         npcId: 'boss1',
@@ -1096,7 +1105,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve NPC dialogue state after load', async () => {
       const gameId = 'game-npc-5';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const dialogueState = {
         currentNode: 'node5',
@@ -1132,7 +1141,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve NPC relationships and factions after load', async () => {
       const gameId = 'game-npc-6';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const factionData = {
         faction: 'City Guard',
@@ -1169,7 +1178,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve dead NPC state after load', async () => {
       const gameId = 'game-npc-7';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const npcState: INpcState = {
         npcId: 'defeated_enemy',
@@ -1202,7 +1211,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve NPC inventory after load', async () => {
       const gameId = 'game-npc-8';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const npcInventory = ['sword1', 'shield1', 'potion1', 'potion2', 'key1'];
 
@@ -1240,7 +1249,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve NPC combat state after load', async () => {
       const gameId = 'game-npc-9';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const combatState = {
         inCombat: true,
@@ -1280,7 +1289,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve NPC respawn timers and state', async () => {
       const gameId = 'game-npc-10';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const respawnState = {
         canRespawn: true,
@@ -1719,7 +1728,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-combat-1';
       const playerId = 'player1';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       worldState.globalVariables['activeCombat'] = {
         combatId: 'combat1',
@@ -1757,7 +1766,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const enemyState: INpcState = {
         npcId: 'enemy1',
@@ -1887,7 +1896,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve combat positions after load', async () => {
       const gameId = 'game-combat-5';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       worldState.globalVariables['combatPositions'] = {
         player1: { x: 10, y: 10, z: 0, stance: 'offensive' },
@@ -1959,7 +1968,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve combat logs and history after load', async () => {
       const gameId = 'game-combat-7';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const combatLog = [
         {
@@ -1999,7 +2008,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve turn order after load', async () => {
       const gameId = 'game-combat-8';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const turnOrder = [
         { entityId: 'player1', initiative: 18 },
@@ -2027,7 +2036,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should clear or preserve combat state appropriately on load', async () => {
       const gameId = 'game-combat-9';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       // Active combat that should be preserved
       worldState.globalVariables['combatActive'] = true;
@@ -2107,7 +2116,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve time and day progression accurately', async () => {
       const gameId = 'game-world-1';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       worldState.globalVariables['gameTime'] = {
         day: 15,
@@ -2131,7 +2140,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve weather and environment state', async () => {
       const gameId = 'game-world-2';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const envState: IEnvironmentState = {
         roomId: 'outdoor_1',
@@ -2163,7 +2172,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve dynamic room states (locked doors, etc.)', async () => {
       const gameId = 'game-world-3';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const doorStates: Map<string, IDoorState> = new Map([
         [
@@ -2203,7 +2212,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve trigger states', async () => {
       const gameId = 'game-world-4';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       worldState.globalVariables['triggers'] = {
         trap1: {
@@ -2233,7 +2242,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve event history', async () => {
       const gameId = 'game-world-5';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const eventHistory = [
         {
@@ -2269,7 +2278,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve global variables and flags', async () => {
       const gameId = 'game-world-6';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       worldState.globalFlags = {
         kingdomSaved: true,
@@ -2298,7 +2307,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should track spawned items correctly after load', async () => {
       const gameId = 'game-world-7';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const spawnedItems = [
         {
@@ -2329,7 +2338,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve modified object states', async () => {
       const gameId = 'game-world-8';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const objectState: IObjectState = {
         objectId: 'statue1',
@@ -2361,7 +2370,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve deleted entity states', async () => {
       const gameId = 'game-world-9';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const deletedObject: IObjectState = {
         objectId: 'destroyedBarrel',
@@ -2389,7 +2398,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve created entities', async () => {
       const gameId = 'game-world-10';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const createdObject: IObjectState = {
         objectId: 'magicPortal',
@@ -2422,7 +2431,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve world state change history', async () => {
       const gameId = 'game-world-11';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       const changeHistory = [
         {
@@ -2461,7 +2470,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve region and zone states', async () => {
       const gameId = 'game-world-12';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       worldState.globalVariables['regions'] = {
         northernForest: {
@@ -2508,7 +2517,7 @@ describe('GameStateService - State Integrity After Load', () => {
       });
 
       // Add custom stats
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
       worldState.globalVariables[`player_${player.id}_stats`] = {
         mana: 65,
         maxMana: 100,
@@ -2672,7 +2681,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
       worldState.globalVariables[`player_${player.id}_skills`] = {
         swordSkill: 25,
         archerySkill: 40,
@@ -2717,7 +2726,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
       worldState.globalVariables[`player_${player.id}_spellbook`] = {
         knownSpells: [
           'fireball',
@@ -2760,7 +2769,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
       worldState.globalVariables[`player_${player.id}_death`] = {
         isDead: true,
         deathTime: new Date().toISOString(),
@@ -2861,7 +2870,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
       worldState.globalVariables[`player_${player.id}_achievements`] = {
         unlocked: ['first_blood', 'treasure_hunter', 'dragon_slayer'],
         progress: {
@@ -2895,7 +2904,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
       worldState.globalVariables[`player_${player.id}_metadata`] = {
         playTime: 7200000, // 2 hours in ms
         deaths: 3,
@@ -2939,7 +2948,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       // Setup active combat
       worldState.globalVariables['activeCombat'] = {
@@ -2965,7 +2974,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should handle save during dialogue', async () => {
       const gameId = 'game-edge-2';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       worldState.globalVariables['activeDialogue'] = {
         npcId: 'questgiver1',
@@ -3096,7 +3105,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should handle large game states (100+ entities) efficiently', async () => {
       const gameId = 'game-stress-1';
 
-      const worldState = worldStateManager.initializeWorldState(gameId);
+      const worldState = await worldStateManager.initializeWorldState(gameId);
 
       // Create 100 NPCs
       for (let i = 0; i < 100; i++) {

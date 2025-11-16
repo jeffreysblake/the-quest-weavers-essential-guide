@@ -27,6 +27,7 @@ describe('Game Scenario Integration Tests', () => {
             getEntity: jest.fn().mockResolvedValue(null),
             deleteEntity: jest.fn().mockResolvedValue(undefined),
             getAllEntities: jest.fn().mockResolvedValue([]),
+            saveVersion: jest.fn().mockResolvedValue(1),
           },
         },
       ],
@@ -39,7 +40,7 @@ describe('Game Scenario Integration Tests', () => {
   });
 
   describe('Complete Room Setup and Interactions', () => {
-    it('should create a complete room scenario with spatial relationships and interactions', () => {
+    it('should create a complete room scenario with spatial relationships and interactions', async () => {
       // Create a room
       const room = roomService.createRoom({
         name: 'Study Room',
@@ -110,7 +111,7 @@ describe('Game Scenario Integration Tests', () => {
       });
 
       // Create player
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Hero',
         position: { x: 1, y: 1, z: 0 },
         health: 100,
@@ -128,19 +129,19 @@ describe('Game Scenario Integration Tests', () => {
       roomService.addPlayerToRoom(room.id, player.id);
 
       // Set up spatial relationships
-      objectService.placeObject(sword.id, {
+      await objectService.placeObject(sword.id, {
         relationshipType: 'on_top_of',
         targetId: desk.id,
         description: 'The iron sword lies on the wooden desk',
       });
 
-      objectService.placeObject(key.id, {
+      await objectService.placeObject(key.id, {
         relationshipType: 'inside',
         targetId: chest.id,
         description: 'The brass key is hidden inside the treasure chest',
       });
 
-      objectService.placeObject(potion.id, {
+      await objectService.placeObject(potion.id, {
         relationshipType: 'next_to',
         targetId: chest.id,
         description: 'The health potion sits next to the treasure chest',
@@ -164,7 +165,7 @@ describe('Game Scenario Integration Tests', () => {
       // Test interactions
 
       // 1. Examine the chest (closed)
-      let result = playerService.interactWithObject(
+      let result = await playerService.interactWithObject(
         player.id,
         chest.id,
         'examine',
@@ -176,18 +177,18 @@ describe('Game Scenario Integration Tests', () => {
       expect(result.message).not.toContain('Inside you see');
 
       // 3. Open the chest
-      result = playerService.interactWithObject(player.id, chest.id, 'open');
+      result = await playerService.interactWithObject(player.id, chest.id, 'open');
       expect(result.success).toBe(true);
       expect(result.message).toBe('You open the treasure chest.');
       expect(result.effects?.containerOpened).toBe(chest.id);
 
       // 4. Examine the open chest (should show contents)
-      result = playerService.interactWithObject(player.id, chest.id, 'examine');
+      result = await playerService.interactWithObject(player.id, chest.id, 'examine');
       expect(result.success).toBe(true);
       expect(result.message).toContain('Inside you see: brass key');
 
       // 5. Take the key from the chest
-      result = playerService.interactWithObject(player.id, key.id, 'take');
+      result = await playerService.interactWithObject(player.id, key.id, 'take');
       expect(result.success).toBe(true);
       expect(result.message).toBe('You take the brass key.');
       expect(result.effects?.itemTaken).toBe(key.id);
@@ -201,21 +202,21 @@ describe('Game Scenario Integration Tests', () => {
       expect(chestContents).toHaveLength(0);
 
       // 6. Take the sword from the desk
-      result = playerService.interactWithObject(player.id, sword.id, 'take');
+      result = await playerService.interactWithObject(player.id, sword.id, 'take');
       expect(result.success).toBe(true);
       expect(result.message).toBe('You take the iron sword.');
 
       // 7. Try to take the desk (should fail - not portable)
-      result = playerService.interactWithObject(player.id, desk.id, 'take');
+      result = await playerService.interactWithObject(player.id, desk.id, 'take');
       expect(result.success).toBe(false);
       expect(result.message).toBe('You cannot take the wooden desk.');
 
       // 8. Take the potion
-      result = playerService.interactWithObject(player.id, potion.id, 'take');
+      result = await playerService.interactWithObject(player.id, potion.id, 'take');
       expect(result.success).toBe(true);
 
       // 9. Use the potion (consumable)
-      result = playerService.interactWithObject(player.id, potion.id, 'use');
+      result = await playerService.interactWithObject(player.id, potion.id, 'use');
       expect(result.success).toBe(true);
       expect(result.message).toBe('You use the health potion.');
       expect(result.effects?.itemConsumed).toBe(potion.id);
@@ -227,17 +228,17 @@ describe('Game Scenario Integration Tests', () => {
       expect(finalPlayer?.inventory).toContain(sword.id);
 
       // 10. Close the chest
-      result = playerService.interactWithObject(player.id, chest.id, 'close');
+      result = await playerService.interactWithObject(player.id, chest.id, 'close');
       expect(result.success).toBe(true);
       expect(result.message).toBe('You close the treasure chest.');
 
       // 11. Try to close it again (should fail)
-      result = playerService.interactWithObject(player.id, chest.id, 'close');
+      result = await playerService.interactWithObject(player.id, chest.id, 'close');
       expect(result.success).toBe(false);
       expect(result.message).toBe('The treasure chest is already closed.');
     });
 
-    it('should handle container capacity limits', () => {
+    it('should handle container capacity limits', async () => {
       // Create a small chest with capacity 2
       const smallChest = objectService.createObject({
         name: 'small chest',
@@ -274,14 +275,14 @@ describe('Game Scenario Integration Tests', () => {
 
       // Place first two items successfully
       expect(
-        objectService.placeObject(item1.id, {
+        await objectService.placeObject(item1.id, {
           relationshipType: 'inside',
           targetId: smallChest.id,
         }),
       ).toBe(true);
 
       expect(
-        objectService.placeObject(item2.id, {
+        await objectService.placeObject(item2.id, {
           relationshipType: 'inside',
           targetId: smallChest.id,
         }),
@@ -289,7 +290,7 @@ describe('Game Scenario Integration Tests', () => {
 
       // Third item should fail due to capacity
       expect(
-        objectService.placeObject(item3.id, {
+        await objectService.placeObject(item3.id, {
           relationshipType: 'inside',
           targetId: smallChest.id,
         }),
@@ -300,8 +301,8 @@ describe('Game Scenario Integration Tests', () => {
       expect(contents).toHaveLength(2);
     });
 
-    it('should handle locked containers', () => {
-      const player = playerService.createPlayer({
+    it('should handle locked containers', async () => {
+      const player = await playerService.createPlayer({
         name: 'Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -324,7 +325,7 @@ describe('Game Scenario Integration Tests', () => {
       });
 
       // Try to open locked chest
-      const result = playerService.interactWithObject(
+      const result = await playerService.interactWithObject(
         player.id,
         lockedChest.id,
         'open',

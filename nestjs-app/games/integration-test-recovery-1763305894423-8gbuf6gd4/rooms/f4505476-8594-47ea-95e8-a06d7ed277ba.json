@@ -1,0 +1,16 @@
+{
+  "id": "f4505476-8594-47ea-95e8-a06d7ed277ba",
+  "name": "Resilient Room",
+  "description": "A room that survives failures",
+  "long_description": null,
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 3
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "f6b2c054-e810-4d1c-a587-e8e7c79d9c31",
+  "name": "Workflow Test Room",
+  "description": "A room for workflow testing",
+  "long_description": null,
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 3
+  }
+}

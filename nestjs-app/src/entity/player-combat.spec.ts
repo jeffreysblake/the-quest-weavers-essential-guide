@@ -23,7 +23,13 @@ describe('PlayerService - Combat System Tests', () => {
         RoomService,
         {
           provide: DatabaseService,
-          useValue: null, // No database for unit tests
+          useValue: {
+            saveEntity: jest.fn().mockResolvedValue(undefined),
+            getEntity: jest.fn().mockResolvedValue(null),
+            deleteEntity: jest.fn().mockResolvedValue(undefined),
+            getAllEntities: jest.fn().mockResolvedValue([]),
+            saveVersion: jest.fn().mockResolvedValue(1),
+          },
         },
       ],
     }).compile();

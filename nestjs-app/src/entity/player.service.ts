@@ -424,12 +424,12 @@ export class PlayerService {
   }
 
   // Magic/Physics Interaction Methods
-  castSpell(
+  async castSpell(
     playerId: string,
     spellType: EffectType,
     targetId: string,
     intensity: number = 5,
-  ): IInteractionResult {
+  ): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
     if (!player) {
       return {
@@ -468,7 +468,7 @@ export class PlayerService {
       description: this.getSpellDescription(spellType, intensity),
     };
 
-    const result = this.physicsService.applyEffect(targetId, effect);
+    const result = await this.physicsService.applyEffect(targetId, effect);
 
     return {
       success: result.success,
@@ -479,12 +479,12 @@ export class PlayerService {
     };
   }
 
-  castAreaSpell(
+  async castAreaSpell(
     playerId: string,
     spellType: EffectType,
     roomId: string,
     intensity: number = 5,
-  ): IInteractionResult {
+  ): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
     if (!player) {
       return {
@@ -500,7 +500,7 @@ export class PlayerService {
       description: this.getAreaSpellDescription(spellType, intensity),
     };
 
-    const result = this.physicsService.applyAreaEffect(roomId, effect);
+    const result = await this.physicsService.applyAreaEffect(roomId, effect);
 
     // BUG FIX #2: Casting a spell should succeed even if no objects are affected
     // The spell was cast successfully, it just didn't hit anything

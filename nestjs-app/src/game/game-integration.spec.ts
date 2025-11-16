@@ -8,6 +8,8 @@ import { PlayerService } from '../entity/player.service';
 import { ObjectService } from '../entity/object.service';
 import { PhysicsService } from '../entity/physics.service';
 import { DatabaseService } from '../database/database.service';
+import { EventEmitterService } from '../events/event-emitter.service';
+import { DialogueManagerService } from '../dialogue/dialogue-manager.service';
 
 describe('Game Integration - End-to-End Flow', () => {
   let gameService: GameService;
@@ -62,6 +64,30 @@ describe('Game Integration - End-to-End Flow', () => {
             applyForce: jest.fn(),
             setVelocity: jest.fn(),
             step: jest.fn(),
+          },
+        },
+        {
+          provide: EventEmitterService,
+          useValue: {
+            emit: jest.fn().mockResolvedValue(undefined),
+            on: jest.fn(),
+            once: jest.fn(),
+            off: jest.fn(),
+            waitFor: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: DialogueManagerService,
+          useValue: {
+            registerDialogueTree: jest.fn(),
+            startConversation: jest.fn(),
+            getCurrentDialogue: jest.fn(),
+            makeChoice: jest.fn(),
+            endConversation: jest.fn(),
+            getConversationState: jest.fn(),
+            getPlayerConversations: jest.fn().mockReturnValue([]),
+            getDialogueTree: jest.fn(),
+            getNpcDialogueTrees: jest.fn(),
           },
         },
       ],

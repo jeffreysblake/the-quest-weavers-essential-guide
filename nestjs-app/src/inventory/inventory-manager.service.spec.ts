@@ -45,13 +45,13 @@ describe('InventoryManagerService', () => {
   });
 
   describe('createInventory', () => {
-    it('should create an inventory with default config', () => {
+    it('should create an inventory with default config', async () => {
       const config: IInventoryConfig = {
         maxSlots: 50,
         maxWeight: 1000,
       };
 
-      const inventory = service.createInventory('player1', 'game1', config);
+      const inventory = await service.createInventory('player1', 'game1', config);
 
       expect(inventory).toBeDefined();
       expect(inventory.ownerId).toBe('player1');
@@ -66,45 +66,45 @@ describe('InventoryManagerService', () => {
       expect(inventory.updatedAt).toBeDefined();
     });
 
-    it('should create inventory with custom equipment slots', () => {
+    it('should create inventory with custom equipment slots', async () => {
       const config: IInventoryConfig = {
         maxSlots: 30,
         equipmentSlots: [EquipmentSlot.HEAD, EquipmentSlot.CHEST],
       };
 
-      const inventory = service.createInventory('player1', 'game1', config);
+      const inventory = await service.createInventory('player1', 'game1', config);
 
       expect(inventory.config.equipmentSlots).toHaveLength(2);
       expect(inventory.config.equipmentSlots).toContain(EquipmentSlot.HEAD);
       expect(inventory.config.equipmentSlots).toContain(EquipmentSlot.CHEST);
     });
 
-    it('should create inventory with stacking disabled', () => {
+    it('should create inventory with stacking disabled', async () => {
       const config: IInventoryConfig = {
         maxSlots: 20,
         allowStacking: false,
       };
 
-      const inventory = service.createInventory('player1', 'game1', config);
+      const inventory = await service.createInventory('player1', 'game1', config);
 
       expect(inventory.config.allowStacking).toBe(false);
     });
 
-    it('should create inventory with equipment disabled', () => {
+    it('should create inventory with equipment disabled', async () => {
       const config: IInventoryConfig = {
         maxSlots: 20,
         allowEquipment: false,
       };
 
-      const inventory = service.createInventory('player1', 'game1', config);
+      const inventory = await service.createInventory('player1', 'game1', config);
 
       expect(inventory.config.allowEquipment).toBe(false);
     });
 
-    it('should use default values for undefined config options', () => {
+    it('should use default values for undefined config options', async () => {
       const config: IInventoryConfig = {};
 
-      const inventory = service.createInventory('player1', 'game1', config);
+      const inventory = await service.createInventory('player1', 'game1', config);
 
       expect(inventory.config.maxSlots).toBe(50);
       expect(inventory.config.maxWeight).toBe(1000);
@@ -914,13 +914,13 @@ describe('InventoryManagerService', () => {
       await service.addItem('player1', 'shield', 1, { weight: 15 });
     });
 
-    it('should return all items without filter', () => {
+    it('should return all items without filter', async () => {
       const items = service.getItems('player1');
 
       expect(items).toHaveLength(3);
     });
 
-    it('should filter by itemId', () => {
+    it('should filter by itemId', async () => {
       const items = service.getItems('player1', { itemId: 'sword' });
 
       expect(items).toHaveLength(1);
@@ -939,21 +939,21 @@ describe('InventoryManagerService', () => {
       expect(unequippedItems).toHaveLength(2);
     });
 
-    it('should filter by minimum weight', () => {
+    it('should filter by minimum weight', async () => {
       const items = service.getItems('player1', { minWeight: 10 });
 
       expect(items).toHaveLength(2);
       expect(items.every((item) => (item.weight || 0) >= 10)).toBe(true);
     });
 
-    it('should filter by maximum weight', () => {
+    it('should filter by maximum weight', async () => {
       const items = service.getItems('player1', { maxWeight: 10 });
 
       expect(items).toHaveLength(2);
       expect(items.every((item) => (item.weight || 0) <= 10)).toBe(true);
     });
 
-    it('should filter with custom filter function', () => {
+    it('should filter with custom filter function', async () => {
       const items = service.getItems('player1', {
         customFilter: (item) => item.quantity > 1,
       });
@@ -962,7 +962,7 @@ describe('InventoryManagerService', () => {
       expect(items[0].itemId).toBe('potion');
     });
 
-    it('should apply multiple filters', () => {
+    it('should apply multiple filters', async () => {
       const items = service.getItems('player1', {
         minWeight: 1,
         maxWeight: 10,
@@ -972,7 +972,7 @@ describe('InventoryManagerService', () => {
       expect(items).toHaveLength(2);
     });
 
-    it('should return empty array for non-existent inventory', () => {
+    it('should return empty array for non-existent inventory', async () => {
       const items = service.getItems('nonexistent');
 
       expect(items).toEqual([]);
@@ -987,7 +987,7 @@ describe('InventoryManagerService', () => {
       await service.addItem('player1', 'shield', 1, { weight: 15 });
     });
 
-    it('should sort by name ascending', () => {
+    it('should sort by name ascending', async () => {
       service.sortItems('player1', SortCriteria.NAME, SortOrder.ASC);
 
       const inventory = service.getInventory('player1');
@@ -996,7 +996,7 @@ describe('InventoryManagerService', () => {
       expect(inventory?.items[2].itemId).toBe('sword');
     });
 
-    it('should sort by name descending', () => {
+    it('should sort by name descending', async () => {
       service.sortItems('player1', SortCriteria.NAME, SortOrder.DESC);
 
       const inventory = service.getInventory('player1');
@@ -1005,7 +1005,7 @@ describe('InventoryManagerService', () => {
       expect(inventory?.items[2].itemId).toBe('potion');
     });
 
-    it('should sort by weight ascending', () => {
+    it('should sort by weight ascending', async () => {
       service.sortItems('player1', SortCriteria.WEIGHT, SortOrder.ASC);
 
       const inventory = service.getInventory('player1');
@@ -1014,7 +1014,7 @@ describe('InventoryManagerService', () => {
       expect(inventory?.items[2].itemId).toBe('shield');
     });
 
-    it('should sort by weight descending', () => {
+    it('should sort by weight descending', async () => {
       service.sortItems('player1', SortCriteria.WEIGHT, SortOrder.DESC);
 
       const inventory = service.getInventory('player1');
@@ -1023,7 +1023,7 @@ describe('InventoryManagerService', () => {
       expect(inventory?.items[2].itemId).toBe('potion');
     });
 
-    it('should sort by quantity ascending', () => {
+    it('should sort by quantity ascending', async () => {
       service.sortItems('player1', SortCriteria.QUANTITY, SortOrder.ASC);
 
       const inventory = service.getInventory('player1');
@@ -1032,7 +1032,7 @@ describe('InventoryManagerService', () => {
       expect(inventory?.items[2].itemId).toBe('potion');
     });
 
-    it('should sort by quantity descending', () => {
+    it('should sort by quantity descending', async () => {
       service.sortItems('player1', SortCriteria.QUANTITY, SortOrder.DESC);
 
       const inventory = service.getInventory('player1');
@@ -1041,7 +1041,7 @@ describe('InventoryManagerService', () => {
       expect(inventory?.items[2].itemId).toBe('shield');
     });
 
-    it('should update updatedAt timestamp', () => {
+    it('should update updatedAt timestamp', async () => {
       const inventoryBefore = service.getInventory('player1');
       const updatedBefore = inventoryBefore?.updatedAt;
 
@@ -1054,7 +1054,7 @@ describe('InventoryManagerService', () => {
       }, 10);
     });
 
-    it('should do nothing for non-existent inventory', () => {
+    it('should do nothing for non-existent inventory', async () => {
       expect(() => {
         service.sortItems('nonexistent', SortCriteria.NAME);
       }).not.toThrow();
@@ -1073,7 +1073,7 @@ describe('InventoryManagerService', () => {
       await service.addItem('player1', 'shield', 2, { weight: 15 });
     });
 
-    it('should return correct inventory statistics', () => {
+    it('should return correct inventory statistics', async () => {
       const stats = service.getStats('player1');
 
       expect(stats).toBeDefined();
@@ -1096,13 +1096,13 @@ describe('InventoryManagerService', () => {
       expect(stats?.equippedItems).toBe(1);
     });
 
-    it('should calculate weight percentage correctly', () => {
+    it('should calculate weight percentage correctly', async () => {
       const stats = service.getStats('player1');
 
       expect(stats?.weightPercentage).toBeCloseTo(5.5, 1);
     });
 
-    it('should handle weight percentage when maxWeight is 0', () => {
+    it('should handle weight percentage when maxWeight is 0', async () => {
       service.createInventory('player2', 'game1', {
         maxSlots: 50,
         maxWeight: 0,
@@ -1113,13 +1113,13 @@ describe('InventoryManagerService', () => {
       expect(stats?.weightPercentage).toBe(0);
     });
 
-    it('should return undefined for non-existent inventory', () => {
+    it('should return undefined for non-existent inventory', async () => {
       const stats = service.getStats('nonexistent');
 
       expect(stats).toBeUndefined();
     });
 
-    it('should return correct stats for empty inventory', () => {
+    it('should return correct stats for empty inventory', async () => {
       service.createInventory('player2', 'game1', {
         maxSlots: 30,
         maxWeight: 500,
@@ -1136,7 +1136,7 @@ describe('InventoryManagerService', () => {
   });
 
   describe('getInventory', () => {
-    it('should return inventory for valid owner', () => {
+    it('should return inventory for valid owner', async () => {
       service.createInventory('player1', 'game1', { maxSlots: 50 });
 
       const inventory = service.getInventory('player1');
@@ -1145,7 +1145,7 @@ describe('InventoryManagerService', () => {
       expect(inventory?.ownerId).toBe('player1');
     });
 
-    it('should return undefined for non-existent inventory', () => {
+    it('should return undefined for non-existent inventory', async () => {
       const inventory = service.getInventory('nonexistent');
 
       expect(inventory).toBeUndefined();
@@ -1153,7 +1153,7 @@ describe('InventoryManagerService', () => {
   });
 
   describe('removeInventory', () => {
-    it('should remove inventory successfully', () => {
+    it('should remove inventory successfully', async () => {
       service.createInventory('player1', 'game1', { maxSlots: 50 });
       service.removeInventory('player1');
 
@@ -1161,7 +1161,7 @@ describe('InventoryManagerService', () => {
       expect(inventory).toBeUndefined();
     });
 
-    it('should not throw when removing non-existent inventory', () => {
+    it('should not throw when removing non-existent inventory', async () => {
       expect(() => {
         service.removeInventory('nonexistent');
       }).not.toThrow();
@@ -1169,7 +1169,7 @@ describe('InventoryManagerService', () => {
   });
 
   describe('clearAllInventories', () => {
-    it('should clear all inventories', () => {
+    it('should clear all inventories', async () => {
       service.createInventory('player1', 'game1', { maxSlots: 50 });
       service.createInventory('player2', 'game1', { maxSlots: 50 });
       service.createInventory('player3', 'game1', { maxSlots: 50 });
@@ -1181,7 +1181,7 @@ describe('InventoryManagerService', () => {
       expect(service.getInventory('player3')).toBeUndefined();
     });
 
-    it('should not throw when clearing empty inventories', () => {
+    it('should not throw when clearing empty inventories', async () => {
       expect(() => {
         service.clearAllInventories();
       }).not.toThrow();
@@ -1683,9 +1683,9 @@ describe('InventoryManagerService', () => {
       ).toBe(true);
     });
 
-    it('should handle inventory deletion with equipped items', () => {
-      service.addItem('player1', 'sword', 1, { weight: 10 }).then((result) => {
-        service.equipItem(
+    it('should handle inventory deletion with equipped items', async () => {
+      await service.addItem('player1', 'sword', 1, { weight: 10 }).then(async (result) => {
+        await service.equipItem(
           'player1',
           result.item?.instanceId!,
           EquipmentSlot.MAIN_HAND,
@@ -1736,9 +1736,9 @@ describe('InventoryManagerService', () => {
 
       // Simulate concurrent operations
       const promises = [
-        service.removeItem('player1', itemId, 3),
-        service.removeItem('player1', itemId, 3),
-        service.removeItem('player1', itemId, 3),
+        await service.removeItem('player1', itemId, 3),
+        await service.removeItem('player1', itemId, 3),
+        await service.removeItem('player1', itemId, 3),
       ];
 
       const results = await Promise.all(promises);

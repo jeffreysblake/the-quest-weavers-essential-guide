@@ -513,7 +513,7 @@ describe('EffectManagerService', () => {
         expect(result.success).toBe(true);
       }
 
-      const activeEffects = service.getActiveEffects('player1');
+      const activeEffects = service.getActiveEffects('game1', 'player1');
       expect(activeEffects[0].stacks).toBe(10);
     });
 
@@ -541,7 +541,7 @@ describe('EffectManagerService', () => {
       await service.applyEffect('stacking-buff', 'player1', 'game1', context);
 
       // Check that total modifier is value * stacks
-      const modifiers = service.getTotalStatModifiers('player1');
+      const modifiers = service.getTotalStatModifiers('game1', 'player1');
       expect(modifiers[StatType.ATTACK]).toBe(30); // 10 * 3 stacks
     });
   });
@@ -572,7 +572,7 @@ describe('EffectManagerService', () => {
       service.registerEffect(poisonEffect);
       await service.applyEffect('poison', 'enemy1', 'game1');
 
-      const effects = service.getActiveEffects('enemy1');
+      const effects = service.getActiveEffects('game1', 'enemy1');
       expect(effects.length).toBe(1);
       expect(effects[0].expiresAt).toBeDefined();
     });
@@ -596,14 +596,14 @@ describe('EffectManagerService', () => {
       };
       await service.applyEffect('burn', 'enemy1', 'game1', context);
 
-      const effects = service.getActiveEffects('enemy1');
+      const effects = service.getActiveEffects('game1', 'enemy1');
       expect(effects[0].ticksRemaining).toBe(5);
 
       // Advance time and check ticks
       jest.advanceTimersByTime(500);
       await Promise.resolve();
 
-      const afterTick = service.getActiveEffects('enemy1');
+      const afterTick = service.getActiveEffects('game1', 'enemy1');
       if (afterTick.length > 0) {
         expect(afterTick[0].ticksRemaining).toBe(4);
       }
@@ -626,13 +626,13 @@ describe('EffectManagerService', () => {
       service.registerEffect(tempEffect);
       await service.applyEffect('temp-buff', 'player1', 'game1');
 
-      expect(service.getActiveEffects('player1').length).toBe(1);
+      expect(service.getActiveEffects('game1', 'player1').length).toBe(1);
 
       // Advance past duration
       jest.advanceTimersByTime(2500);
       await Promise.resolve();
 
-      expect(service.getActiveEffects('player1').length).toBe(0);
+      expect(service.getActiveEffects('game1', 'player1').length).toBe(0);
     });
 
     it('should expire effect after tick count reaches zero', async () => {
@@ -651,7 +651,7 @@ describe('EffectManagerService', () => {
       service.registerEffect(tickEffect);
       await service.applyEffect('tick-effect', 'enemy1', 'game1');
 
-      expect(service.getActiveEffects('enemy1').length).toBe(1);
+      expect(service.getActiveEffects('game1', 'enemy1').length).toBe(1);
 
       // Advance through all ticks
       for (let i = 0; i < 4; i++) {
@@ -659,7 +659,7 @@ describe('EffectManagerService', () => {
         await Promise.resolve();
       }
 
-      expect(service.getActiveEffects('enemy1').length).toBe(0);
+      expect(service.getActiveEffects('game1', 'enemy1').length).toBe(0);
     });
 
     it('should not tick when effect is paused', async () => {
@@ -679,14 +679,14 @@ describe('EffectManagerService', () => {
       await service.applyEffect('pausable-poison', 'enemy1', 'game1');
 
       // Pause the effect
-      service.setEffectPaused('enemy1', 'pausable-poison', true);
+      service.setEffectPaused('game1', 'enemy1', 'pausable-poison', true);
 
       // Advance time
       jest.advanceTimersByTime(500);
       await Promise.resolve();
 
       // Tick count should remain high since paused
-      const effects = service.getActiveEffects('enemy1');
+      const effects = service.getActiveEffects('game1', 'enemy1');
       if (effects.length > 0) {
         expect(effects[0].paused).toBe(true);
       }
@@ -811,15 +811,15 @@ describe('EffectManagerService', () => {
       service.registerEffect(effect);
       await service.applyEffect('removable', 'player1', 'game1');
 
-      expect(service.getActiveEffects('player1').length).toBe(1);
+      expect(service.getActiveEffects('game1', 'player1').length).toBe(1);
 
-      const removed = await service.removeEffect('player1', 'removable');
+      const removed = await service.removeEffect('game1', 'player1', 'removable');
       expect(removed).toBe(true);
-      expect(service.getActiveEffects('player1').length).toBe(0);
+      expect(service.getActiveEffects('game1', 'player1').length).toBe(0);
     });
 
     it('should return false when effect not found', async () => {
-      const removed = await service.removeEffect('player1', 'nonexistent');
+      const removed = await service.removeEffect('game1', 'player1', 'nonexistent');
       expect(removed).toBe(false);
     });
 
@@ -847,7 +847,7 @@ describe('EffectManagerService', () => {
       await service.applyEffect('test-remove', 'player1', 'game1');
 
       mockEventEmitter.emit.mockClear();
-      await service.removeEffect('player1', 'test-remove');
+      await service.removeEffect('game1', 'player1', 'test-remove');
 
       expect(mockEventEmitter.emit).toHaveBeenCalledWith(
         GameEventType.CUSTOM_EVENT,
@@ -877,13 +877,13 @@ describe('EffectManagerService', () => {
       service.registerEffect(tickEffect);
       await service.applyEffect('tick-remove', 'enemy1', 'game1');
 
-      await service.removeEffect('enemy1', 'tick-remove');
+      await service.removeEffect('game1', 'enemy1', 'tick-remove');
 
       // Advance time to ensure interval doesn't fire
       jest.advanceTimersByTime(5000);
       await Promise.resolve();
 
-      expect(service.getActiveEffects('enemy1').length).toBe(0);
+      expect(service.getActiveEffects('game1', 'enemy1').length).toBe(0);
 
       jest.useRealTimers();
     });
@@ -919,15 +919,15 @@ describe('EffectManagerService', () => {
       await service.applyEffect('effect1', 'player1', 'game1');
       await service.applyEffect('effect2', 'player1', 'game1');
 
-      expect(service.getActiveEffects('player1').length).toBe(2);
+      expect(service.getActiveEffects('game1', 'player1').length).toBe(2);
 
-      const count = await service.removeAllEffects('player1');
+      const count = await service.removeAllEffects('game1', 'player1');
       expect(count).toBe(2);
-      expect(service.getActiveEffects('player1').length).toBe(0);
+      expect(service.getActiveEffects('game1', 'player1').length).toBe(0);
     });
 
     it('should return 0 when target has no effects', async () => {
-      const count = await service.removeAllEffects('empty-target');
+      const count = await service.removeAllEffects('game1', 'empty-target');
       expect(count).toBe(0);
     });
 
@@ -950,12 +950,12 @@ describe('EffectManagerService', () => {
       await service.applyEffect('multi-tick', 'enemy1', 'game1');
       await service.applyEffect('multi-tick', 'enemy1', 'game1');
 
-      await service.removeAllEffects('enemy1');
+      await service.removeAllEffects('game1', 'enemy1');
 
       jest.advanceTimersByTime(5000);
       await Promise.resolve();
 
-      expect(service.getActiveEffects('enemy1').length).toBe(0);
+      expect(service.getActiveEffects('game1', 'enemy1').length).toBe(0);
 
       jest.useRealTimers();
     });
@@ -977,13 +977,13 @@ describe('EffectManagerService', () => {
       service.registerEffect(effect);
       await service.applyEffect('active', 'player1', 'game1');
 
-      const activeEffects = service.getActiveEffects('player1');
+      const activeEffects = service.getActiveEffects('game1', 'player1');
       expect(activeEffects.length).toBe(1);
       expect(activeEffects[0].effectId).toBe('active');
     });
 
     it('should return empty array for target with no effects', () => {
-      const activeEffects = service.getActiveEffects('no-effects');
+      const activeEffects = service.getActiveEffects('game1', 'no-effects');
       expect(activeEffects).toEqual([]);
     });
 
@@ -1016,7 +1016,7 @@ describe('EffectManagerService', () => {
       await service.applyEffect('buff1', 'player1', 'game1');
       await service.applyEffect('buff2', 'player1', 'game1');
 
-      const activeEffects = service.getActiveEffects('player1');
+      const activeEffects = service.getActiveEffects('game1', 'player1');
       expect(activeEffects.length).toBe(2);
     });
   });
@@ -1051,7 +1051,7 @@ describe('EffectManagerService', () => {
       await service.applyEffect('str-buff', 'player1', 'game1');
       await service.applyEffect('str-buff2', 'player1', 'game1');
 
-      const modifiers = service.getTotalStatModifiers('player1');
+      const modifiers = service.getTotalStatModifiers('game1', 'player1');
       expect(modifiers[StatType.STRENGTH]).toBe(15);
     });
 
@@ -1084,7 +1084,7 @@ describe('EffectManagerService', () => {
       await service.applyEffect('buff', 'player1', 'game1');
       await service.applyEffect('debuff', 'player1', 'game1');
 
-      const modifiers = service.getTotalStatModifiers('player1');
+      const modifiers = service.getTotalStatModifiers('game1', 'player1');
       expect(modifiers[StatType.ATTACK]).toBe(15);
     });
 
@@ -1108,12 +1108,12 @@ describe('EffectManagerService', () => {
       await service.applyEffect('stack-buff', 'player1', 'game1');
       await service.applyEffect('stack-buff', 'player1', 'game1');
 
-      const modifiers = service.getTotalStatModifiers('player1');
+      const modifiers = service.getTotalStatModifiers('game1', 'player1');
       expect(modifiers[StatType.DEFENSE]).toBe(15); // 5 * 3 stacks
     });
 
     it('should return empty object for target with no effects', () => {
-      const modifiers = service.getTotalStatModifiers('no-effects');
+      const modifiers = service.getTotalStatModifiers('game1', 'no-effects');
       expect(modifiers).toEqual({});
     });
   });
@@ -1161,7 +1161,7 @@ describe('EffectManagerService', () => {
       await service.applyEffect('debuff', 'player1', 'game1');
       await service.applyEffect('poison', 'player1', 'game1');
 
-      const stats = service.getEffectStats('player1');
+      const stats = service.getEffectStats('game1', 'player1');
       expect(stats.activeEffects).toBe(3);
       expect(stats.buffs).toBe(1);
       expect(stats.debuffs).toBe(1);
@@ -1183,12 +1183,12 @@ describe('EffectManagerService', () => {
       service.registerEffect(equipmentEffect);
       await service.applyEffect('equipment', 'player1', 'game1');
 
-      const stats = service.getEffectStats('player1');
+      const stats = service.getEffectStats('game1', 'player1');
       expect(stats.equipmentBonuses).toBe(1);
     });
 
     it('should return zero counts for no effects', () => {
-      const stats = service.getEffectStats('no-effects');
+      const stats = service.getEffectStats('game1', 'no-effects');
       expect(stats.activeEffects).toBe(0);
       expect(stats.buffs).toBe(0);
       expect(stats.debuffs).toBe(0);
@@ -1213,10 +1213,10 @@ describe('EffectManagerService', () => {
       service.registerEffect(effect);
       await service.applyEffect('pausable', 'enemy1', 'game1');
 
-      const paused = service.setEffectPaused('enemy1', 'pausable', true);
+      const paused = service.setEffectPaused('game1', 'enemy1', 'pausable', true);
       expect(paused).toBe(true);
 
-      const effects = service.getActiveEffects('enemy1');
+      const effects = service.getActiveEffects('game1', 'enemy1');
       expect(effects[0].paused).toBe(true);
     });
 
@@ -1235,21 +1235,21 @@ describe('EffectManagerService', () => {
       service.registerEffect(effect);
       await service.applyEffect('pausable', 'enemy1', 'game1');
 
-      service.setEffectPaused('enemy1', 'pausable', true);
-      const unpaused = service.setEffectPaused('enemy1', 'pausable', false);
+      service.setEffectPaused('game1', 'enemy1', 'pausable', true);
+      const unpaused = service.setEffectPaused('game1', 'enemy1', 'pausable', false);
       expect(unpaused).toBe(true);
 
-      const effects = service.getActiveEffects('enemy1');
+      const effects = service.getActiveEffects('game1', 'enemy1');
       expect(effects[0].paused).toBe(false);
     });
 
     it('should return false when effect not found', () => {
-      const result = service.setEffectPaused('player1', 'nonexistent', true);
+      const result = service.setEffectPaused('game1', 'player1', 'nonexistent', true);
       expect(result).toBe(false);
     });
 
     it('should return false when target has no effects', () => {
-      const result = service.setEffectPaused('no-effects', 'some-effect', true);
+      const result = service.setEffectPaused('game1', 'no-effects', 'some-effect', true);
       expect(result).toBe(false);
     });
   });
@@ -1359,7 +1359,7 @@ describe('EffectManagerService', () => {
       await Promise.resolve();
 
       // Effect should still exist but intervals cleared
-      expect(service.getActiveEffects('enemy1').length).toBe(1);
+      expect(service.getActiveEffects('game1', 'enemy1').length).toBe(1);
 
       jest.useRealTimers();
     });

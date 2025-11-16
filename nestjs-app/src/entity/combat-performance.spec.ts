@@ -61,7 +61,13 @@ describe('Combat Performance Tests', () => {
         EventEmitterService,
         {
           provide: DatabaseService,
-          useValue: null,
+          useValue: {
+            saveEntity: jest.fn().mockResolvedValue(undefined),
+            getEntity: jest.fn().mockResolvedValue(null),
+            deleteEntity: jest.fn().mockResolvedValue(undefined),
+            getAllEntities: jest.fn().mockResolvedValue([]),
+            saveVersion: jest.fn().mockResolvedValue(1),
+          },
         },
       ],
     }).compile();

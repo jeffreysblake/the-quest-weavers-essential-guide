@@ -1,0 +1,29 @@
+{
+  "id": "c21ea4de-c679-42b8-bfa6-e053f0f7bc5a",
+  "name": "Golden Coin",
+  "description": "A shiny gold coin",
+  "object_type": "item",
+  "position": {
+    "x": 5,
+    "y": 5,
+    "z": 0
+  },
+  "material": "gold",
+  "material_properties": {
+    "material": "gold",
+    "density": 1,
+    "conductivity": 1,
+    "flammability": 1,
+    "brittleness": 1,
+    "resistances": {}
+  },
+  "weight": 0,
+  "health": null,
+  "max_health": null,
+  "is_portable": true,
+  "is_container": false,
+  "can_contain": false,
+  "container_capacity": 0,
+  "state_data": {},
+  "properties": {}
+}

@@ -1,0 +1,16 @@
+{
+  "id": "21af2c51-7d52-4254-ab8b-4ea161f992d7",
+  "name": "Container Room",
+  "description": "Room with containers and items",
+  "long_description": null,
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 3
+  }
+}
