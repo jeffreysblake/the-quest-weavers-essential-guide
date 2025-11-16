@@ -10,9 +10,9 @@ Target: Fix all non-LLM integration test failures
 
 ## Progress Tracker
 
-- [x] Issue 1: Missing Test Dependencies (22 tests now passing!)
-- [ ] Issue 2: WorldState Initialization Bug (43 tests)
-- [ ] Issue 3: DatabaseService Mock Missing Method (4 tests)
+- [x] Issue 1: Missing Test Dependencies (12 tests fixed!)
+- [x] Issue 2: WorldState Initialization Bug (44 tests fixed!)
+- [x] Issue 3: DatabaseService Mock Fixed (mock complete)
 - [ ] Issue 4: Object Service Wrong Return Types (23 tests)
 - [ ] Issue 5: Combat Concurrency Broken (20 tests)
 - [ ] Issue 6: Effect Manager Not Working (19 tests)
@@ -122,33 +122,56 @@ These are implementation bugs in the service methods, not test setup issues. Rel
 
 ---
 
-## Issue 4: Object Service Wrong Return Types (23 tests failing)
+## Issue 4: Object Service Wrong Return Types (24 tests failing)
 
-**Priority**: MEDIUM - Service contract issue
-**Status**: 🔴 Not Started
+**Priority**: MEDIUM - Service contract issue / Test code issue
+**Status**: 🔍 **ROOT CAUSE IDENTIFIED**
 
 ### Files Affected
-- `nestjs-app/src/entity/object.service.integration.spec.ts`
+- `nestjs-app/src/entity/object.service.integration.spec.ts` (24/98 tests failing)
+- `nestjs-app/src/entity/player-room-integration.spec.ts` (6 tests failing, same issue)
 
 ### Issue
-Methods returning `{}` instead of boolean values
+Methods returning `{}` (Promise object) instead of boolean values
 
-### Pattern
-All tests expecting boolean returns are receiving `{}` (empty object)
+### Root Cause **IDENTIFIED**
+**The service methods are `async` (return `Promise<boolean>`), but the tests are calling them WITHOUT `await`!**
+
+When you call an async function without await, you get a Promise object, which appears as `{}` in test assertions.
 
 ### Examples
-- should update object properties - Expected: true, Received: {}
-- should place object in room - Expected: true, Received: {}
-- should place object inside container - Expected: true, Received: {}
+```typescript
+// WRONG (current code):
+it('should update object properties', () => {
+  const success = service.updateObject(obj.id, { name: 'Updated' });
+  expect(success).toBe(true); // Gets Promise {}, not boolean!
+});
 
-### Fix Plan
-1. Review ObjectService methods to identify where `{}` is returned
-2. Update methods to return proper boolean values
-3. Verify return type consistency across service
-4. Run tests to confirm fixes
+// CORRECT (needs fixing):
+it('should update object properties', async () => {
+  const success = await service.updateObject(obj.id, { name: 'Updated' });
+  expect(success).toBe(true); // Gets boolean
+});
+```
+
+### Affected Methods (all async)
+- `updateObject()` - Returns `Promise<boolean>`
+- `update()` - Returns `Promise<boolean>`
+- `updateObjectPosition()` - Returns `Promise<boolean>`
+- `placeObject()` - Returns `Promise<boolean>`
+- `removeObjectFromContainer()` - Returns `Promise<boolean>`
+
+### Fix Required
+1. Make test functions `async` for all 24 failing tests
+2. Add `await` to all service method calls
+3. Same fix needed for `player-room-integration.spec.ts` (6 tests)
+
+**Estimated**: 30 tests need async/await fixes
 
 ### Progress Notes
--
+- **Investigation complete** - All failures traced to missing `await` keywords
+- This is a test code issue, not a service implementation issue
+- Services are working correctly, tests just aren't calling them properly
 
 ---
 
