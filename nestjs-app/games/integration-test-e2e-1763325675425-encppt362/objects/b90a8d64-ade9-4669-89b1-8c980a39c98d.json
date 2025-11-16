@@ -1,0 +1,32 @@
+{
+  "id": "b90a8d64-ade9-4669-89b1-8c980a39c98d",
+  "name": "Test Sword",
+  "description": "A mighty sword",
+  "object_type": "item",
+  "position": {
+    "x": 1,
+    "y": 1,
+    "z": 0
+  },
+  "material": "wood",
+  "material_properties": {
+    "material": "wood",
+    "density": 0.6,
+    "conductivity": 0.1,
+    "flammability": 7,
+    "brittleness": 3,
+    "resistances": {
+      "ice": 2,
+      "lightning": 5
+    }
+  },
+  "weight": 0,
+  "health": null,
+  "max_health": null,
+  "is_portable": true,
+  "is_container": false,
+  "can_contain": false,
+  "container_capacity": 0,
+  "state_data": {},
+  "properties": {}
+}

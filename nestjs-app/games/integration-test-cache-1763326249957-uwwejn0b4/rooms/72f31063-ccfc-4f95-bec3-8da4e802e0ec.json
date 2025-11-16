@@ -1,0 +1,16 @@
+{
+  "id": "72f31063-ccfc-4f95-bec3-8da4e802e0ec",
+  "name": "Performance Room 4",
+  "description": "Room 4 for performance testing",
+  "long_description": null,
+  "position": {
+    "x": 4,
+    "y": 4,
+    "z": 0
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 3
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "0ea7bbd9-9148-406d-9bdc-ec80a89151f9",
+  "name": "Performance Room 7",
+  "description": "Room 7 for performance testing",
+  "long_description": null,
+  "position": {
+    "x": 7,
+    "y": 7,
+    "z": 0
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 3
+  }
+}
