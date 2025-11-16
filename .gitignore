@@ -96,3 +96,6 @@ nestjs-app/data/
 *.sqlite3
 *.db-wal
 *.db-shm
+
+# Test-generated game files
+nestjs-app/games/integration-test-*/
