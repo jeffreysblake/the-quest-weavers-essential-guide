@@ -89,21 +89,28 @@ This document tracks the refactoring progress for files exceeding 600 lines.
 
 ---
 
-## Remaining Files (Pending Refactoring)
+### 5. room.service.ts
+**Status**: ✅ Complete
+**Original Size**: 1,034 lines
+**New Size**: 478 lines (main service)
+**Reduction**: 54%
+**Commits**:
+- [pending commit]
+
+**Extracted Components**:
+- `helpers/room-persistence.helper.ts` (462 lines) - Database save/load operations
+- `helpers/room-entity-manager.helper.ts` (245 lines) - Player/object management with locks
+- `helpers/room-connection.helper.ts` (91 lines) - Room connectivity and spatial calculations
+
+**Benefits**:
+- Separated database operations for better testability
+- Isolated entity management with thread-safe operations
+- Extracted spatial logic into reusable helper
+- Improved maintainability with Single Responsibility Principle
 
 ---
 
-### 5. room.service.ts
-**Status**: ⏳ Pending  
-**Current Size**: 1,034 lines  
-**Complexity**: Medium - Similar to object.service.ts pattern
-
-**Recommended Extractions**:
-- `room-persistence.helper.ts` - Database save/load operations (~200 lines)
-- `room-entity-manager.ts` - Player/object management (~150 lines)
-- `room-connection.helper.ts` - Room connectivity logic (~100 lines)
-
-**Estimated Reduction**: 40%
+## Remaining Files (Pending Refactoring)
 
 ---
 
@@ -124,16 +131,16 @@ This document tracks the refactoring progress for files exceeding 600 lines.
 ## Summary Statistics
 
 ### Completed:
-- **Files Refactored**: 4 / 7 (57%)
-- **Lines Reduced**: 2,633 lines (from 5,874 to 3,241 in main files)
-- **Helper Files Created**: 33 new modular files
-- **Average Reduction**: 55% (median: 61%)
+- **Files Refactored**: 5 / 7 (71%)
+- **Lines Reduced**: 3,189 lines (from 6,908 to 3,719 in main files)
+- **Helper Files Created**: 36 new modular files
+- **Average Reduction**: 54% (median: 54%)
 
 ### Overall Progress:
 ```
 Total Original Lines: 8,886 (across all 7 files)
-Total Refactored Lines: ~3,241 (4 completed files)
-Remaining Work: 2,553 lines (3 pending files)
+Total Refactored Lines: ~3,719 (5 completed files)
+Remaining Work: 1,519 lines (2 pending files)
 ```
 
 ### Key Achievements:
@@ -142,6 +149,7 @@ Remaining Work: 2,553 lines (3 pending files)
 3. ✅ Improved testability and maintainability
 4. ✅ Created reusable utility modules
 5. ✅ Separated concerns: persistence, business logic, interactions, combat
+6. ✅ Implemented thread-safe entity management patterns
 
 ---
 
