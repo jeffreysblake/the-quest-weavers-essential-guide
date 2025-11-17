@@ -534,7 +534,7 @@ export class GameService {
 
         // Place object in room if specified (use slug mapping)
         if (objectJson.room_id && slugToUuid.has(objectJson.room_id)) {
-          const roomUuid = slugToUuid.get(objectJson.room_id);
+          const roomUuid = slugToUuid.get(objectJson.room_id)!;
           this.roomService.addObjectToRoom(roomUuid, obj.id);
           this.logger.log(`Placed object ${objectJson.name} in room ${objectJson.room_id} (UUID: ${roomUuid})`);
         }
@@ -569,7 +569,7 @@ export class GameService {
 
         // Place NPC in room if specified (use slug mapping)
         if (npcJson.room_id && slugToUuid.has(npcJson.room_id)) {
-          const roomUuid = slugToUuid.get(npcJson.room_id);
+          const roomUuid = slugToUuid.get(npcJson.room_id)!;
           const room = rooms.get(roomUuid);
           // Move NPC to the room's position
           await this.playerService.updatePlayer(npc.id, {

@@ -41,8 +41,8 @@
             "description": "Whether connection is locked"
           },
           "required_key": {
-            "type": "string",
-            "description": "ID of key object required to unlock"
+            "type": ["string", "null"],
+            "description": "ID of key object required to unlock (or null if no key required)"
           },
           "is_hidden": {
             "type": "boolean",

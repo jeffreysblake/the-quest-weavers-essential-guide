@@ -27,7 +27,7 @@
     },
     "object_type": {
       "type": "string",
-      "enum": ["weapon", "armor", "consumable", "key", "quest-item", "container", "furniture", "decoration", "tool", "misc"],
+      "enum": ["weapon", "armor", "consumable", "key", "quest-item", "container", "furniture", "decoration", "tool", "misc", "artifact", "trophy", "equipment", "item"],
       "description": "Type of object"
     },
     "position": {
@@ -89,6 +89,18 @@
         "type": "string"
       },
       "description": "Object tags for categorization"
+    },
+    "material_properties": {
+      "type": "object",
+      "description": "Physical material properties (density, conductivity, flammability, resistances, etc.)"
+    },
+    "state_data": {
+      "type": "object",
+      "description": "Object state data (magical_active, enchanted, blessed, etc.)"
+    },
+    "interactions": {
+      "type": "object",
+      "description": "Object interaction descriptions (examine, take, use, etc.)"
     }
   },
   "additionalProperties": false
