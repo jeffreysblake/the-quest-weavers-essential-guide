@@ -59,7 +59,7 @@ export class PlayerService {
     return this.playerLocks.get(playerId)!;
   }
 
-  async createPlayer(playerData: Omit<IPlayer, 'type'> & { id?: string }): Promise<IPlayer> {
+  async createPlayer(playerData: Omit<IPlayer, 'id' | 'type'> & { id?: string }): Promise<IPlayer> {
     // Create player with provided ID or generated ID
     const player: IPlayer = {
       ...playerData,

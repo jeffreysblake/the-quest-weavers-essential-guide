@@ -19,7 +19,7 @@ export class ObjectService {
 
   // Material properties moved to material-properties.ts
 
-  createObject(objectData: Omit<IObject, 'type'> & { id?: string }): IObject {
+  createObject(objectData: Omit<IObject, 'id' | 'type'> & { id?: string }): IObject {
     // Auto-generate material properties if material is specified but materialProperties is not
     const materialProperties =
       objectData.materialProperties ||

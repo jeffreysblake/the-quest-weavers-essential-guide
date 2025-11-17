@@ -469,7 +469,8 @@ export class GameService {
       // Load all rooms
       const roomsPath = path.join(basePath, 'rooms');
       const roomFiles = await fs.readdir(roomsPath);
-      const rooms = new Map<string, any>(); // Map of room ID to room object
+      const rooms = new Map<string, any>(); // Map of UUID to room object
+      const slugToUuid = new Map<string, string>(); // Map of slug to UUID
       let startingRoom: any = null;
 
       for (const file of roomFiles) {
@@ -479,28 +480,30 @@ export class GameService {
         const roomData = await fs.readFile(roomPath, 'utf-8');
         const roomJson = JSON.parse(roomData);
 
-        // Create room with preserved ID from JSON
+        // Create room with generated UUID and slug from JSON ID
         const room = this.roomService.createRoom({
-          id: roomJson.id, // Preserve the ID from JSON
+          // Let service generate UUID
           name: roomJson.name,
           description: roomJson.description,
           position: roomJson.position,
           size: roomJson.size,
           width: roomJson.size.width,
           height: roomJson.size.height,
+          slug: roomJson.id, // Store JSON ID as slug
           objects: [],
           players: [],
           gameId: gameId,
         });
 
-        rooms.set(roomJson.id, room);
+        rooms.set(room.id, room); // Map by UUID
+        slugToUuid.set(roomJson.id, room.id); // Map slug to UUID
 
         // Track starting room (position 0,0,0)
         if (roomJson.position.x === 0 && roomJson.position.y === 0 && roomJson.position.z === 0) {
           startingRoom = room;
         }
 
-        this.logger.log(`Loaded room: ${roomJson.name} (ID: ${roomJson.id})`);
+        this.logger.log(`Loaded room: ${roomJson.name} (slug: ${roomJson.id}, UUID: ${room.id})`);
       }
 
       // Load all objects
@@ -529,10 +532,11 @@ export class GameService {
 
         objects.set(objectJson.id, obj);
 
-        // Place object in room if specified
-        if (objectJson.room_id && rooms.has(objectJson.room_id)) {
-          const room = rooms.get(objectJson.room_id);
-          this.roomService.addObjectToRoom(room.id, obj.id);
+        // Place object in room if specified (use slug mapping)
+        if (objectJson.room_id && slugToUuid.has(objectJson.room_id)) {
+          const roomUuid = slugToUuid.get(objectJson.room_id);
+          this.roomService.addObjectToRoom(roomUuid, obj.id);
+          this.logger.log(`Placed object ${objectJson.name} in room ${objectJson.room_id} (UUID: ${roomUuid})`);
         }
 
         this.logger.log(`Loaded object: ${objectJson.name} (ID: ${objectJson.id})`);
@@ -563,13 +567,15 @@ export class GameService {
           gameId: gameId,
         });
 
-        // Place NPC in room if specified
-        if (npcJson.room_id && rooms.has(npcJson.room_id)) {
-          const room = rooms.get(npcJson.room_id);
+        // Place NPC in room if specified (use slug mapping)
+        if (npcJson.room_id && slugToUuid.has(npcJson.room_id)) {
+          const roomUuid = slugToUuid.get(npcJson.room_id);
+          const room = rooms.get(roomUuid);
           // Move NPC to the room's position
           await this.playerService.updatePlayer(npc.id, {
             position: room.position,
           });
+          this.logger.log(`Placed NPC ${npcJson.name} in room ${npcJson.room_id} (UUID: ${roomUuid})`);
         }
 
         this.logger.log(`Loaded NPC: ${npcJson.name} (ID: ${npcJson.id})`);
@@ -580,8 +586,23 @@ export class GameService {
       const connectionsData = await fs.readFile(connectionsPath, 'utf-8');
       const connectionsJson = JSON.parse(connectionsData);
 
-      // TODO: Implement connection system properly
-      // For now, just log the connections
+      // Apply connections using slug-to-UUID mapping
+      for (const conn of connectionsJson.connections) {
+        const fromUuid = slugToUuid.get(conn.from_room);
+        const toUuid = slugToUuid.get(conn.to_room);
+
+        if (fromUuid && toUuid) {
+          const fromRoom = rooms.get(fromUuid);
+          if (!fromRoom.connections) {
+            fromRoom.connections = {};
+          }
+          fromRoom.connections[conn.direction] = toUuid;
+          this.logger.log(`Connected ${conn.from_room} -> ${conn.to_room} via ${conn.direction}`);
+        } else {
+          this.logger.warn(`Could not find rooms for connection: ${conn.from_room} -> ${conn.to_room}`);
+        }
+      }
+
       this.logger.log(`Loaded ${connectionsJson.connections.length} connections`);
 
       // Save initial state
