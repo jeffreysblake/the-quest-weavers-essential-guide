@@ -888,4 +888,12 @@ export class InventoryManagerService {
 
     this.logger.log(`Imported ${this.inventories.size} inventories`);
   }
+
+  /**
+   * Generate a unique instance ID for inventory items
+   * @returns Unique instance ID combining timestamp and random string
+   */
+  private generateInstanceId(): string {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
 }

@@ -19,7 +19,7 @@ export class ObjectService {
 
   // Material properties moved to material-properties.ts
 
-  createObject(objectData: Omit<IObject, 'id' | 'type'>): IObject {
+  createObject(objectData: Omit<IObject, 'type'> & { id?: string }): IObject {
     // Auto-generate material properties if material is specified but materialProperties is not
     const materialProperties =
       objectData.materialProperties ||
@@ -27,10 +27,10 @@ export class ObjectService {
         ? getDefaultMaterialProperties(objectData.material)
         : undefined);
 
-    // Create object with generated ID
+    // Create object with provided ID or generated ID
     const object: IObject = {
       ...objectData,
-      id: uuidv4(),
+      id: objectData.id || uuidv4(), // Use provided ID or generate new one
       type: 'object' as const,
       properties: objectData.properties || {},
       containedObjects: objectData.containedObjects || [],

@@ -14,9 +14,9 @@ export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Post('new')
-  async createGame() {
+  async createGame(@Body('gamePath') gamePath?: string) {
     try {
-      const result = await this.gameService.createGame();
+      const result = await this.gameService.createGame(gamePath);
       return result;
     } catch (error) {
       throw new HttpException(

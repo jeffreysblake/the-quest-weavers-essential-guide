@@ -254,7 +254,7 @@ export class GameStateService {
               const existingPlayer = this.playerService.getPlayer?.(playerId);
               if (existingPlayer) {
                 // Update existing player with saved data
-                this.playerService.updatePlayer?.(playerId, playerData);
+                this.playerService.updatePlayer?.(playerId, playerData as any);
               }
             }
           }

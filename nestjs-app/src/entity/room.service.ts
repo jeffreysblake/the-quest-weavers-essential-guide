@@ -59,10 +59,10 @@ export class RoomService {
     return this.roomLocks.get(roomId)!;
   }
 
-  createRoom(roomData: Omit<IRoom, 'id' | 'type'>): IRoom {
+  createRoom(roomData: Omit<IRoom, 'type'> & { id?: string }): IRoom {
     const room: IRoom = {
       ...roomData,
-      id: this.generateId(),
+      id: roomData.id || this.generateId(), // Use provided ID or generate new one
       type: 'room',
       objects: roomData.objects || [],
       players: roomData.players || [],

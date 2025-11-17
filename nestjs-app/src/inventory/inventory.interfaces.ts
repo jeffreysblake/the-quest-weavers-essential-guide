@@ -67,6 +67,10 @@ export interface IInventory {
   equippedItems: Map<EquipmentSlot, IInventoryItem>; // Equipped items by slot
   config: IInventoryConfig;
   currentWeight: number;
+  // Convenience properties for direct access (duplicated from config for backward compatibility)
+  maxWeight?: number;
+  maxSlots?: number;
+  allowStacking?: boolean;
   createdAt: string;
   updatedAt: string;
 }

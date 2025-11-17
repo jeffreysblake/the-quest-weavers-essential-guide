@@ -8,6 +8,8 @@ import { ObjectService } from '../entity/object.service';
 import { DatabaseService } from '../database/database.service';
 import { v4 as uuidv4 } from 'uuid';
 import { Mutex, withTimeout } from 'async-mutex';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 export interface GameSession {
   gameId: string;
@@ -83,7 +85,7 @@ export class GameService {
   // Create a new game session
   // THREAD-SAFE: Acquires map lock to prevent duplicate game session creation
   // RESOURCE LIMIT: Max 10000 sessions with LRU eviction
-  async createGame(): Promise<{ gameId: string; gameState: any }> {
+  async createGame(gamePath?: string): Promise<{ gameId: string; gameState: any }> {
     return await this.mapLock.runExclusive(async () => {
       // RESOURCE LIMIT: Auto-cleanup inactive sessions before creating new one
       this.cleanupInactiveSessions(this.SESSION_INACTIVE_TIMEOUT);
@@ -110,7 +112,11 @@ export class GameService {
       });
 
       // Load or create initial game world
-      await this.initializeGameWorld(gameId);
+      if (gamePath) {
+        await this.loadGameFromPath(gamePath, gameId);
+      } else {
+        await this.initializeGameWorld(gameId);
+      }
 
       // Create game session
       const session: GameSession = {
@@ -446,6 +452,150 @@ export class GameService {
       startingRoomId: startingRoom.id,
       initialized: true,
     });
+  }
+
+  // Load game from filesystem path
+  private async loadGameFromPath(gamePath: string, gameId: string): Promise<void> {
+    try {
+      const basePath = path.join(process.cwd(), '..', 'games', gamePath);
+      this.logger.log(`Loading game from: ${basePath}`);
+
+      // Load game config
+      const configPath = path.join(basePath, 'game-config.json');
+      const configData = await fs.readFile(configPath, 'utf-8');
+      const gameConfig = JSON.parse(configData);
+      this.logger.log(`Loaded game config: ${gameConfig.name}`);
+
+      // Load all rooms
+      const roomsPath = path.join(basePath, 'rooms');
+      const roomFiles = await fs.readdir(roomsPath);
+      const rooms = new Map<string, any>(); // Map of room ID to room object
+      let startingRoom: any = null;
+
+      for (const file of roomFiles) {
+        if (!file.endsWith('.json')) continue;
+
+        const roomPath = path.join(roomsPath, file);
+        const roomData = await fs.readFile(roomPath, 'utf-8');
+        const roomJson = JSON.parse(roomData);
+
+        // Create room with preserved ID from JSON
+        const room = this.roomService.createRoom({
+          id: roomJson.id, // Preserve the ID from JSON
+          name: roomJson.name,
+          description: roomJson.description,
+          position: roomJson.position,
+          size: roomJson.size,
+          width: roomJson.size.width,
+          height: roomJson.size.height,
+          objects: [],
+          players: [],
+          gameId: gameId,
+        });
+
+        rooms.set(roomJson.id, room);
+
+        // Track starting room (position 0,0,0)
+        if (roomJson.position.x === 0 && roomJson.position.y === 0 && roomJson.position.z === 0) {
+          startingRoom = room;
+        }
+
+        this.logger.log(`Loaded room: ${roomJson.name} (ID: ${roomJson.id})`);
+      }
+
+      // Load all objects
+      const objectsPath = path.join(basePath, 'objects');
+      const objectFiles = await fs.readdir(objectsPath);
+      const objects = new Map<string, any>();
+
+      for (const file of objectFiles) {
+        if (!file.endsWith('.json')) continue;
+
+        const objectPath = path.join(objectsPath, file);
+        const objectData = await fs.readFile(objectPath, 'utf-8');
+        const objectJson = JSON.parse(objectData);
+
+        // Create object with preserved ID
+        const obj = this.objectService.createObject({
+          id: objectJson.id,
+          name: objectJson.name,
+          description: objectJson.description,
+          objectType: objectJson.object_type || 'item',
+          position: objectJson.position || { x: 0, y: 0, z: 0 },
+          material: objectJson.material || 'unknown',
+          canTake: objectJson.can_take !== false,
+          gameId: gameId,
+        });
+
+        objects.set(objectJson.id, obj);
+
+        // Place object in room if specified
+        if (objectJson.room_id && rooms.has(objectJson.room_id)) {
+          const room = rooms.get(objectJson.room_id);
+          this.roomService.addObjectToRoom(room.id, obj.id);
+        }
+
+        this.logger.log(`Loaded object: ${objectJson.name} (ID: ${objectJson.id})`);
+      }
+
+      // Load all NPCs
+      const npcsPath = path.join(basePath, 'npcs');
+      const npcFiles = await fs.readdir(npcsPath);
+
+      for (const file of npcFiles) {
+        if (!file.endsWith('.json')) continue;
+
+        const npcPath = path.join(npcsPath, file);
+        const npcData = await fs.readFile(npcPath, 'utf-8');
+        const npcJson = JSON.parse(npcData);
+
+        // Create NPC as a player entity with preserved ID
+        const npc = await this.playerService.createPlayer({
+          id: npcJson.id,
+          name: npcJson.name,
+          description: npcJson.description,
+          position: npcJson.position || { x: 0, y: 0, z: 0 },
+          health: npcJson.stats?.health || 100,
+          maxHealth: npcJson.stats?.health || 100,
+          inventory: [],
+          level: 1,
+          experience: 0,
+          gameId: gameId,
+        });
+
+        // Place NPC in room if specified
+        if (npcJson.room_id && rooms.has(npcJson.room_id)) {
+          const room = rooms.get(npcJson.room_id);
+          // Move NPC to the room's position
+          await this.playerService.updatePlayer(npc.id, {
+            position: room.position,
+          });
+        }
+
+        this.logger.log(`Loaded NPC: ${npcJson.name} (ID: ${npcJson.id})`);
+      }
+
+      // Load connections
+      const connectionsPath = path.join(basePath, 'connections.json');
+      const connectionsData = await fs.readFile(connectionsPath, 'utf-8');
+      const connectionsJson = JSON.parse(connectionsData);
+
+      // TODO: Implement connection system properly
+      // For now, just log the connections
+      this.logger.log(`Loaded ${connectionsJson.connections.length} connections`);
+
+      // Save initial state
+      await this.gameStateService.updateGameState(gameId, {
+        startingRoomId: startingRoom?.id || Array.from(rooms.values())[0]?.id,
+        initialized: true,
+      });
+
+      this.logger.log(`Successfully loaded game: ${gameConfig.name}`);
+    } catch (error) {
+      this.logger.error(`Failed to load game from path ${gamePath}: ${error.message}`);
+      this.logger.error(error.stack);
+      throw new Error(`Failed to load game: ${error.message}`);
+    }
   }
 
   // Helper method to check if player is in a room
