@@ -1,0 +1,141 @@
+{
+  "id": "madame-detergent",
+  "name": "Madame Detergent",
+  "description": "A fortune teller made entirely of swirling soap who claims to see the future in bubble patterns",
+  "npc_type": "fortune-teller",
+  "position": { "x": -88, "y": 12, "z": 0 },
+  "health": 50,
+  "max_health": 50,
+  "level": 10,
+  "experience": 0,
+  "inventory_data": [],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*Swirling soap coalesces into a vaguely humanoid form* Ahhhh, welcome, welcome! I am Madame Detergent, seer of suds, oracle of bubbles, reader of the foam futures! Come, sit, let me gaze into the bubbles and divine your destiny! *gestures to a bubble-filled crystal ball that's really just a sphere of soap* I sense... I sense great turmoil in your path! Also, you smell faintly of regret and mop water. The bubbles never lie!",
+      "choices": [
+        {
+          "text": "Can you really see the future?",
+          "leads_to": "fortune_telling_legitimacy"
+        },
+        {
+          "text": "Tell me my fortune!",
+          "leads_to": "fortune_reading"
+        },
+        {
+          "text": "You're made of soap?",
+          "leads_to": "soap_nature"
+        }
+      ]
+    },
+    "fortune_telling_legitimacy": {
+      "text": "*swirls mysteriously* Can I REALLY see the future? *dramatic pause* Well... *longer pause* ...define 'see.' And also 'future.' The bubbles show me POSSIBILITIES, darling! Probabilities! Soap-abilities! Sometimes they show me next week's lottery numbers! Other times they show me a duck! Fortune telling is an ART, not a SCIENCE! Though it involves both art AND science, and possibly interpretive dance!",
+      "choices": [
+        {
+          "text": "That's not a yes or no answer.",
+          "leads_to": "evasive_response"
+        },
+        {
+          "text": "Okay, tell me what you see.",
+          "leads_to": "fortune_reading"
+        }
+      ]
+    },
+    "fortune_reading": {
+      "text": "*swirls dramatically around the soap sphere* Yessss, let me consult the bubbles! *peers into the soap* I see... I see... YOU! With a mop! And... another mop! A legendary mop! You seek artifacts! Five sacred items scattered across dimensions! *gasps* The bubbles show... a lint king! A robot! A crystal! Many bubbles! Wait, that might just be me reflecting off myself... *refocuses* Yes! YES! You must gather the artifacts! Face challenges! And... *squints* ...avoid stepping on that thing to your left!",
+      "choices": [
+        {
+          "text": "*looks left nervously* What thing?",
+          "leads_to": "left_thing"
+        },
+        {
+          "text": "That's remarkably accurate!",
+          "leads_to": "accuracy_acknowledged"
+        },
+        {
+          "text": "You could have guessed all that.",
+          "leads_to": "skepticism"
+        }
+      ]
+    },
+    "soap_nature": {
+      "text": "*swirls proudly* I am INDEED made of soap! The finest soap! I was once just bubbles in a cosmic laundry dimension, but through sheer force of will and questionable magic, I achieved consciousness! Now I use my soapy nature to divine the future! The suds speak to me! Sometimes they whisper wisdom. Other times they just complain about water temperature. Soap is surprisingly opinionated!",
+      "choices": [
+        {
+          "text": "That's fascinating. Can you read my fortune?",
+          "leads_to": "fortune_reading"
+        }
+      ]
+    },
+    "evasive_response": {
+      "text": "*swirls defensively* Listen, DARLING, fortune telling is about GUIDANCE, not GUARANTEES! The future is fluid! Like soap! Or water! Or soapy water! I provide INSIGHT! If you want certainty, talk to a calculator! If you want WISDOM wrapped in mystery and smelling faintly of lavender, you've come to the right soap! Now, shall I read the bubbles or not?",
+      "choices": [
+        {
+          "text": "Fine, read the bubbles.",
+          "leads_to": "fortune_reading"
+        }
+      ]
+    },
+    "left_thing": {
+      "text": "*swirls confusedly* The thing! To your left! The... oh wait, that was a vision from yesterday. Never mind! Ignore the left thing! But DO be careful about... *squints at bubbles* ...doorways! And also gravity! And possibly your shoe being untied! The bubbles are being vague today! They do that sometimes when Mercury is in retrograde. Or possibly when I haven't been stirred recently.",
+      "choices": [
+        {
+          "text": "Thanks... I think?",
+          "leads_to": "vague_thanks"
+        }
+      ]
+    },
+    "accuracy_acknowledged": {
+      "text": "*swirls proudly* Of COURSE it's accurate! I am MADAME DETERGENT! The bubbles whisper secrets! The suds share wisdom! And occasionally they just make popping sounds, but I've learned to interpret those too! *leans in conspiratorially* Here's a REAL fortune for you, free of charge: You will succeed. Not because the bubbles say so, but because you CARE. That's rarer than you think. Now GO! Make your destiny! And remember to use fabric softener!",
+      "choices": [
+        {
+          "text": "Thank you, Madame Detergent!",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "skepticism": {
+      "text": "*swirls indignantly* Guessed?! GUESSED?! I am a PROFESSIONAL FORTUNE TELLER! I have predicted THREE rainstorms, FOUR lunch orders, and the exact moment when someone would say 'You could have guessed all that!' Which, by the way, was JUST NOW! *calms down, swirling more slowly* But... you're right to be skeptical. Healthy skepticism keeps you sharp. Here's the truth, janitor: The bubbles don't tell me your future. They tell me your PRESENT. And your present says you're determined, worried, and carrying a lot of responsibility. THAT'S what will determine your future. Not bubbles. Not magic. Just... you.",
+      "choices": [
+        {
+          "text": "That's actually wise. Thank you.",
+          "leads_to": "wisdom_acknowledged"
+        }
+      ]
+    },
+    "wisdom_acknowledged": {
+      "text": "*swirls gently* You're welcome, dear janitor. Sometimes the best fortune is the one you make yourself. Now go! Save reality! And if you see any good soap deals, let me know! A fortune teller's got to maintain their mystical appearance! *winks, which is impressive for a being made of soap*",
+      "choices": [
+        {
+          "text": "Will do! Goodbye!",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "vague_thanks": {
+      "text": "*swirls contentedly* You are WELCOME! Madame Detergent is always here! Well, not ALWAYS. Sometimes I evaporate. But MOSTLY always! Come back if you need more cryptic guidance! *returns to swirling mysteriously over the soap sphere*",
+      "choices": []
+    },
+    "farewell": {
+      "text": "*swirls in a farewell gesture* May your path be clear and your surfaces spotless! The bubbles have spoken! Or possibly just popped! Hard to tell! Farewell! *dissolves into a cloud of soap bubbles that smell faintly of hope and lavender*",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "swirling_mysteriously",
+    "aggression_level": "peaceful",
+    "trade_enabled": false,
+    "quest_giver": false,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 4,
+    "constitution": 10,
+    "intelligence": 14,
+    "wisdom": 16,
+    "charisma": 18,
+    "agility": 12,
+    "mysticism": 80,
+    "bubble_reading_accuracy": 45,
+    "dramatic_flair": 100
+  }
+}

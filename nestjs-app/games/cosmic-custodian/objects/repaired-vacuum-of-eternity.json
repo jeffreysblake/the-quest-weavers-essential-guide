@@ -1,0 +1,40 @@
+{
+  "id": "repaired-vacuum-of-eternity",
+  "name": "Vacuum of Eternity (Repaired)",
+  "description": "The legendary Vacuum of Eternity, restored to its full glory and ready to clean reality itself",
+  "object_type": "quest-item",
+  "position": { "x": 32, "y": 12, "z": 3 },
+  "material": "crystal",
+  "material_properties": {
+    "density": 10,
+    "conductivity": 10,
+    "flammability": 0,
+    "brittleness": 1,
+    "resistances": { "fire": 10, "ice": 10, "lightning": 10, "force": 10, "magic": 10 }
+  },
+  "weight": 5,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "enchanted": true,
+    "blessed": true,
+    "legendary": true,
+    "repaired": true,
+    "fully_functional": true,
+    "reality_warping": true
+  },
+  "properties": {
+    "artifact_level": "legendary",
+    "power_rating": 10000,
+    "cleaning_power": "infinite",
+    "suction_strength": "capable_of_affecting_spacetime",
+    "special_ability": "cleans_the_edge_of_reality",
+    "victory_item": true
+  },
+  "interactions": {
+    "examine": "The Vacuum of Eternity stands before you in all its repaired glory. The five Sacred Cleaning Artifacts have been perfectly integrated into its structure, and the vacuum shards have been fused back together by Professor Scrubsworth's Cosmic Repair Station. It gleams with inner light, and reality itself seems to breathe easier in its presence. The power core hums with satisfaction, all the pieces finally reunited. This is what you've been working toward - a fully functional device capable of cleaning up the cosmic mess at the edge of reality. Director Dustbane is going to be so relieved. Or at least slightly less angry.",
+    "take": "You lift the repaired Vacuum of Eternity. Despite its cosmic power, it feels perfectly balanced and comfortable to hold. The handle fits your hand as if it was made for you specifically. You feel a sense of accomplishment - you broke it, and you fixed it. That's character growth right there.",
+    "use": "You activate the Vacuum of Eternity. Immediately, space around you becomes noticeably cleaner. Dust particles achieve enlightenment and voluntarily disappear. Entropy reconsiders its career path. Reality itself seems to sigh with relief. This is the most powerful cleaning device in existence, and you're holding it. Don't let it go to your head."
+  }
+}

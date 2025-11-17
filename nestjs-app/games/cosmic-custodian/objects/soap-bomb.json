@@ -1,0 +1,37 @@
+{
+  "id": "soap-bomb",
+  "name": "Concentrated Soap Bomb",
+  "description": "A small sphere filled with extremely concentrated soap that explodes into cleansing foam",
+  "object_type": "weapon",
+  "position": { "x": 32, "y": 12, "z": 2 },
+  "material": "glass",
+  "material_properties": {
+    "density": 3,
+    "conductivity": 2,
+    "flammability": 2,
+    "brittleness": 9,
+    "resistances": { "fire": 4, "ice": 5, "lightning": 3, "force": 1, "magic": 6 }
+  },
+  "weight": 0.5,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "armed": false,
+    "fragile": true,
+    "sudsy": true
+  },
+  "properties": {
+    "weapon_damage": 12,
+    "attack_speed": "fast",
+    "durability": 1,
+    "weapon_type": "throwable",
+    "area_of_effect": 5,
+    "special_effect": "blinds_enemies_with_suds"
+  },
+  "interactions": {
+    "examine": "A glass sphere about the size of your fist, filled with soap concentrate so powerful it's practically weaponized. Professor Scrubsworth created these for 'extreme cleaning situations,' but they work equally well in combat. The soap inside swirls with an ominous lavender color. The label reads: 'Warning: May cause excessive cleanliness. Do not use on eyes, skin, or enemies you want to see clearly.'",
+    "take": "You carefully pick up the soap bomb. It's surprisingly heavy for its size, and you can feel the liquid sloshing inside. Handle with care - you don't want to accidentally clean yourself explosively.",
+    "use": "You throw the soap bomb! It arcs through the air gracefully before shattering, releasing a explosion of sudsy foam. Everything in the blast radius is simultaneously cleaned and confused.",
+    "throw": "You wind up and throw the soap bomb with all your might. This is going to be either very effective or very embarrassing."
+  }
+}

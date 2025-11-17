@@ -1,0 +1,39 @@
+{
+  "id": "quantum-mop",
+  "name": "The Quantum Mop",
+  "description": "A mop that exists in multiple states of clean and dirty simultaneously until observed",
+  "object_type": "quest-item",
+  "position": { "x": 0, "y": -20, "z": 5 },
+  "material": "wood",
+  "material_properties": {
+    "density": 5,
+    "conductivity": 2,
+    "flammability": 6,
+    "brittleness": 3,
+    "resistances": { "fire": 2, "ice": 5, "lightning": 3, "force": 6, "magic": 10 }
+  },
+  "weight": 2,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "enchanted": true,
+    "blessed": true,
+    "legendary": true,
+    "sacred_artifact": true,
+    "quantum_state": "superposition"
+  },
+  "properties": {
+    "artifact_level": "legendary",
+    "power_rating": 1000,
+    "cleaning_power": "quantum",
+    "handle_material": "wood",
+    "head_material": "reality_strings",
+    "special_ability": "cleans_multiple_dimensions_simultaneously"
+  },
+  "interactions": {
+    "examine": "The Quantum Mop is a strange sight. Its handle appears to be made of polished cosmic wood from the Tree of Time, while its mop head consists of strings that seem to phase in and out of reality. When you look at it directly, it's both perfectly clean and covered in cosmic grime. Schrodinger would have had a field day with this. Or wouldn't have. Both simultaneously.",
+    "take": "You grasp the Quantum Mop and immediately feel disoriented. For a moment, you experience every possible timeline where you did or didn't pick it up. In one timeline, you're a successful business executive. In another, you're still a janitor but somehow you've become the president of janitors. You shake your head and focus on this timeline, where you're holding a legendary mop.",
+    "use": "You attempt to mop with the Quantum Mop. The floor becomes simultaneously clean and dirty, then collapses into a state of perfect cleanliness. You're not sure how physics works anymore, but you're okay with that."
+  }
+}

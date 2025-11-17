@@ -1,0 +1,181 @@
+{
+  "id": "terry-towelson",
+  "name": "Terry Towelson",
+  "description": "A nervous sentient towel who runs a small shop and has strong opinions about towel importance",
+  "npc_type": "merchant",
+  "position": { "x": -27, "y": 77, "z": 2 },
+  "health": 40,
+  "max_health": 40,
+  "level": 6,
+  "experience": 0,
+  "inventory_data": ["cosmic-towel", "rusty-gear"],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*wrings self nervously* Oh! A customer! I mean... hello! Welcome to Terry's Towel Emporium! I'm Terry! Terry Towelson! The name's a bit on-the-nose, I know, but when you're a sentient towel, you embrace the theme! *nervous laugh* Can I interest you in a towel today? You should really have a towel. Every space traveler should have a towel. It's the most important thing you can carry! After oxygen. And food. And probably money. But definitely in the top ten!",
+      "choices": [
+        {
+          "text": "Why are towels so important?",
+          "leads_to": "towel_philosophy"
+        },
+        {
+          "text": "What do you have for sale?",
+          "leads_to": "shop_inventory"
+        },
+        {
+          "text": "You seem nervous. Are you okay?",
+          "leads_to": "anxiety_explanation"
+        }
+      ]
+    },
+    "towel_philosophy": {
+      "text": "*becomes suddenly passionate* Why are towels important?! WHY ARE TOWELS IMPORTANT?! *calms down* Sorry, sorry, I get excited. Towels are the most versatile tool in the universe! You can dry yourself! Use it as a blanket! Signal for help! Wrap things! Sit on it! And most importantly, if someone sees you with a towel, they assume you're prepared! Preparation is 90% of survival! The other 10% is panic, which I'm very good at! *wrings self again*",
+      "choices": [
+        {
+          "text": "That's... actually convincing. What towels do you have?",
+          "leads_to": "shop_inventory"
+        },
+        {
+          "text": "You're very passionate about this.",
+          "leads_to": "passion_explanation"
+        }
+      ]
+    },
+    "shop_inventory": {
+      "text": "*straightens up proudly* I have the finest towels in five dimensions! My specialty is the Cosmic Towel - absorbent, durable, and with 'DON'T PANIC' embroidered in large, friendly letters! I'm also holding onto this gear I found - a Medium Precision Gear, Model G-347-B. Not sure why I have it, honestly. I think I was going to sell it, but then I got distracted organizing my towel inventory by thread count, then by color, then by existential significance. What would you like?",
+      "choices": [
+        {
+          "text": "I'll take the Cosmic Towel.",
+          "leads_to": "sell_towel"
+        },
+        {
+          "text": "I'll take the gear!",
+          "leads_to": "sell_gear"
+        },
+        {
+          "text": "Just looking, thanks.",
+          "leads_to": "browsing"
+        }
+      ]
+    },
+    "anxiety_explanation": {
+      "text": "*wrings self harder* Am I okay? That's... that's a loaded question! I'm a TOWEL running a BUSINESS in a BUBBLE dimension! Every day I wake up and think 'this is absurd!' But then I remember: life is absurd, and I might as well sell towels while I process that! Plus, I worry about everything! What if no one buys towels? What if everyone buys towels and I run out? What if I'm a terrible towel and don't know it?! *breathes deeply* But I'm managing. Mostly. Towel therapy helps. I wrap myself around problems until they feel smaller.",
+      "choices": [
+        {
+          "text": "That sounds exhausting.",
+          "leads_to": "exhaustion_agreement"
+        },
+        {
+          "text": "You're doing great, Terry.",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "passion_explanation": {
+      "text": "*nods vigorously* I AM passionate! When you're a towel, you have to be! Otherwise, you're just... cloth. Purposeless cloth! But with PASSION and COMMITMENT, you can be more! You can help people! You can make a difference! One absorbent fiber at a time! *realizes how intense that sounded* Sorry. I haven't talked to anyone in three weeks. I get excited.",
+      "choices": [
+        {
+          "text": "No need to apologize. Your passion is admirable!",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "sell_towel": {
+      "text": "*excited fluttering* EXCELLENT CHOICE! The Cosmic Towel is my best seller! Well, my only seller since I only sell towels and occasionally random gears, but still! That'll be 30 credits! Or... *leans in conspiratorially* ...if you promise to actually USE it and not just let it sit in your inventory, I'll give you a discount. 25 credits. Because I want my towels to fulfill their PURPOSE!",
+      "choices": [
+        {
+          "text": "Deal! I'll definitely use it! *pay 25 credits*",
+          "leads_to": "towel_sold"
+        },
+        {
+          "text": "Never mind.",
+          "leads_to": "no_sale"
+        }
+      ]
+    },
+    "sell_gear": {
+      "text": "*perks up* The gear! Yes! I've been holding onto it! Honestly, I'm relieved someone wants it. It doesn't fit my towel-based brand identity, and it's been giving me organizational anxiety. 40 credits, and it's yours! Or... *thinks* ...if you're getting it to help someone, I'll sell it for 20. I'm a nervous wreck, but I'm not heartless!",
+      "choices": [
+        {
+          "text": "It's for a broken robot who needs to clean again.",
+          "leads_to": "gear_discount"
+        },
+        {
+          "text": "I'll pay 40 credits. *pay*",
+          "leads_to": "gear_sold"
+        },
+        {
+          "text": "Maybe later.",
+          "leads_to": "no_sale"
+        }
+      ]
+    },
+    "towel_sold": {
+      "text": "*practically glowing* Thank you! THANK YOU! You've made a towel very happy! Use it well! And remember: when in doubt, dry it out! That's my motto! Or one of them! I have seventeen mottos! Goodbye! *waves frantically*",
+      "choices": []
+    },
+    "gear_discount": {
+      "text": "*softens* A broken robot? Oh no. OH NO. That's terrible! Robots deserve to fulfill their functions! Just like towels! Here, take it for FREE! No, I insist! *hands over gear* Go help that robot! And tell them Terry says they're valid and their purpose matters! *wipes away a tear that shouldn't exist because towels don't have tear ducts*",
+      "choices": [
+        {
+          "text": "Thank you, Terry! You're very kind!",
+          "leads_to": "kindness_acknowledged"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "rusty-gear" }
+      ]
+    },
+    "gear_sold": {
+      "text": "*accepts payment* Thank you! That's one less non-towel item cluttering my inventory! I feel more organized already! *flutters happily*",
+      "choices": []
+    },
+    "no_sale": {
+      "text": "*droops slightly* Oh. Okay. That's fine! Totally fine! I'll just be here! With my towels! And my anxiety! But mostly my towels! *nervous laugh* Come back anytime!",
+      "choices": []
+    },
+    "browsing": {
+      "text": "*nods understandingly* Of course! Browsing is valid! Sometimes you need to process your options! Take your time! I'll be here! Worrying! But supportively!",
+      "choices": []
+    },
+    "exhaustion_agreement": {
+      "text": "*nods tiredly* It IS exhausting! But it's MY exhaustion, you know? And that makes it somehow... meaningful? Or at least familiar? I don't know, I'm still figuring out this whole sentience thing. Would you like to buy something? Retail therapy helps. Me, I mean. It helps me.",
+      "choices": [
+        {
+          "text": "Sure, let me see what you have.",
+          "leads_to": "shop_inventory"
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*brightens considerably* You... you think so? Really? *sniffles* That's the nicest thing anyone's said to me since I gained consciousness! You know what? I'm giving you a DISCOUNT! On everything! Because you made a towel feel valued! *happy fluttering*",
+      "choices": [
+        {
+          "text": "Thank you, Terry! Let me see your inventory.",
+          "leads_to": "shop_inventory"
+        }
+      ]
+    },
+    "kindness_acknowledged": {
+      "text": "*flutters emotionally* YOU'RE kind! Go! Go help that robot! And if you ever need towels or just someone to worry about things with you, I'm here! *waves goodbye* DON'T PANIC! And also DO PANIC if appropriate! Context matters!",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "nervous_fluttering",
+    "aggression_level": "peaceful",
+    "trade_enabled": true,
+    "quest_giver": false,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 3,
+    "constitution": 8,
+    "intelligence": 12,
+    "wisdom": 10,
+    "charisma": 14,
+    "agility": 6,
+    "anxiety_level": 100,
+    "towel_knowledge": 30,
+    "kindness": 25
+  }
+}

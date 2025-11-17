@@ -107,6 +107,9 @@ export interface IWorldState {
   environments: Map<string, IEnvironmentState>;
   globalFlags: Record<string, boolean>;
   globalVariables: Record<string, any>;
+  // Convenience aliases for backward compatibility
+  flags?: Record<string, boolean>;
+  variables?: Record<string, any>;
   lastUpdated: string;
 }
 

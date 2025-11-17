@@ -1,0 +1,33 @@
+{
+  "id": "rusty-gear",
+  "name": "Pristine Mechanical Gear",
+  "description": "A perfectly maintained gear that would fit perfectly in Rusty the Robot's chassis",
+  "object_type": "quest-item",
+  "position": { "x": -28, "y": 75, "z": 3 },
+  "material": "metal",
+  "material_properties": {
+    "density": 8,
+    "conductivity": 9,
+    "flammability": 0,
+    "brittleness": 2,
+    "resistances": { "fire": 9, "ice": 8, "lightning": 5, "force": 9, "magic": 6 }
+  },
+  "weight": 0.5,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "oiled": true,
+    "polished": true,
+    "functional": true
+  },
+  "properties": {
+    "gear_size": "medium",
+    "fits_model": "RU-5TY_v2.3",
+    "quality": "excellent",
+    "quest_item": true
+  },
+  "interactions": {
+    "examine": "This is a beautifully maintained mechanical gear, perfectly sized for an older model cleaning robot. The teeth are sharp and precise, and it's been recently oiled. Someone took good care of this piece. It would be perfect for repairing Rusty the Robot in the Supply Vault.",
+    "take": "You pick up the gear carefully. It's heavier than expected and feels solid and well-made. Quality engineering never goes out of style, even if robots do."
+  }
+}

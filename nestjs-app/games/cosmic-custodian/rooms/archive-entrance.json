@@ -1,0 +1,21 @@
+{
+  "id": "archive-entrance",
+  "name": "The Moldy Archives - Entrance",
+  "description": "An ancient library where forgotten knowledge gathers mold and occasionally sentience",
+  "long_description": "The portal deposits you into what must have once been a magnificent library, but emphasis on 'must have been.' The Moldy Archives are exactly what they sound like: endless rows of bookshelves filled with tomes so old and neglected that they've developed fuzzy green and blue coatings that seem to move when you're not looking directly at them. The air is thick with the smell of old paper, moisture, and the particular mustiness that comes from knowledge nobody has bothered to learn in millennia. Ceiling-high shelves stretch into the gloom, their tops lost in shadows that might be darkness or might be extremely dense collections of mold spores. Strange sounds echo through the stacks: pages turning themselves, the whisper of spores settling, and what might be books discussing philosophy in very quiet voices. The Mop Oracle resides somewhere deeper in the archives, dispensing wisdom to those who can stand the smell. East leads deeper into the archives toward the Sacred Chamber. West returns to the airlock. The floor is covered in a carpet that was probably once a rich burgundy but is now a concerning variety of colors. A sign on the wall, itself covered in mold, reads: 'The Moldy Archives - Where Knowledge Goes to Decompose. Please Return Books to Their Proper Shelf (If You Can Find It).'",
+  "position": { "x": -30, "y": -20, "z": 0 },
+  "size": { "width": 40, "height": 40, "depth": 50 },
+  "environment": {
+    "lighting": "dim and greenish from bioluminescent mold",
+    "sound": "rustling pages, settling spores, whispered book discussions",
+    "temperature": "damp and cool",
+    "weather": "indoor",
+    "atmosphere": "ancient, musty, and vaguely intellectual"
+  },
+  "properties": {
+    "safe_zone": false,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "id": "director-dustbane",
+  "name": "Director Dustbane",
+  "description": "Your boss: a stern, no-nonsense administrator who built their career on cleanliness and disappointed sighs",
+  "npc_type": "quest-giver",
+  "position": { "x": 7, "y": 25, "z": 0 },
+  "health": 100,
+  "max_health": 100,
+  "level": 20,
+  "experience": 0,
+  "inventory_data": ["blue-keycard"],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "Rodriguez. I've been expecting you. And before you say anything, yes, I know about the Vacuum of Eternity. The entire station's reality stabilizers have been screaming since you shattered it. Do you have ANY idea how much paperwork a 'catastrophic reality destabilization event' generates? I have seventeen forms just for the COVER PAGE.",
+      "choices": [
+        {
+          "text": "I can explain! It was an accident!",
+          "leads_to": "explanation"
+        },
+        {
+          "text": "I'm going to fix it, I promise!",
+          "leads_to": "promise_to_fix"
+        },
+        {
+          "text": "How bad is it, exactly?",
+          "leads_to": "damage_report"
+        }
+      ]
+    },
+    "explanation": {
+      "text": "An ACCIDENT? Rodriguez, the Vacuum of Eternity has existed for three billion years. It survived the Cosmic Cleaning Wars, the Great Tidying, and the Incident We Don't Speak About. And you managed to break it by... what was it in your report? 'Trying to vacuum up a particularly stubborn dust bunny?' I've been doing this job for forty years, and I've never seen such a creative disaster.",
+      "choices": [
+        {
+          "text": "That dust bunny was really stubborn though...",
+          "leads_to": "dust_bunny_excuse"
+        },
+        {
+          "text": "I'll fix it! What do I need to do?",
+          "leads_to": "quest_explanation"
+        }
+      ]
+    },
+    "promise_to_fix": {
+      "text": "Fix it? FIX IT?! Rodriguez, do you understand what the Vacuum of Eternity even IS? It's not just a cleaning tool - it's the only device capable of maintaining the barrier between reality and the cosmic mess at the edge of existence! Without it, we have approximately 72 hours before reality starts accumulating dust bunnies of EXISTENTIAL SIGNIFICANCE!",
+      "choices": [
+        {
+          "text": "That sounds bad. How do I fix it?",
+          "leads_to": "quest_explanation"
+        },
+        {
+          "text": "Existential dust bunnies?",
+          "leads_to": "existential_dustbunnies"
+        }
+      ]
+    },
+    "damage_report": {
+      "text": "*Dustbane pulls out a datapad and reads with increasing exasperation* Let's see: Reality Integrity down to 73%. Dust Accumulation Rate increased by 400%. The edge of existence is now rated 'Messy' instead of 'Pristine.' We've had three complaints from neighboring dimensions about the smell. And yesterday, a philosophical dust bunny achieved sentience and wrote a thesis on the futility of cleaning. It was actually quite well-written, which makes this EVEN MORE EMBARRASSING!",
+      "choices": [
+        {
+          "text": "Okay, I get it. It's bad. How do I fix this?",
+          "leads_to": "quest_explanation"
+        }
+      ]
+    },
+    "dust_bunny_excuse": {
+      "text": "*Dustbane pinches the bridge of their nose* The dust bunny. Was stubborn. Rodriguez, I have observed stars being born and dying. I have witnessed the heat death of galaxies. I have sat through budget meetings. And yet, somehow, your capacity for understatement still manages to surprise me. That 'stubborn dust bunny' is now calling itself the Lint King and has established a monarchy on Mount Washmore!",
+      "choices": [
+        {
+          "text": "I'll deal with him too! Just tell me what to do!",
+          "leads_to": "quest_explanation"
+        }
+      ]
+    },
+    "existential_dustbunnies": {
+      "text": "Yes, existential dust bunnies! Regular dust bunnies are annoying but manageable. EXISTENTIAL dust bunnies question the meaning of cleanliness itself! They write poetry about entropy! They form support groups! One of them started a podcast! It has surprising good production values, but that's NOT THE POINT!",
+      "choices": [
+        {
+          "text": "I understand. Please tell me how to fix the vacuum.",
+          "leads_to": "quest_explanation"
+        }
+      ]
+    },
+    "quest_explanation": {
+      "text": "*Dustbane takes a deep breath and speaks with forced calm* Fine. Here's what you need to do. The Vacuum of Eternity requires five Sacred Cleaning Artifacts to function: the Eternal Sponge, the Quantum Mop, the Divine Duster, the Celestial Spray Bottle, and the Holy Scrub Brush. These artifacts are scattered across various dimensions. Collect them and bring them to Professor Scrubsworth in the laboratory. They'll use the Cosmic Repair Station to integrate the artifacts and repair the vacuum. I'm giving you this Blue Keycard for access to my office and the lab. Do NOT lose it. Do NOT break anything else. And Rodriguez? If you fail, I'm not firing you into a black hole. That would be too quick. I'm assigning you to ETERNAL FILING DUTY.",
+      "choices": [
+        {
+          "text": "I won't let you down! Where do I start?",
+          "leads_to": "quest_hints"
+        },
+        {
+          "text": "Eternal filing duty sounds worse than a black hole.",
+          "leads_to": "filing_duty"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "blue-keycard" },
+        { "type": "set_flag", "value": "main_quest_started" }
+      ]
+    },
+    "quest_hints": {
+      "text": "Start by talking to Professor Scrubsworth in the laboratory. They're eccentric but brilliant - they'll explain how the Cosmic Repair Station works. The artifacts are hidden in various dimensions accessible through the airlock. The Eternal Sponge is in the Forgotten Closet, the Quantum Mop is in the Moldy Archives, the Divine Duster is in the Soap Bubble Nebula, the Celestial Spray Bottle is in the Crystal Corridor, and the Holy Scrub Brush... well, you'll need to deal with the Lint King for that one. Good luck, Rodriguez. You're going to need it.",
+      "choices": [
+        {
+          "text": "Thank you, Director. I'll fix this.",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "filing_duty": {
+      "text": "It IS worse. Do you know how many forms a reality-spanning sanitation bureau generates? Infinite. Literally infinite. We have filing cabinets that extend into pocket dimensions. We have paperwork that predates the universe itself. We have forms for filling out forms about filling out forms. Now GO FIX THE VACUUM!",
+      "choices": [
+        {
+          "text": "Yes, Director! On my way!",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "farewell": {
+      "text": "Good. Now get out of my office before my blood pressure achieves sentience and files a complaint. Oh, and Rodriguez? Despite everything... I have faith you can fix this. You've been a decent janitor when you're not shattering cosmic artifacts. Don't make me regret that faith.",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "stationary",
+    "aggression_level": "peaceful",
+    "trade_enabled": false,
+    "quest_giver": true,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 10,
+    "constitution": 15,
+    "intelligence": 18,
+    "wisdom": 20,
+    "charisma": 16,
+    "agility": 8,
+    "management_skill": 30,
+    "disappointment_capacity": 100
+  }
+}

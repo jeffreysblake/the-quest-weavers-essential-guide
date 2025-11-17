@@ -1,0 +1,33 @@
+{
+  "id": "cosmic-towel",
+  "name": "Absorbent Cosmic Towel",
+  "description": "An incredibly useful towel that, according to Terry, you should never be without",
+  "object_type": "item",
+  "position": { "x": -29, "y": 76, "z": 3 },
+  "material": "cloth",
+  "material_properties": {
+    "density": 2,
+    "conductivity": 1,
+    "flammability": 7,
+    "brittleness": 1,
+    "resistances": { "fire": 4, "ice": 6, "lightning": 2, "force": 3, "magic": 6 }
+  },
+  "weight": 0.5,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "clean": true,
+    "dry": true,
+    "absorbent": true
+  },
+  "properties": {
+    "absorbency": "high",
+    "usefulness": "surprisingly_high",
+    "hitchhiker_approved": true
+  },
+  "interactions": {
+    "examine": "This is a large, soft towel woven from cosmic cotton. It's incredibly absorbent and surprisingly durable. Terry Towelson sold you this, insisting that a towel is the most useful thing any space traveler can carry. You're not entirely sure why, but Terry seemed very certain about it. The tag reads: 'DON'T PANIC' in large, friendly letters.",
+    "take": "You pick up the cosmic towel. It's soft, clean, and folds surprisingly small. Terry was right - you do feel more prepared with a towel.",
+    "use": "You unfold the cosmic towel. It's remarkably versatile - you could dry yourself, use it as a blanket, signal for help, or apparently, according to Terry, 'countless other applications limited only by your imagination and the structural integrity of cloth.'"
+  }
+}

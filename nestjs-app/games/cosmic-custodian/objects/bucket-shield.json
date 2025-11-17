@@ -1,0 +1,37 @@
+{
+  "id": "bucket-shield",
+  "name": "Reinforced Mop Bucket",
+  "description": "A sturdy metal bucket that can double as a surprisingly effective shield",
+  "object_type": "weapon",
+  "position": { "x": 3, "y": 2, "z": 1 },
+  "material": "metal",
+  "material_properties": {
+    "density": 8,
+    "conductivity": 9,
+    "flammability": 0,
+    "brittleness": 2,
+    "resistances": { "fire": 8, "ice": 7, "lightning": 3, "force": 9, "magic": 4 }
+  },
+  "weight": 3,
+  "is_portable": true,
+  "is_container": true,
+  "state_data": {
+    "empty": true,
+    "dented": false,
+    "polished": true
+  },
+  "properties": {
+    "weapon_damage": 5,
+    "defense_bonus": 10,
+    "attack_speed": "slow",
+    "durability": 100,
+    "weapon_type": "shield",
+    "special_ability": "blocks_projectiles"
+  },
+  "interactions": {
+    "examine": "This reinforced metal bucket has been with you since your first day at the Sanitation Bureau. It's dented from years of use but still sturdy. Someone (probably you during a slow shift) has engraved 'Bucket of Justice' on the side. The metal is thick enough to stop most attacks, and the handle makes it easy to wield defensively.",
+    "take": "You grab the bucket by its sturdy handle. It's heavier than a normal bucket, reinforced specifically for hazardous cleaning duty. It also makes a satisfying 'clang' sound when you tap it.",
+    "use": "You hold the bucket in front of you defensively. Its curved surface is perfect for deflecting attacks. You feel safer already, in a 'hiding behind a bucket' kind of way.",
+    "equip": "You slip your arm through the bucket's handle, wielding it like a shield. Knights have their coat of arms; you have your bucket of justice."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "laboratory",
+  "name": "Professor Scrubsworth's Laboratory",
+  "description": "A chaotic lab where science and cleaning products collide with alarming frequency",
+  "long_description": "If Director Dustbane's office is a temple to order, Professor Scrubsworth's laboratory is a monument to controlled chaos - or possibly uncontrolled chaos, it's hard to tell. Beakers bubble with mysterious liquids in colors that probably shouldn't exist, and the air shimmers with the aftermath of experiments that definitely violated several laws of physics and possibly good taste. The walls are covered in scribbled equations that seem to shift when you're not looking directly at them. In the center of the room, a massive contraption made of copper tubes, glass spheres, and what appears to be a modified toilet plunger hums ominously. This must be the Cosmic Repair Station that the Professor mentioned. The floor is littered with failed prototypes and empty coffee cups. A sign on the wall reads: 'Lab Safety Rule #1: If it starts glowing, run. Rule #2: Define 'glowing.'' You're not sure if you feel safer or more terrified being in here.",
+  "position": { "x": 30, "y": 10, "z": 0 },
+  "size": { "width": 20, "height": 20, "depth": 4 },
+  "environment": {
+    "lighting": "irregular - some areas too bright, others mysteriously dark",
+    "sound": "bubbling, crackling, and occasional small explosions",
+    "temperature": "varies wildly by location",
+    "weather": "indoor",
+    "atmosphere": "chaotic and scientifically questionable"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

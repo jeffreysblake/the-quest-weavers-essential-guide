@@ -400,6 +400,35 @@ export class WorldStateManagerService {
   }
 
   /**
+   * Restore world state from saved data
+   * Used when loading a saved game
+   */
+  restoreWorldState(gameId: string, worldStateData: any): void {
+    try {
+      // Convert arrays back to Maps for world state
+      const worldState: IWorldState = {
+        gameId,
+        doors: new Map(worldStateData.doors || []),
+        objects: new Map(worldStateData.objects || []),
+        npcs: new Map(worldStateData.npcs || []),
+        environments: new Map(worldStateData.environments || []),
+        globalFlags: worldStateData.globalFlags || {},
+        globalVariables: worldStateData.globalVariables || {},
+        flags: worldStateData.flags || worldStateData.globalFlags || {},
+        variables: worldStateData.variables || worldStateData.globalVariables || {},
+        lastUpdated: worldStateData.lastUpdated || new Date().toISOString(),
+      };
+
+      this.worldStates.set(gameId, worldState);
+      this.logger.log(`Restored world state for game ${gameId}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to restore world state for game ${gameId}: ${error}`,
+      );
+    }
+  }
+
+  /**
    * Query state changes
    */
   queryStateChanges(gameId: string, query?: IStateQuery): IStateChange[] {

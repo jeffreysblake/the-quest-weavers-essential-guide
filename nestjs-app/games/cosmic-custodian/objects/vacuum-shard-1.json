@@ -1,0 +1,32 @@
+{
+  "id": "vacuum-shard-1",
+  "name": "Vacuum Shard (Nozzle Fragment)",
+  "description": "A glowing shard from the shattered Vacuum of Eternity, pulsing with cosmic cleaning power",
+  "object_type": "quest-item",
+  "position": { "x": 1, "y": 1, "z": 1 },
+  "material": "crystal",
+  "material_properties": {
+    "density": 8,
+    "conductivity": 9,
+    "flammability": 0,
+    "brittleness": 3,
+    "resistances": { "fire": 9, "ice": 9, "lightning": 9, "force": 7, "magic": 10 }
+  },
+  "weight": 0.8,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "glowing": true,
+    "fragment_of": "vacuum-of-eternity"
+  },
+  "properties": {
+    "artifact_piece": "nozzle",
+    "power_level": 200,
+    "quest_item": true
+  },
+  "interactions": {
+    "examine": "This shard appears to be part of the Vacuum of Eternity's nozzle. It glows with an inner light and hums quietly with barely-contained power. The edges are sharp but somehow don't cut you. Looking at it fills you with equal parts hope and guilt.",
+    "take": "You pick up the vacuum shard carefully. It feels warm and vibrates gently in your hand, as if eager to be whole again."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "blue-keycard",
+  "name": "Blue Security Keycard",
+  "description": "A blue keycard that grants access to Director Dustbane's office",
+  "object_type": "key",
+  "position": { "x": 1, "y": 11, "z": 1 },
+  "material": "plastic",
+  "material_properties": {
+    "density": 3,
+    "conductivity": 2,
+    "flammability": 8,
+    "brittleness": 5,
+    "resistances": { "fire": 2, "ice": 5, "lightning": 3, "force": 4, "magic": 3 }
+  },
+  "weight": 0.1,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magnetic_strip_active": true,
+    "access_level": "management"
+  },
+  "properties": {
+    "key_type": "electronic",
+    "unlocks": "directors-office-door",
+    "security_level": "blue"
+  },
+  "interactions": {
+    "examine": "A blue plastic keycard with the Intergalactic Sanitation Bureau logo embossed on it. The magnetic strip on the back still works, apparently. It's labeled 'MANAGEMENT ACCESS - DO NOT LOSE (Again).' You're not sure where you got this from, but you're grateful to have it.",
+    "take": "You pick up the blue keycard and slip it into your pocket. One step closer to facing your boss's wrath... er, explaining the situation professionally."
+  }
+}

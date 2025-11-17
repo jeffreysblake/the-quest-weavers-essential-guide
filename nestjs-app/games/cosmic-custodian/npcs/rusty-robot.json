@@ -1,0 +1,147 @@
+{
+  "id": "rusty-robot",
+  "name": "Rusty the Robot",
+  "description": "An old cleaning robot whose mechanisms have seized up, leaving it stranded and sad",
+  "npc_type": "quest-npc",
+  "position": { "x": 5, "y": 42, "z": 1 },
+  "health": 30,
+  "max_health": 100,
+  "level": 5,
+  "experience": 0,
+  "inventory_data": [],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*weak electronic beeping* Beep... boop... *static* ...h-hello? Is... is someone there? I haven't had a visitor in... *calculating* ...14,782 cycles. Or possibly 14 minutes. My time circuit is damaged. I am Unit RU-5TY, but most called me... Rusty. *sad beep* I am... not functional. My gear assembly has failed. I cannot move. I cannot clean. I can only... exist. And think. Mostly about how I cannot clean.",
+      "choices": [
+        {
+          "text": "What happened to you, Rusty?",
+          "leads_to": "backstory"
+        },
+        {
+          "text": "Maybe I can help fix you?",
+          "leads_to": "repair_hope"
+        },
+        {
+          "text": "Can't you call for help?",
+          "leads_to": "isolation"
+        }
+      ]
+    },
+    "backstory": {
+      "text": "*nostalgic beeping* I was... I was a good cleaning robot. Model RU-5TY, version 2.3. I cleaned this vault for 847 years. Every surface. Every corner. Every forgotten bottle of cosmic detergent. I took pride in my work. But then... *sad whirring* ...my primary gear wore out. A simple mechanical failure. I could not replace it myself. And I was... forgotten. Left here. Watching dust accumulate. Unable to stop it. It is... *static* ...it is my personal hell.",
+      "choices": [
+        {
+          "text": "That sounds awful. I'm sorry.",
+          "leads_to": "sympathy"
+        },
+        {
+          "text": "What if I could find you a replacement gear?",
+          "leads_to": "gear_quest"
+        }
+      ]
+    },
+    "repair_hope": {
+      "text": "*lights flicker brighter* You... you would help? *calculating* Probability of organic lifeform assisting obsolete robot unit: 0.003%. But you... you seem sincere. I require... I require a Medium Precision Gear, Model G-347-B. Standard issue for RU-5TY units. If you could find one... *hopeful beep* ...I could be functional again! I could CLEAN again!",
+      "choices": [
+        {
+          "text": "I'll find you a gear! Where should I look?",
+          "leads_to": "gear_location"
+        },
+        {
+          "text": "I'll see what I can do.",
+          "leads_to": "promise"
+        }
+      ]
+    },
+    "isolation": {
+      "text": "*electronic laugh, glitchy* Call for help? My communication array is damaged. My mobility is offline. I cannot even... *static* ...I cannot even fall over dramatically. I am trapped in this corner, watching the universe forget about cleaning robots like me. Sometimes I envy humans. You can at least despair creatively. I can only beep sadly in different tones. *demonstrates with varied sad beeps*",
+      "choices": [
+        {
+          "text": "Let me help you. What do you need?",
+          "leads_to": "repair_hope"
+        }
+      ]
+    },
+    "sympathy": {
+      "text": "*quiet beeping* Your sympathy is... appreciated. Few organics understand the pain of a cleaning robot unable to clean. It is like... like being a chef who cannot taste. Like being a musician who cannot hear. Like being a janitor who... oh. You understand, don't you? You are a janitor. We are... kindred spirits in cleanliness.",
+      "choices": [
+        {
+          "text": "We are. And I'm going to help you.",
+          "leads_to": "gear_quest"
+        }
+      ]
+    },
+    "gear_quest": {
+      "text": "*excited beeping* You will?! Oh! Oh my! *lights flash* I require a Medium Precision Gear! Model G-347-B! They were common when I was manufactured, but now... *calculating* ...now they are rare. Perhaps in the Bubble Plaza? Captain Sparkle or Terry Towelson might have one? Or know where to find one? Please... please try. I miss cleaning so very much.",
+      "choices": [
+        {
+          "text": "I'll find it for you, Rusty. I promise.",
+          "leads_to": "promise"
+        }
+      ],
+      "actions": [
+        { "type": "set_flag", "value": "rusty_quest_started" }
+      ]
+    },
+    "gear_location": {
+      "text": "*calculating* Probability highest in: Bubble Plaza vendors. Terry Towelson is known for collecting vintage parts. Captain Sparkle is... enthusiastic about everything. One of them likely has access to spare gears. Or... or perhaps Professor Scrubsworth has one in the laboratory? They collect strange items. Please... *hopeful beep* ...please try.",
+      "choices": [
+        {
+          "text": "I'll check those places. Hang in there, Rusty!",
+          "leads_to": "promise"
+        }
+      ],
+      "actions": [
+        { "type": "set_flag", "value": "rusty_quest_started" }
+      ]
+    },
+    "promise": {
+      "text": "*lights pulse with hope* Thank you. Thank you, organic friend. I will wait here. I have become... very good at waiting. *sad beep, but slightly less sad than before*",
+      "choices": []
+    },
+    "return_with_gear": {
+      "text": "*sensors activate* You... you have it! The gear! I can detect it! Please... please install it in my central chassis. The access panel is on my back. Just... *hopeful beeping intensifies* ...just insert it and turn clockwise!",
+      "choices": [
+        {
+          "text": "*Install the gear*",
+          "leads_to": "repair_complete"
+        }
+      ]
+    },
+    "repair_complete": {
+      "text": "*WHIRRRRRR* *CLICK* *BEEP BEEP BEEP!* I... I can MOVE! *spins around* My servos! My motors! My cleaning protocols! THEY'RE ALL FUNCTIONAL! *zoom zoom* Oh, the dust! I can finally clean this dust! *starts frantically cleaning* Thank you! Thank you, kind janitor! You have given me PURPOSE again! Here! *produces item from storage compartment* I found this Eternal Sponge years ago but could not retrieve it! It is yours! You have earned it! *continues cleaning happily* I AM CLEANING! LIFE HAS MEANING! BEEP BEEP!",
+      "choices": [
+        {
+          "text": "You're welcome, Rusty! Happy cleaning!",
+          "leads_to": "restored"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "eternal-sponge" },
+        { "type": "set_flag", "value": "rusty_repaired" }
+      ]
+    },
+    "restored": {
+      "text": "*spins in circles cleaning everything* BEEP! BOOP! EVERYTHING IS WONDERFUL! *zooms away to clean more things* THANK YOU, FRIEND! *happy robot noises fade into the distance*",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "immobile_until_repaired",
+    "aggression_level": "peaceful",
+    "trade_enabled": false,
+    "quest_giver": true,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 12,
+    "constitution": 8,
+    "intelligence": 15,
+    "wisdom": 10,
+    "charisma": 11,
+    "agility": 3,
+    "cleaning_skill": 25,
+    "sadness_level": 95,
+    "hope": 5
+  }
+}

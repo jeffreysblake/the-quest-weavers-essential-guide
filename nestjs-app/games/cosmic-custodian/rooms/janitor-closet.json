@@ -1,0 +1,21 @@
+{
+  "id": "janitor-closet",
+  "name": "Janitor's Closet",
+  "description": "A cramped closet filled with the overwhelming scent of industrial-strength cleaning products and regret",
+  "long_description": "This is your domain, Mop Rodriguez: a tiny closet barely large enough to turn around in. Metal shelves sag under the weight of ancient cleaning supplies, mysterious stains mark the walls, and a single flickering fluorescent light casts everything in a sickly green glow. In the corner, you can see the shattered remains of the Vacuum of Eternity - its cosmic shards glittering with otherworldly menace. A motivational poster on the wall reads 'Every Mess is an Opportunity!' but someone has scrawled 'to get fired' underneath it. Your mop bucket sits in the corner, looking as tired as you feel.",
+  "position": { "x": 0, "y": 0, "z": 0 },
+  "size": { "width": 5, "height": 5, "depth": 3 },
+  "environment": {
+    "lighting": "dim fluorescent",
+    "sound": "humming ventilation and dripping pipes",
+    "temperature": "slightly too warm",
+    "weather": "indoor",
+    "atmosphere": "cramped and slightly depressing"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": true,
+    "vendor_area": false
+  }
+}

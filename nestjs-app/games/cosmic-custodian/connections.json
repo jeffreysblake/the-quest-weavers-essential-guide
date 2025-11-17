@@ -1,0 +1,228 @@
+{
+  "connections": [
+    {
+      "from_room": "janitor-closet",
+      "to_room": "main-corridor",
+      "direction": "north",
+      "description": "The door to the main corridor stands before you, gleaming with corporate cleanliness",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "main-corridor",
+      "to_room": "janitor-closet",
+      "direction": "south",
+      "description": "Your humble janitor's closet awaits to the south, a sanctuary of mops and regrets",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "main-corridor",
+      "to_room": "directors-office",
+      "direction": "north",
+      "description": "Director Dustbane's office looms to the north, behind a frosted glass door with a keycard reader",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "directors-office",
+      "to_room": "main-corridor",
+      "direction": "south",
+      "description": "The main corridor lies to the south, offering escape from the intimidating office",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "main-corridor",
+      "to_room": "laboratory",
+      "direction": "east",
+      "description": "The laboratory entrance is to the east, emanating occasional crackling sounds and colored lights",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "laboratory",
+      "to_room": "main-corridor",
+      "direction": "west",
+      "description": "The main corridor is to the west, offering a return to relative normalcy",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "main-corridor",
+      "to_room": "airlock",
+      "direction": "west",
+      "description": "The airlock lies to the west, its portal lights blinking invitingly (or threateningly, it's hard to tell)",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "airlock",
+      "to_room": "main-corridor",
+      "direction": "east",
+      "description": "The main corridor is to the east, representing the safety of the station",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "airlock",
+      "to_room": "bubble-entrance",
+      "direction": "north",
+      "description": "The shimmering portal to the Soap Bubble Nebula swirls to the north, creating rainbow patterns",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "bubble-entrance",
+      "to_room": "airlock",
+      "direction": "south",
+      "description": "The portal back to the station airlock glimmers to the south",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "bubble-entrance",
+      "to_room": "bubble-plaza",
+      "direction": "north",
+      "description": "A bridge of soap film leads north to the larger bubble that serves as the plaza",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "bubble-plaza",
+      "to_room": "bubble-entrance",
+      "direction": "south",
+      "description": "The soap bridge leads south back to the entrance bubble",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "bubble-plaza",
+      "to_room": "mountain-base",
+      "direction": "north",
+      "description": "A particularly large bubble-bridge stretches north toward Mount Washmore, visible in the distance",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "mountain-base",
+      "to_room": "bubble-plaza",
+      "direction": "south",
+      "description": "The bubble-bridge leads south back to the Bubble Plaza",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "mountain-base",
+      "to_room": "laundry-peak",
+      "direction": "north",
+      "description": "The mountain trail leads upward to the north, toward the summit where the Lint King resides",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "laundry-peak",
+      "to_room": "mountain-base",
+      "direction": "south",
+      "description": "The trail leads back down the mountain to the south",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "airlock",
+      "to_room": "closet-entrance",
+      "direction": "east",
+      "description": "A dark, dusty portal leads east into the Forgotten Closet dimension",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "closet-entrance",
+      "to_room": "airlock",
+      "direction": "west",
+      "description": "The portal back to the airlock glows faintly to the west",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "closet-entrance",
+      "to_room": "supply-vault",
+      "direction": "north",
+      "description": "A faint glow emanates from the north, marking the location of the Supply Vault",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "supply-vault",
+      "to_room": "closet-entrance",
+      "direction": "south",
+      "description": "The darkness of the main closet area lies to the south",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "airlock",
+      "to_room": "crystal-entrance",
+      "direction": "west",
+      "description": "A portal filled with prismatic light leads west into the Crystal Corridor",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "crystal-entrance",
+      "to_room": "airlock",
+      "direction": "east",
+      "description": "The portal back to the airlock shimmers to the east",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "crystal-entrance",
+      "to_room": "crystal-heart",
+      "direction": "east",
+      "description": "The crystal maze continues east toward its heart, reflections multiplying infinitely",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "crystal-heart",
+      "to_room": "crystal-entrance",
+      "direction": "west",
+      "description": "The maze continues west back toward the entrance",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "airlock",
+      "to_room": "archive-entrance",
+      "direction": "south",
+      "description": "A musty-smelling portal leads south into the Moldy Archives",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "archive-entrance",
+      "to_room": "airlock",
+      "direction": "west",
+      "description": "The portal back to the airlock is to the west, offering escape from the mustiness",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "archive-entrance",
+      "to_room": "sacred-chamber",
+      "direction": "east",
+      "description": "The path through the archives leads east toward the Sacred Chamber, golden light visible ahead",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "sacred-chamber",
+      "to_room": "archive-entrance",
+      "direction": "west",
+      "description": "The archives stretch west back toward the entrance",
+      "is_locked": false,
+      "required_key": null
+    }
+  ]
+}

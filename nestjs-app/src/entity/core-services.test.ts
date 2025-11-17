@@ -21,14 +21,14 @@ describe('Core Services Tests', () => {
     objectService = module.get<ObjectService>(ObjectService);
   });
 
-  it('should create an entity', () => {
+  it('should create an entity', async () => {
     const testData = {
       name: 'Test Entity',
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
 
-    const result = entityService.createEntity(testData);
+    const result = await entityService.createEntity(testData);
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
   });
@@ -49,7 +49,7 @@ describe('Core Services Tests', () => {
     expect(result.id).toBeDefined();
   });
 
-  it('should create a player', () => {
+  it('should create a player', async () => {
     const playerData = {
       name: 'Test Player',
       position: { x: 0, y: 0, z: 0 },
@@ -59,7 +59,7 @@ describe('Core Services Tests', () => {
       experience: 0,
     };
 
-    const result = playerService.createPlayer(playerData);
+    const result = await playerService.createPlayer(playerData);
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
   });

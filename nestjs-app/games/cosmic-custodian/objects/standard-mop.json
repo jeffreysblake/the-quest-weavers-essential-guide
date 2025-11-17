@@ -1,0 +1,37 @@
+{
+  "id": "standard-mop",
+  "name": "Standard Issue Mop",
+  "description": "Your trusty mop - not legendary, not magical, just reliably mop-shaped",
+  "object_type": "weapon",
+  "position": { "x": 2, "y": 2, "z": 1 },
+  "material": "wood",
+  "material_properties": {
+    "density": 5,
+    "conductivity": 2,
+    "flammability": 7,
+    "brittleness": 4,
+    "resistances": { "fire": 2, "ice": 4, "lightning": 3, "force": 5, "magic": 1 }
+  },
+  "weight": 2,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "wet": false,
+    "dirty": true,
+    "slightly_worn": true
+  },
+  "properties": {
+    "weapon_damage": 8,
+    "attack_speed": "medium",
+    "durability": 75,
+    "critical_chance": 0.05,
+    "weapon_type": "melee",
+    "special_bonus": "extra_damage_vs_dust"
+  },
+  "interactions": {
+    "examine": "This is your standard-issue mop from the Intergalactic Sanitation Bureau. The handle is slightly worn where you've gripped it over countless cleaning sessions. The mop head has seen better days but is still functional. It smells faintly of cleaning solution and hard work. Not glamorous, but it's gotten you through tough times.",
+    "take": "You pick up your trusty mop. It feels comfortable and familiar in your hands, like an old friend who's judgmental about your life choices but shows up anyway.",
+    "use": "You swing the mop experimentally. It makes a satisfying 'swoosh' sound. While it's designed for cleaning, you've learned that a mop can also be a surprisingly effective defensive tool. Dust bunnies beware.",
+    "wield": "You grip the mop with both hands, ready for action. You may not have a fancy sword, but you have heart, determination, and a decent reach advantage."
+  }
+}

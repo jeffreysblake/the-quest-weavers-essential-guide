@@ -1,0 +1,21 @@
+{
+  "id": "main-corridor",
+  "name": "Main Corridor",
+  "description": "A pristine white corridor that makes you feel guilty just for existing",
+  "long_description": "The main corridor of Sanitation Station Sigma stretches before you like an accusation. Everything is spotlessly clean - ironic, given your current predicament. The walls are polished white metal that reflects your worried face back at you from every angle. Overhead lights hum with bureaucratic efficiency, and the air smells aggressively sterile. To the north, you can see Director Dustbane's office through a frosted glass door, and you're pretty sure you can feel their disapproving gaze even from here. The laboratory lies to the east, where Professor Scrubsworth conducts experiments that are probably illegal in most galaxies. To the south is your janitor's closet (your 'office,' as you generously call it), and the airlock to the great beyond beckons to the west. A holographic sign on the wall cheerfully reminds you: 'Safety First! Existential Dread Second!'",
+  "position": { "x": 0, "y": 10, "z": 0 },
+  "size": { "width": 30, "height": 30, "depth": 4 },
+  "environment": {
+    "lighting": "bright white LED",
+    "sound": "efficient humming of station systems",
+    "temperature": "precisely controlled at 22°C",
+    "weather": "indoor",
+    "atmosphere": "sterile and intimidating"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "lint-crown",
+  "name": "Crown of the Lint King",
+  "description": "A crown woven from the finest dryer lint, crackling with static electricity",
+  "object_type": "equipment",
+  "position": { "x": -28, "y": 141, "z": 53 },
+  "material": "organic",
+  "material_properties": {
+    "density": 1,
+    "conductivity": 8,
+    "flammability": 10,
+    "brittleness": 7,
+    "resistances": { "fire": 1, "ice": 3, "lightning": 9, "force": 2, "magic": 5 }
+  },
+  "weight": 0.3,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "statically_charged": true,
+    "fluffy": true,
+    "royal": true
+  },
+  "properties": {
+    "equipment_slot": "head",
+    "static_charge": 100,
+    "charisma_bonus": 5,
+    "special_effect": "shocks_enemies_on_contact"
+  },
+  "interactions": {
+    "examine": "The crown of the Lint King is a surprisingly majestic piece of headwear, considering it's made entirely of dryer lint. Tiny arcs of static electricity dance across its surface, making it sparkle in an oddly regal way. It's surprisingly well-constructed for something made of lint. Maybe that's why he was king.",
+    "take": "You pick up the lint crown carefully, trying to avoid the static shocks. It's lighter than air and makes your hair stand on end just from proximity.",
+    "wear": "You place the lint crown on your head. Immediately, your hair stands straight up from static electricity, giving you a wild, majestic appearance. You feel more regal and significantly more staticky."
+  }
+}

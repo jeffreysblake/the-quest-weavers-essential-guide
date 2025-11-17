@@ -3,6 +3,7 @@
   "name": "Iron Sword",
   "description": "A well-crafted iron sword with a leather-wrapped hilt",
   "object_type": "weapon",
+  "room_id": "village-square",
   "position": { "x": 10, "y": 5, "z": 1 },
   "material": "metal",
   "material_properties": {

@@ -1,0 +1,21 @@
+{
+  "id": "bubble-plaza",
+  "name": "Bubble Plaza",
+  "description": "A bustling marketplace built on interconnected soap bubbles",
+  "long_description": "The Bubble Plaza is the heart of this bizarre dimension, a marketplace where physics is more of a guideline. Dozens of large bubbles are connected by shimmering soap-film bridges, creating a platform where various cosmic entities have set up shop. To your left, a being made entirely of foam is selling 'Genuine Cosmic Artifacts (Probably).' To your right, Captain Sparkle bounces enthusiastically on their bubble, their cleaning-product-mascot grin somehow both endearing and unsettling. In the center of the plaza, the Soap Golem stands guard - a massive humanoid figure made of solidified soap suds, their presence both majestic and slightly sudsy. The plaza hums with activity and various languages that sound like bubbles popping in rhythm. Market stalls overflow with strange goods: bottles of liquid starlight, compressed nebula cubes, and what appears to be a stand selling 'Existential Dread Remover (Only 3 Easy Payments!)' A large bubble to the north leads toward Mount Washmore, while south returns to the entrance. The whole place smells like clean laundry and adventure.",
+  "position": { "x": -30, "y": 75, "z": 0 },
+  "size": { "width": 35, "height": 35, "depth": 5 },
+  "environment": {
+    "lighting": "bright and cheerful with rainbow refractions",
+    "sound": "bustling marketplace chatter and bubble harmonics",
+    "temperature": "warm and welcoming",
+    "weather": "nebulous",
+    "atmosphere": "lively and whimsical"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": true
+  }
+}

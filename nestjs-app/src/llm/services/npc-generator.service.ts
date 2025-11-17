@@ -334,7 +334,7 @@ export class NPCGeneratorService {
         }
       : { x: 0, y: 0, z: 0 };
 
-    const npc = this.playerService.create({
+    const npc = await this.playerService.create({
       name: content.name,
       description: content.description,
       position,
@@ -346,7 +346,7 @@ export class NPCGeneratorService {
     });
 
     if (request.roomId) {
-      this.playerService.moveToRoom(npc.id, request.roomId);
+      await this.playerService.moveToRoom(npc.id, request.roomId);
     }
 
     return npc;

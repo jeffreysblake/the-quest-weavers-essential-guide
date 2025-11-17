@@ -1,0 +1,21 @@
+{
+  "id": "directors-office",
+  "name": "Director's Office",
+  "description": "An intimidating office that smells of authority and lemon-scented furniture polish",
+  "long_description": "Director Dustbane's office is exactly what you'd expect from someone who built their career on cleaning up other people's mistakes - and reminding them about it constantly. The massive obsidian desk dominates the room, its surface so clean you could perform surgery on it (which Dustbane might do to you if they find out about the Vacuum incident). Behind the desk, a wall of commendations and 'Cleanest Station' awards gleams menacingly. A leather chair that costs more than your annual salary sits empty, though you can still feel the weight of judgment emanating from it. Through the window, you can see the swirling chaos of space, which somehow feels less threatening than being in this room. A name placard on the desk reads: 'Director Dustbane - If it's not clean, you're not trying.' The office smells overwhelmingly of lemon polish and disappointed expectations.",
+  "position": { "x": 0, "y": 20, "z": 0 },
+  "size": { "width": 15, "height": 15, "depth": 4 },
+  "environment": {
+    "lighting": "dramatic desk lamp illumination",
+    "sound": "ominous silence broken by occasional sighs",
+    "temperature": "uncomfortably cold",
+    "weather": "indoor",
+    "atmosphere": "intimidating and formal"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

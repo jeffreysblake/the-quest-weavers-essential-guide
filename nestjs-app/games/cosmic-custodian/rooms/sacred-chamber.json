@@ -1,0 +1,21 @@
+{
+  "id": "sacred-chamber",
+  "name": "Sacred Chamber of Cleaning",
+  "description": "The innermost sanctum where the ancient art of cleaning is preserved and revered",
+  "long_description": "Deep within the Moldy Archives, you discover a chamber that seems to exist outside of time and good taste. The Sacred Chamber of Cleaning is a circular room with walls covered in murals depicting the legendary First Janitors - cosmic beings who achieved enlightenment through the perfection of cleaning techniques. The murals show them performing impossible feats: mopping entire galaxies with a single swipe, dusting nebulae with feather dusters made of comet tails, and scrubbing away the stains of entropy itself. In the center of the room stands an altar made of ancient mop buckets fused together by time and cosmic significance. Upon the altar rest the final Sacred Cleaning Artifacts, glowing with otherworldly cleanliness. The air here is surprisingly fresh, as if the sanctity of the location keeps even mold at bay. Around the room, pedestals hold ancient cleaning implements under glass - the first broom ever made, a sponge that supposedly absorbed a black hole's worth of liquid, and what appears to be a squeegee signed by the universe's creator with a note reading 'For keeping the cosmos tidy - thanks!' The Mop Oracle stands in meditation before the altar, their mop head swaying gently with cosmic wisdom. West leads back to the archive entrance. You feel like you're standing in the holiest place a janitor could ever hope to visit.",
+  "position": { "x": 0, "y": -20, "z": 0 },
+  "size": { "width": 30, "height": 30, "depth": 20 },
+  "environment": {
+    "lighting": "golden and sacred, emanating from the artifacts",
+    "sound": "harmonious humming and the Oracle's occasional profound sighs",
+    "temperature": "perfectly balanced",
+    "weather": "indoor",
+    "atmosphere": "sacred, reverent, and surprisingly clean"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}
