@@ -81,6 +81,10 @@
         "type": "string"
       },
       "description": "Room tags for categorization"
+    },
+    "properties": {
+      "type": "object",
+      "description": "Additional room properties (safe_zone, allow_combat, respawn_point, etc.)"
     }
   },
   "additionalProperties": false

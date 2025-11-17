@@ -27,7 +27,7 @@
     },
     "npc_type": {
       "type": "string",
-      "enum": ["npc", "enemy", "friendly", "neutral", "merchant", "quest-giver", "guard", "companion"],
+      "enum": ["npc", "enemy", "friendly", "neutral", "merchant", "quest-giver", "guard", "companion", "boss-enemy", "vendor", "oracle", "guardian", "fortune-teller", "guide", "quest-npc", "scientist", "warrior"],
       "description": "Type of NPC"
     },
     "position": {
@@ -92,6 +92,25 @@
         "type": "string"
       },
       "description": "NPC tags for categorization"
+    },
+    "inventory_data": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of object IDs in NPC inventory (alternative to inventory)"
+    },
+    "dialogue_tree_data": {
+      "type": "object",
+      "description": "Full dialogue tree with branches and choices"
+    },
+    "behavior_config": {
+      "type": "object",
+      "description": "NPC behavior configuration (movement_pattern, aggression_level, boss, etc.)"
+    },
+    "attributes": {
+      "type": "object",
+      "description": "NPC attributes (strength, constitution, intelligence, wisdom, etc.)"
     }
   },
   "additionalProperties": false

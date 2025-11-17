@@ -61,7 +61,7 @@ export class DatabaseImportHelper {
         gameData.version,
         gameData.createdAt,
         gameData.updatedAt,
-        gameData.isActive,
+        gameData.isActive ? 1 : 0,
       );
 
       // Save version history
@@ -156,8 +156,8 @@ export class DatabaseImportHelper {
           object.weight,
           object.health,
           object.maxHealth,
-          object.isPortable,
-          object.isContainer,
+          object.isPortable ? 1 : 0,
+          object.isContainer ? 1 : 0,
           object.canContain,
           object.containerCapacity,
           JSON.stringify(object.stateData),
