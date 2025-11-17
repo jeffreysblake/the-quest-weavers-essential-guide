@@ -471,6 +471,7 @@ export class GameService {
       const roomFiles = await fs.readdir(roomsPath);
       const rooms = new Map<string, any>(); // Map of UUID to room object
       const slugToUuid = new Map<string, string>(); // Map of slug to UUID
+      const roomItemsMap = new Map<string, string[]>(); // Map of room slug to items array
       let startingRoom: any = null;
 
       for (const file of roomFiles) {
@@ -497,6 +498,11 @@ export class GameService {
 
         rooms.set(room.id, room); // Map by UUID
         slugToUuid.set(roomJson.id, room.id); // Map slug to UUID
+
+        // Store room's items array for later placement
+        if (roomJson.items && Array.isArray(roomJson.items)) {
+          roomItemsMap.set(roomJson.id, roomJson.items);
+        }
 
         // Track starting room (position 0,0,0)
         if (roomJson.position.x === 0 && roomJson.position.y === 0 && roomJson.position.z === 0) {
@@ -540,6 +546,24 @@ export class GameService {
         }
 
         this.logger.log(`Loaded object: ${objectJson.name} (ID: ${objectJson.id})`);
+      }
+
+      // Place items from room items arrays
+      for (const [roomSlug, itemIds] of roomItemsMap.entries()) {
+        const roomUuid = slugToUuid.get(roomSlug);
+        if (!roomUuid) {
+          this.logger.warn(`Could not find room UUID for slug: ${roomSlug}`);
+          continue;
+        }
+
+        for (const itemId of itemIds) {
+          if (objects.has(itemId)) {
+            this.roomService.addObjectToRoom(roomUuid, itemId);
+            this.logger.log(`Placed ${itemId} in room ${roomSlug} (UUID: ${roomUuid})`);
+          } else {
+            this.logger.warn(`Object ${itemId} not found for room ${roomSlug}`);
+          }
+        }
       }
 
       // Load all NPCs
