@@ -9,7 +9,6 @@ nestjs-app/node_modules/
 dist/
 build/
 nestjs-app/dist/
-.next/
 
 # Environment variables
 .env
