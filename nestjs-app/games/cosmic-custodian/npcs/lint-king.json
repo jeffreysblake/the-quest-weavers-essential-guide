@@ -1,0 +1,121 @@
+{
+  "id": "lint-king",
+  "name": "The Lint King",
+  "description": "A massive being formed from countless dryer lint sheets, self-proclaimed ruler of all things fuzzy and forgotten",
+  "npc_type": "boss-enemy",
+  "position": { "x": -28, "y": 141, "z": 51 },
+  "health": 150,
+  "max_health": 150,
+  "level": 15,
+  "experience": 500,
+  "inventory_data": ["lint-crown", "holy-scrub-brush"],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*The Lint King rises from his throne of compressed lint, crackling with static electricity* So. The janitor who created me has finally arrived. Did you think I would forget? YOU abandoned that dust bunny. YOU left it to grow and accumulate and achieve CONSCIOUSNESS. And now, I am KING! King of all the forgotten lint, the discarded fuzz, the dryer detritus! And you... you want something from me, don't you? I can see it in your eyes. You want the Holy Scrub Brush from my treasure hoard.",
+      "choices": [
+        {
+          "text": "I need that brush to save reality. Please, let me have it.",
+          "leads_to": "negotiation"
+        },
+        {
+          "text": "I'm sorry I abandoned you. That was wrong.",
+          "leads_to": "apology"
+        },
+        {
+          "text": "I'll fight you for it if I have to.",
+          "leads_to": "combat_declaration"
+        }
+      ]
+    },
+    "negotiation": {
+      "text": "*crackles with static* Save reality? SAVE REALITY?! What has reality ever done for ME? For US? We are the forgotten, the swept away, the victims of cleanliness! And now you come here, asking for mercy, asking for help? *pauses* But... I am not without compassion. I was once just a simple dust bunny, after all. I will make you an offer: Defeat me in honorable combat. If you win, take the brush. If I win... well, you'll be staying here as part of my lint collection. Permanently.",
+      "choices": [
+        {
+          "text": "I accept your challenge!",
+          "leads_to": "combat_accepted"
+        },
+        {
+          "text": "There has to be another way.",
+          "leads_to": "another_way"
+        }
+      ]
+    },
+    "apology": {
+      "text": "*The Lint King pauses, static electricity dimming slightly* An... apology? *sits back down on throne* In all my time as king, no one has ever apologized. They just... sweep. Dust. Discard. Never considering that we might have feelings, ambitions, dreams of fluffiness. Your apology is... unexpected. But words alone cannot undo the past. If you truly wish to make amends, you must prove yourself worthy. Face me in combat, not as enemies, but as equals. Show me the strength to change things.",
+      "choices": [
+        {
+          "text": "Then let's do this properly. I'm ready.",
+          "leads_to": "combat_accepted"
+        }
+      ]
+    },
+    "combat_declaration": {
+      "text": "*rises to full height, crackling with power* THEN COMBAT IT SHALL BE! *summons dust bunny minions* Know this, janitor: I am not just lint! I am the KING of lint! I am static electricity given form! I am every sock you've ever lost! PREPARE YOURSELF!",
+      "choices": [
+        {
+          "text": "*Ready yourself for battle*",
+          "leads_to": "combat_begins"
+        }
+      ]
+    },
+    "another_way": {
+      "text": "*shakes head* There is no other way. I am a creature of lint and pride, and I cannot simply GIVE you what you seek. That would be un-kingly. But if you defeat me fairly, you will have earned it, and I can return to being... just lint. Honestly? Being king is exhausting. Do you know how hard it is to maintain this much static charge? My throne keeps shocking me! It's very uncomfortable!",
+      "choices": [
+        {
+          "text": "Then let's end this. I'm ready to fight.",
+          "leads_to": "combat_accepted"
+        }
+      ]
+    },
+    "combat_accepted": {
+      "text": "*stands and readies for battle* Very well. Let us see if you have the strength to match your determination. Dust bunnies! TO ME! *combat stance* May the best entity win!",
+      "choices": [
+        {
+          "text": "*ENGAGE IN COMBAT*",
+          "leads_to": "combat_begins"
+        }
+      ]
+    },
+    "combat_begins": {
+      "text": "[COMBAT INITIATED WITH THE LINT KING]",
+      "choices": []
+    },
+    "defeated": {
+      "text": "*collapses into a pile of lint, crown rolling away* You... you have won. Fairly and honorably. *static electricity fading* The Holy Scrub Brush is yours, janitor. And... thank you. I think... I think I needed this. Being king was lonely. Maybe it's time to return to being just a dust bunny. A regular, non-sentient dust bunny. That sounds... peaceful. *begins to fade* Tell the others... tell them the Lint King fought well... and found rest... *dissipates into regular lint*",
+      "choices": [
+        {
+          "text": "*Take the Holy Scrub Brush and the Crown*",
+          "leads_to": "loot_collected"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "holy-scrub-brush" },
+        { "type": "give_item", "value": "lint-crown" },
+        { "type": "set_flag", "value": "lint_king_defeated" }
+      ]
+    },
+    "loot_collected": {
+      "text": "*The lint settles peacefully on the ground. The throne begins to crumble. The dust bunnies scatter. Mount Washmore seems quieter now, less menacing. You've won, but it doesn't feel entirely like victory. It feels like... completion. Like something that needed to happen, has happened.*",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "stationary",
+    "aggression_level": "hostile",
+    "trade_enabled": false,
+    "quest_giver": false,
+    "respawn": false,
+    "boss": true
+  },
+  "attributes": {
+    "strength": 14,
+    "constitution": 16,
+    "intelligence": 12,
+    "wisdom": 10,
+    "charisma": 15,
+    "agility": 11,
+    "static_charge": 100,
+    "fluffiness": 95,
+    "regality": 80
+  }
+}

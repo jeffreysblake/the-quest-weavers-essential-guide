@@ -1,0 +1,32 @@
+{
+  "id": "vacuum-shard-4",
+  "name": "Vacuum Shard (Filter Fragment)",
+  "description": "A piece of the Vacuum's legendary filter, which could separate order from chaos itself",
+  "object_type": "quest-item",
+  "position": { "x": 1, "y": 1, "z": 1 },
+  "material": "crystal",
+  "material_properties": {
+    "density": 8,
+    "conductivity": 9,
+    "flammability": 0,
+    "brittleness": 3,
+    "resistances": { "fire": 9, "ice": 9, "lightning": 9, "force": 7, "magic": 10 }
+  },
+  "weight": 0.4,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "glowing": true,
+    "fragment_of": "vacuum-of-eternity"
+  },
+  "properties": {
+    "artifact_piece": "filter",
+    "power_level": 200,
+    "quest_item": true
+  },
+  "interactions": {
+    "examine": "This delicate shard contains the intricate crystalline lattice of the Vacuum's filter system. Even in pieces, it continues to try to filter and organize reality around it. Nearby dust motes arrange themselves in neat geometric patterns.",
+    "take": "You carefully pick up the filter shard. It's surprisingly light and makes a soft humming sound. You feel more organized just holding it."
+  }
+}

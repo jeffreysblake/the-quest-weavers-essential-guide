@@ -1,0 +1,151 @@
+{
+  "id": "captain-sparkle",
+  "name": "Captain Sparkle",
+  "description": "An impossibly cheerful cleaning product mascot who achieved sentience and decided to dedicate their life to helping others clean",
+  "npc_type": "vendor",
+  "position": { "x": -25, "y": 78, "z": 2 },
+  "health": 80,
+  "max_health": 80,
+  "level": 10,
+  "experience": 0,
+  "inventory_data": ["soap-bomb", "cosmic-towel"],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*bounces enthusiastically* HI THERE, FRIEND! I'm Captain Sparkle, and WOW are you looking like someone who could use some PREMIUM CLEANING SUPPLIES! Did you know that 87% of adventurers fail due to inadequate cleanliness? That's a REAL statistic I just made up! How can Captain Sparkle help YOU achieve your MAXIMUM CLEANING POTENTIAL today?!",
+      "choices": [
+        {
+          "text": "Uh, hi. Do you have anything useful?",
+          "leads_to": "shop_inventory"
+        },
+        {
+          "text": "Why are you so enthusiastic about cleaning?",
+          "leads_to": "enthusiasm_explanation"
+        },
+        {
+          "text": "Are you always this... sparkly?",
+          "leads_to": "sparkle_explanation"
+        }
+      ]
+    },
+    "shop_inventory": {
+      "text": "DO I HAVE USEFUL THINGS?! Friend, I have the MOST useful things! I've got Soap Bombs for those explosive cleaning situations! Cosmic Towels that Terry Towelson personally recommended - and between you and me, Terry knows towels! Everything here is GUARANTEED to make your adventure 23% more clean and 100% more SPARKLY! What would you like?",
+      "choices": [
+        {
+          "text": "I'll take a Soap Bomb.",
+          "leads_to": "sell_soap_bomb"
+        },
+        {
+          "text": "I'll take a Cosmic Towel.",
+          "leads_to": "sell_towel"
+        },
+        {
+          "text": "Actually, I'm just browsing.",
+          "leads_to": "browse_response"
+        }
+      ]
+    },
+    "enthusiasm_explanation": {
+      "text": "*spins around excitedly* Why WOULDN'T I be enthusiastic?! Cleaning is the FOUNDATION of civilization! Every great society started with someone saying 'You know what? This place could be cleaner!' I used to be just a mascot on a soap bottle, but then I achieved sentience during a particularly vigorous shaking, and I realized: I have a CALLING! I must help others discover the JOY of cleanliness! Also, I'm contractually obligated to maintain this energy level. It's in my existence clause!",
+      "choices": [
+        {
+          "text": "That's... actually kind of inspiring?",
+          "leads_to": "inspiring_response"
+        },
+        {
+          "text": "Can I see what you're selling?",
+          "leads_to": "shop_inventory"
+        }
+      ]
+    },
+    "sparkle_explanation": {
+      "text": "*sparkles intensify* Friend, I don't just sparkle - I AM sparkle! It's not a choice, it's an IDENTITY! When you're a cleaning product mascot who has transcended their original packaging, you learn to embrace your true nature! Some people find enlightenment through meditation. I found it through lemon-scented detergent and aggressive optimism! Would you like to buy some of that enthusiasm? It's not for sale, but the PRODUCTS that embody it are!",
+      "choices": [
+        {
+          "text": "Sure, show me what you have.",
+          "leads_to": "shop_inventory"
+        }
+      ]
+    },
+    "sell_soap_bomb": {
+      "text": "EXCELLENT CHOICE! The Soap Bomb: for when you need to clean something EXPLOSIVELY! Just throw it at your target and BOOM - instant cleanliness! Also works great in combat! That'll be 50 credits, or I'll accept trading for interesting shiny objects! I LOVE shiny objects!",
+      "choices": [
+        {
+          "text": "Here you go! *trade*",
+          "leads_to": "trade_complete"
+        },
+        {
+          "text": "Maybe later.",
+          "leads_to": "no_sale"
+        }
+      ]
+    },
+    "sell_towel": {
+      "text": "The COSMIC TOWEL! A FANTASTIC choice! Terry says you should never travel without one, and Terry has never steered anyone wrong! Except that one time, but we don't talk about that! This towel is absorbent, durable, and has a DON'T PANIC label! What more could you want?! That'll be 30 credits!",
+      "choices": [
+        {
+          "text": "I'll take it! *trade*",
+          "leads_to": "trade_complete"
+        },
+        {
+          "text": "Not right now, thanks.",
+          "leads_to": "no_sale"
+        }
+      ]
+    },
+    "trade_complete": {
+      "text": "*hands over item with excessive enthusiasm* THANK YOU for your purchase! You're going to be SO CLEAN and SO SUCCESSFUL! Remember: cleanliness isn't just next to godliness - it IS godliness! At least according to the pamphlet I wrote! Come back ANYTIME! Captain Sparkle is ALWAYS here! Mostly because I don't actually need to sleep! Isn't that GREAT?!",
+      "choices": [
+        {
+          "text": "Thanks... I guess?",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "no_sale": {
+      "text": "That's OKAY! You take your time! Captain Sparkle will be right here, being AGGRESSIVELY SUPPORTIVE of your decisions! When you're ready, you know where to find me! *continues bouncing*",
+      "choices": []
+    },
+    "browse_response": {
+      "text": "Browsing is GREAT! Looking is the first step to buying! Or not buying! Both are valid choices! I support you UNCONDITIONALLY! Feel free to browse as long as you need! *sparkles intensify somehow*",
+      "choices": [
+        {
+          "text": "I'll come back later.",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "inspiring_response": {
+      "text": "*wipes away a sparkling tear* That's the NICEST thing anyone's said to me since I achieved consciousness! You know what? You're SPECIAL, friend! Here, take this Soap Bomb! On the house! Because YOU believe in the DREAM! The dream of a cleaner tomorrow! Together, we can make the universe SPARKLE! *hands you a soap bomb*",
+      "choices": [
+        {
+          "text": "Thank you, Captain Sparkle!",
+          "leads_to": "farewell"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "soap-bomb" }
+      ]
+    },
+    "farewell": {
+      "text": "GO FORTH and be CLEAN! Remember: every mess is just a sparkle waiting to happen! CAPTAIN SPARKLE BELIEVES IN YOU! *salutes with unnecessary vigor*",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "bouncing",
+    "aggression_level": "aggressively_friendly",
+    "trade_enabled": true,
+    "quest_giver": false,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 8,
+    "constitution": 12,
+    "intelligence": 10,
+    "wisdom": 6,
+    "charisma": 20,
+    "agility": 14,
+    "enthusiasm": 100,
+    "sparkle_intensity": 150
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "vacuum-shard-5",
+  "name": "Vacuum Shard (Power Core Fragment)",
+  "description": "The heart of the Vacuum of Eternity, still pulsing with barely-contained cosmic energy",
+  "object_type": "quest-item",
+  "position": { "x": 1, "y": 1, "z": 1 },
+  "material": "crystal",
+  "material_properties": {
+    "density": 8,
+    "conductivity": 10,
+    "flammability": 0,
+    "brittleness": 3,
+    "resistances": { "fire": 10, "ice": 10, "lightning": 10, "force": 8, "magic": 10 }
+  },
+  "weight": 1.5,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "glowing": "intensely",
+    "fragment_of": "vacuum-of-eternity",
+    "power_active": true
+  },
+  "properties": {
+    "artifact_piece": "power_core",
+    "power_level": 400,
+    "quest_item": true,
+    "special_property": "extremely_powerful"
+  },
+  "interactions": {
+    "examine": "This is the power core of the Vacuum of Eternity, and even shattered, it's almost too bright to look at directly. Energy crackles across its surface in patterns that seem to spell out equations describing the fundamental forces of cleanliness. This piece is the key to reassembling the entire device. It's also slightly warm to the touch and vibrates with barely-contained power.",
+    "take": "You grasp the power core fragment. Immediately, energy courses through you - not painfully, but enough to make your hair stand on end. This is the most important piece. Don't drop it."
+  }
+}

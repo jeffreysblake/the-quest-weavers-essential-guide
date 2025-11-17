@@ -1,0 +1,21 @@
+{
+  "id": "airlock",
+  "name": "Station Airlock",
+  "description": "The threshold between the safety of the station and the cosmic weirdness beyond",
+  "long_description": "The airlock is a circular chamber with thick metal walls and a viewport that offers a dizzying view of the universe outside. Multiple doors lead to various dimensional portals, each one labeled with increasingly unhelpful warnings like 'Proceed with Caution,' 'Seriously, Caution,' and 'We Warned You.' Through the viewport, you can see swirling nebulae, distant stars, and what might be a cosmic entity or possibly just a very large space whale - it's hard to tell from here. The portal to the Soap Bubble Nebula shimmers to the north, creating rainbow refractions across the airlock's walls. To the east, a dark, dusty portal leads to the Forgotten Closet. South leads back to the relative safety of the main corridor. The portal control panel blinks with various lights, most of which you don't understand but have learned not to push. A faded sign reads: 'Dimensional Travel May Cause: Nausea, Confusion, Existential Crisis, Spontaneous Poetry, or Mild Enlightenment. Travel at Own Risk.'",
+  "position": { "x": -30, "y": 10, "z": 0 },
+  "size": { "width": 15, "height": 15, "depth": 4 },
+  "environment": {
+    "lighting": "rotating warning lights and portal glow",
+    "sound": "humming of portal generators and airlock seals",
+    "temperature": "slightly chilly",
+    "weather": "indoor",
+    "atmosphere": "liminal and slightly unsettling"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

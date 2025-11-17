@@ -1,0 +1,34 @@
+{
+  "id": "space-coffee",
+  "name": "Quantum Espresso",
+  "description": "Coffee so strong it exists in multiple states of caffeination simultaneously",
+  "object_type": "consumable",
+  "position": { "x": 32, "y": 11, "z": 2 },
+  "material": "water",
+  "material_properties": {
+    "density": 4,
+    "conductivity": 7,
+    "flammability": 2,
+    "brittleness": 0,
+    "resistances": { "fire": 8, "ice": 2, "lightning": 6, "force": 1, "magic": 7 }
+  },
+  "weight": 0.4,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "hot": true,
+    "caffeinated": "extremely",
+    "quantum": true
+  },
+  "properties": {
+    "consumable_type": "beverage",
+    "health_restore": 10,
+    "energy_boost": 50,
+    "special_effect": "temporarily_increases_perception"
+  },
+  "interactions": {
+    "examine": "This cup of coffee is so dark it seems to absorb light. Steam rises from it in patterns that look suspiciously like mathematical equations. Professor Scrubsworth's experimental brewing technique has created something that's technically coffee but also possibly a scientific breakthrough. The label reads: 'Quantum Espresso - May cause enlightenment, jitters, or temporary omniscience.'",
+    "take": "You pick up the quantum espresso carefully. It's warm and smells incredible - like coffee, existential revelation, and possibility all mixed together.",
+    "drink": "You take a sip of the quantum espresso. Immediately, you feel more awake than you've ever been. Colors seem brighter, sounds clearer, and you're pretty sure you briefly understood the meaning of life before it slipped away. The caffeine hits like a freight train made of motivation."
+  }
+}

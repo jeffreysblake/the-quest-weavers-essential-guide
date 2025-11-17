@@ -1,0 +1,21 @@
+{
+  "id": "bubble-entrance",
+  "name": "Soap Bubble Nebula - Entrance",
+  "description": "You're floating on an impossibly large soap bubble in a nebula of prismatic wonder",
+  "long_description": "The moment you step through the portal, gravity becomes a suggestion rather than a rule. You're standing - or floating, it's ambiguous - on the surface of a soap bubble the size of a small planet. The bubble's surface ripples gently beneath your feet, creating mesmerizing interference patterns that shift through every color imaginable and a few that definitely aren't. Around you, millions of other bubbles float through space, each one reflecting and refracting the light of distant stars. Some bubbles are tiny, no bigger than a marble, while others dwarf entire asteroids. The air (if it is air) smells like a mixture of lavender soap, ozone, and possibility. To the north, you can see a larger bubble that appears to serve as some kind of central plaza. South leads back to the airlock. You can hear faint, melodious humming - either from the bubbles themselves or from whatever lives here. It's beautiful, surreal, and makes you question whether your morning coffee was actually coffee.",
+  "position": { "x": -30, "y": 50, "z": 0 },
+  "size": { "width": 25, "height": 25, "depth": 5 },
+  "environment": {
+    "lighting": "prismatic and constantly shifting",
+    "sound": "melodious humming and gentle popping",
+    "temperature": "pleasantly neutral",
+    "weather": "nebulous",
+    "atmosphere": "dreamlike and surreal"
+  },
+  "properties": {
+    "safe_zone": false,
+    "allow_combat": true,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

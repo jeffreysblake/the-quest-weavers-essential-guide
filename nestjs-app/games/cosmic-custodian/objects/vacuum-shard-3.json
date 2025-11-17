@@ -1,0 +1,32 @@
+{
+  "id": "vacuum-shard-3",
+  "name": "Vacuum Shard (Handle Fragment)",
+  "description": "Part of the ergonomic handle of the Vacuum of Eternity, worn smooth by the hands of legendary janitors",
+  "object_type": "quest-item",
+  "position": { "x": 1, "y": 1, "z": 1 },
+  "material": "crystal",
+  "material_properties": {
+    "density": 8,
+    "conductivity": 9,
+    "flammability": 0,
+    "brittleness": 3,
+    "resistances": { "fire": 9, "ice": 9, "lightning": 9, "force": 7, "magic": 10 }
+  },
+  "weight": 0.6,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "glowing": true,
+    "fragment_of": "vacuum-of-eternity"
+  },
+  "properties": {
+    "artifact_piece": "handle",
+    "power_level": 200,
+    "quest_item": true
+  },
+  "interactions": {
+    "examine": "The handle fragment is worn smooth from centuries of use by the First Janitors. When you look closely, you can see fingerprints etched into its surface - the ghostly impressions of all who wielded it before. It feels comfortable to hold, as if it was made for your hand specifically.",
+    "take": "You pick up the handle shard. For a moment, you feel a connection to every janitor who has ever held it. It's humbling and slightly awkward."
+  }
+}

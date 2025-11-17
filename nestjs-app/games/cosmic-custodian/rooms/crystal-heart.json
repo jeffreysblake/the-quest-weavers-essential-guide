@@ -1,0 +1,21 @@
+{
+  "id": "crystal-heart",
+  "name": "Heart of the Crystal Corridor",
+  "description": "The center of the glass labyrinth, where light and crystal converge in geometric perfection",
+  "long_description": "You've navigated the maze of mirrors and reached the heart of the Crystal Corridor. Here, the crystal formations are more complex - geometric patterns that seem to follow mathematical laws you don't remember learning but somehow intuitively understand. The room is dominated by a massive crystal structure in the center that pulses with inner light, like a frozen star. Around it, smaller crystal formations grow from the floor and ceiling, creating a forest of glass. One of the Sacred Cleaning Artifacts rests within the central crystal structure, visible but encased in transparent stone. The solution to retrieving it isn't immediately obvious - breaking the crystal would likely result in a very bad time, given how the material properties of glass react to force. The air here is so still that your breathing sounds like thunder. Every surface is spotless, which makes sense because dust would probably be intimidated to exist here. The light refracts through the crystals in patterns that almost seem to form words, but reading them makes your eyes hurt. West leads back to the entrance. You notice that Madame Detergent has somehow set up a fortune-telling booth in one corner, because apparently nowhere is too sacred for commerce.",
+  "position": { "x": -90, "y": 10, "z": 0 },
+  "size": { "width": 35, "height": 35, "depth": 40 },
+  "environment": {
+    "lighting": "ethereal internal glow from crystals",
+    "sound": "harmonic resonance from crystal formations",
+    "temperature": "perfectly neutral",
+    "weather": "indoor",
+    "atmosphere": "sacred and crystalline"
+  },
+  "properties": {
+    "safe_zone": false,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

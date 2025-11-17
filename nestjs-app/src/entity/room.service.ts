@@ -399,10 +399,10 @@ export class RoomService {
    * @param playerId - The player's ID
    * @returns Result object with success property
    */
-  placePlayerInRoom(
+  async placePlayerInRoom(
     roomId: string,
     playerId: string,
-  ): { success: boolean; message?: string } {
+  ): Promise<{ success: boolean; message?: string }> {
     const room = this.getRoom(roomId);
     if (!room) {
       return {
@@ -419,7 +419,7 @@ export class RoomService {
       };
     }
 
-    const result = this.addPlayerToRoom(roomId, playerId);
+    const result = await this.addPlayerToRoom(roomId, playerId);
     return {
       success: result,
       message: result
@@ -435,10 +435,10 @@ export class RoomService {
    * @param objectId - The object's ID
    * @returns Result object with success property
    */
-  placeObjectInRoom(
+  async placeObjectInRoom(
     roomId: string,
     objectId: string,
-  ): { success: boolean; message?: string } {
+  ): Promise<{ success: boolean; message?: string }> {
     const room = this.getRoom(roomId);
     if (!room) {
       return {
@@ -455,7 +455,7 @@ export class RoomService {
       };
     }
 
-    const result = this.addObjectToRoom(roomId, objectId);
+    const result = await this.addObjectToRoom(roomId, objectId);
     return {
       success: result,
       message: result

@@ -1,0 +1,154 @@
+{
+  "id": "professor-scrubsworth",
+  "name": "Professor Scrubsworth",
+  "description": "A brilliant but eccentric scientist who treats cleaning products like they're quantum physics experiments",
+  "npc_type": "scientist",
+  "position": { "x": 35, "y": 15, "z": 0 },
+  "health": 60,
+  "max_health": 60,
+  "level": 15,
+  "experience": 0,
+  "inventory_data": ["soap-bomb", "space-coffee", "red-keycard"],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "Ah, Mop Rodriguez! I heard about your little mishap with the Vacuum of Eternity. 'Little' being a relative term when we're discussing reality-destabilizing events, of course! *adjusts goggles excitedly* But this is FASCINATING! We haven't had an opportunity to use the Cosmic Repair Station in centuries! Come, come, let me show you!",
+      "choices": [
+        {
+          "text": "Can you really fix the vacuum?",
+          "leads_to": "repair_explanation"
+        },
+        {
+          "text": "What exactly is the Cosmic Repair Station?",
+          "leads_to": "station_explanation"
+        },
+        {
+          "text": "You seem awfully excited about this disaster.",
+          "leads_to": "scientific_excitement"
+        }
+      ]
+    },
+    "repair_explanation": {
+      "text": "Fix it? My dear janitor, I can do better than fix it! *gestures wildly at the contraption* The Cosmic Repair Station doesn't just repair objects - it can integrate new materials, enhance properties, and occasionally violate several laws of physics in the process! The Vacuum of Eternity was already legendary, but with the five Sacred Cleaning Artifacts properly integrated, it will be MAGNIFICENT! Assuming we don't accidentally create a black hole. That would be... unfortunate.",
+      "choices": [
+        {
+          "text": "Wait, black hole?",
+          "leads_to": "black_hole_concern"
+        },
+        {
+          "text": "What do I need to bring you?",
+          "leads_to": "artifact_list"
+        }
+      ]
+    },
+    "station_explanation": {
+      "text": "*taps the copper and glass contraption lovingly* The Cosmic Repair Station is my greatest invention! It manipulates quantum probabilities to reassemble broken objects at the molecular level. Or possibly the metaphorical level. Or both simultaneously until observed! The important thing is that it WORKS, most of the time, in some definition of 'works.' I've repaired everything from broken dreams to shattered timelines with this beauty! Though I did accidentally turn a teacup into a small philosophical debate once. Still haven't figured out how to reverse that.",
+      "choices": [
+        {
+          "text": "That's... impressive? Can it fix the vacuum?",
+          "leads_to": "repair_explanation"
+        }
+      ]
+    },
+    "scientific_excitement": {
+      "text": "Excited? EXCITED?! *bounces on heels* My friend, when one spends their days studying the quantum properties of detergent, one learns to appreciate the dramatic! Besides, Director Dustbane has been far too stressed lately. A nice reality-threatening crisis is exactly what we needed to shake things up! The bureaucratic monotony was starting to affect my creativity. Why, just last week I was bored enough to alphabetize my element collection. ALPHABETIZE! I'm not proud of myself.",
+      "choices": [
+        {
+          "text": "Right... so about fixing the vacuum?",
+          "leads_to": "artifact_list"
+        }
+      ]
+    },
+    "black_hole_concern": {
+      "text": "*waves dismissively* Oh, don't worry about the black hole thing! That only happened twice, and both times we managed to plug them before anything important got sucked in. Well, except for Harold from Accounting, but between you and me, he was embezzling anyway, so it worked out. The universe has a way of balancing these things! Now, about those artifacts...",
+      "choices": [
+        {
+          "text": "Uh, okay. What artifacts do I need?",
+          "leads_to": "artifact_list"
+        }
+      ]
+    },
+    "artifact_list": {
+      "text": "Excellent! You'll need the five Sacred Cleaning Artifacts: the Eternal Sponge from the Forgotten Closet's Supply Vault, the Quantum Mop from the Moldy Archives' Sacred Chamber, the Divine Duster from the Soap Bubble Nebula, the Celestial Spray Bottle from the Crystal Corridor's heart, and the Holy Scrub Brush from Mount Washmore. That last one's guarded by the Lint King - nasty fellow, all static and attitude. Oh! And collect all five vacuum shards from your closet. Bring everything here, and I'll perform the integration! *rummages in pocket* Here, take this Soap Bomb and Quantum Espresso. You'll need them. The espresso helps with dimensional travel. The soap bomb helps with... well, everything, really. Explosive cleanliness is underrated!",
+      "choices": [
+        {
+          "text": "Thank you, Professor. I'll bring everything back.",
+          "leads_to": "encouragement"
+        },
+        {
+          "text": "Any advice for finding these artifacts?",
+          "leads_to": "advice"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "soap-bomb" },
+        { "type": "give_item", "value": "space-coffee" },
+        { "type": "set_flag", "value": "professor_explained_quest" }
+      ]
+    },
+    "advice": {
+      "text": "Advice? Hmm... *strokes beard thoughtfully* The Soap Golem in the Bubble Plaza can be reasoned with if you're clever. Sir Bleach-a-lot in the Crystal Corridor is obsessed with defeating his reflection - help him with that. The Mop Oracle in the Archives is wise but cryptic; just nod and look thoughtful. Rusty the Robot in the Supply Vault needs a gear to function - there's one in the Bubble Plaza if you can trade for it. And the Lint King? Well, combat is inevitable there. Use your mop, stay mobile, and remember: static electricity is weak against rubber. Not that you have rubber, but it's good to know!",
+      "choices": [
+        {
+          "text": "That's actually very helpful. Thank you!",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*pats you on the shoulder, accidentally shocking you with static from a recent experiment* You can do this, Rodriguez! You're more capable than you know! And if you die horribly in a dimensional pocket, well... your sacrifice will be noted in the footnotes of my next paper! Now go forth and collect those artifacts! FOR SCIENCE! And also for not getting fired into a black hole!",
+      "choices": [
+        {
+          "text": "Thanks... I think?",
+          "leads_to": "return_later"
+        }
+      ]
+    },
+    "return_later": {
+      "text": "Come back when you have all five artifacts and the vacuum shards! I'll have the Cosmic Repair Station calibrated and ready. Try not to break anything else in the meantime! *returns to adjusting bubbling beakers*",
+      "choices": []
+    },
+    "has_artifacts": {
+      "text": "*eyes light up* You have them! All five Sacred Artifacts! And the vacuum shards! Marvelous! Extraordinary! Possibly unprecedented! *starts frantically operating the Cosmic Repair Station* Place everything on the integration platform - careful, careful! Now stand back! This process involves quantum entanglement, metaphysical reassembly, and a touch of old-fashioned elbow grease! *pulls a large lever* ACTIVATING!",
+      "choices": [
+        {
+          "text": "*watch the repair process*",
+          "leads_to": "repair_complete"
+        }
+      ]
+    },
+    "repair_complete": {
+      "text": "*The Cosmic Repair Station hums, glows, and makes several alarming noises before producing a brilliant flash* IT'S DONE! The Vacuum of Eternity, fully repaired and enhanced! The Sacred Artifacts have been integrated perfectly! This is magnificent! *wipes away a tear* I'm so proud. Of me, mostly, but also of you for bringing everything! Now take it and go save reality! And DO try to avoid breaking it again - I don't think my heart could take another project like this!",
+      "choices": [
+        {
+          "text": "Thank you, Professor! I couldn't have done this without you!",
+          "leads_to": "victory"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "repaired-vacuum-of-eternity" },
+        { "type": "set_flag", "value": "vacuum_repaired" }
+      ]
+    },
+    "victory": {
+      "text": "No, thank YOU! This has been the most exciting week I've had since I accidentally turned Tuesday into a liquid! Now go show Director Dustbane! And remember: every mess truly IS an opportunity - an opportunity for SCIENCE!",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "pacing",
+    "aggression_level": "peaceful",
+    "trade_enabled": true,
+    "quest_giver": false,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 6,
+    "constitution": 10,
+    "intelligence": 25,
+    "wisdom": 14,
+    "charisma": 12,
+    "agility": 8,
+    "science_skill": 30,
+    "caffeine_tolerance": 50
+  }
+}

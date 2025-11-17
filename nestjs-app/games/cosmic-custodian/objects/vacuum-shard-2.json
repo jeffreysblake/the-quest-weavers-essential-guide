@@ -1,0 +1,32 @@
+{
+  "id": "vacuum-shard-2",
+  "name": "Vacuum Shard (Canister Fragment)",
+  "description": "A fragment of the Vacuum of Eternity's main canister, still containing traces of cosmic dust",
+  "object_type": "quest-item",
+  "position": { "x": 1, "y": 1, "z": 1 },
+  "material": "crystal",
+  "material_properties": {
+    "density": 8,
+    "conductivity": 9,
+    "flammability": 0,
+    "brittleness": 3,
+    "resistances": { "fire": 9, "ice": 9, "lightning": 9, "force": 7, "magic": 10 }
+  },
+  "weight": 1.2,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "glowing": true,
+    "fragment_of": "vacuum-of-eternity"
+  },
+  "properties": {
+    "artifact_piece": "canister",
+    "power_level": 200,
+    "quest_item": true
+  },
+  "interactions": {
+    "examine": "This shard is from the main body of the Vacuum of Eternity. You can still see swirls of cosmic dust trapped inside its translucent surface - the last remnants of its final use. It pulses rhythmically, like a heartbeat.",
+    "take": "You grasp the canister shard. It's heavier than the others, as if it's carrying the weight of its purpose."
+  }
+}

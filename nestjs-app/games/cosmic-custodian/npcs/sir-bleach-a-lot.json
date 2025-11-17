@@ -1,0 +1,217 @@
+{
+  "id": "sir-bleach-a-lot",
+  "name": "Sir Bleach-a-lot",
+  "description": "A knight in mirror-polished armor who has been locked in eternal combat with his own reflection",
+  "npc_type": "warrior",
+  "position": { "x": -58, "y": 12, "z": 0 },
+  "health": 100,
+  "max_health": 100,
+  "level": 12,
+  "experience": 0,
+  "inventory_data": [],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*spins around from fighting reflection* HALT! Art thou friend or reflection?! I have been locked in combat with mine own mirror image for three hundred and forty-seven days! Every time I strike, it strikes! Every time I parry, it parries! This reflection is the most formidable opponent I have ever faced! *pauses* Wait, thou art NOT a reflection. Thou art... solid. And slightly fuzzy around the edges. Who art thou?",
+      "choices": [
+        {
+          "text": "I'm Mop Rodriguez. I'm collecting sacred artifacts.",
+          "leads_to": "artifact_seeker"
+        },
+        {
+          "text": "You've been fighting your reflection for 347 days?",
+          "leads_to": "reflection_admission"
+        },
+        {
+          "text": "Maybe I can help with your reflection problem?",
+          "leads_to": "offer_help"
+        }
+      ]
+    },
+    "artifact_seeker": {
+      "text": "*lowers sword slightly* An artifact seeker! How noble! I too seek something - victory over this accursed reflection! But I am honor-bound to guard this corridor until I defeat mine enemy. Unless... perhaps we could aid each other? If thou couldst help me best this reflection, I would gladly assist thee in thy quest!",
+      "choices": [
+        {
+          "text": "How can I help you defeat your reflection?",
+          "leads_to": "help_explanation"
+        },
+        {
+          "text": "Have you tried... not looking at it?",
+          "leads_to": "practical_solution"
+        }
+      ]
+    },
+    "reflection_admission": {
+      "text": "*nods gravely* Aye. Three hundred and forty-seven days, fourteen hours, and... *checks sundial* ...six minutes. It has been the most evenly matched duel of my career! Neither of us can gain the upper hand! We are perfectly matched in skill, strength, and determination! I must admire mine opponent, even as I vow to defeat them!",
+      "choices": [
+        {
+          "text": "That's because it's copying your every move...",
+          "leads_to": "revelation_starts"
+        },
+        {
+          "text": "That sounds exhausting.",
+          "leads_to": "exhaustion_admission"
+        }
+      ]
+    },
+    "offer_help": {
+      "text": "*eyes light up with hope* Thou wouldst help me?! Truly?! I have been alone in this corridor for so long, with only mine enemy for company! And mine enemy is terrible at conversation - they only repeat what I say! If thou can aid me in defeating this reflection, I would be eternally grateful! What manner of strategy dost thou propose?",
+      "choices": [
+        {
+          "text": "What if you... closed your eyes?",
+          "leads_to": "practical_solution"
+        },
+        {
+          "text": "What if I covered the mirror?",
+          "leads_to": "cover_solution"
+        }
+      ]
+    },
+    "help_explanation": {
+      "text": "I know not! Every strategy I attempt, mine enemy anticipates! If I feint left, they feint left! If I charge forward, they charge forward! It's as if they can read my very thoughts! Or... or as if they ARE me somehow... No, that would be ridiculous!",
+      "choices": [
+        {
+          "text": "Actually, about that...",
+          "leads_to": "revelation_starts"
+        }
+      ]
+    },
+    "practical_solution": {
+      "text": "*stops mid-sword swing* Not... looking at it? But that would be... dishonorable! To defeat an enemy without seeing them is... *pauses* ...actually quite tactical. And efficiency IS a form of honor! Verily! Let me try! *closes eyes and swings sword* HA! TAKE THAT, REFL- *opens eyes* ...it's still there.",
+      "choices": [
+        {
+          "text": "That's because you opened your eyes again.",
+          "leads_to": "eyes_closed_longer"
+        },
+        {
+          "text": "Maybe we should just cover the mirror?",
+          "leads_to": "cover_solution"
+        }
+      ]
+    },
+    "eyes_closed_longer": {
+      "text": "*considers this* Thou makest a valid point. Perhaps I should... walk away with eyes closed? But how would I know I have defeated it if I cannot see? No, this strategy is flawed. There must be another way!",
+      "choices": [
+        {
+          "text": "What if I cover the mirror with something?",
+          "leads_to": "cover_solution"
+        }
+      ]
+    },
+    "cover_solution": {
+      "text": "*gasps* COVER the mirror?! That is... that is BRILLIANT! A tactical repositioning of the battlefield visibility! Why did I not think of this?! Dost thou have something we could use to obscure mine enemy's position?",
+      "choices": [
+        {
+          "text": "I have a towel! *use cosmic towel*",
+          "leads_to": "towel_solution"
+        },
+        {
+          "text": "Not on me, sorry.",
+          "leads_to": "no_solution"
+        }
+      ]
+    },
+    "towel_solution": {
+      "text": "*watches as you drape the cosmic towel over the mirror* By the Code of Cleanliness! The reflection is... gone! VICTORY! GLORIOUS VICTORY! *sheathes sword* Mine enemy has been defeated through tactical superiority! I AM TRIUMPHANT! *pauses* Though... I admit, I feel somewhat empty now. That reflection was my constant companion for nearly a year. I shall miss them. But FORWARD! To new adventures! *hands you a keycard he found* I discovered this during my vigil here. Take it, brave companion! Thou hast freed me from mine eternal duel! If thou needest aid reaching the Heart of the Crystal Corridor, I shall guard thy back!",
+      "choices": [
+        {
+          "text": "Thank you, Sir Bleach-a-lot!",
+          "leads_to": "gratitude_received"
+        }
+      ],
+      "actions": [
+        { "type": "set_flag", "value": "sir_bleach_helped" },
+        { "type": "give_item", "value": "blue-keycard" }
+      ]
+    },
+    "no_solution": {
+      "text": "*sighs* Alas. Then I must continue my eternal vigil. Perhaps one day I shall triumph. Or perhaps I shall simply become very, very good at fighting. Either outcome has merit! Fare thee well, traveler!",
+      "choices": []
+    },
+    "revelation_starts": {
+      "text": "*lowers sword slowly* What dost thou mean? Speak plainly, traveler. What knowledge dost thou possess about mine enemy?",
+      "choices": [
+        {
+          "text": "Your enemy IS you. It's a reflection. It copies everything you do.",
+          "leads_to": "truth_revealed"
+        }
+      ]
+    },
+    "exhaustion_admission": {
+      "text": "*slumps slightly* Aye. Exhausting. I have not slept in 347 days, for mine enemy never sleeps! I have not eaten, for the enemy never eats! I am sustained purely by honor and stubbornness at this point! Perhaps... perhaps a new strategy is needed?",
+      "choices": [
+        {
+          "text": "Let me help you. What if we covered the mirror?",
+          "leads_to": "cover_solution"
+        }
+      ]
+    },
+    "truth_revealed": {
+      "text": "*stands very still* A... reflection. I have been fighting... a reflection. For 347 days. *sword droops* I am... I am the fool knight from the tavern tales. The one who charges at windmills. Except worse, because windmills at least move independently! *sits down heavily* Mine entire quest... meaningless.",
+      "choices": [
+        {
+          "text": "Not meaningless! You were dedicated and honorable!",
+          "leads_to": "comfort"
+        },
+        {
+          "text": "Yeah, but we can fix this now!",
+          "leads_to": "moving_forward"
+        }
+      ]
+    },
+    "comfort": {
+      "text": "*looks up* Thou... thou truly think so? I was dedicated. And I never gave up, even against impossible odds. Even if those odds were... literally impossible because I was fighting myself. *stands* Thou art right! There is no shame in this! Only a learning experience! And now I am FREE! Thank thee, kind traveler! I am in thy debt!",
+      "choices": [
+        {
+          "text": "Happy to help, Sir Bleach-a-lot!",
+          "leads_to": "gratitude_received"
+        }
+      ],
+      "actions": [
+        { "type": "set_flag", "value": "sir_bleach_helped" }
+      ]
+    },
+    "moving_forward": {
+      "text": "*stands up, brushing off armor* Aye! Forward! To new quests! To actual enemies! To fights where the opponent might actually lose! *grins* I am ready! What adventure dost thou propose?",
+      "choices": [
+        {
+          "text": "I need to reach the Heart of the Crystal Corridor.",
+          "leads_to": "escort_offer"
+        }
+      ]
+    },
+    "escort_offer": {
+      "text": "Then I shall escort thee! Consider it payment for freeing me from mine embarrassing duel! *draws sword* Lead on! Any monster that threatens thee shall face the blade of Sir Bleach-a-lot! The ACTUAL blade, not the reflection!",
+      "choices": [
+        {
+          "text": "Thank you! Let's go!",
+          "leads_to": "gratitude_received"
+        }
+      ],
+      "actions": [
+        { "type": "set_flag", "value": "sir_bleach_helped" }
+      ]
+    },
+    "gratitude_received": {
+      "text": "*salutes* May thy mop stay damp and thy bucket stay full, noble janitor! I shall remember this day: the day Sir Bleach-a-lot learned that sometimes, the greatest victory is admitting when thou art fighting thyself! ONWARD! *marches toward the Crystal Heart*",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "stationary_combat_stance",
+    "aggression_level": "peaceful_but_ready",
+    "trade_enabled": false,
+    "quest_giver": false,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 16,
+    "constitution": 15,
+    "intelligence": 8,
+    "wisdom": 6,
+    "charisma": 14,
+    "agility": 12,
+    "honor": 100,
+    "stubbornness": 95,
+    "self_awareness": 3
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "closet-entrance",
+  "name": "The Forgotten Closet - Entrance",
+  "description": "A dark, dusty dimension where lost cleaning supplies go to fade from memory",
+  "long_description": "The portal spits you out into darkness so complete it feels like a physical presence. As your eyes adjust, you realize you're standing in what appears to be the cosmic equivalent of that closet where you shove things you don't want to deal with - except this one is infinite and filled with the accumulated cleaning supplies forgotten by every janitor in history. Dusty mops lean against walls that seem to extend forever into the gloom. Broken vacuum cleaners lie in heaps like the skeletons of mechanical beasts. The air is thick with dust motes that dance in the dim light filtering from... somewhere. You can hear the distant sound of dripping water and the occasional clatter of something falling in the darkness. To the north, a faint glow suggests the location of the Supply Vault. West leads back to the airlock. Every breath you take tastes like neglect and broken promises to 'organize this later.' A rusted sign hangs crooked on the wall: 'Lost and Forgotten - Population: Everything You Ever Misplaced Plus Some Existential Dread.'",
+  "position": { "x": 0, "y": 10, "z": 0 },
+  "size": { "width": 30, "height": 30, "depth": 20 },
+  "environment": {
+    "lighting": "dim and oppressive",
+    "sound": "dripping water, settling objects, and whispered regrets",
+    "temperature": "musty and cool",
+    "weather": "indoor",
+    "atmosphere": "forgotten and melancholic"
+  },
+  "properties": {
+    "safe_zone": false,
+    "allow_combat": true,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

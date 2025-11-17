@@ -1,0 +1,21 @@
+{
+  "id": "crystal-entrance",
+  "name": "Crystal Corridor - Entrance",
+  "description": "The entrance to a labyrinth of glass and light where every surface reflects infinity",
+  "long_description": "The Crystal Corridor is beautiful in the way that a hall of mirrors at a carnival is beautiful - mesmerizing, slightly nauseating, and potentially dangerous if you're not paying attention. The walls, floor, and ceiling are all made of perfectly transparent crystal, creating an endless recursion of reflections. You can see yourself stretching into infinity in every direction, and you're pretty sure at least three of those reflections winked at you independently. The crystal refracts light into rainbow patterns that dance across every surface, making it difficult to tell where the walls actually are. Sir Bleach-a-lot stands guard at the entrance, their armor polished to a mirror shine that adds to the general confusion of reflections. The knight appears to be challenging their own reflection to a duel, which has been going on for what they claim is 'a matter of honor.' East leads deeper into the crystal maze toward the heart of the corridor. West leads back to the airlock. The sound of your footsteps echoes and multiplies until it sounds like an army walking through glass. A sign (or possibly eight identical signs, you can't tell) warns: 'Watch Your Step, Your Reflection's Step, and All Other Steps in the Multiverse.'",
+  "position": { "x": -60, "y": 10, "z": 0 },
+  "size": { "width": 25, "height": 25, "depth": 30 },
+  "environment": {
+    "lighting": "brilliant and refractive",
+    "sound": "echoing footsteps multiplied infinitely",
+    "temperature": "cool and crisp",
+    "weather": "indoor",
+    "atmosphere": "dazzling and disorienting"
+  },
+  "properties": {
+    "safe_zone": false,
+    "allow_combat": true,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

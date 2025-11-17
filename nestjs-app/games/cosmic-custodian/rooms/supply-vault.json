@@ -1,0 +1,21 @@
+{
+  "id": "supply-vault",
+  "name": "Cosmic Supply Vault",
+  "description": "An ancient vault where legendary cleaning supplies accumulate cosmic power",
+  "long_description": "Deep within the Forgotten Closet, you discover something unexpected: a vault where lost cleaning supplies don't just languish - they transcend. The walls here are lined with shelves that glow with a faint ethereal light, each one holding cleaning implements that have absorbed so much neglect they've achieved a kind of enlightenment. You can see ancient feather dusters that shimmer with cosmic wisdom, spray bottles filled with liquids that might clean anything or might be bottled starlight (again, hard to tell), and buckets that seem to contain infinite space. In the center of the room, on a pedestal of crystallized soap scum, rests one of the Sacred Cleaning Artifacts you've been seeking. The vault itself is circular, with walls covered in inscriptions written in the ancient language of the First Janitors. The inscriptions seem to say something profound about the nature of cleaning and existence, but your translation skills are rusty. The air here feels thick with potential and the faint smell of lemon-scented enlightenment. South leads back to the entrance. Rusty the Robot sits in a corner, their lights flickering sadly.",
+  "position": { "x": 0, "y": 40, "z": 0 },
+  "size": { "width": 25, "height": 25, "depth": 15 },
+  "environment": {
+    "lighting": "soft ethereal glow from artifacts",
+    "sound": "humming of cosmic energy and Rusty's occasional beeps",
+    "temperature": "neutral and timeless",
+    "weather": "indoor",
+    "atmosphere": "sacred and ancient"
+  },
+  "properties": {
+    "safe_zone": true,
+    "allow_combat": false,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

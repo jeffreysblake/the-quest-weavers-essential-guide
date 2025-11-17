@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { GameStateService } from './game-state.service';
 import { CommandProcessorService } from './command-processor.service';
 import { EntityService } from '../entity/entity.service';
@@ -59,6 +59,7 @@ export interface CommandResult {
  */
 @Injectable()
 export class GameService {
+  private readonly logger = new Logger(GameService.name);
   private gameSessions = new Map<string, GameSession>();
 
   // Concurrency protection

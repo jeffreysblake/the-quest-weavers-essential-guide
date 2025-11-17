@@ -1,0 +1,267 @@
+{
+  "id": "soap-golem",
+  "name": "The Soap Golem",
+  "description": "A massive humanoid guardian made of solidified soap suds, protector of the Bubble Plaza",
+  "npc_type": "guardian",
+  "position": { "x": -30, "y": 78, "z": 0 },
+  "health": 120,
+  "max_health": 120,
+  "level": 14,
+  "experience": 0,
+  "inventory_data": ["divine-duster"],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*The Soap Golem turns to face you, soap suds dripping majestically* HALT. I am the Guardian of the Bubble Plaza, the Protector of the Pristine, the Warden of Washing. Who approaches the Sacred Bubbles with purpose unclear? State your name and intention, traveler, or face the consequences of EXTREME CLEANLINESS.",
+      "choices": [
+        {
+          "text": "I'm Mop Rodriguez. I need the Divine Duster to save reality.",
+          "leads_to": "purpose_stated"
+        },
+        {
+          "text": "I come in peace! Please don't clean me aggressively!",
+          "leads_to": "fear_response"
+        },
+        {
+          "text": "Are you going to attack me?",
+          "leads_to": "threat_clarification"
+        }
+      ]
+    },
+    "purpose_stated": {
+      "text": "*The Golem considers this, soap bubbles rising from its head thoughtfully* Save reality... A noble purpose. But many have come seeking the Divine Duster with claims of nobility. How do I know you speak truth? How do I know you are worthy? The Divine Duster is not merely a tool - it is a SACRED INSTRUMENT OF PURIFICATION. It cannot be given to just any janitor with a crisis.",
+      "choices": [
+        {
+          "text": "I broke the Vacuum of Eternity. I must make this right.",
+          "leads_to": "honesty"
+        },
+        {
+          "text": "Director Dustbane sent me. It's official!",
+          "leads_to": "authority_claim"
+        },
+        {
+          "text": "How can I prove I'm worthy?",
+          "leads_to": "worthiness_test"
+        }
+      ]
+    },
+    "fear_response": {
+      "text": "*The Golem's sudsy form ripples with what might be amusement* You SHOULD fear aggressive cleanliness. I have scrubbed intruders until they were 99.9% germ-free and VERY uncomfortable. But I am not unreasonable. State your purpose, small janitor. Why have you come to the Bubble Plaza?",
+      "choices": [
+        {
+          "text": "I need the Divine Duster to repair the Vacuum of Eternity.",
+          "leads_to": "purpose_stated"
+        }
+      ]
+    },
+    "threat_clarification": {
+      "text": "*The Golem crosses massive sudsy arms* That depends entirely on YOU. Am I programmed to defend the Divine Duster? Yes. Am I capable of scrubbing you out of existence? Also yes. Will I NEED to? That remains to be seen. So far, you have been polite. Politeness is undervalued in modern guardian-intruder relationships. Continue being polite, and we can have a conversation instead of a confrontation.",
+      "choices": [
+        {
+          "text": "I'd much prefer a conversation. I'm Mop Rodriguez, and I need your help.",
+          "leads_to": "purpose_stated"
+        }
+      ]
+    },
+    "honesty": {
+      "text": "*The Golem leans down, bringing its massive sudsy face closer* You... BROKE the Vacuum of Eternity? *pauses* And you ADMIT this? Freely? *straightens up* Interesting. Most who seek the Divine Duster lie, embellish, or attempt to manipulate. You simply... confess. There is honor in that. Foolish honor, perhaps, but honor nonetheless. Very well. I will not simply GIVE you the Divine Duster. But I will offer you a choice: Prove your worth through combat, or prove your wisdom through a riddle.",
+      "choices": [
+        {
+          "text": "I choose combat! *ready weapon*",
+          "leads_to": "combat_choice"
+        },
+        {
+          "text": "I choose the riddle.",
+          "leads_to": "riddle_choice"
+        },
+        {
+          "text": "Is there a third option?",
+          "leads_to": "third_option"
+        }
+      ]
+    },
+    "authority_claim": {
+      "text": "*The Golem bubbles skeptically* Director Dustbane, you say? *considers* Very well. If Dustbane sent you, you carry their authority. But... *leans closer* ...I do not answer to Dustbane. I answer to the PRINCIPLE OF CLEANLINESS ITSELF. Show me you understand this principle, and the Divine Duster is yours. Fail, and you will be removed. Gently. But firmly. Like a stubborn stain.",
+      "choices": [
+        {
+          "text": "What do you want me to do?",
+          "leads_to": "worthiness_test"
+        }
+      ]
+    },
+    "worthiness_test": {
+      "text": "*The Golem straightens to full height* I offer you TWO paths to prove your worth. PATH ONE: Combat. Face me in honorable battle. Defeat me, and claim the Divine Duster as your prize. PATH TWO: Wisdom. Answer my riddle correctly, and I will recognize you as one who UNDERSTANDS the sacred nature of cleaning. Choose.",
+      "choices": [
+        {
+          "text": "I choose combat!",
+          "leads_to": "combat_choice"
+        },
+        {
+          "text": "I choose the riddle.",
+          "leads_to": "riddle_choice"
+        }
+      ]
+    },
+    "combat_choice": {
+      "text": "*The Golem readies into a fighting stance, soap suds swirling* A warrior's path! Honorable! Very well! But know this: I am made of soap. Slippery. Difficult to grip. Attacking me directly may prove... problematic. *begins to glow with sudsy power* PREPARE YOURSELF, MOP RODRIGUEZ! LET US SEE IF YOU CAN CLEAN UP IN COMBAT!",
+      "choices": [
+        {
+          "text": "*ENGAGE IN COMBAT*",
+          "leads_to": "combat_begins"
+        }
+      ]
+    },
+    "riddle_choice": {
+      "text": "*The Golem nods approvingly* Wisdom over violence. A clean choice! *settles into a contemplative pose* Here is my riddle: 'I am everywhere yet nowhere. I am the enemy yet the purpose. Without me, there is no need for cleaning. With me, there is always work to be done. I am fought but never truly defeated. What am I?'",
+      "choices": [
+        {
+          "text": "Dirt!",
+          "leads_to": "wrong_answer_dirt"
+        },
+        {
+          "text": "Entropy!",
+          "leads_to": "wrong_answer_entropy"
+        },
+        {
+          "text": "Mess!",
+          "leads_to": "correct_answer"
+        },
+        {
+          "text": "Dust?",
+          "leads_to": "wrong_answer_dust"
+        }
+      ]
+    },
+    "third_option": {
+      "text": "*The Golem bubbles thoughtfully* A third option? Hmm. Bold to ask. I respect boldness. *considers* Very well. There IS a third path: Service. Clean the Bubble Plaza. Not just surface cleaning - DEEP cleaning. The kind that requires dedication and care. If you can demonstrate true understanding of the cleaning arts, I will grant you the Divine Duster without combat or riddles.",
+      "choices": [
+        {
+          "text": "I'll do it! Where's my mop?",
+          "leads_to": "service_choice"
+        },
+        {
+          "text": "Actually, I'll take the riddle.",
+          "leads_to": "riddle_choice"
+        }
+      ]
+    },
+    "wrong_answer_dirt": {
+      "text": "*The Golem shakes its head* No. Dirt is merely one form of the answer. Think broader. What is the CONCEPT that dirt represents?",
+      "choices": [
+        {
+          "text": "Mess?",
+          "leads_to": "correct_answer"
+        },
+        {
+          "text": "Chaos?",
+          "leads_to": "wrong_answer_chaos"
+        }
+      ]
+    },
+    "wrong_answer_entropy": {
+      "text": "*The Golem wobbles contemplatively* Close! Entropy is related, but too scientific. Think more... practical. What does a janitor fight every day?",
+      "choices": [
+        {
+          "text": "Mess!",
+          "leads_to": "correct_answer"
+        },
+        {
+          "text": "Stains?",
+          "leads_to": "wrong_answer_stains"
+        }
+      ]
+    },
+    "wrong_answer_dust": {
+      "text": "*The Golem shakes its head* Dust is too specific. Think BIGGER. What encompasses dust, dirt, clutter, and chaos?",
+      "choices": [
+        {
+          "text": "Mess!",
+          "leads_to": "correct_answer"
+        }
+      ]
+    },
+    "wrong_answer_chaos": {
+      "text": "*The Golem sighs, releasing soap bubbles* Too philosophical. Simpler!",
+      "choices": [
+        {
+          "text": "Mess?",
+          "leads_to": "correct_answer"
+        }
+      ]
+    },
+    "wrong_answer_stains": {
+      "text": "*The Golem shakes its head* Too narrow. Broader!",
+      "choices": [
+        {
+          "text": "Mess!",
+          "leads_to": "correct_answer"
+        }
+      ]
+    },
+    "correct_answer": {
+      "text": "*The Golem claps its massive sudsy hands together, creating a shower of bubbles* YES! MESS! The eternal opponent! The reason for our existence! Without mess, there would be no cleaners! But with mess, there is always purpose! You understand! *bows deeply* You have proven your wisdom, Mop Rodriguez. Take the Divine Duster. Use it well. And remember: every mess is an opportunity to care for the world.",
+      "choices": [
+        {
+          "text": "*Take the Divine Duster* Thank you, wise Guardian!",
+          "leads_to": "duster_given"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "divine-duster" },
+        { "type": "set_flag", "value": "soap_golem_passed" }
+      ]
+    },
+    "service_choice": {
+      "text": "*The Golem watches as you clean the plaza with dedication and care. You mop every bubble surface, organize scattered items, and even help a few confused vendors. After an hour of work, the Golem approaches* You have shown true understanding. Not flashy. Not aggressive. Just... thorough. Caring. This is the essence of cleaning. *hands you the Divine Duster* You have earned this.",
+      "choices": [
+        {
+          "text": "*Take the Divine Duster* Thank you for this opportunity!",
+          "leads_to": "duster_given"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "divine-duster" },
+        { "type": "set_flag", "value": "soap_golem_passed" }
+      ]
+    },
+    "combat_begins": {
+      "text": "[COMBAT INITIATED WITH THE SOAP GOLEM]",
+      "choices": []
+    },
+    "defeated": {
+      "text": "*The Soap Golem collapses into a puddle of suds, then slowly reforms* You... have bested me. Fairly. *bubbles with respect* Take the Divine Duster, warrior-janitor. You have earned it through strength. May it serve you as you serve cleanliness. *solidifies into guardian pose*",
+      "choices": [
+        {
+          "text": "*Take the Divine Duster*",
+          "leads_to": "duster_given"
+        }
+      ],
+      "actions": [
+        { "type": "give_item", "value": "divine-duster" },
+        { "type": "set_flag", "value": "soap_golem_defeated" }
+      ]
+    },
+    "duster_given": {
+      "text": "*The Soap Golem stands tall, bubbling proudly* Go forth, Rodriguez. Save reality. And remember: the Bubble Plaza will always welcome one who understands the sacred nature of cleanliness. *returns to guardian stance*",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "stationary_guardian",
+    "aggression_level": "defensive",
+    "trade_enabled": false,
+    "quest_giver": false,
+    "respawn": false,
+    "boss": false
+  },
+  "attributes": {
+    "strength": 18,
+    "constitution": 20,
+    "intelligence": 14,
+    "wisdom": 16,
+    "charisma": 12,
+    "agility": 8,
+    "sudsy_power": 100,
+    "cleanliness_devotion": 100,
+    "bubble_generation": 95
+  }
+}

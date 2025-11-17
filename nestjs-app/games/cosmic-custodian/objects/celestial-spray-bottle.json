@@ -1,0 +1,40 @@
+{
+  "id": "celestial-spray-bottle",
+  "name": "The Celestial Spray Bottle",
+  "description": "A spray bottle that contains the distilled essence of starlight and determination",
+  "object_type": "quest-item",
+  "position": { "x": -90, "y": 10, "z": 10 },
+  "material": "crystal",
+  "material_properties": {
+    "density": 7,
+    "conductivity": 8,
+    "flammability": 0,
+    "brittleness": 8,
+    "resistances": { "fire": 7, "ice": 9, "lightning": 8, "force": 2, "magic": 10 }
+  },
+  "weight": 1,
+  "is_portable": true,
+  "is_container": true,
+  "state_data": {
+    "magical_active": true,
+    "enchanted": true,
+    "blessed": true,
+    "legendary": true,
+    "sacred_artifact": true,
+    "filled_with": "liquid_starlight",
+    "spray_count": "infinite"
+  },
+  "properties": {
+    "artifact_level": "legendary",
+    "power_rating": 1000,
+    "cleaning_power": "celestial",
+    "capacity": "infinite",
+    "spray_pattern": "perfect_mist",
+    "special_ability": "dissolves_any_stain"
+  },
+  "interactions": {
+    "examine": "The Celestial Spray Bottle appears to be carved from a single piece of crystal that somehow captures and holds light. Inside, liquid starlight swirls in patterns that mirror the rotation of galaxies. The trigger is smooth and ergonomic, designed by beings who truly understood the importance of comfortable cleaning equipment. When you tilt it, the starlight inside doesn't follow normal fluid dynamics - it moves like it's dancing. The nozzle is set to 'Stain Destruction Mode,' which seems to be the only setting.",
+    "take": "You pick up the Celestial Spray Bottle. It feels heavier than it looks, as if you're holding bottled determination itself. The starlight inside brightens momentarily, as if acknowledging its new bearer. You can feel the bottle's eagerness to tackle even the most stubborn cosmic stains.",
+    "use": "You test the spray bottle, giving it a gentle squeeze. A fine mist of liquid starlight emerges, and where it lands, everything becomes not just clean but somehow more idealized - more perfectly itself. You've never seen a surface look so satisfied to be clean."
+  }
+}

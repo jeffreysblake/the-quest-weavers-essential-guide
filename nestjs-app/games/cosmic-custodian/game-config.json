@@ -1,0 +1,21 @@
+{
+  "id": "cosmic-custodian",
+  "name": "The Cosmic Custodian's Calamity",
+  "description": "A whimsical space adventure where a hapless janitor must collect sacred cleaning artifacts to repair the shattered Vacuum of Eternity before reality drowns in cosmic dust",
+  "version": 1,
+  "metadata": {
+    "difficulty": "medium",
+    "estimated_playtime": "2-3 hours",
+    "themes": ["comedy", "sci-fi", "adventure", "puzzle", "combat"],
+    "starting_room": "janitor-closet",
+    "victory_conditions": [
+      {
+        "type": "obtain_item",
+        "item_id": "repaired-vacuum-of-eternity",
+        "description": "Repair the Vacuum of Eternity by collecting all 5 Sacred Cleaning Artifacts and combining them at the Cosmic Repair Station"
+      }
+    ],
+    "author": "The Quest Weaver Test Suite",
+    "required_level": 1
+  }
+}

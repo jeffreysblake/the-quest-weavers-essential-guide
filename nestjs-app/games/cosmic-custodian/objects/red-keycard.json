@@ -1,0 +1,31 @@
+{
+  "id": "red-keycard",
+  "name": "Red Security Keycard",
+  "description": "A red keycard that grants access to the laboratory",
+  "object_type": "key",
+  "position": { "x": 1, "y": 21, "z": 1 },
+  "material": "plastic",
+  "material_properties": {
+    "density": 3,
+    "conductivity": 2,
+    "flammability": 8,
+    "brittleness": 5,
+    "resistances": { "fire": 2, "ice": 5, "lightning": 3, "force": 4, "magic": 3 }
+  },
+  "weight": 0.1,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magnetic_strip_active": true,
+    "access_level": "research"
+  },
+  "properties": {
+    "key_type": "electronic",
+    "unlocks": "laboratory-door",
+    "security_level": "red"
+  },
+  "interactions": {
+    "examine": "A red keycard with warning symbols and the words 'RESEARCH DIVISION - EXPECT EXPLOSIONS.' Professor Scrubsworth probably left this lying around somewhere. The back has a handwritten note: 'If found, please return. Or keep it, I have seventeen more.'",
+    "take": "You take the red keycard. It feels slightly warm, as if it's been near too many experiments. Probably fine."
+  }
+}

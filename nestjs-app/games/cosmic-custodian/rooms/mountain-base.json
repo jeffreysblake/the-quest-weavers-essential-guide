@@ -1,0 +1,21 @@
+{
+  "id": "mountain-base",
+  "name": "Mount Washmore - Base Camp",
+  "description": "The base of a mountain made entirely of dirty laundry that somehow achieved geological status",
+  "long_description": "Before you looms Mount Washmore, a geographical impossibility that exists anyway because the universe has a sense of humor. The mountain is composed entirely of dirty laundry - socks, shirts, pants, and unidentifiable garments - all compressed over eons into stratified layers like sedimentary rock. You can literally see different fashion eras preserved in the layers: bell-bottoms from the Disco Period, shoulder pads from the Power Suit Era, and something from the distant past that might be a toga or possibly a very confident bedsheet. The mountain rises into the clouds (which appear to be made of fabric softener vapor), its peak hidden from view. At the base, a small camp has been established by previous expeditions, complete with a tattered flag that reads 'Summit or Bust (Preferably Not Bust).' The air smells like a mixture of gym locker and ancient history. North leads up the mountain trail toward the summit. South leads back to the Bubble Plaza. You can hear distant rumbling from above - either avalanches or the Lint King's legendary snoring, it's hard to tell.",
+  "position": { "x": -30, "y": 110, "z": 0 },
+  "size": { "width": 40, "height": 40, "depth": 10 },
+  "environment": {
+    "lighting": "natural daylight (from where? nobody knows)",
+    "sound": "distant rumbling, fabric rustling, and mountain wind",
+    "temperature": "cool mountain air",
+    "weather": "partly cloudy with a chance of sock avalanches",
+    "atmosphere": "adventurous and slightly absurd"
+  },
+  "properties": {
+    "safe_zone": false,
+    "allow_combat": true,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

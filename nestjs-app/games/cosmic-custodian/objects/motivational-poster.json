@@ -1,0 +1,30 @@
+{
+  "id": "motivational-poster",
+  "name": "Motivational Poster",
+  "description": "A poster with a picture of a nebula and the words 'Every Mess is an Opportunity!'",
+  "object_type": "furniture",
+  "position": { "x": 4, "y": 4, "z": 2 },
+  "material": "paper",
+  "material_properties": {
+    "density": 1,
+    "conductivity": 0,
+    "flammability": 10,
+    "brittleness": 8,
+    "resistances": { "fire": 0, "ice": 2, "lightning": 1, "force": 1, "magic": 2 }
+  },
+  "weight": 0.2,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "motivational": true,
+    "slightly_ironic": true
+  },
+  "properties": {
+    "inspirational_value": "moderate",
+    "corporate_approved": true
+  },
+  "interactions": {
+    "examine": "This is a standard-issue motivational poster from the Intergalactic Sanitation Bureau's HR department. It shows a beautiful nebula being cleaned by a tiny janitor, with the slogan 'Every Mess is an Opportunity!' printed in bold letters. Someone (probably you) has written 'to get fired' underneath in pencil. Despite its corporate origins, you have to admit the nebula picture is kind of nice.",
+    "take": "You take down the motivational poster. Maybe it will actually be motivational somewhere else. Probably not, but hope springs eternal."
+  }
+}

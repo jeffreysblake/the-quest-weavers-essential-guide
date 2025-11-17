@@ -1,0 +1,39 @@
+{
+  "id": "eternal-sponge",
+  "name": "The Eternal Sponge",
+  "description": "A sacred sponge that has absorbed the essence of countless galaxies worth of spills",
+  "object_type": "quest-item",
+  "position": { "x": 0, "y": 40, "z": 5 },
+  "material": "organic",
+  "material_properties": {
+    "density": 2,
+    "conductivity": 4,
+    "flammability": 1,
+    "brittleness": 1,
+    "resistances": { "fire": 6, "ice": 8, "lightning": 5, "force": 4, "magic": 9 }
+  },
+  "weight": 0.5,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "enchanted": true,
+    "blessed": true,
+    "legendary": true,
+    "sacred_artifact": true,
+    "absorbed_wisdom": "infinite"
+  },
+  "properties": {
+    "artifact_level": "legendary",
+    "power_rating": 1000,
+    "cleaning_power": "infinite",
+    "absorbency": "cosmic",
+    "durability": "eternal",
+    "special_ability": "absorbs_anything"
+  },
+  "interactions": {
+    "examine": "The Eternal Sponge looks like an ordinary yellow sponge, but when you focus on it, you can see entire galaxies swirling within its porous structure. It pulses with a gentle golden light and feels warm to the touch, as if it's alive. Legends say it was used by the First Janitors to clean up after the Big Bang.",
+    "take": "You carefully pick up the Eternal Sponge. It feels impossibly light yet somehow infinitely heavy with significance. As your fingers touch it, you feel a brief connection to every spill ever cleaned, every mess ever managed. It's profound and slightly damp.",
+    "use": "You squeeze the Eternal Sponge experimentally. A single drop of golden liquid falls out - it appears to be the condensed essence of pure cleanliness. The sponge immediately absorbs it back. Using this for mundane cleaning would be like using a supernova to light a candle."
+  }
+}

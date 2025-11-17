@@ -1,0 +1,39 @@
+{
+  "id": "divine-duster",
+  "name": "The Divine Duster",
+  "description": "A feather duster made from the plumes of the Phoenix of Cleanliness",
+  "object_type": "quest-item",
+  "position": { "x": -30, "y": 75, "z": 3 },
+  "material": "organic",
+  "material_properties": {
+    "density": 1,
+    "conductivity": 3,
+    "flammability": 9,
+    "brittleness": 2,
+    "resistances": { "fire": 10, "ice": 4, "lightning": 6, "force": 3, "magic": 9 }
+  },
+  "weight": 0.3,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "enchanted": true,
+    "blessed": true,
+    "legendary": true,
+    "sacred_artifact": true,
+    "on_fire": "always_but_cool_fire"
+  },
+  "properties": {
+    "artifact_level": "legendary",
+    "power_rating": 1000,
+    "cleaning_power": "divine",
+    "feather_count": 777,
+    "burn_temperature": "cool_fire",
+    "special_ability": "burns_away_impurity"
+  },
+  "interactions": {
+    "examine": "The Divine Duster is made from feathers that shimmer with every color of fire - from deep crimson to brilliant white. Each feather appears to be eternally aflame, but when you tentatively touch them, they're pleasantly warm rather than burning. The handle is wrapped in golden thread that forms ancient cleaning mantras. When you wave it, the feathers leave trails of light in the air that spell out words of encouragement like 'Keep Going!' and 'Dust is Temporary, Glory is Eternal!'",
+    "take": "You take the Divine Duster, and immediately the surrounding area becomes 20% more inspirational. The duster weighs almost nothing, as if the concept of weight is beneath it. You feel an overwhelming urge to dust something - anything - just to see the divine fire remove dust with prejudice.",
+    "use": "You wave the Divine Duster through the air. Nearby dust particles don't just get removed - they achieve enlightenment and transcend their dusty existence, ascending to a higher plane where they presumably become less annoying. It's beautiful and slightly excessive."
+  }
+}

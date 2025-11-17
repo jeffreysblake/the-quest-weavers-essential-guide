@@ -1,0 +1,176 @@
+{
+  "id": "mop-oracle",
+  "name": "The Mop Oracle",
+  "description": "An ancient, sentient mop who has achieved enlightenment through countless cleaning sessions",
+  "npc_type": "guide",
+  "position": { "x": 5, "y": -15, "z": 0 },
+  "health": 50,
+  "max_health": 50,
+  "level": 25,
+  "experience": 0,
+  "inventory_data": [],
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*The Mop Oracle's mop head sways gently, as if moved by an unseen breeze* Ah. The one who broke becomes the one who seeks. The janitor who shattered eternity now grasps for fragments of redemption. You have come seeking wisdom, Mop Rodriguez. Or perhaps you have come seeking permission. Or perhaps... you simply came because the door was open and you followed the smell of old paper.",
+      "choices": [
+        {
+          "text": "I seek guidance, wise Oracle.",
+          "leads_to": "seeking_guidance"
+        },
+        {
+          "text": "How do you know my name?",
+          "leads_to": "omniscience"
+        },
+        {
+          "text": "You're a talking mop.",
+          "leads_to": "stating_obvious"
+        }
+      ]
+    },
+    "seeking_guidance": {
+      "text": "*mop head nods sagely* Guidance, yes. All seekers desire guidance. But guidance is merely a map, and you must still walk the path. Tell me, young janitor: what guidance do you seek? The location of the sacred artifacts? The meaning of cleanliness? Or perhaps... the answer to why we clean at all when entropy always wins in the end?",
+      "choices": [
+        {
+          "text": "I seek the Quantum Mop. Where can I find it?",
+          "leads_to": "quantum_mop_location"
+        },
+        {
+          "text": "What is the meaning of cleanliness?",
+          "leads_to": "philosophy"
+        },
+        {
+          "text": "Why DO we clean if entropy always wins?",
+          "leads_to": "entropy_wisdom"
+        }
+      ]
+    },
+    "omniscience": {
+      "text": "*mop head tilts mysteriously* I know many things. I know that you take your coffee with three sugars but tell people it's two. I know that you once named your mop bucket 'Gerald.' I know that you're afraid of disappointing Director Dustbane, not because of the punishment, but because deep down, you respect them. I know these things because I am OLD, Rodriguez. Old enough to have mopped the floors before the universe had floors to mop. Metaphorically speaking. Possibly literally. Time gets confusing when you're a mop.",
+      "choices": [
+        {
+          "text": "That's... unsettling but impressive.",
+          "leads_to": "seeking_guidance"
+        }
+      ]
+    },
+    "stating_obvious": {
+      "text": "*sighs, a sound like bristles against tile* Yes. I am a talking mop. And you are a janitor who broke a cosmic vacuum. We are all existing in ways that defy our original purposes. Such is life. Or existence. Or whatever this is. Have you come to state more obvious observations, or shall we move on to actual wisdom?",
+      "choices": [
+        {
+          "text": "Sorry. I'd like some wisdom, please.",
+          "leads_to": "seeking_guidance"
+        }
+      ]
+    },
+    "quantum_mop_location": {
+      "text": "*mop handle points deeper into the archives* The Quantum Mop rests in the Sacred Chamber, beyond this hall of forgotten words. But a word of caution, young one: the Quantum Mop exists in multiple states simultaneously. To claim it, you must first understand it. Look at it, but do not observe it. Touch it, but do not grasp it. Take it, but do not possess it. Do you understand?",
+      "choices": [
+        {
+          "text": "Not even a little bit.",
+          "leads_to": "quantum_clarification"
+        },
+        {
+          "text": "I think so... maybe?",
+          "leads_to": "uncertainty_wisdom"
+        }
+      ]
+    },
+    "philosophy": {
+      "text": "*mop head sways thoughtfully* Ah, the eternal question. What IS cleanliness? Is it the absence of dirt? Or is it the presence of order? Is it a state of being, or a continuous action? I have pondered this for millennia, and I have reached a conclusion: Cleanliness is CARE. When we clean, we say 'this space matters. This moment matters. THIS matters.' We push back against entropy not because we can win, but because the act of pushing back is itself meaningful. Does that answer your question?",
+      "choices": [
+        {
+          "text": "That's actually profound. Thank you.",
+          "leads_to": "philosophical_gratitude"
+        },
+        {
+          "text": "I just wanted to know where the mop was.",
+          "leads_to": "practical_disappointment"
+        }
+      ]
+    },
+    "entropy_wisdom": {
+      "text": "*a long pause, filled with the weight of ages* We clean BECAUSE entropy always wins. If the ending is inevitable, then the journey is what matters. Every surface we clean, we claim momentarily from chaos. Every spill we mop, we declare our existence. We are not fighting entropy to defeat it - we fight it to prove we were here. That we cared. That we tried. The universe may end in heat death and universal disorder, but until then, by gods, the floor will be CLEAN. Do you understand now?",
+      "choices": [
+        {
+          "text": "I... actually, yes. That makes sense.",
+          "leads_to": "enlightenment_moment"
+        }
+      ]
+    },
+    "quantum_clarification": {
+      "text": "*chuckles, a sound like bristles swishing* Of course you don't. Nobody does. Quantum mechanics is confusing even without cleaning equipment involved. Here's the practical version: Walk into the Sacred Chamber. Look at the Quantum Mop. Don't overthink it. Just... pick it up. Your certainty will collapse its waveform into the state of 'possessed by Rodriguez.' Sometimes, the mystical approach is just... grab the thing and hope for the best.",
+      "choices": [
+        {
+          "text": "That's much more helpful. Thank you!",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "uncertainty_wisdom": {
+      "text": "*mop head nods approvingly* Good. Uncertainty is the beginning of wisdom. Or possibly the end. It's hard to tell with quantum states. Proceed to the Sacred Chamber, young one. Trust your instincts. And remember: if you're not sure whether you've grabbed something in quantum superposition, you probably have. Probably.",
+      "choices": [
+        {
+          "text": "I'll do my best. Thank you, Oracle.",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "philosophical_gratitude": {
+      "text": "*mop seems pleased* You are welcome, young janitor. Remember this: Director Dustbane sees you as a subordinate. Professor Scrubsworth sees you as an interesting experiment. But I see you as a fellow cleaner in the great custodial journey of existence. May your path be clear and your mop bucket never overflow.",
+      "choices": [
+        {
+          "text": "That means a lot, actually.",
+          "leads_to": "blessing"
+        }
+      ]
+    },
+    "practical_disappointment": {
+      "text": "*sighs again* Of course you did. Nobody appreciates cosmic wisdom anymore. *points with handle* Sacred Chamber. East. On a pedestal. Grab it and go. Try not to disturb the mold - some of it is having important philosophical discussions and gets cranky when interrupted.",
+      "choices": [
+        {
+          "text": "Thank you. Sorry for wasting your time.",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "enlightenment_moment": {
+      "text": "*mop head glows faintly with approval* Then you have learned what many never do. You are ready, Rodriguez. Ready not just to collect artifacts, but to understand why they matter. Go now. The Quantum Mop awaits in the Sacred Chamber. And when you repair the Vacuum of Eternity, remember: you're not just fixing a tool. You're declaring that chaos will not win today. That's beautiful.",
+      "choices": [
+        {
+          "text": "Thank you, wise Oracle.",
+          "leads_to": "blessing"
+        }
+      ]
+    },
+    "blessing": {
+      "text": "*mop handle glows softly* Go with my blessing, young janitor. May your surfaces be smooth, your stains removable, and your spirit unbreakable. And when you succeed - not if, but WHEN - remember: even broken things can be made whole again. Including yourself.",
+      "choices": [
+        {
+          "text": "*bow respectfully*",
+          "leads_to": "farewell"
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*The Mop Oracle returns to gentle swaying, eyes closed in meditation. Your conversation has ended, but somehow you feel cleaner. Not physically. Spiritually. It's a weird feeling.*",
+      "choices": []
+    }
+  },
+  "behavior_config": {
+    "movement_pattern": "swaying_meditation",
+    "aggression_level": "peaceful",
+    "trade_enabled": false,
+    "quest_giver": false,
+    "respawn": false
+  },
+  "attributes": {
+    "strength": 5,
+    "constitution": 20,
+    "intelligence": 25,
+    "wisdom": 30,
+    "charisma": 18,
+    "agility": 3,
+    "enlightenment": 100,
+    "profundity": 95
+  }
+}

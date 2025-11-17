@@ -571,7 +571,7 @@ export class PlayerService {
    * @param objectId - The object's ID
    * @returns Interaction result with success/failure message
    */
-  takeObject(playerId: string, objectId: string): IInteractionResult {
+  async takeObject(playerId: string, objectId: string): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
     if (!player) {
       return {
@@ -588,7 +588,7 @@ export class PlayerService {
       };
     }
 
-    return this.takeObjectInternal(player, object);
+    return await this.takeObjectInternal(player, object);
   }
 
   /**
@@ -598,7 +598,7 @@ export class PlayerService {
    * @param objectId - The object's ID
    * @returns Interaction result with usage effects
    */
-  useObject(playerId: string, objectId: string): IInteractionResult {
+  async useObject(playerId: string, objectId: string): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
     if (!player) {
       return {
@@ -615,7 +615,7 @@ export class PlayerService {
       };
     }
 
-    return this.useObjectInternal(player, object);
+    return await this.useObjectInternal(player, object);
   }
 
   /**

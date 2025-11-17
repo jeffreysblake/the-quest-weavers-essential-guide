@@ -1,0 +1,21 @@
+{
+  "id": "laundry-peak",
+  "name": "Mount Washmore - Summit",
+  "description": "The peak of Mount Washmore, where the dreaded Lint King holds court",
+  "long_description": "You've made it to the summit of Mount Washmore, and the view is... well, it's certainly something. From here, you can see the entire laundry-scape stretching below: valleys of forgotten gym socks, rivers of fabric softener, and in the distance, what appears to be a desert made entirely of dryer lint. But your attention is quickly drawn to the throne of compressed lint at the peak's center, where the Lint King sits in malevolent glory. The self-proclaimed ruler of all things fuzzy and forgotten, the Lint King is a massive being formed from countless dryer lint sheets that have achieved consciousness and decided to become a problem. Around the throne, dust bunnies the size of actual bunnies hop menacingly, their red eyes glowing with static electricity. The Lint King's treasure hoard glitters nearby - including one of the Sacred Cleaning Artifacts you desperately need. The air here is thin and filled with floating lint particles that sparkle in the light like the world's least appealing snow. A tattered banner proclaims: 'Kingdom of Lint - Population: Too Many. Cleanliness: Unwelcome.' South leads back down the mountain. You have a feeling this is going to require either diplomacy or a really good dust buster.",
+  "position": { "x": -30, "y": 140, "z": 50 },
+  "size": { "width": 30, "height": 30, "depth": 10 },
+  "environment": {
+    "lighting": "bright but hazy from floating lint",
+    "sound": "static crackling, dust bunny chittering, regal snoring",
+    "temperature": "surprisingly warm from accumulated static",
+    "weather": "clear with scattered lint flurries",
+    "atmosphere": "confrontational and fuzzy"
+  },
+  "properties": {
+    "safe_zone": false,
+    "allow_combat": true,
+    "respawn_point": false,
+    "vendor_area": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "holy-scrub-brush",
+  "name": "The Holy Scrub Brush",
+  "description": "A brush blessed by the Council of Cleanliness, capable of scrubbing away even entropy itself",
+  "object_type": "quest-item",
+  "position": { "x": -30, "y": 140, "z": 52 },
+  "material": "wood",
+  "material_properties": {
+    "density": 6,
+    "conductivity": 2,
+    "flammability": 5,
+    "brittleness": 2,
+    "resistances": { "fire": 8, "ice": 8, "lightning": 7, "force": 9, "magic": 10 }
+  },
+  "weight": 1.5,
+  "is_portable": true,
+  "is_container": false,
+  "state_data": {
+    "magical_active": true,
+    "enchanted": true,
+    "blessed": true,
+    "legendary": true,
+    "sacred_artifact": true,
+    "bristle_hardness": "divine"
+  },
+  "properties": {
+    "artifact_level": "legendary",
+    "power_rating": 1000,
+    "cleaning_power": "holy",
+    "bristle_material": "blessed_horsehair",
+    "blessing_level": "maximum",
+    "special_ability": "scrubs_away_time_itself"
+  },
+  "interactions": {
+    "examine": "The Holy Scrub Brush is deceptively simple in appearance - a wooden handle worn smooth by eons of use, with bristles that glow faintly with divine purpose. Each bristle appears to have been individually blessed, and if you listen closely, you can hear them humming hymns in perfect harmony. The wood of the handle is carved with scenes depicting the legendary cleaning of the Primordial Mess, when order first emerged from chaos. It smells faintly of sanctified cleaning products and righteous determination.",
+    "take": "As you grasp the Holy Scrub Brush, you feel a sense of purpose wash over you. This isn't just a tool - it's a sacred responsibility. The brush seems to pulse with approval in your hand, as if it has been waiting for someone worthy to wield it. You feel like you could scrub the universe itself clean. You probably could.",
+    "use": "You make a scrubbing motion with the Holy Scrub Brush. Even though you're not touching anything, nearby surfaces become cleaner. Stains that have existed for millennia suddenly remember they have somewhere else to be. Entropy itself takes a step back and reconsiders its life choices. This is the power of truly sacred cleaning."
+  }
+}
