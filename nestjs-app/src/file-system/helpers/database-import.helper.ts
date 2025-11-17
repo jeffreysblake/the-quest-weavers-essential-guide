@@ -158,7 +158,7 @@ export class DatabaseImportHelper {
           object.maxHealth,
           object.isPortable ? 1 : 0,
           object.isContainer ? 1 : 0,
-          object.canContain,
+          object.canContain ? 1 : 0,
           object.containerCapacity,
           JSON.stringify(object.stateData),
           JSON.stringify(object.properties),
@@ -260,7 +260,7 @@ export class DatabaseImportHelper {
           connection.connectedRoomId,
           connection.direction,
           connection.description,
-          connection.isLocked,
+          connection.isLocked ? 1 : 0,
           connection.requiredKeyId,
           connection.createdAt,
         );
