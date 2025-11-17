@@ -413,7 +413,7 @@ describe('NPC System Tests', () => {
       // Guards should detect the noise/threat
       const guardEvents = guard1.knownEvents.concat(guard2.knownEvents);
       expect(guardEvents.some(e => e.type === 'loud_noise')).toBe(true);
-      
+
       // Villager should also be aware
       expect(villager.knownEvents.some(e => e.type === 'loud_noise')).toBe(true);
     });

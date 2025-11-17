@@ -69,13 +69,13 @@ export class NPCManager {
     // Simple room check - in a real implementation this would be more sophisticated
     const room = this.roomSystem.getRoom(roomId);
     if (!room) return false;
-    
+
     // Check if NPC position is within room bounds
     return (
-      npc.position.x >= room.bounds.x &&
-      npc.position.x <= room.bounds.x + room.bounds.width &&
-      npc.position.y >= room.bounds.y &&
-      npc.position.y <= room.bounds.y + room.bounds.height
+      npc.position.x >= room.position.x &&
+      npc.position.x <= room.position.x + room.size.width &&
+      npc.position.y >= room.position.y &&
+      npc.position.y <= room.position.y + room.size.height
     );
   }
 
@@ -93,7 +93,7 @@ export class NPCManager {
       type,
       source: sourceId,
       location,
-      intensity: Math.max(0, Math.min(1, intensity)), // Clamp between 0-1
+      intensity: Math.max(0, intensity), // Ensure non-negative (no upper limit - higher values mean further detection)
       description,
       timestamp: Date.now()
     };
@@ -127,41 +127,65 @@ export class NPCManager {
   update(players?: IEntity[], forceUpdate: boolean = false): void {
     const now = Date.now();
     const timeDelta = now - this.lastUpdateTime;
-    
-    // Skip update if not enough time has passed (unless forced)
-    if (!forceUpdate && timeDelta < this.config.updateInterval!) return;
-    
-    // Clean up old events
+
+    // Clean up old events regardless of update interval
+    // This ensures events decay properly even when NPCs aren't being updated
     this.cleanupOldEvents();
-    
+
+    // Skip NPC AI update if not enough time has passed (unless forced)
+    if (!forceUpdate && timeDelta < this.config.updateInterval!) {
+      return;
+    }
+
     // Update each NPC
-    for (const npc of this.npcs.values()) {
+    const npcArray = Array.from(this.npcs.values());
+    for (const npc of npcArray) {
       this.updateNPC(npc, timeDelta, players);
     }
-    
+
     this.lastUpdateTime = now;
   }
 
   private updateNPC(npc: NPC, timeDelta: number, players?: IEntity[]): void {
-    // Get NPCs current room
+    // Get NPCs current room (may be null if NPC is not in a defined room)
     const currentRoomId = this.getCurrentRoomId(npc);
-    if (!currentRoomId) return;
-    
-    // Find nearby entities (other NPCs and players)
-    const nearbyNPCs = this.getNPCsInRoom(currentRoomId).filter(other => other.id !== npc.id);
-    const nearbyPlayers = players?.filter(player => this.isEntityInRoom(player, currentRoomId)) || [];
+
+    // Find nearby entities
+    let nearbyNPCs: NPC[] = [];
+    let nearbyPlayers: IEntity[] = [];
+
+    if (currentRoomId) {
+      // NPC is in a room, get entities in that room
+      nearbyNPCs = this.getNPCsInRoom(currentRoomId).filter(other => other.id !== npc.id);
+      nearbyPlayers = players?.filter(player => this.isEntityInRoom(player, currentRoomId)) || [];
+    } else {
+      // NPC is not in a room, find nearby entities by distance
+      nearbyNPCs = this.getAllNPCs().filter(other => {
+        if (other.id === npc.id) return false;
+        const distance = this.calculateDistance(npc.position, other.position);
+        return distance <= npc.sensoryRange * 2; // Check within a reasonable range
+      });
+      nearbyPlayers = players?.filter(player => {
+        const distance = this.calculateDistance(npc.position, player.position);
+        return distance <= npc.sensoryRange * 2;
+      }) || [];
+    }
+
     const nearbyEntities: IEntity[] = [...nearbyNPCs, ...nearbyPlayers];
     
     // Get relevant sensory events (within range)
-    const relevantEvents = this.sensoryEvents.filter(event => 
-      this.calculateDistance(npc.position, event.location) <= npc.sensoryRange
-    );
+    // Consider event intensity - higher intensity events can be detected from further away
+    const relevantEvents = this.sensoryEvents.filter(event => {
+      const distance = this.calculateDistance(npc.position, event.location);
+      const effectiveRange = npc.sensoryRange * (1 + event.intensity);
+      return distance <= effectiveRange;
+    });
     
     // Create state context
     const context: StateContext = {
       sensoryEvents: relevantEvents,
       nearbyEntities,
-      currentRoom: currentRoomId,
+      currentRoom: currentRoomId || 'unknown',
       timeDelta,
       playerInRoom: nearbyPlayers.length > 0 ? nearbyPlayers[0] : undefined
     };
@@ -369,7 +393,7 @@ export class NPCManager {
       'loud_noise',
       sourceId,
       location,
-      0.7,
+      7.0, // High intensity for loud noises - can be heard from very far away
       description
     );
   }
