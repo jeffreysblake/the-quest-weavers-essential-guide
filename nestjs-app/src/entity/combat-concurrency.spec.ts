@@ -89,7 +89,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
   describe('1. Simultaneous Combat Actions', () => {
     it('should handle two players attacking same target simultaneously', async () => {
-      const player1 = playerService.createPlayer({
+      const player1 = await playerService.createPlayer({
         name: 'Warrior 1',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -98,7 +98,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 100,
       });
 
-      const player2 = playerService.createPlayer({
+      const player2 = await playerService.createPlayer({
         name: 'Warrior 2',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -107,7 +107,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 100,
       });
 
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Boss Enemy',
         objectType: 'item',
         position: { x: 2, y: 0, z: 0 },
@@ -136,7 +136,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle two NPCs attacking same player simultaneously', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Defender',
         position: { x: 0, y: 0, z: 0 },
         health: 200,
@@ -146,7 +146,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const npc1 = objectService.createObject({
+      const npc1 = await objectService.createObject({
         name: 'Goblin 1',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -154,7 +154,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         health: 50,
       });
 
-      const npc2 = objectService.createObject({
+      const npc2 = await objectService.createObject({
         name: 'Goblin 2',
         objectType: 'item',
         position: { x: 0, y: 1, z: 0 },
@@ -211,7 +211,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle mutual combat (A attacks B, B attacks A simultaneously)', async () => {
-      const playerA = playerService.createPlayer({
+      const playerA = await playerService.createPlayer({
         name: 'Duelist A',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -221,7 +221,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 100,
       });
 
-      const playerB = playerService.createPlayer({
+      const playerB = await playerService.createPlayer({
         name: 'Duelist B',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -232,7 +232,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       });
 
       // Create player B as an object target for A's spell
-      const playerBAsTarget = objectService.createObject({
+      const playerBAsTarget = await objectService.createObject({
         name: 'Duelist B',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -241,7 +241,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         maxHealth: 100,
       });
 
-      const playerAAsTarget = objectService.createObject({
+      const playerAAsTarget = await objectService.createObject({
         name: 'Duelist A',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -268,7 +268,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle killing blow race (both players deal lethal damage)', async () => {
-      const player1 = playerService.createPlayer({
+      const player1 = await playerService.createPlayer({
         name: 'Killer 1',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -277,7 +277,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const player2 = playerService.createPlayer({
+      const player2 = await playerService.createPlayer({
         name: 'Killer 2',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -286,7 +286,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const weakEnemy = objectService.createObject({
+      const weakEnemy = await objectService.createObject({
         name: 'Weak Enemy',
         objectType: 'item',
         position: { x: 2, y: 0, z: 0 },
@@ -311,7 +311,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle death processing during attack', async () => {
-      const attacker = playerService.createPlayer({
+      const attacker = await playerService.createPlayer({
         name: 'Attacker',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -320,7 +320,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 100,
       });
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Doomed Enemy',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -349,7 +349,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle combat state changes during attacks', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Warrior',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -359,7 +359,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 100,
       });
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Morphing Enemy',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -385,7 +385,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle target switching during attack resolution', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Swift Attacker',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -394,7 +394,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 100,
       });
 
-      const enemy1 = objectService.createObject({
+      const enemy1 = await objectService.createObject({
         name: 'Enemy 1',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -403,7 +403,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         maxHealth: 50,
       });
 
-      const enemy2 = objectService.createObject({
+      const enemy2 = await objectService.createObject({
         name: 'Enemy 2',
         objectType: 'item',
         position: { x: 2, y: 0, z: 0 },
@@ -430,7 +430,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle multi-target AoE overlapping', async () => {
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'Battlefield',
         description: 'A chaotic battlefield',
         position: { x: 0, y: 0, z: 0 },
@@ -444,7 +444,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       // Create multiple enemies in the room
       const enemies = [];
       for (let i = 0; i < 5; i++) {
-        const enemy = objectService.createObject({
+        const enemy = await objectService.createObject({
           name: `Enemy ${i}`,
           objectType: 'item',
           position: { x: i, y: i, z: 0 },
@@ -456,7 +456,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         enemies.push(enemy);
       }
 
-      const player1 = playerService.createPlayer({
+      const player1 = await playerService.createPlayer({
         name: 'AoE Caster 1',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -465,7 +465,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const player2 = playerService.createPlayer({
+      const player2 = await playerService.createPlayer({
         name: 'AoE Caster 2',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -491,7 +491,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle 10 players attacking 1 boss simultaneously', async () => {
-      const boss = objectService.createObject({
+      const boss = await objectService.createObject({
         name: 'Raid Boss',
         objectType: 'item',
         position: { x: 10, y: 10, z: 0 },
@@ -505,7 +505,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Create 10 players and prepare their attacks
       for (let i = 0; i < 10; i++) {
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: `Raider ${i}`,
           position: { x: i, y: 0, z: 0 },
           health: 100,
@@ -545,7 +545,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Create 100 entities
       for (let i = 0; i < 100; i++) {
-        const entity = objectService.createObject({
+        const entity = await objectService.createObject({
           name: `Combatant ${i}`,
           objectType: 'item',
           position: { x: i % 10, y: Math.floor(i / 10), z: 0 },
@@ -593,7 +593,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
   describe('2. Concurrent Damage Application', () => {
     it('should handle multiple damage sources hitting simultaneously', async () => {
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Tough Enemy',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -660,7 +660,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle health reaching 0 from multiple sources', async () => {
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Dying Enemy',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -711,7 +711,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle damage + healing simultaneously', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Wounded Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 50,
@@ -763,7 +763,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should prevent damage overflow (negative health prevention)', async () => {
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Fragile Target',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -802,7 +802,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle damage during invulnerability frames', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Invulnerable Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -850,7 +850,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle damage types interacting (fire + ice)', async () => {
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Elemental Target',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -882,7 +882,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle damage reflection loops', async () => {
-      const enemy1 = objectService.createObject({
+      const enemy1 = await objectService.createObject({
         name: 'Reflector 1',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -891,7 +891,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         maxHealth: 100,
       });
 
-      const enemy2 = objectService.createObject({
+      const enemy2 = await objectService.createObject({
         name: 'Reflector 2',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -926,7 +926,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle damage absorption shields with concurrent hits', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Shielded Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -990,7 +990,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle rapid-fire spell casting (100 spells)', async () => {
-      const boss = objectService.createObject({
+      const boss = await objectService.createObject({
         name: 'Spell Target',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -999,7 +999,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         maxHealth: 10000,
       });
 
-      const mage = playerService.createPlayer({
+      const mage = await playerService.createPlayer({
         name: 'Rapid Caster',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -1029,7 +1029,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should verify damage accumulation integrity (no loss)', async () => {
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Damage Counter',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -1085,7 +1085,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
   describe('3. Effect Application Race Conditions', () => {
     it('should handle same effect applied twice simultaneously', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Buffed Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1131,7 +1131,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle effect removal during application', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Unstable Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1173,7 +1173,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle conflicting effects (buff vs debuff)', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Conflicted Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1233,7 +1233,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle effect stack limit with concurrent applications', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Stacking Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1282,7 +1282,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle effect expiration during reapplication', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Timed Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1326,7 +1326,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle effect dispel during damage tick', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Poisoned Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1379,7 +1379,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle DoT/HoT ticking with concurrent effect changes', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Regenerating Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 50,
@@ -1439,7 +1439,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle area effect overlapping', async () => {
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'Effect Zone',
         description: 'Multiple AoE zone',
         position: { x: 0, y: 0, z: 0 },
@@ -1453,7 +1453,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       // Create targets
       const targets = [];
       for (let i = 0; i < 3; i++) {
-        const target = objectService.createObject({
+        const target = await objectService.createObject({
           name: `Target ${i}`,
           objectType: 'item',
           position: { x: i, y: 0, z: 0 },
@@ -1465,7 +1465,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         targets.push(target);
       }
 
-      const caster1 = playerService.createPlayer({
+      const caster1 = await playerService.createPlayer({
         name: 'Caster 1',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1474,7 +1474,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const caster2 = playerService.createPlayer({
+      const caster2 = await playerService.createPlayer({
         name: 'Caster 2',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -1500,7 +1500,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle 50 effects applied to one target simultaneously', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Over-buffed Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1548,7 +1548,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should verify effect application atomicity', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Atomic Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1604,7 +1604,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Create 5 players with different initiative
       for (let i = 0; i < 5; i++) {
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: `Fighter ${i}`,
           position: { x: i, y: 0, z: 0 },
           health: 100,
@@ -1615,7 +1615,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         players.push(player);
       }
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Turn Test Enemy',
         objectType: 'item',
         position: { x: 5, y: 0, z: 0 },
@@ -1643,7 +1643,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle initiative changes during turn', async () => {
-      const fastPlayer = playerService.createPlayer({
+      const fastPlayer = await playerService.createPlayer({
         name: 'Speed Demon',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1652,7 +1652,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const slowPlayer = playerService.createPlayer({
+      const slowPlayer = await playerService.createPlayer({
         name: 'Slow Poke',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -1672,7 +1672,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       effectManager.registerEffect(speedBuff);
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Initiative Enemy',
         objectType: 'item',
         position: { x: 2, y: 0, z: 0 },
@@ -1699,7 +1699,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle combat end/start race conditions', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Quick Combatant',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1708,7 +1708,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 100,
       });
 
-      const enemy1 = objectService.createObject({
+      const enemy1 = await objectService.createObject({
         name: 'First Enemy',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -1717,7 +1717,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         maxHealth: 10,
       });
 
-      const enemy2 = objectService.createObject({
+      const enemy2 = await objectService.createObject({
         name: 'Second Enemy',
         objectType: 'item',
         position: { x: 2, y: 0, z: 0 },
@@ -1745,7 +1745,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle entity death during their turn', async () => {
-      const dyingPlayer = playerService.createPlayer({
+      const dyingPlayer = await playerService.createPlayer({
         name: 'Dying Attacker',
         position: { x: 0, y: 0, z: 0 },
         health: 5, // Very low health
@@ -1755,7 +1755,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 0,
       });
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Counter Attacker',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -1799,7 +1799,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle combat participant removal during fight', async () => {
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'Chaotic Battlefield',
         description: 'Entities appearing and disappearing',
         position: { x: 0, y: 0, z: 0 },
@@ -1812,7 +1812,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       const players = [];
       for (let i = 0; i < 3; i++) {
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: `Participant ${i}`,
           position: { x: i, y: 0, z: 0 },
           health: 100,
@@ -1824,7 +1824,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         room.players.push(player.id);
       }
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Removal Test Enemy',
         objectType: 'item',
         position: { x: 5, y: 0, z: 0 },
@@ -1856,7 +1856,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     it('should handle target selection conflicts', async () => {
       const players = [];
       for (let i = 0; i < 3; i++) {
-        const player = playerService.createPlayer({
+        const player = await playerService.createPlayer({
           name: `Selector ${i}`,
           position: { x: i, y: 0, z: 0 },
           health: 100,
@@ -1867,7 +1867,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         players.push(player);
       }
 
-      const enemy1 = objectService.createObject({
+      const enemy1 = await objectService.createObject({
         name: 'Target 1',
         objectType: 'item',
         position: { x: 5, y: 0, z: 0 },
@@ -1876,7 +1876,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         maxHealth: 100,
       });
 
-      const enemy2 = objectService.createObject({
+      const enemy2 = await objectService.createObject({
         name: 'Target 2',
         objectType: 'item',
         position: { x: 6, y: 0, z: 0 },
@@ -1908,7 +1908,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle aggro/threat concurrent modifications', async () => {
-      const tank = playerService.createPlayer({
+      const tank = await playerService.createPlayer({
         name: 'Tank',
         position: { x: 0, y: 0, z: 0 },
         health: 200,
@@ -1918,7 +1918,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const dps = playerService.createPlayer({
+      const dps = await playerService.createPlayer({
         name: 'DPS',
         position: { x: 1, y: 0, z: 0 },
         health: 100,
@@ -1928,7 +1928,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         experience: 500,
       });
 
-      const boss = objectService.createObject({
+      const boss = await objectService.createObject({
         name: 'Aggro Boss',
         objectType: 'item',
         position: { x: 2, y: 0, z: 0 },
@@ -1952,7 +1952,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should verify combat state integrity after massive battle', async () => {
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'War Zone',
         description: 'Massive battle',
         position: { x: 0, y: 0, z: 0 },
@@ -1966,7 +1966,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
       // Create 20 combatants
       const combatants = [];
       for (let i = 0; i < 20; i++) {
-        const combatant = objectService.createObject({
+        const combatant = await objectService.createObject({
           name: `Combatant ${i}`,
           objectType: 'item',
           position: { x: i % 5, y: Math.floor(i / 5), z: 0 },
@@ -2014,7 +2014,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
   describe('5. Resource Management', () => {
     it('should handle mana/stamina depletion races', async () => {
-      const mage = playerService.createPlayer({
+      const mage = await playerService.createPlayer({
         name: 'Mana User',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2070,7 +2070,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle resource regeneration during consumption', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Regenerator',
         position: { x: 0, y: 0, z: 0 },
         health: 50,
@@ -2126,7 +2126,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle cooldown expiration timing', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Cooldown User',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2147,7 +2147,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       effectManager.registerEffect(cooldownAbility);
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Cooldown Target',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -2183,7 +2183,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle ability use during cooldown', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Impatient User',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2204,7 +2204,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       effectManager.registerEffect(ultimateAbility);
 
-      const target = objectService.createObject({
+      const target = await objectService.createObject({
         name: 'Ultimate Target',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -2236,7 +2236,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle resource cost changes during cast', async () => {
-      const caster = playerService.createPlayer({
+      const caster = await playerService.createPlayer({
         name: 'Variable Caster',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2289,7 +2289,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle interrupt during resource consumption', async () => {
-      const channeler = playerService.createPlayer({
+      const channeler = await playerService.createPlayer({
         name: 'Channeler',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2353,7 +2353,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle 100 concurrent resource operations', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Resource Juggler',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2426,7 +2426,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should verify resource accounting accuracy', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Accountant',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2520,7 +2520,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     // Note: These tests verify in-memory consistency since DatabaseService is null
 
     it('should maintain health update consistency without database', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Health Test Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2554,7 +2554,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should ensure effect application consistency in memory', async () => {
-      const target = playerService.createPlayer({
+      const target = await playerService.createPlayer({
         name: 'Effect Target',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2606,7 +2606,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle concurrent player state updates', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'State Update Player',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2647,7 +2647,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Create 5 combatants
       for (let i = 0; i < 5; i++) {
-        const combatant = objectService.createObject({
+        const combatant = await objectService.createObject({
           name: `Persistence Test ${i}`,
           objectType: 'item',
           position: { x: i, y: 0, z: 0 },
@@ -2684,7 +2684,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
     });
 
     it('should handle inventory changes during concurrent combat', async () => {
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Inventory Combatant',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2695,7 +2695,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       const items = [];
       for (let i = 0; i < 5; i++) {
-        const item = objectService.createObject({
+        const item = await objectService.createObject({
           name: `Combat Item ${i}`,
           objectType: 'consumable',
           position: { x: 0, y: 0, z: 0 },
@@ -2703,7 +2703,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
         items.push(item);
       }
 
-      const enemy = objectService.createObject({
+      const enemy = await objectService.createObject({
         name: 'Inventory Enemy',
         objectType: 'item',
         position: { x: 1, y: 0, z: 0 },
@@ -2735,7 +2735,7 @@ describe('Combat Concurrency and Parallel Effect Application', () => {
 
       // Create 10 entities
       for (let i = 0; i < 10; i++) {
-        const entity = objectService.createObject({
+        const entity = await objectService.createObject({
           name: `Integrity Test ${i}`,
           objectType: 'item',
           position: { x: i, y: 0, z: 0 },

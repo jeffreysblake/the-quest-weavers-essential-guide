@@ -33,14 +33,14 @@ describe('EntityService (Integration)', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create an entity with proper properties', () => {
+  it('should create an entity with proper properties', async () => {
     const testData = {
       name: 'Test Entity',
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
 
-    const result = service.createEntity(testData);
+    const result = await service.createEntity(testData);
 
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
@@ -49,14 +49,14 @@ describe('EntityService (Integration)', () => {
     expect(result.position.x).toBe(0);
   });
 
-  it('should retrieve an entity by ID', () => {
+  it('should retrieve an entity by ID', async () => {
     const testData = {
       name: 'Test Entity',
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
 
-    const createdEntity = service.createEntity(testData);
+    const createdEntity = await service.createEntity(testData);
     const retrievedEntity = service.getEntity(createdEntity.id);
 
     expect(retrievedEntity).toBeDefined();
@@ -64,15 +64,15 @@ describe('EntityService (Integration)', () => {
     expect(retrievedEntity?.name).toBe('Test Entity');
   });
 
-  it('should update an entity', () => {
+  it('should update an entity', async () => {
     const testData = {
       name: 'Test Entity',
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
 
-    const createdEntity = service.createEntity(testData);
-    const updated = service.updateEntity(createdEntity.id, {
+    const createdEntity = await service.createEntity(testData);
+    const updated = await service.updateEntity(createdEntity.id, {
       name: 'Updated Name',
     });
 
@@ -81,15 +81,15 @@ describe('EntityService (Integration)', () => {
     expect(retrievedEntity?.name).toBe('Updated Name');
   });
 
-  it('should delete an entity', () => {
+  it('should delete an entity', async () => {
     const testData = {
       name: 'Test Entity',
       position: { x: 0, y: 0, z: 0 },
       type: 'object' as const,
     };
 
-    const createdEntity = service.createEntity(testData);
-    const deleted = service.deleteEntity(createdEntity.id);
+    const createdEntity = await service.createEntity(testData);
+    const deleted = await service.deleteEntity(createdEntity.id);
 
     expect(deleted).toBe(true);
     const retrievedEntity = service.getEntity(createdEntity.id);

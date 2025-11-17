@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommandProcessorService } from './command-processor.service';
+import { CommandValidatorService } from './command-validator.service';
+import { RoomNavigationHelperService } from './room-navigation-helper.service';
 import { PlayerService } from '../entity/player.service';
 import { RoomService } from '../entity/room.service';
 import { ObjectService } from '../entity/object.service';
@@ -8,6 +10,18 @@ import { EventEmitterService } from '../events/event-emitter.service';
 import { DialogueManagerService } from '../dialogue/dialogue-manager.service';
 import { GameStateService } from './game-state.service';
 import { CommandResult } from './game.service';
+
+// Import all command handlers
+import { LookCommandHandler } from './commands/look-command.handler';
+import { MovementCommandHandler } from './commands/movement-command.handler';
+import { TakeCommandHandler } from './commands/take-command.handler';
+import { DropCommandHandler } from './commands/drop-command.handler';
+import { ExamineCommandHandler } from './commands/examine-command.handler';
+import { UseCommandHandler } from './commands/use-command.handler';
+import { OpenCommandHandler, CloseCommandHandler } from './commands/container-command.handler';
+import { DialogueCommandHandler } from './commands/dialogue-command.handler';
+import { AttackCommandHandler } from './commands/attack-command.handler';
+import { CastCommandHandler } from './commands/cast-command.handler';
 
 describe('CommandProcessorService', () => {
   let service: CommandProcessorService;
@@ -83,6 +97,7 @@ describe('CommandProcessorService', () => {
       addToInventory: jest.fn(),
       removeFromInventory: jest.fn(),
       getInventory: jest.fn(),
+      updatePlayer: jest.fn(),
     };
 
     const mockRoomServiceValue = {
@@ -94,9 +109,13 @@ describe('CommandProcessorService', () => {
 
     const mockObjectServiceValue = {
       updateObjectPosition: jest.fn(),
+      updateObject: jest.fn(),
+      getObject: jest.fn(),
     };
 
-    const mockEntityServiceValue = {};
+    const mockEntityServiceValue = {
+      updateEntity: jest.fn(),
+    };
 
     const mockEventEmitterValue = {
       emit: jest.fn(),
@@ -124,6 +143,21 @@ describe('CommandProcessorService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CommandProcessorService,
+        CommandValidatorService,
+        RoomNavigationHelperService,
+        // Command handlers
+        LookCommandHandler,
+        MovementCommandHandler,
+        TakeCommandHandler,
+        DropCommandHandler,
+        ExamineCommandHandler,
+        UseCommandHandler,
+        OpenCommandHandler,
+        CloseCommandHandler,
+        DialogueCommandHandler,
+        AttackCommandHandler,
+        CastCommandHandler,
+        // Mocked services
         {
           provide: PlayerService,
           useValue: mockPlayerServiceValue,
@@ -166,13 +200,21 @@ describe('CommandProcessorService', () => {
 
     // Default mock implementations
     playerService.getPlayer.mockReturnValue(mockPlayer);
+    playerService.addToInventory.mockReturnValue(true);
+    playerService.removeFromInventory.mockReturnValue(true);
+    playerService.updatePlayer.mockReturnValue(undefined);
     roomService.getAllRooms.mockReturnValue([
       mockRoom,
       mockNorthRoom,
       mockEastRoom,
     ]);
     roomService.getObjectsInRoom.mockReturnValue([]);
+    roomService.addObjectToRoom.mockReturnValue(true);
+    roomService.removeObjectFromRoom.mockReturnValue(true);
     playerService.getInventory.mockReturnValue([]);
+    objectService.updateObjectPosition.mockReturnValue(true);
+    objectService.updateObject.mockReturnValue(undefined);
+    entityService.updateEntity.mockResolvedValue(undefined);
     gameStateService.getGameState.mockResolvedValue({
       gameId: 'game1',
       npcs: {},

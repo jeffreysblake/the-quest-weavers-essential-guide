@@ -120,11 +120,11 @@ describe('Entity Reference Validation - Save/Load', () => {
   /**
    * Create a test player with valid references
    */
-  function createTestPlayer(
+  async function createTestPlayer(
     roomId: string,
     gameId: string = testGameId,
-  ): IPlayer {
-    return playerService.createPlayer({
+  ): Promise<IPlayer> {
+    return await playerService.createPlayer({
       name: 'Test Player',
       position: { x: 0, y: 0, z: 0 },
       health: 100,
@@ -140,8 +140,8 @@ describe('Entity Reference Validation - Save/Load', () => {
   /**
    * Create a test room
    */
-  function createTestRoom(name: string, gameId: string = testGameId): IRoom {
-    return roomService.createRoom({
+  async function createTestRoom(name: string, gameId: string = testGameId): Promise<IRoom> {
+    return await roomService.createRoom({
       name,
       description: `Test room: ${name}`,
       position: { x: 0, y: 0, z: 0 },
@@ -157,12 +157,12 @@ describe('Entity Reference Validation - Save/Load', () => {
   /**
    * Create a test object
    */
-  function createTestObject(
+  async function createTestObject(
     name: string,
     roomId?: string,
     gameId: string = testGameId,
-  ): IObject {
-    return objectService.createObject({
+  ): Promise<IObject> {
+    return await objectService.createObject({
       name,
       description: `Test object: ${name}`,
       objectType: 'item',
@@ -240,8 +240,8 @@ describe('Entity Reference Validation - Save/Load', () => {
   describe('Player Reference Validation', () => {
     it('should validate player references valid room on load', async () => {
       // Arrange: Create room and player
-      const room = createTestRoom('Player Room');
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Player Room');
+      const player = await createTestPlayer(room.id);
 
       // Act: Save game state
       const gameState = await gameStateService.getGameState(testGameId);
@@ -260,7 +260,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect when player references non-existent room', async () => {
       // Arrange: Create player with invalid room reference
-      const player = createTestPlayer('non-existent-room-id');
+      const player = await createTestPlayer('non-existent-room-id');
 
       // Act: Save game state
       const gameState = await gameStateService.getGameState(testGameId);
@@ -283,10 +283,10 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate all player inventory items exist', async () => {
       // Arrange: Create room, player, and items
-      const room = createTestRoom('Inventory Test Room');
-      const item1 = createTestObject('Sword', room.id);
-      const item2 = createTestObject('Shield', room.id);
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Inventory Test Room');
+      const item1 = await createTestObject('Sword', room.id);
+      const item2 = await createTestObject('Shield', room.id);
+      const player = await createTestPlayer(room.id);
 
       // Add items to player inventory
       player.inventory = [item1.id, item2.id];
@@ -310,9 +310,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid inventory item references', async () => {
       // Arrange: Create player with invalid inventory items
-      const room = createTestRoom('Invalid Inventory Room');
-      const validItem = createTestObject('Valid Item', room.id);
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Invalid Inventory Room');
+      const validItem = await createTestObject('Valid Item', room.id);
+      const player = await createTestPlayer(room.id);
 
       // Add valid and invalid items to inventory
       player.inventory = [
@@ -342,10 +342,10 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate player equipped items exist in inventory', async () => {
       // Arrange: Create player with equipped items
-      const room = createTestRoom('Equipment Room');
-      const sword = createTestObject('Equipped Sword', room.id);
-      const armor = createTestObject('Equipped Armor', room.id);
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Equipment Room');
+      const sword = await createTestObject('Equipped Sword', room.id);
+      const armor = await createTestObject('Equipped Armor', room.id);
+      const player = await createTestPlayer(room.id);
 
       // Set up inventory and equipped items
       player.inventory = [sword.id, armor.id];
@@ -374,9 +374,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect equipped items not in inventory', async () => {
       // Arrange: Create player with equipped item not in inventory (invalid state)
-      const room = createTestRoom('Invalid Equipment Room');
-      const sword = createTestObject('Sword', room.id);
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Invalid Equipment Room');
+      const sword = await createTestObject('Sword', room.id);
+      const player = await createTestPlayer(room.id);
 
       // Invalid state: equipped but not in inventory
       player.inventory = [];
@@ -400,13 +400,13 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate player active quests reference valid quest IDs', async () => {
       // Arrange: Create quests and player
-      const room = createTestRoom('Quest Room');
+      const room = await createTestRoom('Quest Room');
       const quest1 = createTestQuest('quest-1', room.id);
       const quest2 = createTestQuest('quest-2', room.id);
       questManager.registerQuest(quest1);
       questManager.registerQuest(quest2);
 
-      const player = createTestPlayer(room.id);
+      const player = await createTestPlayer(room.id);
       (player as any).activeQuests = ['quest-1', 'quest-2'];
 
       // Act: Save and load
@@ -426,11 +426,11 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid quest references', async () => {
       // Arrange: Player with invalid quest references
-      const room = createTestRoom('Invalid Quest Room');
+      const room = await createTestRoom('Invalid Quest Room');
       const validQuest = createTestQuest('valid-quest', room.id);
       questManager.registerQuest(validQuest);
 
-      const player = createTestPlayer(room.id);
+      const player = await createTestPlayer(room.id);
       (player as any).activeQuests = [
         'valid-quest',
         'invalid-quest-1',
@@ -454,8 +454,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate player active effects reference valid effect IDs', async () => {
       // Arrange: Player with active effects
-      const room = createTestRoom('Effects Room');
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Effects Room');
+      const player = await createTestPlayer(room.id);
       (player as any).activeEffects = [
         { id: 'effect-1', type: 'fire', duration: 10 },
         { id: 'effect-2', type: 'ice', duration: 5 },
@@ -477,11 +477,11 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate player combat target exists', async () => {
       // Arrange: Player with combat target
-      const room = createTestRoom('Combat Room');
-      const enemy = createTestObject('Enemy', room.id);
+      const room = await createTestRoom('Combat Room');
+      const enemy = await createTestObject('Enemy', room.id);
       (enemy as any).type = 'npc';
 
-      const player = createTestPlayer(room.id);
+      const player = await createTestPlayer(room.id);
       (player as any).combatTarget = enemy.id;
 
       // Act: Save and load
@@ -501,8 +501,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid combat target reference', async () => {
       // Arrange: Player with invalid combat target
-      const room = createTestRoom('Invalid Combat Room');
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Invalid Combat Room');
+      const player = await createTestPlayer(room.id);
       (player as any).combatTarget = 'non-existent-enemy-id';
 
       // Act: Save and load
@@ -524,8 +524,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should handle player with no references gracefully', async () => {
       // Arrange: Minimal player with no references
-      const room = createTestRoom('Minimal Room');
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Minimal Room');
+      const player = await createTestPlayer(room.id);
       player.inventory = [];
 
       // Act: Save and load
@@ -549,9 +549,9 @@ describe('Entity Reference Validation - Save/Load', () => {
   describe('Room Reference Validation', () => {
     it('should validate room exits point to existing rooms', async () => {
       // Arrange: Create connected rooms
-      const room1 = createTestRoom('Room 1');
-      const room2 = createTestRoom('Room 2');
-      const room3 = createTestRoom('Room 3');
+      const room1 = await createTestRoom('Room 1');
+      const room2 = await createTestRoom('Room 2');
+      const room3 = await createTestRoom('Room 3');
 
       room1.connections = { north: room2.id, east: room3.id };
       room2.connections = { south: room1.id };
@@ -579,14 +579,14 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect room exits pointing to non-existent rooms', async () => {
       // Arrange: Room with invalid exit
-      const room = createTestRoom('Room with Invalid Exit');
+      const room = await createTestRoom('Room with Invalid Exit');
       room.connections = {
         north: 'valid-room-id',
         south: 'non-existent-room-id',
         east: 'another-invalid-room',
       };
 
-      const validRoom = createTestRoom('Valid Target Room');
+      const validRoom = await createTestRoom('Valid Target Room');
       validRoom.id = 'valid-room-id';
 
       // Act: Save and load
@@ -616,7 +616,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate room NPCs all exist', async () => {
       // Arrange: Room with NPCs
-      const room = createTestRoom('Room with NPCs');
+      const room = await createTestRoom('Room with NPCs');
       const npc1 = { id: 'npc-1', name: 'Guard', type: 'npc' };
       const npc2 = { id: 'npc-2', name: 'Merchant', type: 'npc' };
 
@@ -637,7 +637,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid NPC references in room', async () => {
       // Arrange: Room with invalid NPCs
-      const room = createTestRoom('Room with Invalid NPCs');
+      const room = await createTestRoom('Room with Invalid NPCs');
       const validNpc = { id: 'valid-npc', name: 'Guard', type: 'npc' };
 
       room.players = ['valid-npc', 'invalid-npc-1', 'invalid-npc-2'];
@@ -658,9 +658,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate room items all exist', async () => {
       // Arrange: Room with items
-      const room = createTestRoom('Room with Items');
-      const item1 = createTestObject('Sword', room.id);
-      const item2 = createTestObject('Potion', room.id);
+      const room = await createTestRoom('Room with Items');
+      const item1 = await createTestObject('Sword', room.id);
+      const item2 = await createTestObject('Potion', room.id);
 
       room.objects = [item1.id, item2.id];
 
@@ -679,8 +679,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid item references in room', async () => {
       // Arrange: Room with invalid items
-      const room = createTestRoom('Room with Invalid Items');
-      const validItem = createTestObject('Valid Item', room.id);
+      const room = await createTestRoom('Room with Invalid Items');
+      const validItem = await createTestObject('Valid Item', room.id);
 
       room.objects = [validItem.id, 'invalid-item-1', 'invalid-item-2'];
 
@@ -700,9 +700,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate room connections form valid graph (no orphaned rooms)', async () => {
       // Arrange: Create connected and orphaned rooms
-      const room1 = createTestRoom('Connected Room 1');
-      const room2 = createTestRoom('Connected Room 2');
-      const orphanedRoom = createTestRoom('Orphaned Room');
+      const room1 = await createTestRoom('Connected Room 1');
+      const room2 = await createTestRoom('Connected Room 2');
+      const orphanedRoom = await createTestRoom('Orphaned Room');
 
       room1.connections = { north: room2.id };
       room2.connections = { south: room1.id };
@@ -741,8 +741,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate bi-directional exit consistency', async () => {
       // Arrange: Rooms with bi-directional connections
-      const room1 = createTestRoom('Room 1');
-      const room2 = createTestRoom('Room 2');
+      const room1 = await createTestRoom('Room 1');
+      const room2 = await createTestRoom('Room 2');
 
       room1.connections = { north: room2.id };
       room2.connections = { south: room1.id };
@@ -763,8 +763,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect broken bi-directional connections', async () => {
       // Arrange: Rooms with broken bi-directional connections
-      const room1 = createTestRoom('Room 1');
-      const room2 = createTestRoom('Room 2');
+      const room1 = await createTestRoom('Room 1');
+      const room2 = await createTestRoom('Room 2');
 
       // Room 1 connects to Room 2, but Room 2 doesn't connect back
       room1.connections = { north: room2.id };
@@ -820,7 +820,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should handle rooms with no connections gracefully', async () => {
       // Arrange: Single room with no connections
-      const room = createTestRoom('Isolated Room');
+      const room = await createTestRoom('Isolated Room');
       delete room.connections;
 
       // Act: Save and load
@@ -842,8 +842,8 @@ describe('Entity Reference Validation - Save/Load', () => {
   describe('Quest Reference Validation', () => {
     it('should validate quest objectives reference existing entities', async () => {
       // Arrange: Quest with valid objective references
-      const room = createTestRoom('Quest Room');
-      const item = createTestObject('Quest Item', room.id);
+      const room = await createTestRoom('Quest Room');
+      const item = await createTestObject('Quest Item', room.id);
       const quest = createTestQuest('quest-1', room.id, item.id);
       questManager.registerQuest(quest);
 
@@ -899,7 +899,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate quest target NPCs exist', async () => {
       // Arrange: Quest with NPC target
-      const room = createTestRoom('NPC Quest Room');
+      const room = await createTestRoom('NPC Quest Room');
       const npc = { id: 'quest-npc', name: 'Quest Giver', type: 'npc' };
 
       const quest: IQuest = {
@@ -974,8 +974,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate quest required items exist', async () => {
       // Arrange: Quest requiring items
-      const item1 = createTestObject('Required Item 1');
-      const item2 = createTestObject('Required Item 2');
+      const item1 = await createTestObject('Required Item 1');
+      const item2 = await createTestObject('Required Item 2');
 
       const quest: IQuest = {
         id: 'item-quest',
@@ -1070,7 +1070,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect orphaned quest objectives', async () => {
       // Arrange: Quest with objectives pointing to deleted entities
-      const room = createTestRoom('Deleted Room');
+      const room = await createTestRoom('Deleted Room');
       const quest = createTestQuest('orphan-quest', room.id);
       questManager.registerQuest(quest);
 
@@ -1150,7 +1150,7 @@ describe('Entity Reference Validation - Save/Load', () => {
   describe('NPC Reference Validation', () => {
     it('should validate NPC current room exists', async () => {
       // Arrange: NPC in a room
-      const room = createTestRoom('NPC Room');
+      const room = await createTestRoom('NPC Room');
       const npc = {
         id: 'npc-1',
         name: 'Guard',
@@ -1194,9 +1194,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate NPC inventory items exist', async () => {
       // Arrange: NPC with inventory
-      const room = createTestRoom('NPC Inventory Room');
-      const item1 = createTestObject('NPC Sword');
-      const item2 = createTestObject('NPC Gold');
+      const room = await createTestRoom('NPC Inventory Room');
+      const item1 = await createTestObject('NPC Sword');
+      const item2 = await createTestObject('NPC Gold');
 
       const npc = {
         id: 'merchant',
@@ -1222,8 +1222,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid inventory items for NPC', async () => {
       // Arrange: NPC with invalid inventory
-      const room = createTestRoom('Invalid NPC Inventory Room');
-      const validItem = createTestObject('Valid Item');
+      const room = await createTestRoom('Invalid NPC Inventory Room');
+      const validItem = await createTestObject('Valid Item');
 
       const npc = {
         id: 'broken-merchant',
@@ -1250,7 +1250,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate NPC dialogue trees reference valid nodes', async () => {
       // Arrange: NPC with dialogue tree
-      const room = createTestRoom('Dialogue Room');
+      const room = await createTestRoom('Dialogue Room');
       const npc = {
         id: 'talker',
         name: 'Talker',
@@ -1286,7 +1286,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect broken dialogue tree references', async () => {
       // Arrange: NPC with broken dialogue
-      const room = createTestRoom('Broken Dialogue Room');
+      const room = await createTestRoom('Broken Dialogue Room');
       const npc = {
         id: 'broken-talker',
         name: 'Broken Talker',
@@ -1317,8 +1317,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate NPC combat target exists', async () => {
       // Arrange: NPC with combat target
-      const room = createTestRoom('Combat Room');
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Combat Room');
+      const player = await createTestPlayer(room.id);
       const npc = {
         id: 'hostile-npc',
         name: 'Hostile Guard',
@@ -1342,9 +1342,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate NPC patrol path rooms all exist', async () => {
       // Arrange: NPC with patrol path
-      const room1 = createTestRoom('Patrol Point 1');
-      const room2 = createTestRoom('Patrol Point 2');
-      const room3 = createTestRoom('Patrol Point 3');
+      const room1 = await createTestRoom('Patrol Point 1');
+      const room2 = await createTestRoom('Patrol Point 2');
+      const room3 = await createTestRoom('Patrol Point 3');
 
       const npc = {
         id: 'patrol-guard',
@@ -1373,7 +1373,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid patrol path rooms', async () => {
       // Arrange: NPC with invalid patrol path
-      const room1 = createTestRoom('Valid Patrol Point');
+      const room1 = await createTestRoom('Valid Patrol Point');
       const npc = {
         id: 'broken-patrol',
         name: 'Broken Patrol',
@@ -1398,7 +1398,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate NPC faction references are valid', async () => {
       // Arrange: NPC with faction
-      const room = createTestRoom('Faction Room');
+      const room = await createTestRoom('Faction Room');
       const npc = {
         id: 'faction-guard',
         name: 'City Guard',
@@ -1432,13 +1432,13 @@ describe('Entity Reference Validation - Save/Load', () => {
   describe('Inventory Reference Validation', () => {
     it('should validate container items exist in game world', async () => {
       // Arrange: Container with items
-      const room = createTestRoom('Container Room');
-      const container = createTestObject('Chest', room.id);
+      const room = await createTestRoom('Container Room');
+      const container = await createTestObject('Chest', room.id);
       container.isContainer = true;
       container.containerCapacity = 10;
 
-      const item1 = createTestObject('Coin', room.id);
-      const item2 = createTestObject('Gem', room.id);
+      const item1 = await createTestObject('Coin', room.id);
+      const item2 = await createTestObject('Gem', room.id);
 
       container.containedObjects = [item1.id, item2.id];
 
@@ -1462,8 +1462,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect invalid container item references', async () => {
       // Arrange: Container with invalid items
-      const room = createTestRoom('Invalid Container Room');
-      const container = createTestObject('Broken Chest', room.id);
+      const room = await createTestRoom('Invalid Container Room');
+      const container = await createTestObject('Broken Chest', room.id);
       container.isContainer = true;
       container.containedObjects = [
         'valid-item',
@@ -1471,7 +1471,7 @@ describe('Entity Reference Validation - Save/Load', () => {
         'invalid-item-2',
       ];
 
-      const validItem = createTestObject('Valid Item', room.id);
+      const validItem = await createTestObject('Valid Item', room.id);
       validItem.id = 'valid-item';
 
       // Act: Save and load
@@ -1491,10 +1491,10 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate equipped items are in inventory', async () => {
       // Arrange: Player with properly equipped items
-      const room = createTestRoom('Equipment Room');
-      const sword = createTestObject('Sword', room.id);
-      const armor = createTestObject('Armor', room.id);
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Equipment Room');
+      const sword = await createTestObject('Sword', room.id);
+      const armor = await createTestObject('Armor', room.id);
+      const player = await createTestPlayer(room.id);
 
       player.inventory = [sword.id, armor.id];
       (player as any).equipped = {
@@ -1521,8 +1521,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate item instances reference valid templates', async () => {
       // Arrange: Items with template references
-      const room = createTestRoom('Template Room');
-      const itemInstance = createTestObject('Iron Sword Instance', room.id);
+      const room = await createTestRoom('Template Room');
+      const itemInstance = await createTestObject('Iron Sword Instance', room.id);
       (itemInstance as any).templateId = 'iron-sword-template';
 
       const templates = {
@@ -1550,9 +1550,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate ownership chains are valid', async () => {
       // Arrange: Item ownership chain
-      const room = createTestRoom('Ownership Room');
-      const item = createTestObject('Owned Item', room.id);
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Ownership Room');
+      const item = await createTestObject('Owned Item', room.id);
+      const player = await createTestPlayer(room.id);
 
       (item as any).ownedBy = player.id;
       player.inventory = [item.id];
@@ -1575,15 +1575,15 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should detect duplicate item instances', async () => {
       // Arrange: Duplicate item in multiple locations
-      const room = createTestRoom('Duplicate Room');
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Duplicate Room');
+      const player = await createTestPlayer(room.id);
       const duplicateId = 'duplicate-item';
 
       // Item appears in both room and player inventory
       room.objects = [duplicateId];
       player.inventory = [duplicateId];
 
-      const item = createTestObject('Duplicate Item', room.id);
+      const item = await createTestObject('Duplicate Item', room.id);
       item.id = duplicateId;
 
       // Act: Save and load
@@ -1612,8 +1612,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should validate item effects reference valid effect IDs', async () => {
       // Arrange: Item with effects
-      const room = createTestRoom('Effects Item Room');
-      const item = createTestObject('Magic Sword', room.id);
+      const room = await createTestRoom('Effects Item Room');
+      const item = await createTestObject('Magic Sword', room.id);
       item.currentEffects = [
         { id: 'fire-effect', type: 'fire', intensity: 5 },
         { id: 'ice-effect', type: 'ice', intensity: 3 },
@@ -1635,9 +1635,9 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should handle circular container references gracefully', async () => {
       // Arrange: Circular container reference (container A contains container B, B contains A)
-      const room = createTestRoom('Circular Container Room');
-      const containerA = createTestObject('Container A', room.id);
-      const containerB = createTestObject('Container B', room.id);
+      const room = await createTestRoom('Circular Container Room');
+      const containerA = await createTestObject('Container A', room.id);
+      const containerB = await createTestObject('Container B', room.id);
 
       containerA.isContainer = true;
       containerB.isContainer = true;
@@ -1695,13 +1695,13 @@ describe('Entity Reference Validation - Save/Load', () => {
 
       // Create 100 rooms
       for (let i = 0; i < 100; i++) {
-        const room = createTestRoom(`Room ${i}`);
+        const room = await createTestRoom(`Room ${i}`);
         rooms[room.id] = room;
       }
 
       // Create 500 items
       for (let i = 0; i < 500; i++) {
-        const item = createTestObject(`Item ${i}`);
+        const item = await createTestObject(`Item ${i}`);
         items[item.id] = item;
       }
 
@@ -1716,7 +1716,7 @@ describe('Entity Reference Validation - Save/Load', () => {
         };
       }
 
-      const player = createTestPlayer(Object.keys(rooms)[0]);
+      const player = await createTestPlayer(Object.keys(rooms)[0]);
       player.inventory = Object.keys(items).slice(0, 50);
 
       // Act: Save and load
@@ -1737,13 +1737,13 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should handle cascading reference validation efficiently', async () => {
       // Arrange: Create cascading references (quest -> room -> items -> containers -> contained items)
-      const room = createTestRoom('Cascade Room');
-      const container = createTestObject('Cascade Container', room.id);
+      const room = await createTestRoom('Cascade Room');
+      const container = await createTestObject('Cascade Container', room.id);
       container.isContainer = true;
 
       const containedItems: any = {};
       for (let i = 0; i < 20; i++) {
-        const item = createTestObject(`Contained Item ${i}`, room.id);
+        const item = await createTestObject(`Contained Item ${i}`, room.id);
         containedItems[item.id] = item;
       }
 
@@ -1784,9 +1784,9 @@ describe('Entity Reference Validation - Save/Load', () => {
   describe('Recovery Mechanisms', () => {
     it('should auto-cleanup invalid references with warning', async () => {
       // Arrange: Game state with mix of valid and invalid references
-      const room = createTestRoom('Cleanup Room');
-      const validItem = createTestObject('Valid Item', room.id);
-      const player = createTestPlayer(room.id);
+      const room = await createTestRoom('Cleanup Room');
+      const validItem = await createTestObject('Valid Item', room.id);
+      const player = await createTestPlayer(room.id);
 
       player.inventory = [validItem.id, 'invalid-1', 'invalid-2'];
       room.objects = [validItem.id, 'invalid-3'];
@@ -1817,7 +1817,7 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should provide clear error messages for validation failures', async () => {
       // Arrange: Invalid game state
-      const player = createTestPlayer('non-existent-room');
+      const player = await createTestPlayer('non-existent-room');
 
       // Act: Attempt to validate
       const gameState = await gameStateService.getGameState(testGameId);
@@ -1843,8 +1843,8 @@ describe('Entity Reference Validation - Save/Load', () => {
 
     it('should support fallback behaviors for missing entities', async () => {
       // Arrange: Player with missing room
-      const defaultRoom = createTestRoom('Default Room');
-      const player = createTestPlayer('missing-room');
+      const defaultRoom = await createTestRoom('Default Room');
+      const player = await createTestPlayer('missing-room');
 
       // Act: Load with fallback
       const gameState = await gameStateService.getGameState(testGameId);

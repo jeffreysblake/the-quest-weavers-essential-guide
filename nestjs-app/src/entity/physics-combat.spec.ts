@@ -40,8 +40,8 @@ describe('PhysicsService - Combat System Tests', () => {
   });
 
   describe('Damage Calculation Edge Cases', () => {
-    it('should handle zero damage attacks', () => {
-      const target = objectService.createObject({
+    it('should handle zero damage attacks', async () => {
+      const target = await objectService.createObject({
         name: 'Iron Shield',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -56,15 +56,15 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'weak flame',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(true);
 
       const updatedTarget = objectService.getObject(target.id);
       expect(updatedTarget?.health).toBe(100); // No damage
     });
 
-    it('should handle one-hit kill (massive damage)', () => {
-      const target = objectService.createObject({
+    it('should handle one-hit kill (massive damage)', async () => {
+      const target = await objectService.createObject({
         name: 'Wooden Shield',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -79,15 +79,15 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'inferno',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(true);
 
       const updatedTarget = objectService.getObject(target.id);
       expect(updatedTarget?.health).toBeLessThanOrEqual(0);
     });
 
-    it('should handle negative damage (should not heal)', () => {
-      const target = objectService.createObject({
+    it('should handle negative damage (should not heal)', async () => {
+      const target = await objectService.createObject({
         name: 'Test Object',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -103,15 +103,15 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'reverse fire?',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
 
       const updatedTarget = objectService.getObject(target.id);
       // Negative damage should either do nothing or be clamped to 0
       expect(updatedTarget?.health).toBeLessThanOrEqual(50); // Should not heal
     });
 
-    it('should handle damage overflow (extremely high damage values)', () => {
-      const target = objectService.createObject({
+    it('should handle damage overflow (extremely high damage values)', async () => {
+      const target = await objectService.createObject({
         name: 'Fragile Item',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -126,7 +126,7 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'cosmic force',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(true);
 
       const updatedTarget = objectService.getObject(target.id);
@@ -135,8 +135,8 @@ describe('PhysicsService - Combat System Tests', () => {
       expect(updatedTarget?.health).toBe(0); // Should be destroyed
     });
 
-    it('should handle damage with 100% resistance', () => {
-      const target = objectService.createObject({
+    it('should handle damage with 100% resistance', async () => {
+      const target = await objectService.createObject({
         name: 'Fire-Proof Shield',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -159,7 +159,7 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'fireball',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(true);
       expect(result.message).toContain('resists');
 
@@ -168,8 +168,8 @@ describe('PhysicsService - Combat System Tests', () => {
       expect(updatedTarget?.health).toBeGreaterThanOrEqual(90);
     });
 
-    it('should handle divide by zero in resistance calculations', () => {
-      const target = objectService.createObject({
+    it('should handle divide by zero in resistance calculations', async () => {
+      const target = await objectService.createObject({
         name: 'Strange Object',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -193,13 +193,13 @@ describe('PhysicsService - Combat System Tests', () => {
       };
 
       // Should not crash
-      expect(() => service.applyEffect(target.id, effect)).not.toThrow();
+      expect(async () => await service.applyEffect(target.id, effect)).not.toThrow();
     });
   });
 
   describe('Combat State Corruption', () => {
-    it('should handle combat with destroyed entities', () => {
-      const target = objectService.createObject({
+    it('should handle combat with destroyed entities', async () => {
+      const target = await objectService.createObject({
         name: 'Already Destroyed',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -215,27 +215,27 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'fireball',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(true);
 
       const updatedTarget = objectService.getObject(target.id);
       expect(updatedTarget?.health).toBe(0); // Should stay 0, not go negative
     });
 
-    it('should handle combat with invalid/missing target', () => {
+    it('should handle combat with invalid/missing target', async () => {
       const effect: IPhysicsEffect = {
         type: 'fire',
         intensity: 5,
         description: 'fireball',
       };
 
-      const result = service.applyEffect('nonexistent-id', effect);
+      const result = await service.applyEffect('nonexistent-id', effect);
       expect(result.success).toBe(false);
       expect(result.message).toContain('not found');
     });
 
-    it('should handle multiple simultaneous effects on same target', () => {
-      const target = objectService.createObject({
+    it('should handle multiple simultaneous effects on same target', async () => {
+      const target = await objectService.createObject({
         name: 'Multi-Hit Target',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -262,17 +262,17 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'ice',
       };
 
-      service.applyEffect(target.id, effect1);
-      service.applyEffect(target.id, effect2);
-      service.applyEffect(target.id, effect3);
+      await service.applyEffect(target.id, effect1);
+      await service.applyEffect(target.id, effect2);
+      await service.applyEffect(target.id, effect3);
 
       const updatedTarget = objectService.getObject(target.id);
       expect(updatedTarget?.health).toBeLessThan(100);
       expect(updatedTarget?.health).toBeGreaterThanOrEqual(0);
     });
 
-    it('should handle object without material properties', () => {
-      const target = objectService.createObject({
+    it('should handle object without material properties', async () => {
+      const target = await objectService.createObject({
         name: 'Abstract Object',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -285,15 +285,15 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'fireball',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(false);
       expect(result.message).toContain('no material properties');
     });
   });
 
   describe('Chain Reaction Edge Cases', () => {
-    it('should handle explosive chain reactions without infinite loops', () => {
-      const room = roomService.createRoom({
+    it('should handle explosive chain reactions without infinite loops', async () => {
+      const room = await roomService.createRoom({
         name: 'Explosive Room',
         description: 'A room full of explosives',
         position: { x: 0, y: 0, z: 0 },
@@ -305,7 +305,7 @@ describe('PhysicsService - Combat System Tests', () => {
       });
 
       // Create multiple explosive objects
-      const explosive1 = objectService.createObject({
+      const explosive1 = await objectService.createObject({
         name: 'Explosive Barrel 1',
         objectType: 'container',
         position: { x: 1, y: 1, z: 0 },
@@ -323,7 +323,7 @@ describe('PhysicsService - Combat System Tests', () => {
         maxHealth: 50,
       });
 
-      const explosive2 = objectService.createObject({
+      const explosive2 = await objectService.createObject({
         name: 'Explosive Barrel 2',
         objectType: 'container',
         position: { x: 2, y: 1, z: 0 },
@@ -351,11 +351,11 @@ describe('PhysicsService - Combat System Tests', () => {
       };
 
       // Should not cause infinite loop or stack overflow
-      expect(() => service.applyEffect(explosive1.id, effect)).not.toThrow();
+      expect(async () => await service.applyEffect(explosive1.id, effect)).not.toThrow();
     });
 
-    it('should handle lightning chain through conductive materials', () => {
-      const room = roomService.createRoom({
+    it('should handle lightning chain through conductive materials', async () => {
+      const room = await roomService.createRoom({
         name: 'Conductive Room',
         description: 'A room with metal objects',
         position: { x: 0, y: 0, z: 0 },
@@ -366,7 +366,7 @@ describe('PhysicsService - Combat System Tests', () => {
         players: [],
       });
 
-      const metal1 = objectService.createObject({
+      const metal1 = await objectService.createObject({
         name: 'Metal Rod 1',
         objectType: 'item',
         position: { x: 1, y: 1, z: 0 },
@@ -375,7 +375,7 @@ describe('PhysicsService - Combat System Tests', () => {
         maxHealth: 100,
       });
 
-      const metal2 = objectService.createObject({
+      const metal2 = await objectService.createObject({
         name: 'Metal Rod 2',
         objectType: 'item',
         position: { x: 2, y: 1, z: 0 },
@@ -393,7 +393,7 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'lightning bolt',
       };
 
-      const result = service.applyEffect(metal1.id, effect);
+      const result = await service.applyEffect(metal1.id, effect);
       expect(result.success).toBe(true);
 
       // Should have chain reactions
@@ -402,8 +402,8 @@ describe('PhysicsService - Combat System Tests', () => {
       }
     });
 
-    it('should handle ice freezing water without errors', () => {
-      const water = objectService.createObject({
+    it('should handle ice freezing water without errors', async () => {
+      const water = await objectService.createObject({
         name: 'Water Pool',
         objectType: 'furniture',
         position: { x: 0, y: 0, z: 0 },
@@ -418,7 +418,7 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'freeze',
       };
 
-      const result = service.applyEffect(water.id, effect);
+      const result = await service.applyEffect(water.id, effect);
       expect(result.success).toBe(true);
 
       const updatedWater = objectService.getObject(water.id);
@@ -427,8 +427,8 @@ describe('PhysicsService - Combat System Tests', () => {
   });
 
   describe('Area Effect Edge Cases', () => {
-    it('should handle area effect in empty room', () => {
-      const room = roomService.createRoom({
+    it('should handle area effect in empty room', async () => {
+      const room = await roomService.createRoom({
         name: 'Empty Room',
         description: 'An empty room',
         position: { x: 0, y: 0, z: 0 },
@@ -445,25 +445,25 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'fireball',
       };
 
-      const result = service.applyAreaEffect(room.id, effect);
+      const result = await service.applyAreaEffect(room.id, effect);
       // Should succeed but affect nothing
       expect(result.success).toBe(false);
     });
 
-    it('should handle area effect in nonexistent room', () => {
+    it('should handle area effect in nonexistent room', async () => {
       const effect: IPhysicsEffect = {
         type: 'fire',
         intensity: 5,
         description: 'fireball',
       };
 
-      const result = service.applyAreaEffect('nonexistent-room', effect);
+      const result = await service.applyAreaEffect('nonexistent-room', effect);
       expect(result.success).toBe(false);
       expect(result.message).toContain('not found');
     });
 
-    it('should handle area effect with many objects', () => {
-      const room = roomService.createRoom({
+    it('should handle area effect with many objects', async () => {
+      const room = await roomService.createRoom({
         name: 'Crowded Room',
         description: 'A room full of objects',
         position: { x: 0, y: 0, z: 0 },
@@ -476,7 +476,7 @@ describe('PhysicsService - Combat System Tests', () => {
 
       // Create 20 objects
       for (let i = 0; i < 20; i++) {
-        const obj = objectService.createObject({
+        const obj = await objectService.createObject({
           name: `Object ${i}`,
           objectType: 'item',
           position: { x: i, y: 0, z: 0 },
@@ -493,15 +493,15 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'inferno',
       };
 
-      const result = service.applyAreaEffect(room.id, effect);
+      const result = await service.applyAreaEffect(room.id, effect);
       expect(result.success).toBe(true);
       expect(result.objectsAffected?.length).toBeGreaterThan(0);
     });
   });
 
   describe('Material Property Edge Cases', () => {
-    it('should handle object with missing material properties fields', () => {
-      const target = objectService.createObject({
+    it('should handle object with missing material properties fields', async () => {
+      const target = await objectService.createObject({
         name: 'Incomplete Material',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -520,11 +520,11 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'fireball',
       };
 
-      expect(() => service.applyEffect(target.id, effect)).not.toThrow();
+      expect(async () => await service.applyEffect(target.id, effect)).not.toThrow();
     });
 
-    it('should handle object with extreme material values', () => {
-      const target = objectService.createObject({
+    it('should handle object with extreme material values', async () => {
+      const target = await objectService.createObject({
         name: 'Extreme Material',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -547,11 +547,11 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'fireball',
       };
 
-      expect(() => service.applyEffect(target.id, effect)).not.toThrow();
+      expect(async () => await service.applyEffect(target.id, effect)).not.toThrow();
     });
 
-    it('should handle negative material property values', () => {
-      const target = objectService.createObject({
+    it('should handle negative material property values', async () => {
+      const target = await objectService.createObject({
         name: 'Negative Material',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -574,13 +574,13 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'fireball',
       };
 
-      expect(() => service.applyEffect(target.id, effect)).not.toThrow();
+      expect(async () => await service.applyEffect(target.id, effect)).not.toThrow();
     });
   });
 
   describe('Health and Destruction Edge Cases', () => {
-    it('should not allow health to exceed maxHealth', () => {
-      const target = objectService.createObject({
+    it('should not allow health to exceed maxHealth', async () => {
+      const target = await objectService.createObject({
         name: 'Test Object',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -596,8 +596,8 @@ describe('PhysicsService - Combat System Tests', () => {
       );
     });
 
-    it('should handle object with undefined health values', () => {
-      const target = objectService.createObject({
+    it('should handle object with undefined health values', async () => {
+      const target = await objectService.createObject({
         name: 'No Health Object',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -612,12 +612,12 @@ describe('PhysicsService - Combat System Tests', () => {
       };
 
       // Should use default values (10)
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(true);
     });
 
-    it('should handle shattering brittle objects', () => {
-      const target = objectService.createObject({
+    it('should handle shattering brittle objects', async () => {
+      const target = await objectService.createObject({
         name: 'Glass Vase',
         objectType: 'item',
         position: { x: 0, y: 0, z: 0 },
@@ -632,7 +632,7 @@ describe('PhysicsService - Combat System Tests', () => {
         description: 'smash',
       };
 
-      const result = service.applyEffect(target.id, effect);
+      const result = await service.applyEffect(target.id, effect);
       expect(result.success).toBe(true);
 
       const updatedTarget = objectService.getObject(target.id);

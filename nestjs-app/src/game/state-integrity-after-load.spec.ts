@@ -948,7 +948,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-npc-1';
 
       // Create room and NPC
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'Town Square',
         description: 'A bustling square',
         position: { x: 0, y: 0, z: 0 },
@@ -992,7 +992,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-npc-2';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Hero',
         position: { x: 5, y: 5, z: 0 },
         health: 100,
@@ -1755,7 +1755,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-combat-2';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Warrior',
         position: { x: 0, y: 0, z: 0 },
         health: 65,
@@ -1797,7 +1797,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-combat-3';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Mage',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -1846,7 +1846,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-combat-4';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Paladin',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2062,7 +2062,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-combat-10';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Berserker',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2505,7 +2505,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve player health, mana, and stats correctly', async () => {
       const gameId = 'game-player-1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 87,
@@ -2545,7 +2545,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve player level and XP accurately', async () => {
       const gameId = 'game-player-2';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Adventurer',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2568,7 +2568,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve player current room location', async () => {
       const gameId = 'game-player-3';
 
-      const room = roomService.createRoom({
+      const room = await roomService.createRoom({
         name: 'Dragon Lair',
         description: 'A dangerous cave',
         position: { x: 100, y: 100, z: 0 },
@@ -2580,7 +2580,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Warrior',
         position: { x: 110, y: 110, z: 0 },
         health: 100,
@@ -2604,7 +2604,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve active effects on player', async () => {
       const gameId = 'game-player-4';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Mage',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2671,7 +2671,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve player skill and ability states', async () => {
       const gameId = 'game-player-5';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Ranger',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2716,7 +2716,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve known spells and abilities', async () => {
       const gameId = 'game-player-6';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Wizard',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2759,7 +2759,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should handle player death state correctly', async () => {
       const gameId = 'game-player-7';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Fallen Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 0,
@@ -2795,7 +2795,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve player buffs and debuffs accurately', async () => {
       const gameId = 'game-player-8';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Cursed Warrior',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2860,7 +2860,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve player achievements and unlocks', async () => {
       const gameId = 'game-player-9';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Achiever',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2894,7 +2894,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should preserve player custom metadata', async () => {
       const gameId = 'game-player-10';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Custom Hero',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -2938,7 +2938,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-edge-1';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Warrior',
         position: { x: 0, y: 0, z: 0 },
         health: 75,
@@ -3050,7 +3050,7 @@ describe('GameStateService - State Integrity After Load', () => {
     it('should handle save during room transitions', async () => {
       const gameId = 'game-edge-4';
 
-      const room1 = roomService.createRoom({
+      const room1 = await roomService.createRoom({
         name: 'Room 1',
         description: 'First room',
         position: { x: 0, y: 0, z: 0 },
@@ -3062,7 +3062,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const room2 = roomService.createRoom({
+      const room2 = await roomService.createRoom({
         name: 'Room 2',
         description: 'Second room',
         position: { x: 20, y: 0, z: 0 },
@@ -3074,7 +3074,7 @@ describe('GameStateService - State Integrity After Load', () => {
         gameId,
       });
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Traveler',
         position: { x: 9, y: 5, z: 0 }, // At edge of room1
         health: 100,
@@ -3171,7 +3171,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-rapid-1';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Speed Saver',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
@@ -3198,7 +3198,7 @@ describe('GameStateService - State Integrity After Load', () => {
       const gameId = 'game-slots-1';
       const playerId = 'player1';
 
-      const player = playerService.createPlayer({
+      const player = await playerService.createPlayer({
         name: 'Multi Saver',
         position: { x: 0, y: 0, z: 0 },
         health: 100,
