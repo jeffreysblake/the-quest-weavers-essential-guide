@@ -373,9 +373,11 @@ export class NPC implements INPC {
 
   private canPerceiveEvent(event: SensoryEvent): boolean {
     const distance = this.calculateDistance(this.position, event.location);
-    
+
     // Check if event is within sensory range
-    if (distance > this.sensoryRange * event.intensity) return false;
+    // Higher intensity events can be detected from further away
+    const effectiveRange = this.sensoryRange * (1 + event.intensity);
+    if (distance > effectiveRange) return false;
     
     // Check if NPC has the right senses
     switch (event.type) {
@@ -439,8 +441,20 @@ export class NPC implements INPC {
     // Check faction hostility
     if (this.hostileToFactions && entity.type === 'player') {
       // In a real implementation, players would have factions too
-      return this.npcType === 'hostile' || this.npcType === 'monster';
+      // For now, guards/monsters/hostile NPCs with hostile factions will chase players
+      return this.npcType === 'hostile' || this.npcType === 'monster' || this.npcType === 'guard';
     }
+
+    // Hostile NPCs are naturally hostile to players
+    if (this.npcType === 'hostile' && entity.type === 'player') {
+      return true;
+    }
+
+    // Monsters are naturally hostile to players
+    if (this.npcType === 'monster' && entity.type === 'player') {
+      return true;
+    }
+
     return false;
   }
 
