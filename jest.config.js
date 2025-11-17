@@ -1,15 +1,20 @@
 module.exports = {
   "testEnvironment": "node",
   "transform": {
-    "^.+\\.(t|j)s$": ["ts-jest", {
+    "^.+\\.(t|j)sx?$": ["ts-jest", {
       "tsconfig": {
-        "sourceMap": false
+        "sourceMap": false,
+        "jsx": "react-jsx",
+        "esModuleInterop": true
       }
     }]
   },
-  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleFileExtensions": ["js", "json", "ts", "tsx", "jsx"],
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/$1"
+  },
   "rootDir": "./src",
-  "testRegex": "\\.(test|spec)\\.ts$",
+  "testRegex": "\\.(test|spec)\\.(ts|tsx)$",
   "collectCoverageFrom": [
     "**/*.(t|j)s"
   ],

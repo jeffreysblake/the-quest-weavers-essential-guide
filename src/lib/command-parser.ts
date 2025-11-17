@@ -35,30 +35,33 @@ export class CommandParser {
    */
   parseCommand(input: string): ParsedCommand | null {
     if (!input || !input.trim()) return null;
-    
+
     const originalInput = input.trim();
-    
-    // First try NLP-enhanced parsing
-    const nlpResult = this.parseWithNLP(originalInput);
+    const normalizedInput = originalInput.toLowerCase();
+
+    // Handle common phrase patterns BEFORE NLP to strip unnecessary words
+    let processedInput = normalizedInput;
+
+    if (normalizedInput.startsWith('i want to ')) {
+      processedInput = normalizedInput.substring(10); // Remove "i want to "
+    } else if (normalizedInput.startsWith('try to ') || normalizedInput.startsWith('attempt to ')) {
+      const prefixLen = normalizedInput.startsWith('try to ') ? 7 : 11;
+      processedInput = normalizedInput.substring(prefixLen); // Remove "try to " or "attempt to "
+    } else if (normalizedInput.startsWith('can i ')) {
+      processedInput = normalizedInput.substring(6); // Remove "can i "
+    } else if (normalizedInput.startsWith('please ')) {
+      processedInput = normalizedInput.substring(7); // Remove "please "
+    }
+
+    // First try NLP-enhanced parsing on the processed input
+    const nlpResult = this.parseWithNLP(processedInput);
     if (nlpResult) {
+      nlpResult.originalInput = originalInput; // Preserve original input
       return nlpResult;
     }
-    
+
     // Fallback to original parsing for backward compatibility
-    const normalizedInput = originalInput.toLowerCase();
-    
-    // Handle different commands
-    if (normalizedInput.startsWith('i want to ')) {
-      const command = normalizedInput.substring(10); // Remove "i want to "
-      const result = this.parseCommandText(command);
-      if (result) {
-        result.originalInput = originalInput;
-        result.confidence = 0.8; // Good confidence for explicit phrasing
-      }
-      return result;
-    }
-    
-    const result = this.parseCommandText(normalizedInput);
+    const result = this.parseCommandText(processedInput);
     if (result) {
       result.originalInput = originalInput;
       result.confidence = 0.7; // Decent confidence for direct parsing
@@ -140,9 +143,9 @@ export class CommandParser {
             command.item = afterWith.trim(); // What we're interfacing with
             command.target = afterWith.trim(); // Same as item for interface commands
           } else {
-            // Handle "use item with target", "burn item with target" patterns
-            const itemMatch = beforeWith.match(/(?:use|combine|burn|attack|hit|want\s+to\s+burn|want\s+to\s+use|want\s+to\s+attack)\s+(.+?)$/) ||
-                            beforeWith.match(/(?:burn|use|attack|hit)\s+(.+?)$/);
+            // Handle "use item with target", "burn item with target", "buy item with currency" patterns
+            const itemMatch = beforeWith.match(/(?:use|combine|burn|attack|hit|buy|take|get|purchase|want\s+to\s+burn|want\s+to\s+use|want\s+to\s+attack|want\s+to\s+buy)\s+(.+?)$/) ||
+                            beforeWith.match(/(?:burn|use|attack|hit|buy|take|get|purchase)\s+(.+?)$/);
             if (itemMatch) {
               command.item = itemMatch[itemMatch.length - 1].trim(); // Get the last capture group
             }

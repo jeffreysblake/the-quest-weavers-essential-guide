@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { render, screen } from '@testing-library/react';
 import Home from './page';
 
@@ -6,12 +9,12 @@ describe('Home Page', () => {
   it('should render the home page with correct title', () => {
     // Render the component
     render(<Home />);
-    
-    // Check if the main heading is present
-    const heading = screen.getByText(/Interactive Story Engine/i);
+
+    // Check if the main heading is present (using role to be more specific)
+    const heading = screen.getByRole('heading', { name: /Interactive Story Engine/i, level: 1 });
     expect(heading).toBeInTheDocument();
-    
-    // Check if the description is present  
+
+    // Check if the description is present
     const description = screen.getByText(/Physics, Component System & Auto-generation Features/i);
     expect(description).toBeInTheDocument();
   });

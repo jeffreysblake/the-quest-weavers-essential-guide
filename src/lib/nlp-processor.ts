@@ -14,18 +14,18 @@ export class NLPProcessor {
 
   // Synonym mappings for common game actions
   private static readonly SYNONYMS = new Map<string, string[]>([
-    ['take', ['get', 'grab', 'pick', 'pickup', 'obtain', 'acquire', 'collect', 'gather']],
+    ['take', ['get', 'grab', 'pick', 'pickup', 'obtain', 'acquire', 'collect', 'gather', 'buy', 'purchase']],
     ['drop', ['put', 'place', 'set', 'leave', 'discard', 'release']],
     ['use', ['employ', 'utilize', 'apply', 'operate', 'wield']],
     ['activate', ['turn_on', 'enable', 'start', 'trigger', 'power_on']],
     ['open', ['unlock', 'unseal', 'uncover', 'reveal']],
     ['close', ['shut', 'seal', 'lock', 'secure']],
-    ['look', ['see', 'view', 'observe', 'watch', 'peek', 'glance', 'stare']],
-    ['examine', ['inspect', 'study', 'check', 'investigate', 'analyze', 'scrutinize']],
-    ['go', ['move', 'walk', 'run', 'travel', 'head', 'proceed', 'advance']],
+    ['look', ['see', 'view', 'observe', 'watch', 'peek', 'glance', 'stare', 'listen']],
+    ['examine', ['inspect', 'study', 'check', 'investigate', 'analyze', 'scrutinize', 'understand', 'search']],
+    ['go', ['move', 'walk', 'run', 'travel', 'head', 'proceed', 'advance', 'navigate']],
     ['attack', ['hit', 'strike', 'fight', 'battle', 'assault', 'destroy']],
     ['talk', ['speak', 'say', 'tell', 'chat', 'converse']],
-    ['communicate', ['interface', 'contact', 'signal', 'transmit']],
+    ['communicate', ['interface', 'contact', 'signal', 'transmit', 'make']],
     ['eat', ['consume', 'devour', 'swallow', 'bite', 'chew']],
     ['drink', ['sip', 'gulp', 'swallow', 'consume']],
     ['throw', ['toss', 'hurl', 'fling', 'launch', 'cast', 'pitch']],
@@ -147,7 +147,7 @@ export class NLPProcessor {
     }
     
     // Common action words that should be prioritized
-    const actionWords = ['take', 'drop', 'use', 'open', 'close', 'look', 'examine', 'go', 'attack', 'talk', 'eat', 'drink', 'throw', 'break', 'burn', 'cut', 'climb', 'jump', 'pull', 'push', 'turn', 'wear', 'remove', 'light', 'ignite', 'smash', 'incinerate', 'consume'];
+    const actionWords = ['take', 'drop', 'use', 'open', 'close', 'look', 'examine', 'go', 'attack', 'talk', 'eat', 'drink', 'throw', 'break', 'burn', 'cut', 'climb', 'jump', 'pull', 'push', 'turn', 'wear', 'remove', 'light', 'ignite', 'smash', 'incinerate', 'consume', 'communicate', 'interface', 'scan', 'upload', 'calibrate', 'combine', 'attach', 'give', 'offer', 'trade', 'read', 'prepare', 'wave', 'cast', 'position', 'hold', 'get', 'grab', 'pick', 'move', 'activate', 'buy', 'purchase', 'listen', 'search', 'navigate'];
     
     let action: string | undefined;
     let objects: string[] = [];
