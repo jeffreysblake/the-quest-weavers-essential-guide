@@ -64,20 +64,32 @@ This document tracks the refactoring progress for files exceeding 600 lines.
 
 ---
 
-## Remaining Files (Pending Refactoring)
+## Completed Refactorings ✅ (continued)
 
 ### 4. player.service.ts
-**Status**: ⏳ Pending  
-**Current Size**: 1,395 lines  
-**Complexity**: High - Multiple responsibilities (inventory, combat, persistence, concurrency)
+**Status**: ✅ Complete
+**Original Size**: 1,395 lines
+**New Size**: 733 lines (main service)
+**Reduction**: 47%
+**Commits**:
+- [pending commit]
 
-**Recommended Extractions**:
-- `player-persistence.helper.ts` - Database save/load operations (~200 lines)
-- `player-inventory.service.ts` - Inventory management (~150 lines)
-- `player-combat.service.ts` - Combat and spell casting (~200 lines)
-- `player-interaction.handler.ts` - Object interactions (~150 lines)
+**Extracted Components**:
+- `helpers/player-persistence.helper.ts` (353 lines) - Database save/load operations
+- `helpers/player-inventory.helper.ts` (333 lines) - Inventory management with concurrency
+- `helpers/player-combat.helper.ts` (144 lines) - Combat and spell casting
+- `helpers/player-interaction.helper.ts` (226 lines) - Object interactions
 
-**Estimated Reduction**: 40-50%
+**Benefits**:
+- Separated database/persistence logic for easier testing
+- Isolated inventory management with thread-safe operations
+- Combat logic extracted into reusable helper
+- Object interaction logic cleanly separated
+- Improved maintainability with Single Responsibility Principle
+
+---
+
+## Remaining Files (Pending Refactoring)
 
 ---
 
@@ -112,16 +124,16 @@ This document tracks the refactoring progress for files exceeding 600 lines.
 ## Summary Statistics
 
 ### Completed:
-- **Files Refactored**: 3 / 7 (43%)
-- **Lines Reduced**: 1,971 lines (from 4,479 to 2,508 in main files)
-- **Helper Files Created**: 29 new modular files
-- **Average Reduction**: 60% (median: 75%)
+- **Files Refactored**: 4 / 7 (57%)
+- **Lines Reduced**: 2,633 lines (from 5,874 to 3,241 in main files)
+- **Helper Files Created**: 33 new modular files
+- **Average Reduction**: 55% (median: 61%)
 
 ### Overall Progress:
 ```
 Total Original Lines: 8,886 (across all 7 files)
-Total Refactored Lines: ~2,500 (3 completed files)
-Remaining Work: 3,680 lines (4 pending files)
+Total Refactored Lines: ~3,241 (4 completed files)
+Remaining Work: 2,553 lines (3 pending files)
 ```
 
 ### Key Achievements:
@@ -129,7 +141,7 @@ Remaining Work: 3,680 lines (4 pending files)
 2. ✅ Applied SOLID principles (Single Responsibility)
 3. ✅ Improved testability and maintainability
 4. ✅ Created reusable utility modules
-5. ✅ All refactored code compiles successfully
+5. ✅ Separated concerns: persistence, business logic, interactions, combat
 
 ---
 
@@ -151,13 +163,12 @@ For remaining files, extract database persistence and business logic into helper
 
 ## Next Steps
 
-1. **Refactor player.service.ts** - Highest priority due to size (1,395 lines)
-2. **Refactor game-file.service.ts** - Extract file format handlers
-3. **Refactor room.service.ts** - Extract persistence and entity management
-4. **Update Tests** - Ensure all extracted modules have corresponding tests
-5. **Documentation** - Add JSDoc comments to all new modules
+1. **Refactor room.service.ts** - Extract persistence and entity management (1,034 lines)
+2. **Refactor game-file.service.ts** - Extract file format handlers (1,058 lines)
+3. **Update Tests** - Ensure all extracted modules have corresponding tests
+4. **Documentation** - Add JSDoc comments to all new modules
 
 ---
 
-*Last Updated*: 2025-01-17  
-*Progress*: 43% Complete (3/7 files)
+*Last Updated*: 2025-11-17
+*Progress*: 57% Complete (4/7 files)
