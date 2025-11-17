@@ -159,13 +159,17 @@ export class StateMachineService {
       `Machine '${machineId}' transitioned from '${fromState}' to '${toState}'`,
     );
 
-    // Emit event
-    await this.eventEmitter.emit(GameEventType.CUSTOM_EVENT, {
-      action: 'state_transition',
-      machineId,
-      from: fromState,
-      to: toState,
-    });
+    // Emit event (with gameId from context if available)
+    await this.eventEmitter.emit(
+      GameEventType.CUSTOM_EVENT,
+      {
+        action: 'state_transition',
+        machineId,
+        from: fromState,
+        to: toState,
+      },
+      machine.context?.gameId,
+    );
 
     return true;
   }

@@ -2,13 +2,29 @@ import { Injectable, Logger } from '@nestjs/common';
 import { IBaseEntity, IEntity } from './entity.interface';
 import { DatabaseService } from '../database/database.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Mutex, withTimeout } from 'async-mutex';
 
 @Injectable()
 export class EntityService {
   private readonly logger = new Logger(EntityService.name);
   private entities: Map<string, IEntity> = new Map();
 
+  // CONCURRENCY PROTECTION: Mutex locks per entity to prevent concurrent update races
+  private readonly entityLocks = new Map<string, Mutex>();
+  private readonly LOCK_TIMEOUT = 5000; // 5 second timeout
+
   constructor(private readonly databaseService?: DatabaseService) {}
+
+  /**
+   * Get or create a lock for a specific entity
+   * CONCURRENCY PROTECTION: Ensures each entity has its own lock
+   */
+  private getEntityLock(entityId: string): Mutex {
+    if (!this.entityLocks.has(entityId)) {
+      this.entityLocks.set(entityId, new Mutex());
+    }
+    return this.entityLocks.get(entityId)!;
+  }
 
   async createEntity(
     entityData: Omit<IEntity, 'id'> | IEntity,
@@ -102,33 +118,55 @@ export class EntityService {
     return inMemoryEntities;
   }
 
+  /**
+   * Update entity with thread-safe locking to prevent concurrent update races
+   * CONCURRENCY PROTECTION: Acquires entity lock before updating
+   */
   async updateEntity(id: string, updates: Partial<IEntity>): Promise<boolean> {
     const entity = this.entities.get(id);
     if (!entity) return false;
 
-    // Store original entity in case we need to rollback
-    const originalEntity = { ...entity };
+    const lock = this.getEntityLock(id);
 
-    Object.assign(entity, updates);
+    try {
+      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
+        async () => {
+          // Re-fetch entity inside lock to get latest state
+          const currentEntity = this.entities.get(id);
+          if (!currentEntity) return false;
 
-    // Save updated entity to database if available
-    if (this.databaseService) {
-      try {
-        await this.saveEntityToDatabase(entity);
-      } catch (error) {
-        // Rollback in-memory changes since database update failed
-        Object.assign(entity, originalEntity);
-        this.logger.error(
-          `Failed to update entity ${entity.id} in database:`,
-          error,
-        );
-        throw new Error(
-          `Failed to update entity ${entity.id} in database: ${error.message}`,
-        );
+          // Store original entity in case we need to rollback
+          const originalEntity = { ...currentEntity };
+
+          Object.assign(currentEntity, updates);
+
+          // Save updated entity to database if available
+          if (this.databaseService) {
+            try {
+              await this.saveEntityToDatabase(currentEntity);
+            } catch (error) {
+              // Rollback in-memory changes since database update failed
+              Object.assign(currentEntity, originalEntity);
+              this.logger.error(
+                `Failed to update entity ${currentEntity.id} in database:`,
+                error,
+              );
+              throw new Error(
+                `Failed to update entity ${currentEntity.id} in database: ${error.message}`,
+              );
+            }
+          }
+
+          return true;
+        },
+      );
+    } catch (error) {
+      if (error.message?.includes('timeout')) {
+        this.logger.error(`Lock timeout updating entity ${id}`);
+        return false;
       }
+      throw error;
     }
-
-    return true;
   }
 
   async deleteEntity(id: string): Promise<boolean> {

@@ -5,11 +5,14 @@ import { ObjectService } from './object.service';
 import { IInteractionResult } from './entity.interface';
 import { IObject } from './object.interface';
 import { PhysicsService } from './physics.service';
-import { IPhysicsEffect, EffectType } from './physics.interface';
+import { EffectType } from './physics.interface';
 import { DatabaseService } from '../database/database.service';
-import { NPCData } from '../database/database.interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { Mutex, withTimeout } from 'async-mutex';
+import { PlayerPersistenceHelper } from './helpers/player-persistence.helper';
+import { PlayerInventoryHelper } from './helpers/player-inventory.helper';
+import { PlayerInteractionHelper } from './helpers/player-interaction.helper';
+import { PlayerCombatHelper } from './helpers/player-combat.helper';
 
 /**
  * CONCURRENCY PROTECTION:
@@ -32,7 +35,19 @@ export class PlayerService {
     private readonly objectService: ObjectService,
     private readonly physicsService: PhysicsService,
     private readonly databaseService?: DatabaseService,
-  ) {}
+  ) {
+    // Initialize helpers
+    this.persistenceHelper = new PlayerPersistenceHelper(databaseService);
+    this.inventoryHelper = new PlayerInventoryHelper(objectService);
+    this.interactionHelper = new PlayerInteractionHelper(objectService);
+    this.combatHelper = new PlayerCombatHelper(physicsService);
+  }
+
+  // Helper instances
+  private readonly persistenceHelper: PlayerPersistenceHelper;
+  private readonly inventoryHelper: PlayerInventoryHelper;
+  private readonly interactionHelper: PlayerInteractionHelper;
+  private readonly combatHelper: PlayerCombatHelper;
 
   /**
    * Get or create a lock for a specific player
@@ -137,7 +152,7 @@ export class PlayerService {
 
     // If not found and database is available, try to load from database
     if (this.databaseService && gameId) {
-      player = await this.loadPlayerFromDatabase(id, gameId);
+      player = await this.persistenceHelper.loadPlayerFromDatabase(id, gameId);
       if (player) {
         this.players.set(player.id, player);
         try {
@@ -161,7 +176,7 @@ export class PlayerService {
     // If database is available, also load from database
     if (this.databaseService) {
       try {
-        const dbPlayers = await this.loadGamePlayersFromDatabase(gameId);
+        const dbPlayers = await this.persistenceHelper.loadGamePlayersFromDatabase(gameId);
 
         // Merge with in-memory players, preferring in-memory versions
         const playerMap = new Map<string, IPlayer>();
@@ -259,168 +274,64 @@ export class PlayerService {
     player: IPlayer,
     object: IObject,
   ): IInteractionResult {
-    let description = `You examine the ${object.name}.`;
-
-    if (object.spatialRelationship) {
-      const location = this.objectService.getObjectLocation(object.id);
-      description += ` ${location}.`;
-    }
-
-    if (object.isContainer && object.state?.isOpen) {
-      const contents = this.objectService.getObjectsInContainer(object.id);
-      if (contents.length > 0) {
-        const itemNames = contents.map((item) => item.name).join(', ');
-        description += ` Inside you see: ${itemNames}.`;
-      } else {
-        description += ' It is empty.';
-      }
-    }
-
-    return {
-      success: true,
-      message: description,
-    };
+    return this.interactionHelper.examineObject(player, object);
   }
 
   private async takeObjectInternal(
     player: IPlayer,
     object: IObject,
   ): Promise<IInteractionResult> {
-    if (!object.isPortable) {
-      return {
-        success: false,
-        message: `You cannot take the ${object.name}.`,
-      };
-    }
-
-    // Remove from current location
-    if (object.spatialRelationship?.relationshipType === 'inside') {
-      this.objectService.removeObjectFromContainer(
-        object.id,
-        object.spatialRelationship.targetId,
-      );
-    }
-
-    // Add to player inventory
-    player.inventory.push(object.id);
-    object.spatialRelationship = undefined;
-
-    await this.updatePlayer(player.id, { inventory: player.inventory });
-    try {
-      await this.entityService.updateEntity(object.id, object);
-    } catch (error) {
-      this.logger.error(`Failed to update object entity ${object.id}:`, error);
-    }
-
-    return {
-      success: true,
-      message: `You take the ${object.name}.`,
-      effects: {
-        itemTaken: object.id,
+    return await this.interactionHelper.takeObject(
+      player,
+      object,
+      async (p) => await this.updatePlayer(p.id, { inventory: p.inventory }),
+      async (objId, updates) => {
+        try {
+          await this.entityService.updateEntity(objId, updates);
+        } catch (error) {
+          this.logger.error(`Failed to update object entity ${objId}:`, error);
+        }
       },
-    };
+    );
   }
 
   private async openContainer(player: IPlayer, object: IObject): Promise<IInteractionResult> {
-    if (!object.isContainer) {
-      return {
-        success: false,
-        message: `The ${object.name} cannot be opened.`,
-      };
-    }
-
-    if (object.state?.isLocked) {
-      return {
-        success: false,
-        message: `The ${object.name} is locked.`,
-      };
-    }
-
-    if (object.state?.isOpen) {
-      return {
-        success: false,
-        message: `The ${object.name} is already open.`,
-      };
-    }
-
-    object.state = { ...object.state, isOpen: true };
-    try {
-      await this.entityService.updateEntity(object.id, object);
-    } catch (error) {
-      this.logger.error(`Failed to update object entity ${object.id}:`, error);
-    }
-
-    return {
-      success: true,
-      message: `You open the ${object.name}.`,
-      effects: {
-        containerOpened: object.id,
+    return await this.interactionHelper.openContainer(
+      player,
+      object,
+      async (objId, updates) => {
+        try {
+          await this.entityService.updateEntity(objId, updates);
+        } catch (error) {
+          this.logger.error(`Failed to update object entity ${objId}:`, error);
+        }
       },
-    };
+    );
   }
 
   private async closeContainer(player: IPlayer, object: IObject): Promise<IInteractionResult> {
-    if (!object.isContainer) {
-      return {
-        success: false,
-        message: `The ${object.name} cannot be closed.`,
-      };
-    }
-
-    if (!object.state?.isOpen) {
-      return {
-        success: false,
-        message: `The ${object.name} is already closed.`,
-      };
-    }
-
-    object.state = { ...object.state, isOpen: false };
-    try {
-      await this.entityService.updateEntity(object.id, object);
-    } catch (error) {
-      this.logger.error(`Failed to update object entity ${object.id}:`, error);
-    }
-
-    return {
-      success: true,
-      message: `You close the ${object.name}.`,
-      effects: {
-        containerClosed: object.id,
+    return await this.interactionHelper.closeContainer(
+      player,
+      object,
+      async (objId, updates) => {
+        try {
+          await this.entityService.updateEntity(objId, updates);
+        } catch (error) {
+          this.logger.error(`Failed to update object entity ${objId}:`, error);
+        }
       },
-    };
+    );
   }
 
-  private useObjectInternal(
+  private async useObjectInternal(
     player: IPlayer,
     object: IObject,
-  ): IInteractionResult {
-    // Basic use implementation - can be extended based on object type
-    switch (object.objectType) {
-      case 'weapon':
-        return {
-          success: true,
-          message: `You brandish the ${object.name}.`,
-        };
-      case 'consumable':
-        // Remove from inventory if consumed
-        const index = player.inventory.indexOf(object.id);
-        if (index > -1) {
-          player.inventory.splice(index, 1);
-          this.updatePlayer(player.id, { inventory: player.inventory });
-        }
-        return {
-          success: true,
-          message: `You use the ${object.name}.`,
-          effects: {
-            itemConsumed: object.id,
-          },
-        };
-      default:
-        return {
-          success: true,
-          message: `You use the ${object.name}.`,
-        };
-    }
+  ): Promise<IInteractionResult> {
+    return await this.interactionHelper.useObject(
+      player,
+      object,
+      async (p) => await this.updatePlayer(p.id, { inventory: p.inventory }),
+    );
   }
 
   // Magic/Physics Interaction Methods
@@ -438,45 +349,7 @@ export class PlayerService {
       };
     }
 
-    // VALIDATION: Validate intensity parameter to prevent crashes
-    if (typeof intensity !== 'number' || Number.isNaN(intensity) || !Number.isFinite(intensity)) {
-      this.logger.error(`castSpell: Invalid intensity value: ${intensity}`);
-      return {
-        success: false,
-        message: 'Invalid spell intensity',
-      };
-    }
-
-    // VALIDATION: Ensure intensity is positive and reasonable
-    if (intensity < 0) {
-      this.logger.error(`castSpell: Negative intensity not allowed: ${intensity}`);
-      return {
-        success: false,
-        message: 'Spell intensity must be positive',
-      };
-    }
-
-    if (intensity > 1000) {
-      this.logger.warn(`castSpell: Capping extremely high intensity from ${intensity} to 1000`);
-      intensity = 1000; // Cap at reasonable maximum
-    }
-
-    const effect: IPhysicsEffect = {
-      type: spellType,
-      intensity,
-      sourceId: playerId,
-      description: this.getSpellDescription(spellType, intensity),
-    };
-
-    const result = await this.physicsService.applyEffect(targetId, effect);
-
-    return {
-      success: result.success,
-      message: `${player.name} casts ${this.getSpellName(spellType)}! ${result.message}`,
-      effects: {
-        physicsResult: result,
-      },
-    };
+    return await this.combatHelper.castSpell(player, spellType, targetId, intensity);
   }
 
   async castAreaSpell(
@@ -493,58 +366,7 @@ export class PlayerService {
       };
     }
 
-    const effect: IPhysicsEffect = {
-      type: spellType,
-      intensity,
-      sourceId: playerId,
-      description: this.getAreaSpellDescription(spellType, intensity),
-    };
-
-    const result = await this.physicsService.applyAreaEffect(roomId, effect);
-
-    // BUG FIX #2: Casting a spell should succeed even if no objects are affected
-    // The spell was cast successfully, it just didn't hit anything
-    return {
-      success: true,
-      message: `${player.name} casts ${this.getSpellName(spellType)} across the room! ${result.message}`,
-      effects: {
-        physicsResult: result,
-      },
-    };
-  }
-
-  // Helper methods for spell descriptions
-  private getSpellName(spellType: EffectType): string {
-    const spellNames: Record<EffectType, string> = {
-      fire: 'Fireball',
-      lightning: 'Lightning Bolt',
-      ice: 'Ice Shard',
-      force: 'Force Push',
-      poison: 'Poison Cloud',
-      acid: 'Acid Splash',
-      magic: 'Magic Missile',
-    };
-    return spellNames[spellType] || 'Unknown Spell';
-  }
-
-  private getSpellDescription(
-    spellType: EffectType,
-    intensity: number,
-  ): string {
-    const base = this.getSpellName(spellType).toLowerCase();
-    if (intensity <= 3) return `weak ${base}`;
-    if (intensity <= 6) return `${base}`;
-    return `powerful ${base}`;
-  }
-
-  private getAreaSpellDescription(
-    spellType: EffectType,
-    intensity: number,
-  ): string {
-    const base = this.getSpellName(spellType).toLowerCase();
-    if (intensity <= 3) return `spreading ${base}`;
-    if (intensity <= 6) return `area ${base}`;
-    return `devastating ${base} storm`;
+    return await this.combatHelper.castAreaSpell(player, spellType, roomId, intensity);
   }
 
   // Missing methods for game service compatibility
@@ -560,30 +382,14 @@ export class PlayerService {
    * THREAD-SAFE: Acquires player lock to prevent duplicate additions
    */
   async addToInventory(playerId: string, itemId: string): Promise<boolean> {
-    const lock = this.getPlayerLock(playerId);
+    const player = this.getPlayer(playerId);
+    if (!player) return false;
 
-    try {
-      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
-        async () => {
-          const player = this.getPlayer(playerId);
-          if (!player) return false;
-
-          if (!player.inventory.includes(itemId)) {
-            player.inventory.push(itemId);
-            return await this.updatePlayer(playerId, { inventory: player.inventory });
-          }
-          return true;
-        },
-      );
-    } catch (error) {
-      if (error.message?.includes('timeout')) {
-        this.logger.error(
-          `Lock timeout adding to inventory for player ${playerId}`,
-        );
-        return false;
-      }
-      throw error;
-    }
+    return await this.inventoryHelper.addToInventory(
+      player,
+      itemId,
+      async (p) => await this.updatePlayer(p.id, { inventory: p.inventory }),
+    );
   }
 
   /**
@@ -594,63 +400,27 @@ export class PlayerService {
     playerId: string,
     itemId: string,
   ): Promise<boolean> {
-    const lock = this.getPlayerLock(playerId);
+    const player = this.getPlayer(playerId);
+    if (!player) return false;
 
-    try {
-      return await withTimeout(lock, this.LOCK_TIMEOUT).runExclusive(
-        async () => {
-          const player = this.getPlayer(playerId);
-          if (!player) return false;
-
-          const index = player.inventory.indexOf(itemId);
-          if (index > -1) {
-            player.inventory.splice(index, 1);
-            return await this.updatePlayer(playerId, { inventory: player.inventory });
-          }
-          return false;
-        },
-      );
-    } catch (error) {
-      if (error.message?.includes('timeout')) {
-        this.logger.error(
-          `Lock timeout removing from inventory for player ${playerId}`,
-        );
-        return false;
-      }
-      throw error;
-    }
+    return await this.inventoryHelper.removeFromInventory(
+      player,
+      itemId,
+      async (p) => await this.updatePlayer(p.id, { inventory: p.inventory }),
+    );
   }
 
   getInventory(playerId: string): any[] {
     const player = this.getPlayer(playerId);
     if (!player) return [];
 
-    // Return actual objects instead of just IDs
-    return player.inventory
-      .map((itemId) => this.objectService.getObject(itemId))
-      .filter(Boolean);
+    return this.inventoryHelper.getInventory(player);
   }
 
   // Enhanced persistence methods with database integration
   async persistPlayers(): Promise<void> {
-    if (!this.databaseService) {
-      this.logger.warn('Database service not available for persistence');
-      return;
-    }
-
-    try {
-      const players = Array.from(this.players.values());
-      this.logger.log(`Persisting ${players.length} players to database`);
-
-      for (const player of players) {
-        await this.savePlayerToDatabase(player);
-      }
-
-      this.logger.log('Successfully persisted all players');
-    } catch (error) {
-      this.logger.error('Failed to persist players:', error);
-      throw error;
-    }
+    const players = Array.from(this.players.values());
+    return await this.persistenceHelper.persistPlayers(players);
   }
 
   async loadPlayers(gameId?: string): Promise<void> {
@@ -661,8 +431,8 @@ export class PlayerService {
 
     try {
       const players = gameId
-        ? await this.loadGamePlayersFromDatabase(gameId)
-        : await this.loadAllPlayersFromDatabase();
+        ? await this.persistenceHelper.loadGamePlayersFromDatabase(gameId)
+        : await this.persistenceHelper.loadAllPlayersFromDatabase();
 
       this.logger.log(`Loading ${players.length} players from database`);
 
@@ -679,65 +449,30 @@ export class PlayerService {
 
   // Version management methods
   async savePlayerVersion(playerId: string, reason?: string): Promise<number> {
-    if (!this.databaseService) {
-      throw new Error('Database service not available for version management');
-    }
-
     const player = this.players.get(playerId);
     if (!player) {
       throw new Error(`Player ${playerId} not found in memory`);
     }
 
-    return this.databaseService.saveVersion(
-      'player',
-      playerId,
-      player,
-      'player_service',
-      reason,
-    );
+    return await this.persistenceHelper.savePlayerVersion(playerId, player, reason);
   }
 
   async getPlayerVersion(
     playerId: string,
     version?: number,
   ): Promise<IPlayer | null> {
-    if (!this.databaseService) {
-      throw new Error('Database service not available for version management');
-    }
-
-    return this.databaseService.getVersion('player', playerId, version);
+    return await this.persistenceHelper.getPlayerVersion(playerId, version);
   }
 
   async rollbackPlayer(playerId: string, version: number): Promise<boolean> {
-    if (!this.databaseService) {
-      throw new Error('Database service not available for version management');
-    }
-
-    // Get the version data
-    const versionData = await this.databaseService.getVersion(
-      'player',
-      playerId,
-      version,
-    );
+    const versionData = await this.persistenceHelper.rollbackPlayer(playerId, version);
 
     if (!versionData) {
       return false;
     }
 
     // Update the in-memory cache with the old version
-    this.players.set(playerId, versionData as IPlayer);
-
-    // Save the old version to the database
-    await this.savePlayerToDatabase(versionData as IPlayer);
-
-    // Create a version history entry for the rollback
-    await this.databaseService.saveVersion(
-      'player',
-      playerId,
-      versionData,
-      'system',
-      `Rollback to version ${version}`,
-    );
+    this.players.set(playerId, versionData);
 
     return true;
   }
@@ -764,7 +499,7 @@ export class PlayerService {
   ): Promise<IPlayer | undefined> {
     // Force reload from database
     if (this.databaseService) {
-      const player = await this.loadPlayerFromDatabase(playerId, gameId);
+      const player = await this.persistenceHelper.loadPlayerFromDatabase(playerId, gameId);
       if (player) {
         this.players.set(playerId, player);
         try {
@@ -778,213 +513,12 @@ export class PlayerService {
     return this.players.get(playerId);
   }
 
-  // Database integration methods
-  private async savePlayerToDatabase(player: IPlayer): Promise<void> {
-    if (!this.databaseService) return;
-
-    try {
-      this.databaseService.transaction((db) => {
-        // Convert IPlayer to NPCData format for database
-        const playerData: NPCData = {
-          id: player.id,
-          gameId: player.gameId || 'default',
-          name: player.name,
-          description: player.description,
-          npcType: 'player',
-          position: player.position,
-          health: player.health || 100,
-          maxHealth: player.health || 100,
-          level: player.level || 1,
-          experience: player.experience || 0,
-          inventoryData: player.inventory || [],
-          dialogueTreeData: {},
-          version: 1,
-          createdAt: new Date().toISOString(),
-        };
-
-        // Save to npcs table (using same table for players and NPCs)
-        const insertPlayer = db.prepare(`
-          INSERT OR REPLACE INTO npcs (
-            id, game_id, name, description, npc_type, position_x, position_y, position_z,
-            health, max_health, level, experience, inventory_data, dialogue_tree_data, version, created_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
-
-        insertPlayer.run(
-          playerData.id,
-          playerData.gameId,
-          playerData.name,
-          playerData.description,
-          playerData.npcType,
-          playerData.position.x,
-          playerData.position.y,
-          playerData.position.z,
-          playerData.health,
-          playerData.maxHealth,
-          playerData.level,
-          playerData.experience,
-          JSON.stringify(playerData.inventoryData),
-          JSON.stringify(playerData.dialogueTreeData),
-          playerData.version,
-          playerData.createdAt,
-        );
-      });
-
-      // Note: Version history is saved explicitly via savePlayerVersion() when needed
-    } catch (error) {
-      this.logger.error(
-        `Failed to save player ${player.id} to database:`,
-        error,
-      );
-      throw error;
-    }
-  }
-
-  private async loadPlayerFromDatabase(
-    playerId: string,
-    gameId?: string,
-  ): Promise<IPlayer | undefined> {
-    if (!this.databaseService) return undefined;
-
-    try {
-      // Load player from database
-      const playerQuery = this.databaseService.prepare(`
-        SELECT * FROM npcs 
-        WHERE id = ? ${gameId ? 'AND game_id = ?' : ''}
-      `);
-
-      const playerRow = gameId
-        ? (playerQuery.get(playerId, gameId) as any)
-        : (playerQuery.get(playerId) as any);
-
-      if (!playerRow) return undefined;
-
-      // ERROR HANDLING: Safe JSON parsing with try-catch
-      let inventory: string[] = [];
-      if (playerRow.inventory_data) {
-        try {
-          inventory = JSON.parse(playerRow.inventory_data);
-          // Validate that parsed data is an array
-          if (!Array.isArray(inventory)) {
-            this.logger.error(`loadPlayerFromDatabase: inventory_data is not an array for player ${playerRow.id}`);
-            inventory = [];
-          }
-        } catch (error) {
-          this.logger.error(`loadPlayerFromDatabase: Failed to parse inventory_data for player ${playerRow.id}: ${error.message}`);
-          inventory = [];
-        }
-      }
-
-      // Convert database format to IPlayer
-      const player: IPlayer = {
-        id: playerRow.id,
-        name: playerRow.name,
-        type: 'player',
-        position: {
-          x: playerRow.position_x || 0,
-          y: playerRow.position_y || 0,
-          z: playerRow.position_z || 0,
-        },
-        health: playerRow.health || 100,
-        level: playerRow.level || 1,
-        experience: playerRow.experience || 0,
-        inventory: inventory,
-        gameId: playerRow.game_id,
-      };
-
-      return player;
-    } catch (error) {
-      this.logger.error(
-        `Failed to load player ${playerId} from database:`,
-        error,
-      );
-      return undefined;
-    }
-  }
-
   /**
    * Load multiple players by IDs in a single batch query
    * Prevents N+1 query pattern by using WHERE id IN (...)
    */
   async loadMultiplePlayers(playerIds: string[]): Promise<IPlayer[]> {
-    if (!this.databaseService || playerIds.length === 0) return [];
-
-    try {
-      // Batch load player data
-      const placeholders = playerIds.map(() => '?').join(',');
-      const playerQuery = this.databaseService.prepare(`
-        SELECT * FROM npcs WHERE id IN (${placeholders})
-      `);
-      const playerRows = playerQuery.all(...playerIds) as any[];
-
-      // Convert to IPlayer objects
-      const players: IPlayer[] = playerRows.map((playerRow) => {
-        const player: IPlayer = {
-          id: playerRow.id,
-          name: playerRow.name,
-          type: 'player',
-          position: {
-            x: playerRow.position_x || 0,
-            y: playerRow.position_y || 0,
-            z: playerRow.position_z || 0,
-          },
-          health: playerRow.health || 100,
-          level: playerRow.level || 1,
-          experience: playerRow.experience || 0,
-          inventory: playerRow.inventory_data
-            ? JSON.parse(playerRow.inventory_data)
-            : [],
-          gameId: playerRow.game_id,
-        };
-        return player;
-      });
-
-      return players;
-    } catch (error) {
-      this.logger.error('Failed to batch load players from database:', error);
-      return [];
-    }
-  }
-
-  private async loadGamePlayersFromDatabase(
-    gameId: string,
-  ): Promise<IPlayer[]> {
-    if (!this.databaseService) return [];
-
-    try {
-      // First get all player IDs for this game
-      const query = this.databaseService.prepare(
-        'SELECT id FROM npcs WHERE game_id = ?',
-      );
-      const rows = query.all(gameId) as any[];
-      const playerIds = rows.map((row) => row.id);
-
-      // Use batch loading to prevent N+1 queries
-      return await this.loadMultiplePlayers(playerIds);
-    } catch (error) {
-      this.logger.error(
-        `Failed to load players for game ${gameId} from database:`,
-        error,
-      );
-      return [];
-    }
-  }
-
-  private async loadAllPlayersFromDatabase(): Promise<IPlayer[]> {
-    if (!this.databaseService) return [];
-
-    try {
-      // First get all player IDs
-      const query = this.databaseService.prepare('SELECT id FROM npcs');
-      const rows = query.all() as any[];
-      const playerIds = rows.map((row) => row.id);
-
-      // Use batch loading to prevent N+1 queries
-      return await this.loadMultiplePlayers(playerIds);
-    } catch (error) {
-      this.logger.error('Failed to load all players from database:', error);
-      return [];
-    }
+    return await this.persistenceHelper.loadMultiplePlayers(playerIds);
   }
 
   // Clear in-memory cache
@@ -1087,9 +621,6 @@ export class PlayerService {
   /**
    * Alias for addToInventory that returns IInteractionResult
    * Compatibility wrapper for stress tests
-   * @param playerId - The player's ID
-   * @param objectId - The object's ID
-   * @returns Interaction result with success/failure message
    */
   async giveObjectToPlayer(playerId: string, objectId: string): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
@@ -1108,30 +639,17 @@ export class PlayerService {
       };
     }
 
-    const success = await this.addToInventory(playerId, objectId);
-    if (success) {
-      return {
-        success: true,
-        message: `${object.name} added to inventory.`,
-        effects: {
-          itemAdded: objectId,
-        },
-      };
-    } else {
-      return {
-        success: false,
-        message: `Failed to add ${object.name} to inventory.`,
-      };
-    }
+    return await this.interactionHelper.giveObjectToPlayer(
+      player,
+      object,
+      async (pId, oId) => await this.addToInventory(pId, oId),
+    );
   }
 
   // Priority 2: Inventory Management Features
 
   /**
    * Sort player's inventory by specified criteria
-   * @param playerId - The player's ID
-   * @param sortBy - Criteria to sort by: 'name', 'type', 'weight', or 'value'
-   * @returns Sorted array of inventory objects
    */
   sortInventory(
     playerId: string,
@@ -1143,41 +661,11 @@ export class PlayerService {
       return [];
     }
 
-    // Get actual objects from inventory IDs
-    const inventoryObjects = player.inventory
-      .map((itemId) => this.objectService.getObject(itemId))
-      .filter(Boolean) as IObject[];
-
-    // Sort based on criteria
-    switch (sortBy) {
-      case 'name':
-        return inventoryObjects.sort((a, b) => a.name.localeCompare(b.name));
-      case 'type':
-        return inventoryObjects.sort((a, b) =>
-          a.objectType.localeCompare(b.objectType),
-        );
-      case 'weight':
-        return inventoryObjects.sort((a, b) => {
-          const weightA = a.weight || a.properties?.weight || 0;
-          const weightB = b.weight || b.properties?.weight || 0;
-          return weightB - weightA; // Descending order
-        });
-      case 'value':
-        return inventoryObjects.sort((a, b) => {
-          const valueA = a.properties?.value || 0;
-          const valueB = b.properties?.value || 0;
-          return valueB - valueA; // Descending order
-        });
-      default:
-        return inventoryObjects;
-    }
+    return this.inventoryHelper.sortInventory(player, sortBy);
   }
 
   /**
    * Filter inventory items matching criteria
-   * @param playerId - The player's ID
-   * @param criteria - Search criteria (name, objectType/type, material, weight, rarity, etc.)
-   * @returns Array of matching inventory objects
    */
   findInventoryItems(
     playerId: string,
@@ -1197,103 +685,11 @@ export class PlayerService {
       return [];
     }
 
-    // Get actual objects from inventory IDs
-    const inventoryObjects = player.inventory
-      .map((itemId) => this.objectService.getObject(itemId))
-      .filter(Boolean) as IObject[];
-
-    // Filter based on criteria
-    return inventoryObjects.filter((obj) => {
-      // Check name (partial match, case-insensitive)
-      if (
-        criteria.name &&
-        !obj.name.toLowerCase().includes(criteria.name.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // Check object type (exact match) - support both 'type' and 'objectType' fields
-      const typeToCheck = criteria.objectType || criteria.type;
-      if (typeToCheck && obj.objectType !== typeToCheck) {
-        return false;
-      }
-
-      // Check material (exact match)
-      if (criteria.material && obj.material !== criteria.material) {
-        return false;
-      }
-
-      // Check weight (exact or range)
-      if (criteria.weight !== undefined) {
-        const objWeight = obj.weight || obj.properties?.weight || 0;
-        if (typeof criteria.weight === 'number') {
-          if (objWeight !== criteria.weight) return false;
-        } else if (typeof criteria.weight === 'object') {
-          if (
-            criteria.weight.min !== undefined &&
-            objWeight < criteria.weight.min
-          ) {
-            return false;
-          }
-          if (
-            criteria.weight.max !== undefined &&
-            objWeight > criteria.weight.max
-          ) {
-            return false;
-          }
-        }
-      }
-
-      // Check rarity (exact or range) - assumes rarity is in properties
-      if (criteria.rarity !== undefined) {
-        const objRarity = (obj.properties as any)?.rarity || 0;
-        if (typeof criteria.rarity === 'number') {
-          if (objRarity !== criteria.rarity) return false;
-        } else if (typeof criteria.rarity === 'object') {
-          if (
-            criteria.rarity.min !== undefined &&
-            objRarity < criteria.rarity.min
-          ) {
-            return false;
-          }
-          if (
-            criteria.rarity.max !== undefined &&
-            objRarity > criteria.rarity.max
-          ) {
-            return false;
-          }
-        }
-      }
-
-      // Check value (exact or range)
-      if (criteria.value !== undefined) {
-        const objValue = obj.properties?.value || 0;
-        if (typeof criteria.value === 'number') {
-          if (objValue !== criteria.value) return false;
-        } else if (typeof criteria.value === 'object') {
-          if (
-            criteria.value.min !== undefined &&
-            objValue < criteria.value.min
-          ) {
-            return false;
-          }
-          if (
-            criteria.value.max !== undefined &&
-            objValue > criteria.value.max
-          ) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    });
+    return this.inventoryHelper.findInventoryItems(player, criteria);
   }
 
   /**
    * Calculate aggregate stats from inventory
-   * @param playerId - The player's ID
-   * @returns Object with totalItems, totalWeight, and totalValue
    */
   getInventoryStats(playerId: string): {
     totalItems: number;
@@ -1306,32 +702,11 @@ export class PlayerService {
       return { totalItems: 0, totalWeight: 0, totalValue: 0 };
     }
 
-    // Get actual objects from inventory IDs
-    const inventoryObjects = player.inventory
-      .map((itemId) => this.objectService.getObject(itemId))
-      .filter(Boolean) as IObject[];
-
-    // Calculate totals
-    const totalItems = inventoryObjects.length;
-    const totalWeight = inventoryObjects.reduce((sum, obj) => {
-      return sum + (obj.weight || obj.properties?.weight || 0);
-    }, 0);
-    const totalValue = inventoryObjects.reduce((sum, obj) => {
-      return sum + (obj.properties?.value || 0);
-    }, 0);
-
-    return {
-      totalItems,
-      totalWeight,
-      totalValue,
-    };
+    return this.inventoryHelper.getInventoryStats(player);
   }
 
   /**
    * Remove item from player inventory and place it in the player's current room
-   * @param playerId - The player's ID
-   * @param objectId - The object ID to drop
-   * @returns Success/failure result
    */
   async dropObject(playerId: string, objectId: string): Promise<IInteractionResult> {
     const player = this.getPlayer(playerId);
@@ -1342,54 +717,17 @@ export class PlayerService {
       };
     }
 
-    const object = this.objectService.getObject(objectId);
-    if (!object) {
-      return {
-        success: false,
-        message: 'Object not found',
-      };
-    }
-
-    // Check if object is in player's inventory
-    const inventoryIndex = player.inventory.indexOf(objectId);
-    if (inventoryIndex === -1) {
-      return {
-        success: false,
-        message: `You do not have the ${object.name} in your inventory.`,
-      };
-    }
-
-    // Remove from player's inventory
-    player.inventory.splice(inventoryIndex, 1);
-    await this.updatePlayer(playerId, { inventory: player.inventory });
-
-    // If player has a current room, add object to that room
-    if (player.roomId) {
-      // Update object's room ID
-      object.roomId = player.roomId;
-      try {
-        await this.entityService.updateEntity(objectId, object);
-      } catch (error) {
-        this.logger.error(`Failed to update object entity ${objectId}:`, error);
-      }
-
-      return {
-        success: true,
-        message: `You drop the ${object.name}.`,
-        effects: {
-          itemDropped: objectId,
-          droppedInRoom: player.roomId,
-        },
-      };
-    }
-
-    // If no room, just remove from inventory
-    return {
-      success: true,
-      message: `You drop the ${object.name}.`,
-      effects: {
-        itemDropped: objectId,
+    return await this.inventoryHelper.dropObject(
+      player,
+      objectId,
+      async (p) => await this.updatePlayer(p.id, { inventory: p.inventory }),
+      async (objId, updates) => {
+        try {
+          await this.entityService.updateEntity(objId, updates);
+        } catch (error) {
+          this.logger.error(`Failed to update object entity ${objId}:`, error);
+        }
       },
-    };
+    );
   }
 }

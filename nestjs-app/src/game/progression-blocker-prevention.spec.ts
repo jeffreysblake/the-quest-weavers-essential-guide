@@ -763,7 +763,7 @@ describe('Progression Blocker Prevention', () => {
   describe('Category 3: NPC Critical Path Protection', () => {
     describe('Required NPC killed', () => {
       it('should prevent killing quest-critical NPCs', async () => {
-        const questGiver = entityService.createEntity({
+        const questGiver = await entityService.createEntity({
           id: 'quest_npc',
           name: 'Quest Giver',
           type: 'npc',
@@ -802,7 +802,7 @@ describe('Progression Blocker Prevention', () => {
       });
 
       it('should make essential NPCs unkillable', async () => {
-        const essentialNPC = entityService.createEntity({
+        const essentialNPC = await entityService.createEntity({
           id: 'essential_npc',
           name: 'Main Character',
           type: 'npc',
@@ -819,7 +819,7 @@ describe('Progression Blocker Prevention', () => {
       });
 
       it('should revive essential NPCs if killed through bug', async () => {
-        const npc = entityService.createEntity({
+        const npc = await entityService.createEntity({
           id: 'npc1',
           name: 'Essential NPC',
           type: 'npc',
@@ -858,7 +858,7 @@ describe('Progression Blocker Prevention', () => {
           connections: {},
         });
 
-        const questNPC = entityService.createEntity({
+        const questNPC = await entityService.createEntity({
           id: 'npc1',
           name: 'Quest NPC',
           type: 'npc',
@@ -898,7 +898,7 @@ describe('Progression Blocker Prevention', () => {
           connections: { north: 'other' },
         });
 
-        const npc = entityService.createEntity({
+        const npc = await entityService.createEntity({
           id: 'npc1',
           name: 'Quest NPC',
           type: 'npc',
@@ -927,7 +927,7 @@ describe('Progression Blocker Prevention', () => {
 
     describe('NPC aggression prevents interaction', () => {
       it('should allow dialogue with hostile NPCs for quests', async () => {
-        const hostileNPC = entityService.createEntity({
+        const hostileNPC = await entityService.createEntity({
           id: 'npc1',
           name: 'Hostile NPC',
           type: 'npc',
@@ -947,7 +947,7 @@ describe('Progression Blocker Prevention', () => {
       });
 
       it('should prevent permanent NPC hostility for quest givers', async () => {
-        const questGiver = entityService.createEntity({
+        const questGiver = await entityService.createEntity({
           id: 'npc1',
           name: 'Quest Giver',
           type: 'npc',
@@ -1496,7 +1496,7 @@ describe('Progression Blocker Prevention', () => {
         size: { width: 10, height: 10, depth: 3 },
       });
 
-      const vendor = entityService.createEntity({
+      const vendor = await entityService.createEntity({
         id: 'vendor',
         name: 'Merchant',
         type: 'npc',
