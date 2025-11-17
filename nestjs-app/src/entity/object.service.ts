@@ -4,6 +4,8 @@ import { IObject, ISpatialRelationship } from './object.interface';
 import { DatabaseService } from '../database/database.service';
 import { ObjectData } from '../database/database.interfaces';
 import { v4 as uuidv4 } from 'uuid';
+import { getDefaultMaterialProperties } from './material-properties';
+import { ObjectPlacementHelper } from './object-placement.helper';
 
 @Injectable()
 export class ObjectService {
@@ -15,103 +17,14 @@ export class ObjectService {
     private readonly databaseService?: DatabaseService,
   ) {}
 
-  private getDefaultMaterialProperties(material?: string) {
-    if (!material) return undefined;
-
-    // Default material properties based on common materials
-    const materialDefaults: Record<string, any> = {
-      wood: {
-        material: 'wood',
-        density: 0.6,
-        conductivity: 0.1,
-        flammability: 7,
-        brittleness: 3,
-        resistances: { ice: 2, lightning: 5 },
-      },
-      metal: {
-        material: 'metal',
-        density: 9,
-        conductivity: 9,
-        flammability: 0,
-        brittleness: 3,
-        resistances: { fire: 8, lightning: 1, ice: 7 },
-      },
-      steel: {
-        material: 'steel',
-        density: 7.85,
-        conductivity: 8,
-        flammability: 0,
-        brittleness: 2,
-        resistances: { force: 5, fire: 7 },
-      },
-      iron: {
-        material: 'iron',
-        density: 7.87,
-        conductivity: 7,
-        flammability: 0,
-        brittleness: 3,
-        resistances: { force: 4, fire: 6 },
-      },
-      stone: {
-        material: 'stone',
-        density: 2.5,
-        conductivity: 1,
-        flammability: 0,
-        brittleness: 6,
-        resistances: { fire: 9, force: 7 },
-      },
-      glass: {
-        material: 'glass',
-        density: 2.5,
-        conductivity: 1,
-        flammability: 0,
-        brittleness: 9,
-        resistances: { fire: 5 },
-      },
-      cloth: {
-        material: 'cloth',
-        density: 0.5,
-        conductivity: 0.1,
-        flammability: 8,
-        brittleness: 1,
-        resistances: { ice: 1 },
-      },
-      leather: {
-        material: 'leather',
-        density: 0.9,
-        conductivity: 0.2,
-        flammability: 5,
-        brittleness: 2,
-        resistances: { fire: 3, ice: 3 },
-      },
-      organic: {
-        material: 'organic',
-        density: 0.8,
-        conductivity: 0.3,
-        flammability: 6,
-        brittleness: 4,
-        resistances: { ice: 2 },
-      },
-    };
-
-    return (
-      materialDefaults[material.toLowerCase()] || {
-        material,
-        density: 1,
-        conductivity: 1,
-        flammability: 1,
-        brittleness: 1,
-        resistances: {},
-      }
-    );
-  }
+  // Material properties moved to material-properties.ts
 
   createObject(objectData: Omit<IObject, 'id' | 'type'>): IObject {
     // Auto-generate material properties if material is specified but materialProperties is not
     const materialProperties =
       objectData.materialProperties ||
       (objectData.material
-        ? this.getDefaultMaterialProperties(objectData.material)
+        ? getDefaultMaterialProperties(objectData.material)
         : undefined);
 
     // Create object with generated ID
@@ -390,50 +303,13 @@ export class ObjectService {
     );
   }
 
+  // Spatial placement validation moved to object-placement.helper.ts
   private canPlaceObject(
     object: IObject,
     target: any,
     relationshipType: string,
   ): boolean {
-    // Basic validation
-    if (object.id === target.id) return false;
-
-    switch (relationshipType) {
-      case 'inside':
-        if (target.type !== 'object') return false;
-        const targetObj = target as IObject;
-        if (!targetObj.isContainer || !targetObj.canContain) return false;
-        if (targetObj.state?.isLocked) return false;
-
-        // Container must be open to place items inside (unless it starts open)
-        if (
-          targetObj.state &&
-          targetObj.state.isOpen !== undefined &&
-          !targetObj.state.isOpen
-        ) {
-          return false;
-        }
-
-        // Check capacity
-        const currentCount = targetObj.containedObjects?.length || 0;
-        const capacity = targetObj.containerCapacity || 10;
-        return currentCount < capacity;
-
-      case 'on_top_of':
-        // Can't place on top of very small objects
-        return (
-          target.type === 'object' &&
-          (target as IObject).objectType === 'furniture'
-        );
-
-      case 'next_to':
-      case 'underneath':
-      case 'attached_to':
-        return true;
-
-      default:
-        return false;
-    }
+    return ObjectPlacementHelper.canPlaceObject(object, target, relationshipType);
   }
 
   // Enhanced persistence methods with database integration
