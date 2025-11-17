@@ -8,7 +8,7 @@
   "max_health": 50,
   "level": 10,
   "experience": 0,
-  "inventory_data": [],
+  "inventory_data": ["eternal-sponge"],
   "dialogue_tree_data": {
     "initial_greeting": {
       "text": "*Swirling soap coalesces into a vaguely humanoid form* Ahhhh, welcome, welcome! I am Madame Detergent, seer of suds, oracle of bubbles, reader of the foam futures! Come, sit, let me gaze into the bubbles and divine your destiny! *gestures to a bubble-filled crystal ball that's really just a sphere of soap* I sense... I sense great turmoil in your path! Also, you smell faintly of regret and mop water. The bubbles never lie!",

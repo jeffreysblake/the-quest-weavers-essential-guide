@@ -3,6 +3,7 @@ import { FileScannerService } from './file-scanner.service';
 import { DatabaseService } from '../database/database.service';
 import { ValidationService } from '../validation/validation.service';
 import { GameLogicValidatorService } from '../validation/game-logic-validator.service';
+import { GameIntegrityValidatorService } from '../validation/game-integrity-validator.service';
 import {
   GameData,
   RoomData,
@@ -27,6 +28,7 @@ export class GameFileService {
     private readonly databaseService: DatabaseService,
     private readonly validationService: ValidationService,
     private readonly gameLogicValidator: GameLogicValidatorService,
+    private readonly gameIntegrityValidator: GameIntegrityValidatorService,
   ) {
     // Initialize helpers
     this.jsonLoader = new JsonFileLoaderHelper(fileScannerService, validationService);
@@ -89,6 +91,55 @@ export class GameFileService {
       const objects = await this.loadObjects(gameId);
       const npcs = await this.loadNpcs(gameId);
       const connections = await this.loadConnections(gameId);
+
+      // ===== COMPREHENSIVE INTEGRITY VALIDATION =====
+      // Validate all data integrity before saving to database
+      this.logger.log('Running comprehensive game integrity validation...');
+      const integrityResult = this.gameIntegrityValidator.validate(
+        gameData,
+        rooms,
+        objects,
+        npcs,
+        connections,
+      );
+
+      // Log all errors and warnings
+      if (integrityResult.errors.length > 0) {
+        this.logger.warn(`Found ${integrityResult.errors.length} integrity errors:`);
+        for (const error of integrityResult.errors) {
+          if (error.severity === 'critical') {
+            this.logger.error(`  [CRITICAL] ${error.category}: ${error.message}`);
+          } else if (error.severity === 'high') {
+            this.logger.warn(`  [HIGH] ${error.category}: ${error.message}`);
+          } else {
+            this.logger.warn(`  [${error.severity.toUpperCase()}] ${error.category}: ${error.message}`);
+          }
+        }
+      }
+
+      if (integrityResult.warnings.length > 0) {
+        this.logger.log(`Found ${integrityResult.warnings.length} integrity warnings:`);
+        for (const warning of integrityResult.warnings) {
+          this.logger.warn(`  [WARNING] ${warning.category}: ${warning.message}`);
+          if (warning.suggestion) {
+            this.logger.log(`    Suggestion: ${warning.suggestion}`);
+          }
+        }
+      }
+
+      // If there are blocking errors, return failure
+      if (integrityResult.summary.blockingIssues.length > 0) {
+        return {
+          success: false,
+          message: `Game integrity validation failed with ${integrityResult.summary.blockingIssues.length} blocking issues:\n${integrityResult.summary.blockingIssues.map(i => `  - ${i}`).join('\n')}`,
+          loaded: { game: gameData, rooms, objects, npcs, connections },
+        };
+      }
+
+      // If validation passed or only has non-blocking issues, proceed with database save
+      if (!integrityResult.isValid) {
+        this.logger.warn('Game has non-blocking validation issues but proceeding with save');
+      }
 
       // Save to database with versioning
       this.databaseImporter.saveGameToDatabase(gameData, rooms, objects, npcs, connections);

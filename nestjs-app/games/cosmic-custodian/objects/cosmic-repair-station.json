@@ -1,0 +1,34 @@
+{
+  "id": "cosmic-repair-station",
+  "name": "Cosmic Repair Station",
+  "description": "A massive contraption made of copper tubes, glass spheres, and questionable science",
+  "object_type": "tool",
+  "position": { "x": 35, "y": 15, "z": 1 },
+  "material": "mixed",
+  "material_properties": {
+    "density": 12,
+    "conductivity": 8,
+    "flammability": 2,
+    "brittleness": 6,
+    "resistances": { "fire": 7, "ice": 5, "lightning": 9, "force": 8, "magic": 8 }
+  },
+  "weight": 500,
+  "is_portable": false,
+  "is_container": false,
+  "state_data": {
+    "powered": true,
+    "operational": true,
+    "humming": true
+  },
+  "properties": {
+    "repair_station": true,
+    "required_items": ["vacuum-shard-1", "vacuum-shard-2", "vacuum-shard-3", "vacuum-shard-4", "vacuum-shard-5", "holy-scrub-brush", "divine-duster", "eternal-sponge", "quantum-mop", "celestial-spray-bottle"],
+    "produces": "repaired-vacuum-of-eternity",
+    "quest_critical": true
+  },
+  "interactions": {
+    "examine": "This bizarre contraption is Professor Scrubsworth's magnum opus - the Cosmic Repair Station. Made from copper tubes, glass spheres, and what appears to be a modified toilet plunger, it hums with barely-contained cosmic energy. According to the hastily-scrawled instructions, if you place all five vacuum shards and the five Sacred Cleaning Artifacts into the station's receptacles, it will harness the power of pure cleanliness to fuse them back into the Vacuum of Eternity. The control panel has a large button labeled 'REPAIR' in glowing letters. Below it, a smaller label reads: 'WARNING: Do not press unless you have ALL required components. Partial repairs may result in cosmic anomalies, existential regret, or mild indigestion.'",
+    "use": "You approach the Cosmic Repair Station and check your inventory. If you have all five vacuum shards and all five Sacred Cleaning Artifacts, you can activate the repair process and save reality. If not, you'll need to continue your quest.",
+    "repair": "REPAIR SEQUENCE INITIATED: Place all vacuum shards and Sacred Artifacts into the station to repair the Vacuum of Eternity!"
+  }
+}
