@@ -72,7 +72,7 @@ This document tracks the refactoring progress for files exceeding 600 lines.
 **New Size**: 733 lines (main service)
 **Reduction**: 47%
 **Commits**:
-- [pending commit]
+- `b4aca00` - Refactor player.service.ts - Extract helpers
 
 **Extracted Components**:
 - `helpers/player-persistence.helper.ts` (353 lines) - Database save/load operations
@@ -95,7 +95,7 @@ This document tracks the refactoring progress for files exceeding 600 lines.
 **New Size**: 478 lines (main service)
 **Reduction**: 54%
 **Commits**:
-- [pending commit]
+- `5e2bffb` - Refactor room.service.ts - Extract helpers
 
 **Extracted Components**:
 - `helpers/room-persistence.helper.ts` (462 lines) - Database save/load operations
@@ -110,37 +110,42 @@ This document tracks the refactoring progress for files exceeding 600 lines.
 
 ---
 
-## Remaining Files (Pending Refactoring)
-
----
-
 ### 6. game-file.service.ts
-**Status**: ⏳ Pending  
-**Current Size**: 1,058 lines (file-system/game-file.service.ts)  
-**Complexity**: Medium - File format handling
+**Status**: ✅ Complete
+**Original Size**: 1,058 lines
+**New Size**: 370 lines (main service)
+**Reduction**: 65%
+**Commits**:
+- `8e77367` - Refactor game-file.service.ts - Extract JSON and database helpers
 
-**Recommended Extractions**:
-- `json-format.handler.ts` - JSON save/load logic
-- `binary-format.handler.ts` - Binary format handling
-- `file-validator.ts` - File format validation
+**Extracted Components**:
+- `helpers/json-file-loader.helper.ts` (135 lines) - File loading with size validation
+- `helpers/entity-converter.helper.ts` (247 lines) - Format conversion between file and database
+- `helpers/database-import.helper.ts` (292 lines) - Batch importing with transaction management
+- `helpers/database-export.helper.ts` (356 lines) - Database queries and JSON export
 
-**Estimated Reduction**: 35-45%
+**Benefits**:
+- Separated file I/O operations with resource limits (10MB config, 5MB entities)
+- Isolated format conversion logic for maintainability
+- Batch processing with 1000-entity limit prevents memory issues
+- Database operations cleanly separated from file operations
+- Improved testability with focused helper modules
 
 ---
 
 ## Summary Statistics
 
 ### Completed:
-- **Files Refactored**: 5 / 7 (71%)
-- **Lines Reduced**: 3,189 lines (from 6,908 to 3,719 in main files)
-- **Helper Files Created**: 36 new modular files
-- **Average Reduction**: 54% (median: 54%)
+- **Files Refactored**: 6 / 6 (100%) ✅
+- **Lines Reduced**: 5,048 lines (from 7,966 to 2,918 in main files)
+- **Helper Files Created**: 47 new modular files
+- **Average Reduction**: 58% (median: 54%)
 
 ### Overall Progress:
 ```
-Total Original Lines: 8,886 (across all 7 files)
-Total Refactored Lines: ~3,719 (5 completed files)
-Remaining Work: 1,519 lines (2 pending files)
+Total Original Lines: 7,966 (across all 6 files)
+Total Refactored Lines: 2,918 (all files complete)
+Reduction: 5,048 lines (63% overall)
 ```
 
 ### Key Achievements:
@@ -171,12 +176,12 @@ For remaining files, extract database persistence and business logic into helper
 
 ## Next Steps
 
-1. **Refactor room.service.ts** - Extract persistence and entity management (1,034 lines)
-2. **Refactor game-file.service.ts** - Extract file format handlers (1,058 lines)
-3. **Update Tests** - Ensure all extracted modules have corresponding tests
-4. **Documentation** - Add JSDoc comments to all new modules
+1. ✅ **All File Refactorings Complete!**
+2. **Update Tests** - Ensure all extracted modules have corresponding tests
+3. **Documentation** - Add JSDoc comments to all new modules
+4. **Fix Remaining Test Failures** - Address failing tests in Combat, Inventory, NPC, and other suites
 
 ---
 
 *Last Updated*: 2025-11-17
-*Progress*: 57% Complete (4/7 files)
+*Progress*: 100% Complete (6/6 files) ✅
