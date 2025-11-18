@@ -45,6 +45,9 @@ export interface CommandResult {
     experienceGained?: number;
     leveledUp?: boolean;
     newLevel?: number;
+    playerDamageTaken?: number;
+    playerHealthRemaining?: number;
+    playerDefeated?: boolean;
   };
 }
 

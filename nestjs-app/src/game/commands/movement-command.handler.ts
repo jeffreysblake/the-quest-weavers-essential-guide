@@ -77,6 +77,21 @@ export class MovementCommandHandler implements ICommandHandler {
       };
     }
 
+    // Check if room is locked and requires a specific item
+    if ((targetRoom as any).locked && (targetRoom as any).requiredItem) {
+      const requiredItemId = (targetRoom as any).requiredItem;
+      const playerInventory = this.playerService.getInventory(player.id);
+      const hasRequiredItem = playerInventory.some(item => item.id === requiredItemId);
+
+      if (!hasRequiredItem) {
+        return {
+          success: false,
+          type: 'movement_blocked',
+          message: `The door to the ${targetRoom.name} is locked. You need the ${requiredItemId.replace(/-/g, ' ')} to enter.`,
+        };
+      }
+    }
+
     // Calculate new position - move player to the center of the target room
     const newPosition = {
       x: targetRoom.position.x + Math.floor(targetRoom.size.width / 2),

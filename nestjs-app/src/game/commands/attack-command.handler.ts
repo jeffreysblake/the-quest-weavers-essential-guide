@@ -174,7 +174,7 @@ export class AttackCommandHandler implements ICommandHandler {
         actualDamage,
       );
     } else {
-      return await this.handleTargetSurvive(targetEntity, message, actualDamage);
+      return await this.handleTargetSurvive(targetEntity, message, actualDamage, player);
     }
   }
 
@@ -325,6 +325,7 @@ export class AttackCommandHandler implements ICommandHandler {
     targetEntity: any,
     message: string,
     actualDamage: number,
+    player?: any,
   ): Promise<CommandResult> {
     // Target survived - update to fighting state
     if (targetEntity.state !== undefined) {
@@ -341,6 +342,63 @@ export class AttackCommandHandler implements ICommandHandler {
     }
 
     message += ` The ${targetEntity.name} has ${targetEntity.health}/${targetEntity.maxHealth} health remaining.`;
+
+    // NPC COUNTER-ATTACK: If the player is provided and the target can fight back
+    if (player && targetEntity.level !== undefined) {
+      // Calculate NPC damage based on NPC's level
+      const npcBaseDamage = Math.floor(Math.random() * 8) + 3; // 3-10
+      const npcLevelBonus = (targetEntity.level || 1) * 1.5;
+      const npcDamage = Math.floor(npcBaseDamage + npcLevelBonus);
+
+      // Apply damage to player
+      const previousPlayerHealth = player.health || 100;
+      const newPlayerHealth = Math.max(0, previousPlayerHealth - npcDamage);
+
+      // Update player health
+      try {
+        await this.playerService.updatePlayer(player.id, {
+          health: newPlayerHealth,
+        });
+
+        // Emit player health changed event
+        this.eventEmitter.emit(
+          GameEventType.ENTITY_UPDATED,
+          {
+            entityType: 'player',
+            entityId: player.id,
+            previousState: { health: previousPlayerHealth },
+            newState: { health: newPlayerHealth },
+          },
+          player.gameId,
+        );
+      } catch (error) {
+        console.error(`Failed to update player ${player.id} health:`, error);
+      }
+
+      // Add counter-attack to message
+      message += `\n\nThe ${targetEntity.name} counter-attacks, dealing ${npcDamage} damage to you!`;
+      message += ` You have ${newPlayerHealth}/${player.maxHealth || 100} health remaining.`;
+
+      // Check if player died
+      if (newPlayerHealth <= 0) {
+        message += `\n\nYou have been defeated by the ${targetEntity.name}!`;
+      }
+
+      return {
+        success: true,
+        type: 'combat',
+        message: message,
+        combatResult: {
+          damage: actualDamage,
+          targetDefeated: false,
+          targetHealthRemaining: targetEntity.health,
+          targetMaxHealth: targetEntity.maxHealth,
+          playerDamageTaken: npcDamage,
+          playerHealthRemaining: newPlayerHealth,
+          playerDefeated: newPlayerHealth <= 0,
+        },
+      };
+    }
 
     return {
       success: true,

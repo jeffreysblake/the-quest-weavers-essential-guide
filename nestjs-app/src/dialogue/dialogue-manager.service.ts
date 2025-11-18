@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import {
   IDialogueTree,
   IDialogueNode,
@@ -14,6 +14,7 @@ import {
 } from './dialogue.interfaces';
 import { EventEmitterService } from '../events/event-emitter.service';
 import { GameEventType } from '../events/event.interfaces';
+import { PlayerService } from '../entity/player.service';
 
 /**
  * Manages dialogue trees and conversation state
@@ -24,7 +25,11 @@ export class DialogueManagerService {
   private dialogueTrees: Map<string, IDialogueTree> = new Map(); // treeId -> tree
   private activeConversations: Map<string, IConversationState> = new Map(); // conversationId -> state
 
-  constructor(private readonly eventEmitter: EventEmitterService) {}
+  constructor(
+    private readonly eventEmitter: EventEmitterService,
+    @Inject(forwardRef(() => PlayerService))
+    private readonly playerService: PlayerService,
+  ) {}
 
   /**
    * Register a dialogue tree for an NPC
@@ -458,8 +463,20 @@ export class DialogueManagerService {
         break;
 
       case 'give_item':
-        if (action.itemId) {
-          context.playerInventory.push(action.itemId);
+        // Support both 'itemId' and 'value' for backwards compatibility with JSON files
+        const itemToGive = action.itemId || (action as any).value;
+        if (itemToGive) {
+          // Actually add the item to the player's inventory
+          try {
+            await this.playerService.addToInventory(context.playerId, itemToGive);
+            this.logger.log(`Gave item '${itemToGive}' to player ${context.playerId} via dialogue`);
+            // Also update context for immediate visibility
+            if (!context.playerInventory.includes(itemToGive)) {
+              context.playerInventory.push(itemToGive);
+            }
+          } catch (error) {
+            this.logger.error(`Failed to give item '${itemToGive}' to player ${context.playerId}:`, error);
+          }
         }
         break;
 
