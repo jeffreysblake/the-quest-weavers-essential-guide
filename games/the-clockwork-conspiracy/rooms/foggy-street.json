@@ -1,0 +1,22 @@
+{
+  "id": "foggy-street",
+  "name": "Foggy Street",
+  "description": "The main thoroughfare of Gearhaven's office district. Fog mingles with industrial smog, reducing visibility to a few feet. The clatter of horse-drawn carriages and the whir of clockwork automatons fill the air. Street lamps powered by pneumatic gas hiss and sputter, creating pools of amber light in the gloom.",
+  "position": {
+    "x": 0,
+    "y": -20,
+    "z": 0
+  },
+  "items": [],
+  "exits": {
+    "north": "office-hallway",
+    "south": "police-station",
+    "east": "clocktower-square",
+    "west": "steamwright-workshop"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "factory-district",
+  "name": "Factory District",
+  "description": "The industrial heart of Gearhaven. Massive factories belch smoke into the already polluted sky. The ground vibrates with the rhythm of steam hammers and hydraulic presses. Workers in oil-stained coveralls trudge between shifts, their faces grey with exhaustion. The air tastes of coal and metal.",
+  "position": {
+    "x": 40,
+    "y": -20,
+    "z": 0
+  },
+  "items": [],
+  "exits": {
+    "west": "clocktower-square",
+    "north": "gearcog-factory",
+    "south": "warehouse-district"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

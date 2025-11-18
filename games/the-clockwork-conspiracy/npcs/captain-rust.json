@@ -1,0 +1,33 @@
+{
+  "id": "captain-rust",
+  "name": "Captain Rust",
+  "description": "Leader of the dock smugglers, a grizzled sailor who knows every illegal secret in Gearhaven.",
+  "position": {"x": 40, "y": -60, "z": -5},
+  "health": 90,
+  "maxHealth": 90,
+  "level": 3,
+  "inventory": ["smuggled-goods", "dock-pass"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*draws cutlass* Law ain't welcome here, Detective. State your business or leave in a box.",
+      "choices": [
+        {"text": "I'm investigating a murder, not smuggling.", "leads_to": "murder_question"},
+        {"text": "*attack*", "leads_to": "combat"}
+      ]
+    },
+    "murder_question": {
+      "text": "*lowers weapon* Steamwright? Aye, I knew him. Bought some of my... special imports. Good man. His death's bad for business. The Cog and Key's been cracking down, moving in on my operations.",
+      "choices": [
+        {"text": "Tell me about the Cog and Key.", "leads_to": "society_info"}
+      ]
+    },
+    "society_info": {
+      "text": "Secret society of rich bastards who run this city. They're planning something big—consolidating power. Steamwright was in their way. That's all I know. Now get out before my crew gets nervous.",
+      "choices": []
+    },
+    "combat": {
+      "text": "[COMBAT INITIATED]",
+      "choices": []
+    }
+  }
+}

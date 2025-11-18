@@ -1,0 +1,30 @@
+{
+  "id": "street-urchin-pip",
+  "name": "Pip the Street Urchin",
+  "description": "A quick-witted street child who sees and hears everything in Gearhaven.",
+  "position": {"x": 20, "y": -20, "z": 0},
+  "health": 30,
+  "maxHealth": 30,
+  "level": 1,
+  "inventory": ["stolen-wallet", "street-news"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "Spare a coin, mister Detective? I got eyes everywhere. Bet I seen things you'd like to know about.",
+      "choices": [
+        {"text": "*give coin*", "leads_to": "helpful"},
+        {"text": "Tell me about Steamwright.", "leads_to": "information"}
+      ]
+    },
+    "helpful": {
+      "text": "Thanks, mister! I seen the Professor the night he died. He was running, scared-like. Men in fancy coats were chasing him. He ducked into his workshop. Then I heard shouting, breaking glass. Then nothing. I ran.",
+      "choices": [],
+      "flags": ["witness_account"]
+    },
+    "information": {
+      "text": "Might remember something if my memory was jogged. Coins help memory, you know.",
+      "choices": [
+        {"text": "*give coin*", "leads_to": "helpful"}
+      ]
+    }
+  }
+}

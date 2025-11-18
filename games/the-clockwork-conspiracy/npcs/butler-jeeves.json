@@ -1,0 +1,35 @@
+{
+  "id": "butler-jeeves",
+  "name": "Jeeves the Butler",
+  "description": "The impeccable butler at the Gilded Gear Club, privy to many secrets of the elite.",
+  "position": {"x": 20, "y": 20, "z": 0},
+  "health": 50,
+  "maxHealth": 50,
+  "level": 1,
+  "inventory": ["member-list", "club-invitation"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*sniffs disdainfully* The Gilded Gear is members only. Unless you have an invitation, I must ask you to leave.",
+      "choices": [
+        {"text": "I'm investigating a murder.", "leads_to": "investigation"},
+        {"text": "*show badge*", "leads_to": "authority"}
+      ]
+    },
+    "investigation": {
+      "text": "*softens slightly* Professor Steamwright? A tragedy. He was a member here. I can tell you he dined with several prominent gentlemen the week before his death. The Mayor, Brassgear, and others. They seemed... agitated.",
+      "choices": [
+        {"text": "What were they discussing?", "leads_to": "eavesdropping"}
+      ]
+    },
+    "eavesdropping": {
+      "text": "*whispers* A butler hears many things. They spoke of 'Project Overthrow' and 'removing obstacles.' Steamwright objected loudly. He was escorted out. Three days later, he was dead. Make of that what you will, Detective.",
+      "choices": []
+    },
+    "authority": {
+      "text": "Very well, Detective. How may I assist?",
+      "choices": [
+        {"text": "I need information about your members.", "leads_to": "investigation"}
+      ]
+    }
+  }
+}

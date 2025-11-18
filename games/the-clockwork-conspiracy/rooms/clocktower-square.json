@@ -1,0 +1,24 @@
+{
+  "id": "clocktower-square",
+  "name": "Clocktower Square",
+  "description": "The heart of Gearhaven, dominated by the massive Clocktower that keeps the entire city synchronized. The tower's enormous gears are visible through glass panels, turning with mechanical precision. Street vendors sell hot chestnuts and newspapers. Pickpockets work the crowd. This is where all paths in the city converge.",
+  "position": {
+    "x": 20,
+    "y": -20,
+    "z": 0
+  },
+  "items": [
+    "newspaper-clipping"
+  ],
+  "exits": {
+    "west": "foggy-street",
+    "north": "upscale-promenade",
+    "east": "factory-district",
+    "south": "dockside-tavern"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "foreman-grimshaw",
+  "name": "Foreman Grimshaw",
+  "description": "Factory foreman at Gearcog Manufacturing, worn down by years of brutal labor and darker secrets.",
+  "position": {"x": 40, "y": 0, "z": 0},
+  "health": 70,
+  "maxHealth": 70,
+  "level": 2,
+  "inventory": ["factory-keys", "workers-testimony"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*wipes grease from hands* Detective. If you're here about the 'accidents,' I know nothing. If you're here about what's in the basement... I know even less.",
+      "choices": [
+        {"text": "What's in the basement?", "leads_to": "basement_secret"},
+        {"text": "I'm investigating the Steamwright murder.", "leads_to": "murder_connection"}
+      ]
+    },
+    "basement_secret": {
+      "text": "*nervous* Secret laboratory. Brassgear and his friends work down there. Making weapons, I think. Clockwork soldiers. Things that shouldn't exist. I pretend not to notice. Keeps me alive.",
+      "choices": [
+        {"text": "I need access.", "leads_to": "access_request"}
+      ]
+    },
+    "access_request": {
+      "text": "*hands you a card* Take this. But I never saw you. If they ask, you stole it. I got a family, Detective.",
+      "choices": [],
+      "actions": [{"type": "give_item", "value": "factory-access-card"}]
+    },
+    "murder_connection": {
+      "text": "Steamwright? He came here asking questions. Got too close to the truth. Next day, dead. Coincidence? In Gearhaven, there's no such thing.",
+      "choices": []
+    }
+  }
+}

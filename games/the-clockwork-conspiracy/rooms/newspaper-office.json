@@ -1,0 +1,22 @@
+{
+  "id": "newspaper-office",
+  "name": "The Gearhaven Gazette Office",
+  "description": "The newsroom of Gearhaven's premier newspaper. Reporters type furiously on mechanical typewriters while editors shout for copy. The smell of ink and desperation fills the air. The Gazette claims to be independent, but everyone knows it's owned by industrial magnates. Still, some journalists try to report the truth\u2014at great personal risk.",
+  "position": {
+    "x": 20,
+    "y": 0,
+    "z": 0
+  },
+  "items": [
+    "press-archives",
+    "reporters-notes"
+  ],
+  "exits": {
+    "west": "office-hallway"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

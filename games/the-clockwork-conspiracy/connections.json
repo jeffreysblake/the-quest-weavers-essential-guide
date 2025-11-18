@@ -1,0 +1,420 @@
+{
+  "connections": [
+    {
+      "from_room": "detectives-office",
+      "to_room": "office-hallway",
+      "direction": "south",
+      "description": "You can go south to office-hallway",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "office-hallway",
+      "to_room": "detectives-office",
+      "direction": "north",
+      "description": "You can go north to detectives-office",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "office-hallway",
+      "to_room": "foggy-street",
+      "direction": "south",
+      "description": "You can go south to foggy-street",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "office-hallway",
+      "to_room": "newspaper-office",
+      "direction": "east",
+      "description": "You can go east to newspaper-office",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "newspaper-office",
+      "to_room": "office-hallway",
+      "direction": "west",
+      "description": "You can go west to office-hallway",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "foggy-street",
+      "to_room": "office-hallway",
+      "direction": "north",
+      "description": "You can go north to office-hallway",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "foggy-street",
+      "to_room": "police-station",
+      "direction": "south",
+      "description": "You can go south to police-station",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "foggy-street",
+      "to_room": "clocktower-square",
+      "direction": "east",
+      "description": "You can go east to clocktower-square",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "foggy-street",
+      "to_room": "steamwright-workshop",
+      "direction": "west",
+      "description": "You can go west to steamwright-workshop",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "steamwright-workshop",
+      "to_room": "foggy-street",
+      "direction": "east",
+      "description": "You can go east to foggy-street",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "police-station",
+      "to_room": "foggy-street",
+      "direction": "north",
+      "description": "You can go north to foggy-street",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "police-station",
+      "to_room": "evidence-room",
+      "direction": "east",
+      "description": "You can go east to evidence-room",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "police-station",
+      "to_room": "interrogation-room",
+      "direction": "west",
+      "description": "You can go west to interrogation-room",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "police-station",
+      "to_room": "city-hall-entrance",
+      "direction": "south",
+      "description": "You can go south to city-hall-entrance",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "evidence-room",
+      "to_room": "police-station",
+      "direction": "west",
+      "description": "You can go west to police-station",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "interrogation-room",
+      "to_room": "police-station",
+      "direction": "east",
+      "description": "You can go east to police-station",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "city-hall-entrance",
+      "to_room": "police-station",
+      "direction": "north",
+      "description": "You can go north to police-station",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "city-hall-entrance",
+      "to_room": "mayors-office",
+      "direction": "south",
+      "description": "You can go south to mayors-office",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "city-hall-entrance",
+      "to_room": "records-hall",
+      "direction": "east",
+      "description": "You can go east to records-hall",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "mayors-office",
+      "to_room": "city-hall-entrance",
+      "direction": "north",
+      "description": "You can go north to city-hall-entrance",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "records-hall",
+      "to_room": "city-hall-entrance",
+      "direction": "west",
+      "description": "You can go west to city-hall-entrance",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "clocktower-square",
+      "to_room": "foggy-street",
+      "direction": "west",
+      "description": "You can go west to foggy-street",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "clocktower-square",
+      "to_room": "upscale-promenade",
+      "direction": "north",
+      "description": "You can go north to upscale-promenade",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "clocktower-square",
+      "to_room": "factory-district",
+      "direction": "east",
+      "description": "You can go east to factory-district",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "clocktower-square",
+      "to_room": "dockside-tavern",
+      "direction": "south",
+      "description": "You can go south to dockside-tavern",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "factory-district",
+      "to_room": "clocktower-square",
+      "direction": "west",
+      "description": "You can go west to clocktower-square",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "factory-district",
+      "to_room": "gearcog-factory",
+      "direction": "north",
+      "description": "You can go north to gearcog-factory",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "factory-district",
+      "to_room": "warehouse-district",
+      "direction": "south",
+      "description": "You can go south to warehouse-district",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "gearcog-factory",
+      "to_room": "factory-district",
+      "direction": "south",
+      "description": "You can go south to factory-district",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "gearcog-factory",
+      "to_room": "secret-laboratory",
+      "direction": "down",
+      "description": "You can go down to secret-laboratory",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "secret-laboratory",
+      "to_room": "gearcog-factory",
+      "direction": "up",
+      "description": "You can go up to gearcog-factory",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "warehouse-district",
+      "to_room": "factory-district",
+      "direction": "north",
+      "description": "You can go north to factory-district",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "warehouse-district",
+      "to_room": "dockside-tavern",
+      "direction": "west",
+      "description": "You can go west to dockside-tavern",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "warehouse-district",
+      "to_room": "abandoned-warehouse",
+      "direction": "south",
+      "description": "You can go south to abandoned-warehouse",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "abandoned-warehouse",
+      "to_room": "warehouse-district",
+      "direction": "north",
+      "description": "You can go north to warehouse-district",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "abandoned-warehouse",
+      "to_room": "secret-society-entrance",
+      "direction": "down",
+      "description": "You can go down to secret-society-entrance",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "secret-society-entrance",
+      "to_room": "abandoned-warehouse",
+      "direction": "up",
+      "description": "You can go up to abandoned-warehouse",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "secret-society-entrance",
+      "to_room": "ritual-chamber",
+      "direction": "south",
+      "description": "You can go south to ritual-chamber",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "ritual-chamber",
+      "to_room": "secret-society-entrance",
+      "direction": "north",
+      "description": "You can go north to secret-society-entrance",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "dockside-tavern",
+      "to_room": "clocktower-square",
+      "direction": "north",
+      "description": "You can go north to clocktower-square",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "dockside-tavern",
+      "to_room": "warehouse-district",
+      "direction": "east",
+      "description": "You can go east to warehouse-district",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "dockside-tavern",
+      "to_room": "docks",
+      "direction": "south",
+      "description": "You can go south to docks",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "docks",
+      "to_room": "dockside-tavern",
+      "direction": "north",
+      "description": "You can go north to dockside-tavern",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "docks",
+      "to_room": "smugglers-den",
+      "direction": "east",
+      "description": "You can go east to smugglers-den",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "smugglers-den",
+      "to_room": "docks",
+      "direction": "west",
+      "description": "You can go west to docks",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "upscale-promenade",
+      "to_room": "clocktower-square",
+      "direction": "south",
+      "description": "You can go south to clocktower-square",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "upscale-promenade",
+      "to_room": "exclusive-club",
+      "direction": "north",
+      "description": "You can go north to exclusive-club",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "upscale-promenade",
+      "to_room": "steamwright-manor",
+      "direction": "east",
+      "description": "You can go east to steamwright-manor",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "exclusive-club",
+      "to_room": "upscale-promenade",
+      "direction": "south",
+      "description": "You can go south to upscale-promenade",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "steamwright-manor",
+      "to_room": "upscale-promenade",
+      "direction": "west",
+      "description": "You can go west to upscale-promenade",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "steamwright-manor",
+      "to_room": "secret-basement",
+      "direction": "down",
+      "description": "You can go down to secret-basement",
+      "is_locked": false,
+      "required_key": null
+    },
+    {
+      "from_room": "secret-basement",
+      "to_room": "steamwright-manor",
+      "direction": "up",
+      "description": "You can go up to steamwright-manor",
+      "is_locked": false,
+      "required_key": null
+    }
+  ]
+}

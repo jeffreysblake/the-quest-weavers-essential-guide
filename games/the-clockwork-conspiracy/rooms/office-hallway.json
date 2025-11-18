@@ -1,0 +1,21 @@
+{
+  "id": "office-hallway",
+  "name": "Office Building Hallway",
+  "description": "A narrow hallway with peeling wallpaper and a threadbare carpet. Gas lamps mounted on brass fixtures cast wavering shadows. Doors line both sides, each bearing the name of a struggling business trying to survive in Gearhaven's cutthroat economy.",
+  "position": {
+    "x": 0,
+    "y": -10,
+    "z": 0
+  },
+  "items": [],
+  "exits": {
+    "north": "detectives-office",
+    "south": "foggy-street",
+    "east": "newspaper-office"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

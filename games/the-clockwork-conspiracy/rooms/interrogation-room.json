@@ -1,0 +1,19 @@
+{
+  "id": "interrogation-room",
+  "name": "Interrogation Room",
+  "description": "A stark room with a metal table bolted to the floor and two uncomfortable chairs. A single gas lamp hangs overhead, casting harsh shadows. The walls are soundproofed with layers of leather and felt. Many suspects have broken under pressure in this room. Will your current suspect be next?",
+  "position": {
+    "x": -20,
+    "y": -40,
+    "z": 0
+  },
+  "items": [],
+  "exits": {
+    "east": "police-station"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

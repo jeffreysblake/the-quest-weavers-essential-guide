@@ -1,0 +1,27 @@
+{
+  "id": "dock-worker-mcgee",
+  "name": "Dock Worker McGee",
+  "description": "A burly longshoreman who sees everything that happens at the docks.",
+  "position": {"x": 20, "y": -60, "z": 0},
+  "health": 80,
+  "maxHealth": 80,
+  "level": 1,
+  "inventory": ["cargo-manifest"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "Aye, Detective. Looking for information? I might've seen something the night Steamwright died. Buy me a pint and I'll talk.",
+      "choices": [
+        {"text": "*buy him a drink*", "leads_to": "information"},
+        {"text": "Just tell me what you know.", "leads_to": "refused"}
+      ]
+    },
+    "information": {
+      "text": "Saw fancy carriages near the warehouses that night. Men in robes carrying something heavy. Heard they dumped it in the harbor. Could've been a body, could've been cargo. Either way, it was suspicious.",
+      "choices": []
+    },
+    "refused": {
+      "text": "Then I got nothing to say. Good day, Detective.",
+      "choices": []
+    }
+  }
+}

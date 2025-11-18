@@ -1,0 +1,75 @@
+{
+  "id": "mayor-gildhart",
+  "name": "Mayor Augustus Gildhart",
+  "description": "The Mayor of Gearhaven—polished, charismatic, and utterly corrupt. He wears expensive suits and a politician's smile. Behind closed doors, he's the secret leader of the Cog and Key conspiracy.",
+  "position": {"x": 0, "y": -80, "z": 0},
+  "health": 120,
+  "maxHealth": 120,
+  "level": 6,
+  "inventory": ["conspiracy-seal-ring", "secret-society-robes", "blackmail-files"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*extends hand* Detective Cogsworth! A pleasure. Terrible business, this Steamwright murder. I trust you'll handle it with the utmost discretion? The city's reputation is at stake.",
+      "choices": [
+        {"text": "I'm more concerned with finding the killer, Mayor.", "leads_to": "priority_justice"},
+        {"text": "Did you know Professor Steamwright personally?", "leads_to": "connection_question"}
+      ]
+    },
+    "priority_justice": {
+      "text": "*smile tightens* Of course, of course. Justice must be served. But let's be practical, Detective. Gearhaven's economy depends on investor confidence. Scandal would be... unfortunate. I trust you understand?",
+      "choices": [
+        {"text": "I understand the importance of the truth.", "leads_to": "veiled_threat"},
+        {"text": "What are you really asking me to do?", "leads_to": "confrontation"}
+      ]
+    },
+    "connection_question": {
+      "text": "Socially, yes. Brilliant man, if a bit... radical in his thinking. Always going on about reforming this, revolutionizing that. Some people found his ideas threatening. But I supported innovation! His death is a tragedy.",
+      "choices": [
+        {"text": "Who found his ideas threatening?", "leads_to": "suspects_hint"},
+        {"text": "What specific ideas?", "leads_to": "dangerous_knowledge"}
+      ]
+    },
+    "veiled_threat": {
+      "text": "*cold eyes behind the smile* The 'truth' is often... complicated. I'm sure a man of your intelligence knows when to focus on facts that matter, and when certain details might cause unnecessary chaos. Your career depends on good judgment, Detective.",
+      "choices": [
+        {"text": "Is that a threat?", "leads_to": "confrontation"},
+        {"text": "*leave without responding*", "leads_to": "dismissed"}
+      ],
+      "flags": ["mayor_suspicious"]
+    },
+    "confrontation": {
+      "text": "*facade drops* Don't be naive, Detective. You're in deeper waters than you realize. Some deaths serve a greater purpose. Leave this alone, or you'll join Steamwright. Are we clear?",
+      "choices": [
+        {"text": "Crystal clear. I know exactly what you are.", "leads_to": "declared_enemy"}
+      ],
+      "flags": ["mayor_enemy", "threatened_by_mayor"]
+    },
+    "declared_enemy": {
+      "text": "*stands* Get out of my office. And remember—I own this city. The police, the courts, everything. You're alone, Detective. Completely alone.",
+      "choices": []
+    },
+    "suspects_hint": {
+      "text": "Various parties. Industrial competitors. Labor agitators he tried to help. Even some in government who felt his innovations might... disrupt the established order. Tragic that someone acted on those concerns.",
+      "choices": [
+        {"text": "You seem to know a lot about this.", "leads_to": "suspicion"}
+      ]
+    },
+    "dangerous_knowledge": {
+      "text": "*pauses* He claimed to have discovered evidence of corruption at the highest levels. Conspiracy theories, really. The ramblings of an obsessed mind. I'm sure it was nothing. Focus on finding the actual killer, Detective.",
+      "choices": [
+        {"text": "What if his claims were true?", "leads_to": "confrontation"}
+      ],
+      "flags": ["mayor_very_suspicious"]
+    },
+    "suspicion": {
+      "text": "It's my job to know everything that happens in Gearhaven, Detective. Now, I'm a very busy man. Unless there's something else?",
+      "choices": [
+        {"text": "No, Mayor. Thank you for your time.", "leads_to": "dismissed"}
+      ]
+    },
+    "dismissed": {
+      "text": "Good day, Detective. And remember—discretion.",
+      "choices": []
+    }
+  }
+}

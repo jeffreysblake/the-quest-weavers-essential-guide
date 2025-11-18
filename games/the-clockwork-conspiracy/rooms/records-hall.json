@@ -1,0 +1,22 @@
+{
+  "id": "records-hall",
+  "name": "Public Records Hall",
+  "description": "A vast hall filled with filing cabinets and pneumatic tube systems that deliver documents throughout the building. Clerks operate card catalogue machines, their fingers flying over brass keyboards. The hiss and clatter of the filing system creates a constant backdrop. Here, every transaction, every deed, every birth and death in Gearhaven is recorded.",
+  "position": {
+    "x": 20,
+    "y": -60,
+    "z": 0
+  },
+  "items": [
+    "property-records",
+    "conspiracy-ledger"
+  ],
+  "exits": {
+    "west": "city-hall-entrance"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

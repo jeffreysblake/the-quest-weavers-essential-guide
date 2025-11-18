@@ -1,0 +1,53 @@
+{
+  "id": "constable-pennyworth",
+  "name": "Constable Pennyworth",
+  "description": "A young, earnest constable with bright eyes and an honest face. One of the few officers you trust completely. He's eager to prove himself and believes in justice, not politics.",
+  "position": {"x": 0, "y": -40, "z": 0},
+  "health": 80,
+  "maxHealth": 80,
+  "level": 2,
+  "inventory": ["police-whistle", "arrest-warrant"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "Detective Cogsworth! I've been going over the Steamwright case files. There's something odd about this one. The official report says robbery, but nothing valuable was taken. And there are details that don't add up...",
+      "choices": [
+        {"text": "Tell me what you've found.", "leads_to": "share_findings"},
+        {"text": "Be careful. This case has powerful people watching.", "leads_to": "warning_received"}
+      ]
+    },
+    "share_findings": {
+      "text": "The time of death doesn't match the alibis of several suspects. The murder weapon—a clockwork device—wasn't something a common thief would use. And I found this note in the evidence, marked 'irrelevant' by someone above our pay grade. *hands you a cryptic note*",
+      "choices": [
+        {"text": "Good work. Keep digging quietly.", "leads_to": "encouragement"},
+        {"text": "Who marked it irrelevant?", "leads_to": "cover_up_hint"}
+      ],
+      "actions": [{"type": "give_item", "value": "cryptic-note"}]
+    },
+    "warning_received": {
+      "text": "I know, sir. But that's exactly why we need to solve this properly. If powerful people are involved, we need the truth more than ever. You can count on me.",
+      "choices": [
+        {"text": "I'm glad you're on this case with me.", "leads_to": "loyalty"},
+        {"text": "Just watch your back.", "leads_to": "understood"}
+      ]
+    },
+    "cover_up_hint": {
+      "text": "*lowers voice* The Chief himself. Detective, I think there's a cover-up. I don't know how deep it goes, but... be careful who you trust.",
+      "choices": [
+        {"text": "Thank you for the warning.", "leads_to": "understood"}
+      ],
+      "flags": ["pennyworth_ally", "knows_corruption"]
+    },
+    "encouragement": {
+      "text": "Will do, sir. I'll report anything else I find. Justice for Professor Steamwright.",
+      "choices": []
+    },
+    "loyalty": {
+      "text": "Always, Detective. We'll solve this together—the right way.",
+      "choices": []
+    },
+    "understood": {
+      "text": "Understood, sir. I'll be in touch.",
+      "choices": []
+    }
+  }
+}

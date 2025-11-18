@@ -1,0 +1,41 @@
+{
+  "id": "silas-informant",
+  "name": "Silas the Informant",
+  "description": "A wiry man with shifty eyes who seems to know everything happening in Gearhaven's underworld. For the right price, he'll tell you what you need to know.",
+  "position": {"x": 20, "y": -40, "z": 0},
+  "health": 50,
+  "maxHealth": 50,
+  "level": 1,
+  "inventory": ["stolen-documents", "blackmail-material"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*slides into seat across from you* Detective. Heard you're asking questions about Steamwright. Dangerous questions. Information like that... has a price.",
+      "choices": [
+        {"text": "How much?", "leads_to": "negotiate"},
+        {"text": "Tell me what you know or I'll arrest you.", "leads_to": "threat"}
+      ]
+    },
+    "negotiate": {
+      "text": "Fifty crowns. And that's a discount, considering what I know could get me killed. The Cog and Key don't like loose ends.",
+      "choices": [
+        {"text": "*pay 50 crowns*", "leads_to": "paid", "requiredItem": "crowns-50"},
+        {"text": "Too expensive.", "leads_to": "refused"}
+      ]
+    },
+    "paid": {
+      "text": "*pockets coins* Smart. Steamwright stumbled onto something big. Secret society running the city—politicians, factory owners, even cops. They meet in a ritual chamber under the old warehouses. Password changes weekly, but I heard this week's is 'Eternal Mechanism'. Good luck, Detective. You'll need it.",
+      "choices": [],
+      "actions": [{"type": "set_flag", "value": "learned_password"}]
+    },
+    "refused": {
+      "text": "Your funeral. Literally. Good luck solving this one alone.",
+      "choices": []
+    },
+    "threat": {
+      "text": "On what charge? I'm just a humble citizen enjoying a drink. Besides, arresting me won't get you the information. But paying me will.",
+      "choices": [
+        {"text": "Fine. How much?", "leads_to": "negotiate"}
+      ]
+    }
+  }
+}

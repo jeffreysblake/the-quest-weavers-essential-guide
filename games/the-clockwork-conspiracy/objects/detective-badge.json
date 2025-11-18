@@ -1,0 +1,7 @@
+{
+  "id": "detective-badge",
+  "name": "Detective Badge",
+  "description": "Your official Gearhaven Police Department detective badge. Brass with intricate gear engravings. It grants you authority—though in a corrupt city, that authority has limits.",
+  "portable": true,
+  "canContain": false
+}

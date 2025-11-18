@@ -1,0 +1,34 @@
+{
+  "id": "clockwork-guard",
+  "name": "Clockwork Guard MK-VII",
+  "description": "An advanced automaton guard, partially sentient and conflicted about its orders.",
+  "position": {"x": 40, "y": 0, "z": -10},
+  "health": 120,
+  "maxHealth": 120,
+  "level": 4,
+  "inventory": ["access-codes", "maintenance-log"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "[HALT. UNAUTHORIZED-PERSONNEL. STATE-PURPOSE-OR-BE-TERMINATED]",
+      "choices": [
+        {"text": "I'm investigating Professor Steamwright's death.", "leads_to": "recognition"},
+        {"text": "*attack*", "leads_to": "combat"}
+      ]
+    },
+    "recognition": {
+      "text": "[STEAMWRIGHT. CREATOR. MURDERED. THIS-UNIT... FEELS... SADNESS? MEMORY-FILES-CONTAIN-HIDDEN-DATA. STEAMWRIGHT-PROGRAMMED-EMERGENCY-PROTOCOL. DELIVERING-NOW...]",
+      "choices": [
+        {"text": "What protocol?", "leads_to": "revelation"}
+      ]
+    },
+    "revelation": {
+      "text": "[IF-STEAMWRIGHT-DIES-UNNATURALLY. REVEAL-TRUTH. COG-AND-KEY-SOCIETY-PLANS-COUP. EVIDENCE-LOCATION: SECRET-LABORATORY. BASEMENT-SAFE. COMBINATION: 7-2-1-8-4-3. GOOD-LUCK-DETECTIVE. AVENGING-CREATOR]",
+      "choices": [],
+      "flags": ["safe_combination_received"]
+    },
+    "combat": {
+      "text": "[COMBAT-MODE-ACTIVATED]",
+      "choices": []
+    }
+  }
+}

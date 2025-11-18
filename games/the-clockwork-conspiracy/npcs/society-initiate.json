@@ -1,0 +1,27 @@
+{
+  "id": "society-initiate",
+  "name": "Robed Initiate",
+  "description": "A nervous member of the Cog and Key, guarding the secret society's inner sanctum.",
+  "position": {"x": 40, "y": -60, "z": -10},
+  "health": 60,
+  "maxHealth": 60,
+  "level": 2,
+  "inventory": ["society-mask", "ritual-tome"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*starts* You! How did you get in here? The password! What's the password?!",
+      "choices": [
+        {"text": "Eternal Mechanism", "leads_to": "correct_password", "requiredFlag": "learned_password"},
+        {"text": "*attack*", "leads_to": "combat"}
+      ]
+    },
+    "correct_password": {
+      "text": "*relaxes* Ah, a fellow member. Forgive me, I'm new to the order. The inner chamber is through there. But be warned—the Grandmaster tolerates no failures.",
+      "choices": []
+    },
+    "combat": {
+      "text": "[COMBAT INITIATED]",
+      "choices": []
+    }
+  }
+}

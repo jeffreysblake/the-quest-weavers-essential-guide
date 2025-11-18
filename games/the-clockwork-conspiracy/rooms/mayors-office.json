@@ -1,0 +1,22 @@
+{
+  "id": "mayors-office",
+  "name": "Mayor's Office",
+  "description": "An opulent office filled with expensive mahogany furniture and plush velvet drapes. The Mayor's desk is a masterwork of clockwork craftsmanship, with drawers that open on precise timers. Portraits of previous mayors line the walls. Through the window, you can see the entire city\u2014including the smokestacks of the factories that fund this luxury.",
+  "position": {
+    "x": 0,
+    "y": -80,
+    "z": 0
+  },
+  "items": [
+    "mayors-schedule",
+    "encrypted-telegram"
+  ],
+  "exits": {
+    "north": "city-hall-entrance"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "detectives-office",
+  "name": "Detective's Office",
+  "description": "A cramped office on the third floor of a weathered building. Papers are scattered across your desk, a gas lamp flickers overhead, and the constant hiss of steam pipes creates an industrial symphony. Through the grimy window, the smog-choked skyline of Gearhaven stretches out before you.",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "items": [
+    "case-file",
+    "magnifying-glass"
+  ],
+  "exits": {
+    "south": "office-hallway"
+  },
+  "ambientSound": "The rhythmic ticking of gears and distant factory whistles",
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

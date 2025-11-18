@@ -1,0 +1,22 @@
+{
+  "id": "docks",
+  "name": "Gearhaven Docks",
+  "description": "The bustling waterfront where cargo ships arrive from across the world. Steam-powered cranes load and unload goods. Longshoremen shout over the noise. The smell of brine, fish, and industrial runoff fills the air. Ships bearing flags from a dozen nations bob in the oily water. Perfect cover for smuggling operations.",
+  "position": {
+    "x": 20,
+    "y": -60,
+    "z": 0
+  },
+  "items": [
+    "dock-schedule"
+  ],
+  "exits": {
+    "north": "dockside-tavern",
+    "east": "smugglers-den"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}
