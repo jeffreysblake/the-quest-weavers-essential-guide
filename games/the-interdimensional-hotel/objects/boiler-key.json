@@ -1,0 +1,8 @@
+{
+  "id": "boiler-key",
+  "name": "Boiler Room Key",
+  "description": "A heat-resistant key for accessing the dimensional boiler. Warm to the touch and smells like burnt offerings. Opens the heart of the hotel's power system.",
+  "takeable": true,
+  "usable": true,
+  "type": "key"
+}

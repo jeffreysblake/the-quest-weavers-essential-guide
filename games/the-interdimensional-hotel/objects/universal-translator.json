@@ -1,0 +1,8 @@
+{
+  "id": "universal-translator",
+  "name": "Universal Translator",
+  "description": "A device that translates any language into any other language with 70% accuracy. The other 30% is where things get interesting. May translate 'Hello' as 'Your mother is a llama.' Use with caution during diplomatic situations.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

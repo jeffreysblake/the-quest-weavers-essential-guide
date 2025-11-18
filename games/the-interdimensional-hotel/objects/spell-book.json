@@ -1,0 +1,8 @@
+{
+  "id": "spell-book",
+  "name": "Spell Book of Minor Inconveniences",
+  "description": "A wizard's spell book containing powerful magics: 'Make Toast Slightly Too Dark,' 'Summon Mild Headache,' 'Turn Water into Slightly Different Water.' Not the most impressive magic, but it's honest work.",
+  "takeable": true,
+  "usable": true,
+  "type": "book"
+}

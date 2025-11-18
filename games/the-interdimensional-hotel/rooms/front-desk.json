@@ -1,0 +1,22 @@
+{
+  "id": "front-desk",
+  "name": "Front Desk",
+  "description": "An impossibly long marble counter that curves into dimensions your eyes can't quite follow. Computer screens display room availability in languages that haven't been invented yet. The reservation book is simultaneously checked-in and checked-out. Behind the desk, cubby holes for room keys spiral into infinity. A sign reads: 'We Put the PARA in Paradox!' Someone has crossed out 'PARA' and written 'PAIN.'",
+  "position": {
+    "x": 10,
+    "y": 10,
+    "z": 0
+  },
+  "items": [
+    "master-key-fragment-1",
+    "complaint-forms"
+  ],
+  "npcs": [
+    "receptionist-gloria"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

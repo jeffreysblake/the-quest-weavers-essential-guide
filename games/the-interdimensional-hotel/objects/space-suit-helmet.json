@@ -1,0 +1,8 @@
+{
+  "id": "space-suit-helmet",
+  "name": "Space Suit Helmet",
+  "description": "A transparent helmet designed for space walks and vacuum environments. Provides breathable atmosphere and makes you look like an astronaut. Warning: Wearing this on Earth makes you look like an idiot, but a well-protected idiot.",
+  "takeable": true,
+  "usable": true,
+  "type": "armor"
+}

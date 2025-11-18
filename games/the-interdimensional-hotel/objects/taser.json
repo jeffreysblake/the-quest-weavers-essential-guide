@@ -1,0 +1,8 @@
+{
+  "id": "taser",
+  "name": "Security Taser",
+  "description": "An electric weapon used by hotel security. Shoots electrified barbs that incapacitate targets with 50,000 volts of 'please stop.' Non-lethal but very convincing. Safety off. Batteries included.",
+  "takeable": true,
+  "usable": true,
+  "type": "weapon"
+}

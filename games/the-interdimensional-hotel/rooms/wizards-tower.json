@@ -1,0 +1,23 @@
+{
+  "id": "wizards-tower",
+  "name": "Wizard's Tower Suite",
+  "description": "A impossibly tall tower room that's bigger on the inside (time lord technology or building code violations, hard to say). Spell books float in orbit around a central desk. A cauldron bubbles with something that's either a potion or hotel soup. Crystal balls show different channels. Magical artifacts clutter every surface: wands, orbs, a staff that keeps falling over. The window shows a view of stars that don't exist in this universe. A sign reads: 'Spellcasting after 10 PM will result in additional fees.'",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 30
+  },
+  "items": [
+    "magic-wand",
+    "spell-book",
+    "reality-fragment-2"
+  ],
+  "npcs": [
+    "wizard-mysterio"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

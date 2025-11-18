@@ -1,0 +1,8 @@
+{
+  "id": "conference-badge",
+  "name": "Intergalactic Conference Badge",
+  "description": "An official badge for the Intergalactic Trade Conference. Says 'HELLO MY NAME IS: REX DOORMAN' in seventeen languages. Grants access to alien buffets and boring presentations about interstellar commerce regulations.",
+  "takeable": true,
+  "usable": true,
+  "type": "document"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "single-sock",
+  "name": "Single Sock",
+  "description": "A lone sock that lost its partner to the dimensional dryers. Red with green stripes\u2014absolutely useless without its mate. Represents the futility of existence. Or laundry. Probably laundry.",
+  "takeable": true,
+  "usable": false,
+  "type": "misc"
+}

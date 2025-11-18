@@ -1,0 +1,24 @@
+{
+  "id": "intergalactic-conference-room",
+  "name": "Intergalactic Conference Room",
+  "description": "A vast chamber designed to accommodate beings of all shapes, sizes, and number of dimensions. The conference table is a perfect circle, square, and triangle simultaneously. Chairs adapt to any anatomy. A holographic projector displays presentations in formats your brain can't quite process. Coffee and snacks cater to every metabolism (including silicon-based). Alien delegates argue about trade agreements in seventeen languages. The whiteboard has equations that make physicists cry. Climate control accommodates temperatures from -273\u00b0C to 'surface of a star.'",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 40
+  },
+  "items": [
+    "conference-badge",
+    "alien-snacks",
+    "master-key-fragment-3"
+  ],
+  "npcs": [
+    "ambassador-zyx",
+    "protocol-droid"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

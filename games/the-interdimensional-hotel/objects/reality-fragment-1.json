@@ -1,0 +1,8 @@
+{
+  "id": "reality-fragment-1",
+  "name": "Reality Fragment (Lobby)",
+  "description": "A shimmering shard of crystallized reality, about the size of a playing card. It hums with dimensional energy and shows swirling images of the lobby when it was stable. One of several fragments you'll need to restore the Reality Anchor. Handle with care\u2014dropped reality is very hard to clean up.",
+  "takeable": true,
+  "usable": false,
+  "type": "quest"
+}

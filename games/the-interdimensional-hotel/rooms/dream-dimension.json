@@ -1,0 +1,24 @@
+{
+  "id": "dream-dimension",
+  "name": "The Dream Dimension",
+  "description": "A surreal space where the hotel's collective unconscious manifests. Salvador Dal\u00ed would feel at home. Staircases lead nowhere and everywhere. Doors open into memories. The ceiling is the floor is the wall. Fish swim through air. Clocks melt. Your childhood teddy bear judges your life choices. Logic is optional. Physics are on vacation. This is either the most relaxing place in the hotel or the most terrifying, depending on what you've been dreaming about lately. Also, you're in your underwear. Classic dream.",
+  "position": {
+    "x": 30,
+    "y": 40,
+    "z": 0
+  },
+  "items": [
+    "dream-catcher",
+    "nightmare-fuel",
+    "lucid-dream-pill"
+  ],
+  "npcs": [
+    "dream-avatar",
+    "nightmare-king"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

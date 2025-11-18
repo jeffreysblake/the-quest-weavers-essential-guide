@@ -1,0 +1,21 @@
+{
+  "id": "the-void",
+  "name": "The Void",
+  "description": "The space between spaces. The nothing between everything. Absolute emptiness stretches infinitely in all directions, which is impressive since there are no directions. Floating here, you realize how small you are, how vast existence is, and how much you hate your job. This is where reality goes when it gives up. This is where the thief plans to escape. This is the final confrontation. The hotel's fate, reality's survival, and your overtime pay all depend on what happens next. No pressure.",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 0
+  },
+  "items": [
+    "reality-anchor"
+  ],
+  "npcs": [
+    "thief-mr-null"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

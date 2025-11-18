@@ -1,0 +1,8 @@
+{
+  "id": "neon-sign",
+  "name": "Neon Sign",
+  "description": "A small neon sign that flickers with pink and blue light. Says 'OPEN' on one side and 'REGRETS' on the other. Runs on AA batteries and existential dread. Might be useful for signaling or causing distractions.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

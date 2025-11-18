@@ -1,0 +1,8 @@
+{
+  "id": "wishing-water",
+  "name": "Bottle of Wishing Water",
+  "description": "Water from the enchanted fountain that grants minor wishes. Can't make you rich or powerful, but it can help you find your keys or remember where you parked. Wishes must be reasonable. No refunds.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

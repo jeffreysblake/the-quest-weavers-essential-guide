@@ -1,0 +1,24 @@
+{
+  "id": "kitchen",
+  "name": "Reality Kitchen",
+  "description": "A chaotic culinary space where chefs cook meals from every dimension. Stoves burn with blue flame, red flame, and existential dread. The walk-in freezer is dimensionally transcendent (bigger on the inside). Pots boil with soups from alien worlds. The sous chef is literally a robot, the line cook is a ghost, and the dishwasher is something that shouldn't exist. Menu items include: 'Quantum Quiche' (exists in all states until ordered), 'Grandfather Paradox Pie,' and 'Wednesday Soup' (it's always Wednesday in here).",
+  "position": {
+    "x": 20,
+    "y": 0,
+    "z": 50
+  },
+  "items": [
+    "chefs-knife",
+    "exotic-ingredient",
+    "recipe-book"
+  ],
+  "npcs": [
+    "head-chef-ramsey",
+    "robot-sous-chef"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "employee-lounge",
+  "name": "Employee Break Room",
+  "description": "A depressing room where hotel staff come to remember why they need this job. Uncomfortable chairs surround wobbly tables. A microwave that hasn't been cleaned since the hotel opened. A refrigerator labeled 'CLEAN OUT FRIDAYS' (it's never Friday). Motivational posters peel from walls: 'Hang in There!' shows a cat hanging from reality itself. A coffee maker produces liquid that's technically drinkable. Time cards punch themselves. The TV only gets one channel, and it's just management meetings.",
+  "position": {
+    "x": 30,
+    "y": 0,
+    "z": -10
+  },
+  "items": [
+    "stale-donuts",
+    "employee-badge",
+    "complaint-box"
+  ],
+  "npcs": [
+    "janitor-frank",
+    "tired-waitress"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

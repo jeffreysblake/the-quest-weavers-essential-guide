@@ -1,0 +1,22 @@
+{
+  "id": "phantoms-suite",
+  "name": "Phantom's Luxury Suite",
+  "description": "The most expensive haunted room in the hotel, decorated in 'Early Opulent Deceased' style. A four-poster bed floats three feet off the ground because why not. The bathtub is filled with ectoplasmic bath bombs. Paintings of stern ancestors judge your life choices. A spectral fireplace provides ambiance without heat. The minibar contains spirits (both kinds). Room service never arrives, but you still get charged for it.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 10
+  },
+  "items": [
+    "phantom-key",
+    "spiritual-champagne"
+  ],
+  "npcs": [
+    "lord-evermore"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

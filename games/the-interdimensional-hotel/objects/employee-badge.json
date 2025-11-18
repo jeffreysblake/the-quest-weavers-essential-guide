@@ -1,0 +1,8 @@
+{
+  "id": "employee-badge",
+  "name": "Employee ID Badge",
+  "description": "Your official hotel employee badge with a terrible photo that makes you look like a criminal. Grants access to employee-only areas and identifies you as someone who works here (unfortunately).",
+  "takeable": true,
+  "usable": true,
+  "type": "document"
+}

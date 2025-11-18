@@ -1,0 +1,23 @@
+{
+  "id": "medieval-hall",
+  "name": "Medieval Great Hall",
+  "description": "A stone corridor lit by torches that somehow don't set off the sprinkler system. Tapestries depict legendary battles between heroes and what appears to be the hotel's legal team. Suits of armor stand guard, occasionally moving when you're not looking. The floor is rushes and regret. A feast table is permanently set for a banquet that never starts. Somewhere, a lute plays 'Greensleeves' on an infinite loop. The Wi-Fi password is written in ancient runes.",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 30
+  },
+  "items": [
+    "rusty-sword",
+    "medieval-shield",
+    "scroll-of-quests"
+  ],
+  "npcs": [
+    "knight-sir-reginald"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

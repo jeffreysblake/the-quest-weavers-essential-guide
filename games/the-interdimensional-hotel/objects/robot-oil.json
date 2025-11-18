@@ -1,0 +1,8 @@
+{
+  "id": "robot-oil",
+  "name": "Premium Robot Oil",
+  "description": "High-grade lubricant for mechanical beings. To robots, this is like fine wine. To humans, it's just oil that smells faintly of WD-40 and broken dreams. Might make a good gift for your robot friends.",
+  "takeable": true,
+  "usable": true,
+  "type": "ingredient"
+}

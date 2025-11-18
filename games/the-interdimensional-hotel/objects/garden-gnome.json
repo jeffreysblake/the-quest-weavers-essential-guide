@@ -1,0 +1,8 @@
+{
+  "id": "garden-gnome",
+  "name": "Judgmental Garden Gnome",
+  "description": "A ceramic garden gnome with a painted beard and a judgmental expression. Watches you silently. Judges your life choices. Might be sentient. Definitely disapproves of your outfit.",
+  "takeable": true,
+  "usable": false,
+  "type": "collectible"
+}

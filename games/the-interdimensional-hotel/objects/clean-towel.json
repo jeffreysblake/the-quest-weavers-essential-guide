@@ -1,0 +1,8 @@
+{
+  "id": "clean-towel",
+  "name": "Freshly Laundered Towel",
+  "description": "A towel fresh from the dimensional laundry, soft and warm. Smells like fabric softener and reality stabilization. According to Douglas Adams, this is the most useful item a traveler can have. He was right.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

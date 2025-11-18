@@ -48,6 +48,7 @@ export class CommandParserService {
 
     // Examine
     ['examine', ActionType.EXAMINE],
+    ['x', ActionType.EXAMINE],
     ['look', ActionType.EXAMINE],
     ['inspect', ActionType.EXAMINE],
     ['check', ActionType.EXAMINE],

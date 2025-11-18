@@ -1,0 +1,23 @@
+{
+  "id": "haunted-ballroom",
+  "name": "Haunted Ballroom",
+  "description": "A vast ballroom where eternal waltzing ghosts spin to music only they can hear. Crystal chandeliers cast spectral light across the dance floor. Transparent couples in Victorian finery sweep past, occasionally passing through you (rude). A ghostly orchestra plays in the corner, though the conductor lost his baton in 1847 and has been improvising ever since. The buffet table still has appetizers from 1892, which look fresher than the ones in the employee lounge.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 10
+  },
+  "items": [
+    "ghostly-invitation",
+    "antique-monocle"
+  ],
+  "npcs": [
+    "ghost-duke",
+    "phantom-orchestra-conductor"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "medium-madame-zelda",
+  "name": "Madame Zelda",
+  "description": "A theatrical medium who communes with spirits (and charges them for the privilege). Wears dramatic robes and too much jewelry. Crystal ball readings, palm readings, cold readings. Might be a fraud. Might be legit. Definitely takes credit cards.",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 10
+  },
+  "health": 65,
+  "maxHealth": 65,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "medium-madame-zelda",
+  "hostile": false
+}

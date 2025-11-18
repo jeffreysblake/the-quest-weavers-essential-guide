@@ -1,0 +1,8 @@
+{
+  "id": "elevator-manual",
+  "name": "Elevator Operations Manual",
+  "description": "An instruction manual for operating the hotel's dimensional elevators. Written in seventeen languages and illustrated with helpful diagrams showing stick figures being torn apart by dimensional rifts. Safety tips include: 'Always press the correct floor button,' 'Do not stick any body part out of the elevator,' and 'Pray.'",
+  "takeable": true,
+  "usable": false,
+  "type": "book"
+}

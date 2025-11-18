@@ -1,0 +1,16 @@
+{
+  "id": "xenobiologist-dr-kree",
+  "name": "Dr. Kree",
+  "description": "An alien scientist studying Earth life forms (finds us fascinating and disturbing). Four arms. Compound eyes. Lab coat (tailored). Takes notes constantly. Dissected three houseplants this morning. Ethically questionable. Scientifically brilliant.",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 40
+  },
+  "health": 70,
+  "maxHealth": 70,
+  "level": 5,
+  "type": "npc",
+  "dialogueTreeId": "xenobiologist-dr-kree",
+  "hostile": false
+}

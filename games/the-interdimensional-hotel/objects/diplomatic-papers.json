@@ -1,0 +1,8 @@
+{
+  "id": "diplomatic-papers",
+  "name": "Diplomatic Credentials",
+  "description": "Official papers granting diplomatic immunity across seventeen star systems. Useful for avoiding parking tickets, getting out of trouble, and looking important at customs. Warning: Not valid in New Jersey.",
+  "takeable": true,
+  "usable": true,
+  "type": "document"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "laundry-room",
+  "name": "Dimensional Laundry",
+  "description": "An industrial laundry facility where they wash more than just sheets. Machines tumble clothes from every era and dimension, occasionally mixing them up (leading to angry emails from Victorian ghosts who got cyber-punk socks). The dryers create wormholes\u2014that's where all the missing socks go. Detergent bottles contain solutions to clean temporal stains. An ironing board removes wrinkles from space-time. The lint trap has achieved sentience and demands union representation.",
+  "position": {
+    "x": 30,
+    "y": 0,
+    "z": 50
+  },
+  "items": [
+    "clean-towel",
+    "stain-remover",
+    "missing-sock"
+  ],
+  "npcs": [
+    "laundry-worker-marie"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

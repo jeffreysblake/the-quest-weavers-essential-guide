@@ -1,0 +1,8 @@
+{
+  "id": "useful-gadget",
+  "name": "Multi-Purpose Gadget",
+  "description": "A Swiss Army knife on steroids. Has seventeen tools including: screwdriver, can opener, toothpick, flamethrower (safety recall pending), and something that might be a reality wrench. Instructions were lost decades ago.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

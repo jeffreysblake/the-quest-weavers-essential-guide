@@ -1,0 +1,8 @@
+{
+  "id": "ale-mug",
+  "name": "Tankard of Ale",
+  "description": "A hefty mug full of foamy ale from the Tavern of Heroes. Tastes like adventure and poor decisions. Drinking it gives you +2 Courage and -1 Common Sense. The mug itself makes a decent bludgeoning weapon.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

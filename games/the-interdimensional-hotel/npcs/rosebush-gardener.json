@@ -1,0 +1,16 @@
+{
+  "id": "rosebush-gardener",
+  "name": "Rosamund the Rosebush",
+  "description": "A sentient rosebush who tends the enchanted garden. Speaks through rustling leaves. Blooms beautiful flowers. Has opinions about pruning (passionate). Photosynthesizes. Gossips with other plants. The most organized, judgmental flora you'll ever meet.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 30
+  },
+  "health": 60,
+  "maxHealth": 60,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "rosebush-gardener",
+  "hostile": false
+}

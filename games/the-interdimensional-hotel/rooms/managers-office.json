@@ -1,0 +1,22 @@
+{
+  "id": "managers-office",
+  "name": "Manager's Office",
+  "description": "The inner sanctum of hotel management, decorated in 'Corporate Dystopia' style. A massive desk holds paperwork from seventeen dimensions. Motivational posters encourage 'Synergy!' and 'Think Outside the Box!' (ironic, given the reality collapse). Filing cabinets contain guest complaints dating back to the Big Bang. A window offers a view of the void. The manager's chair is suspiciously throne-like. A nameplate reads: 'Manager Paradox - Making the Impossible Merely Improbable Since Forever.'",
+  "position": {
+    "x": 0,
+    "y": 40,
+    "z": 0
+  },
+  "items": [
+    "manager-key",
+    "master-key-fragment-4"
+  ],
+  "npcs": [
+    "manager-paradox-final"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

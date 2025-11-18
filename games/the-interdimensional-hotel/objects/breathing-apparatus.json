@@ -1,0 +1,8 @@
+{
+  "id": "breathing-apparatus",
+  "name": "Atmospheric Breathing Apparatus",
+  "description": "A mask that filters alien atmospheres into breathable air. Necessary for visiting methane-breathing aliens without suffocating. Makes you sound like Darth Vader. Kids love it. Adults fear it.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "shopkeeper-marv",
+  "name": "Marv the Shopkeeper",
+  "description": "A cheerful con artist running the gift shop. Wears a vest covered in badges saying things like 'Ask me about our prices!' and 'I \u2764\ufe0f Dimensions!' Has a sales pitch for everything. Could sell ice to a robot. Probably selling you something right now without you realizing.",
+  "position": {
+    "x": -10,
+    "y": 10,
+    "z": 0
+  },
+  "health": 70,
+  "maxHealth": 70,
+  "level": 3,
+  "type": "npc",
+  "dialogueTreeId": "shopkeeper-marv",
+  "hostile": false
+}

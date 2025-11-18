@@ -1,0 +1,23 @@
+{
+  "id": "vip-lounge",
+  "name": "VIP Lounge",
+  "description": "An exclusive area for high-rollers and digital aristocracy, separated from the common floor by a velvet rope and crushing social hierarchy. Plush seating made from memory foam that actually remembers. A champagne fountain flows with liquid gold (it's just food coloring). Floor-to-ceiling windows show a cityscape that doesn't exist in this dimension. Everything is expensive, exclusive, and slightly disappointing\u2014the true VIP experience. A sign reads: 'If you have to ask if you belong here, you don't.'",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 20
+  },
+  "items": [
+    "vip-pass",
+    "expensive-cigar",
+    "master-key-fragment-2"
+  ],
+  "npcs": [
+    "crypto-billionaire"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

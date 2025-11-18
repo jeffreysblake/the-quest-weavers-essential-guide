@@ -1,0 +1,8 @@
+{
+  "id": "loaded-dice",
+  "name": "Weighted Dice",
+  "description": "A pair of dice that are definitely not regulation. They're weighted to always roll sevens (which is suspicious when one die shows 4 and the other shows 3). Perfect for cheating at games or getting banned from casinos.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

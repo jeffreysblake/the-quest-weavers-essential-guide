@@ -1,0 +1,8 @@
+{
+  "id": "manager-key",
+  "name": "Manager's Master Key",
+  "description": "The ultimate key\u2014opens every door in the hotel, including metaphorical doors and some doors that shouldn't be opened. Forged from the four master key fragments, this represents absolute access and absolute responsibility.",
+  "takeable": true,
+  "usable": true,
+  "type": "key"
+}

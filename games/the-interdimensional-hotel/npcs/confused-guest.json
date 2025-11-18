@@ -1,0 +1,16 @@
+{
+  "id": "confused-guest",
+  "name": "Bewildered Tourist",
+  "description": "A middle-aged tourist in a Hawaiian shirt and cargo shorts, absolutely baffled by the dimensional chaos. Keeps checking their phone (no signal in the void). Clutches a camera and a guidebook titled 'Normal Hotels for Normal People.' Regrets every life choice that led to this moment.",
+  "position": {
+    "x": 0,
+    "y": 10,
+    "z": 0
+  },
+  "health": 50,
+  "maxHealth": 50,
+  "level": 1,
+  "type": "npc",
+  "dialogueTreeId": "confused-guest",
+  "hostile": false
+}

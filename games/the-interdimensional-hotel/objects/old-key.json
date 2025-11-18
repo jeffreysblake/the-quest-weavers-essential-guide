@@ -1,0 +1,8 @@
+{
+  "id": "old-key",
+  "name": "Antique Brass Key",
+  "description": "An ornate Victorian key covered in verdigris. Opens something old and probably haunted. The head is shaped like a skull, because of course it is. Ghosts have no subtlety.",
+  "takeable": true,
+  "usable": true,
+  "type": "key"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "enchanted-flower",
+  "name": "Singing Enchanted Flower",
+  "description": "A magical flower that sings softly in a language you don't understand. Glows with gentle light and smells like hope. Probably cursed, but in a friendly way.",
+  "takeable": true,
+  "usable": true,
+  "type": "ingredient"
+}

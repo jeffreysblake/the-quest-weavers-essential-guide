@@ -1,0 +1,8 @@
+{
+  "id": "circuit-board",
+  "name": "Circuit Board",
+  "description": "A complex circuit board covered in chips, resistors, and tiny components you can't identify. Might be from a computer, might be from a toaster\u2014electronics all look the same when they're broken. Could be repaired or repurposed by someone who knows what they're doing.",
+  "takeable": true,
+  "usable": true,
+  "type": "component"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "language-dictionary",
+  "name": "Xenolinguistics Dictionary",
+  "description": "A massive dictionary containing phrases in thousands of alien languages. Useful for looking up 'Where is the bathroom?' in Klingon. Less useful when you need to know NOW.",
+  "takeable": true,
+  "usable": false,
+  "type": "book"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "nightmare-fuel",
+  "name": "Bottled Nightmare Fuel",
+  "description": "Literally fuel made from nightmares. Black, oily, and screaming faintly. Powers nightmare engines and gives people very bad dreams. Handle with extreme caution and therapy.",
+  "takeable": true,
+  "usable": true,
+  "type": "ingredient"
+}

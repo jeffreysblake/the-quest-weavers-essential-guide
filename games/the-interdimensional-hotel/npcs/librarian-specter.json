@@ -1,0 +1,16 @@
+{
+  "id": "librarian-specter",
+  "name": "Miss Dewey (Deceased)",
+  "description": "The spectral librarian who has been organizing books since 1923 and will be organizing books until the heat death of the universe. Wears horn-rimmed glasses (supernatural). Shushes people preemptively. Books are her life, which is ironic because she's dead.",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 10
+  },
+  "health": 40,
+  "maxHealth": 40,
+  "level": 2,
+  "type": "npc",
+  "dialogueTreeId": "librarian-specter",
+  "hostile": false
+}

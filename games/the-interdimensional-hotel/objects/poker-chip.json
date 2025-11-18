@@ -1,0 +1,8 @@
+{
+  "id": "poker-chip",
+  "name": "Quantum Poker Chip",
+  "description": "A casino chip that exists in a state of quantum superposition\u2014it's both worth $100 and worthless until someone observes it. The casino hates these. Schr\u00f6dinger's gambling problem.",
+  "takeable": true,
+  "usable": true,
+  "type": "currency"
+}

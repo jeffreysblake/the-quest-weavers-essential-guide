@@ -1,0 +1,8 @@
+{
+  "id": "electronic-schematic",
+  "name": "Electronic Schematic",
+  "description": "A technical diagram showing how to build or repair something electronic. It's all resistors and capacitors and squiggly lines that mean things to engineers. To you, it looks like a maze drawn by someone having a breakdown.",
+  "takeable": true,
+  "usable": false,
+  "type": "document"
+}

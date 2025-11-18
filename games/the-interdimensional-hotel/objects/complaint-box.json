@@ -1,0 +1,8 @@
+{
+  "id": "complaint-box",
+  "name": "Employee Complaint Box",
+  "description": "A locked box where employees can submit anonymous complaints. It's full. Overfull. Complaints spill out. Management has never opened it. Management will never open it.",
+  "takeable": false,
+  "usable": false,
+  "type": "container"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "employee-handbook",
+  "name": "Employee Handbook",
+  "description": "The Grand Paradox Hotel Employee Manual, 47th edition (they update it every time something impossible happens). Contains helpful information like 'How to fold fitted sheets,' 'Dealing with difficult guests (corporeal and non-corporeal),' and 'What to do if reality collapses' (spoiler: you're doing it wrong). Most pages are redacted. Chapter 7 doesn't exist. Chapter 9 repeats twice.",
+  "takeable": true,
+  "usable": true,
+  "type": "book"
+}

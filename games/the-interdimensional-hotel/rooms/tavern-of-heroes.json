@@ -1,0 +1,24 @@
+{
+  "id": "tavern-of-heroes",
+  "name": "Tavern of Legendary Heroes",
+  "description": "A rowdy medieval bar where legendary heroes come to drink ale and tell lies about their adventures. Wooden tables are carved with initials and quest logs. A roaring fireplace crackles merrily. The menu offers 'Dragon Wings' (chicken), 'Troll Brew' (beer), and 'Health Potions' (tomato juice). Adventurers compare swords, argue about XP distribution, and sing bawdy songs. A bard in the corner strums a lute, taking requests for gold. Someone's pet owlbear is definitely violating hotel policy.",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 30
+  },
+  "items": [
+    "ale-mug",
+    "quest-map",
+    "tavern-key"
+  ],
+  "npcs": [
+    "bard-finnegan",
+    "barbarian-helga"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

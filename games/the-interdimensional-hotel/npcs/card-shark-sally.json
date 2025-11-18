@@ -1,0 +1,16 @@
+{
+  "id": "card-shark-sally",
+  "name": "Sally 'The Shark' Stevens",
+  "description": "A professional card counter with augmented reality eyes that see through cards. Wears a poker face literally (cybernetic). Has been banned from seven casinos across three dimensions. Here for business. Business is winning.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 20
+  },
+  "health": 70,
+  "maxHealth": 70,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "card-shark-sally",
+  "hostile": false
+}

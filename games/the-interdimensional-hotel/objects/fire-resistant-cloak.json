@@ -1,0 +1,8 @@
+{
+  "id": "fire-resistant-cloak",
+  "name": "Fire-Resistant Cloak",
+  "description": "A heavy cloak woven from asbestos and wishes. Protects against dragon fire, angry wizards, and fashion police. Makes you look like a mysterious stranger. Probably causes cancer in California.",
+  "takeable": true,
+  "usable": true,
+  "type": "armor"
+}

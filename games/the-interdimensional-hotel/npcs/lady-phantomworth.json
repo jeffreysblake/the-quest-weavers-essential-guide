@@ -1,0 +1,16 @@
+{
+  "id": "lady-phantomworth",
+  "name": "Lady Phantomworth",
+  "description": "A Victorian ghost of impeccable breeding and insufferable snobbery. Floats six inches off the ground in a ballgown from 1847. Carries a translucent parasol. Looks down her nose at the living (vulgar). Speaks in elaborate sentences. Died from tuberculosis and judgemental superiority.",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 10
+  },
+  "health": 50,
+  "maxHealth": 50,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "lady-phantomworth",
+  "hostile": false
+}

@@ -1,0 +1,23 @@
+{
+  "id": "zero-g-observation-deck",
+  "name": "Zero-G Observation Deck",
+  "description": "A transparent dome offering breathtaking views of space, dimensions, and the cosmic horror of reality's true nature. Floating lounge chairs drift peacefully. Guests bob through the air like confused fish. The bar serves drinks in floating spheres (cleanup after someone sneezes is a nightmare). Stars wheel overhead, occasionally spelling out messages. A telescope lets you observe distant galaxies or spy on Room 237. The view includes at least three paradoxes and a nebula shaped suspiciously like the hotel logo.",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 40
+  },
+  "items": [
+    "star-chart",
+    "space-suit-helmet",
+    "anti-gravity-boots"
+  ],
+  "npcs": [
+    "astronomer-ptolemy"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

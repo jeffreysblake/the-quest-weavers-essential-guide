@@ -1,0 +1,8 @@
+{
+  "id": "maintenance-manual",
+  "name": "Hotel Maintenance Manual",
+  "description": "A grease-stained manual explaining how to maintain the hotel's systems. Chapters include: 'Fixing Reality Stabilizers,' 'Unclogging Dimensional Drains,' and 'What To Do When The Furnace Gains Sentience.'",
+  "takeable": true,
+  "usable": false,
+  "type": "book"
+}

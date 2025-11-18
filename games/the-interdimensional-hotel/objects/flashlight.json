@@ -1,0 +1,8 @@
+{
+  "id": "flashlight",
+  "name": "Flashlight",
+  "description": "A heavy-duty flashlight that cuts through darkness like a knife through butter (assuming very soft butter). Burns through batteries like a politician through campaign promises. Essential for exploring dark places full of things you don't want to see.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

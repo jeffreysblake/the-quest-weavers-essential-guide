@@ -1,0 +1,8 @@
+{
+  "id": "security-keycard",
+  "name": "Security Access Card",
+  "description": "A keycard granting access to the security office and surveillance systems. The magnetic strip contains your biometric data and embarrassing secrets. Property of Hotel Security\u2014unauthorized use is frowned upon.",
+  "takeable": true,
+  "usable": true,
+  "type": "key"
+}

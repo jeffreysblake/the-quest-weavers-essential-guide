@@ -1,0 +1,8 @@
+{
+  "id": "chaos-crystal",
+  "name": "Chaos Crystal",
+  "description": "A crystal formed from pure chaos energy at the dimensional rift. Pulsates with unstable power. Could be weaponized, could explode, could turn into a butterfly. Chaos is unpredictable like that.",
+  "takeable": true,
+  "usable": true,
+  "type": "component"
+}

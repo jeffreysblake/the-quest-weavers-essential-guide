@@ -1,0 +1,24 @@
+{
+  "id": "dragons-chamber",
+  "name": "Dragon's Chamber",
+  "description": "A massive cavern-like suite with a hoard of gold coins, most of which are actually chocolate wrapped in foil. A dragon's nest sits in the corner, currently occupied by a very large, very grumpy dragon who's upset about the WiFi signal. Scorch marks decorate the walls in artistic patterns. Treasure chests overflow with loot that may or may not be cursed. The thermostat is set to 'Volcano.' A 'Do Not Disturb' sign hangs on the door, singed around the edges.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 30
+  },
+  "items": [
+    "dragons-scale",
+    "golden-goblet",
+    "fire-resistant-cloak"
+  ],
+  "npcs": [
+    "princess-dracona",
+    "dragon-smalfoy"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "seance-room",
+  "name": "S\u00e9ance Chamber",
+  "description": "A circular room draped in dark velvet, lit by candles that burn with green flames. A round table sits in the center with a Ouija board that spells out stock tips. The walls are covered in mystical symbols, half of which are definitely made up. Incense smoke forms suspicious shapes. A crystal ball shows only static. Somewhere, a theremin plays itself. This is either the real deal or the world's most committed theme room\u2014the hotel reviews are mixed.",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 10
+  },
+  "items": [
+    "ouija-board",
+    "crystal-ball",
+    "incense-of-truth"
+  ],
+  "npcs": [
+    "medium-madame-zelda"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

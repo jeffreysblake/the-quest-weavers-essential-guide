@@ -1,0 +1,8 @@
+{
+  "id": "pool-noodle",
+  "name": "Pool Noodle",
+  "description": "A foam pool noodle from the Liquid Time Pool. Soggy with temporal fluid. Hitting someone with it causes minor time loops. Also good for floating.",
+  "takeable": true,
+  "usable": true,
+  "type": "weapon"
+}

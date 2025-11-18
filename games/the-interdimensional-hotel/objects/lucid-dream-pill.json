@@ -1,0 +1,8 @@
+{
+  "id": "lucid-dream-pill",
+  "name": "Lucid Dream Pill",
+  "description": "A pill that grants control over dreams and dream dimensions. Allows you to navigate the Dream Dimension safely, manipulate dream logic, and wake up refreshed. Side effects include: vivid imagination, false awakenings, and profound philosophical insights at 3 AM.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

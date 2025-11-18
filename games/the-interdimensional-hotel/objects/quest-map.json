@@ -1,0 +1,8 @@
+{
+  "id": "quest-map",
+  "name": "Quest Map",
+  "description": "A hand-drawn map showing the location of legendary treasures, dangerous monsters, and the nearest bathroom. 'X marks the spot' appears seventeen times. Most of the X's are crossed out. One just says 'NOPE.'",
+  "takeable": true,
+  "usable": false,
+  "type": "document"
+}

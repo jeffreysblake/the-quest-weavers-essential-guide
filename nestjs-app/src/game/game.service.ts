@@ -670,8 +670,8 @@ export class GameService {
 
       // Apply connections using slug-to-UUID mapping
       for (const conn of connectionsJson.connections) {
-        const fromUuid = slugToUuid.get(conn.from_room);
-        const toUuid = slugToUuid.get(conn.to_room);
+        const fromUuid = slugToUuid.get(conn.from);
+        const toUuid = slugToUuid.get(conn.to);
 
         if (fromUuid && toUuid) {
           const fromRoom = rooms.get(fromUuid);
@@ -683,9 +683,9 @@ export class GameService {
           // CRITICAL FIX: Explicitly update the room in the service to persist connections
           this.roomService.update(fromUuid, { connections: fromRoom.connections });
 
-          this.logger.log(`Connected ${conn.from_room} (${fromUuid}) -> ${conn.to_room} (${toUuid}) via ${conn.direction}`);
+          this.logger.log(`Connected ${conn.from} (${fromUuid}) -> ${conn.to} (${toUuid}) via ${conn.direction}`);
         } else {
-          this.logger.warn(`Could not find rooms for connection: ${conn.from_room} -> ${conn.to_room}`);
+          this.logger.warn(`Could not find rooms for connection: ${conn.from} -> ${conn.to}`);
         }
       }
 

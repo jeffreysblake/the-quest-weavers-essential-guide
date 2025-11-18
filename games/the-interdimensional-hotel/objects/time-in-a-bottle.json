@@ -1,0 +1,8 @@
+{
+  "id": "time-in-a-bottle",
+  "name": "Time in a Bottle",
+  "description": "A bottle full of liquid time siphoned from the pool. Swirls with colors that haven't been invented yet. Drinking it lets you experience moments outside of normal temporal flow. Or gives you really weird dreams. Hard to say.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

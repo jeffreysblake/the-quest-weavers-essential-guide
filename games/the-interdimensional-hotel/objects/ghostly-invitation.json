@@ -1,0 +1,8 @@
+{
+  "id": "ghostly-invitation",
+  "name": "Spectral Ball Invitation",
+  "description": "An elegant invitation to the Eternal Phantom Ball, written in flowing script on parchment that phases in and out of visibility. 'Dress code: Formal. The living are barely tolerated but technically allowed.' Grants access to exclusive ghost social events.",
+  "takeable": true,
+  "usable": true,
+  "type": "document"
+}

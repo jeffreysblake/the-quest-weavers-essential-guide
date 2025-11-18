@@ -1,0 +1,22 @@
+{
+  "id": "xenobiology-wing",
+  "name": "Xenobiology Wing",
+  "description": "A clinical white corridor filled with the sounds of alien life forms doing alien things. Glass tanks contain creatures from across the cosmos: a blob that contemplates existence, a gas cloud with opinions, something with too many eyes and not enough spatial awareness. Bio-hazard symbols suggest caution. Weird smells emanate from various doors. A universal translator crackles with seventeen languages simultaneously. The floor is slightly sticky for reasons you don't want to know.",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 40
+  },
+  "items": [
+    "alien-egg",
+    "universal-translator"
+  ],
+  "npcs": [
+    "xenobiologist-dr-kree"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

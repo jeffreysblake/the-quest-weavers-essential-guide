@@ -1,0 +1,23 @@
+{
+  "id": "boiler-room",
+  "name": "Dimensional Boiler Room",
+  "description": "A sweltering chamber dominated by a massive boiler that powers the hotel's reality stabilizers. Gauges show pressure readings in imaginary numbers. The furnace door glows with otherworldly heat\u2014inside, dimensions burn to keep the lights on. Steam hisses from every joint, creating ghostly shapes. A chart on the wall tracks 'Reality Integrity' (currently: 'Not Great'). The temperature is 'way too hot,' the humidity is 'yes,' and OSHA would have several questions.",
+  "position": {
+    "x": 10,
+    "y": 0,
+    "z": -10
+  },
+  "items": [
+    "boiler-key",
+    "pressure-gauge",
+    "coal-shovel"
+  ],
+  "npcs": [
+    "boiler-man-smith"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

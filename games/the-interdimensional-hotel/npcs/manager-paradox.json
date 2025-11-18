@@ -1,0 +1,16 @@
+{
+  "id": "manager-paradox",
+  "name": "Manager Paradox",
+  "description": "The enigmatic manager of the Grand Paradox Hotel. Impeccably dressed in a three-piece suit that's somehow both vintage and futuristic. Never seems to age. Always knows more than they're telling. Speaks in riddles and corporate jargon. May or may not be responsible for the current situation.",
+  "position": {
+    "x": 0,
+    "y": 10,
+    "z": 0
+  },
+  "health": 100,
+  "maxHealth": 100,
+  "level": 10,
+  "type": "npc",
+  "dialogueTreeId": "manager-paradox",
+  "hostile": false
+}

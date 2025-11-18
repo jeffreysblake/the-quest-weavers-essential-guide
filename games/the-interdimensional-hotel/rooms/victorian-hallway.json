@@ -1,0 +1,22 @@
+{
+  "id": "victorian-hallway",
+  "name": "Victorian Hallway",
+  "description": "A gloomy corridor straight from the 1800s, wallpapered in faded burgundy with patterns that might be flowers or might be screaming faces\u2014it's hard to tell in the gaslight. Ornate doors lead to various ghostly chambers. A portrait's eyes follow you, which is standard haunted hallway protocol. The floor creaks dramatically with each step, even when you're not moving. Ectoplasm drips from the ceiling like the world's worst humidifier.",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 10
+  },
+  "items": [
+    "ectoplasm-sample",
+    "old-key"
+  ],
+  "npcs": [
+    "lady-phantomworth"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

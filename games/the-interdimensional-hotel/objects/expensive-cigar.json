@@ -1,0 +1,8 @@
+{
+  "id": "expensive-cigar",
+  "name": "Cuban Cigar (Probably Fake)",
+  "description": "An allegedly expensive cigar from the VIP lounge. Wrapped in gold foil, smells like old wood and poor financial decisions. Smoking it makes you feel sophisticated. Might be useful for trading with NPCs who value pointless luxury items.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

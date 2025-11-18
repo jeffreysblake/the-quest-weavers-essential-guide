@@ -1,0 +1,23 @@
+{
+  "id": "gift-shop",
+  "name": "Interdimensional Gift Shop",
+  "description": "A tourist trap that exists in all dimensions simultaneously, maximizing its ability to sell overpriced souvenirs. Shelves contain: 'I Survived the Reality Collapse' t-shirts (premature), snowglobes with impossible geometries, postcards from dimensions that don't exist, and those little spoons collectors love. A rack of sunglasses promises to let you 'See Through Time!' (They're just regular sunglasses.) Everything is 20% off, except reality, which is 100% off.",
+  "position": {
+    "x": -10,
+    "y": 10,
+    "z": 0
+  },
+  "items": [
+    "souvenir-spoon",
+    "fake-mustache",
+    "dimension-goggles"
+  ],
+  "npcs": [
+    "shopkeeper-marv"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

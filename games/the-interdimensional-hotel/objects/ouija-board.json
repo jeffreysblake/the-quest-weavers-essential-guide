@@ -1,0 +1,8 @@
+{
+  "id": "ouija-board",
+  "name": "Ouija Board",
+  "description": "A spirit communication board covered in mysterious symbols and letters. When used properly, it contacts the dead. When used improperly, it spells out investment tips and rude messages. The planchette moves by itself, which is either supernatural or just drafty.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

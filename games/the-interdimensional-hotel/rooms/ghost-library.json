@@ -1,0 +1,23 @@
+{
+  "id": "ghost-library",
+  "name": "Spectral Library",
+  "description": "Floor-to-ceiling bookshelves crammed with moldering tomes that detail every boring thing that ever happened to anyone, ever. Ghosts read silently in overstuffed armchairs, occasionally tutting at the living for making noise by existing. The books are organized by the Dewey Decimal System, the Library of Congress system, and pure spite. A card catalog contains cards for books that haven't been written yet. The librarian shushes people preemptively.",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 10
+  },
+  "items": [
+    "ancient-tome",
+    "library-card",
+    "bookmark-of-souls"
+  ],
+  "npcs": [
+    "librarian-specter"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

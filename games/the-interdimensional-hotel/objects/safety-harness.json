@@ -1,0 +1,8 @@
+{
+  "id": "safety-harness",
+  "name": "Safety Harness",
+  "description": "A harness for working in dangerous vertical environments. Features clips, straps, and a reassuring label: 'OSHA Compliant (in some dimensions).' Prevents fatal falls, promotes safer plummeting.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

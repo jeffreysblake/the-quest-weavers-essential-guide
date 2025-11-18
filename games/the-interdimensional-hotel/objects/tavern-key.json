@@ -1,0 +1,8 @@
+{
+  "id": "tavern-key",
+  "name": "Tavern Cellar Key",
+  "description": "A large iron key that opens the tavern's cellar where they keep the good ale and, reportedly, a portal to another dimension. The key smells like beer and adventure.",
+  "takeable": true,
+  "usable": true,
+  "type": "key"
+}

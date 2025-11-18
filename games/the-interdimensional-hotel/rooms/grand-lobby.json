@@ -1,0 +1,23 @@
+{
+  "id": "grand-lobby",
+  "name": "Grand Lobby",
+  "description": "The magnificent heart of the Grand Paradox Hotel, usually a testament to art deco elegance. Currently, it's a testament to dimensional chaos. The chandelier is dripping upwards. A Victorian gentleman is arguing with a tentacled alien about checkout times. The floor tiles are playing musical chairs with each other. Reality keeps stuttering like a bad video stream. The elevator bank glows ominously to the north, while the front desk somehow faces seventeen directions at once.",
+  "position": {
+    "x": 0,
+    "y": 10,
+    "z": 0
+  },
+  "items": [
+    "reality-fragment-1",
+    "complimentary-mints"
+  ],
+  "npcs": [
+    "manager-paradox",
+    "confused-guest"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

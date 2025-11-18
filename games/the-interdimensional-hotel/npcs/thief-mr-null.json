@@ -1,0 +1,16 @@
+{
+  "id": "thief-mr-null",
+  "name": "Mr. Null",
+  "description": "The thief who stole the Reality Anchor. A figure of pure void, absence given form. Where they stand, reality ceases. Cold. Empty. Terrifying. Motivated by a desire to unmake existence itself. The final boss. Your nemesis. Your doom.",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 0
+  },
+  "health": 200,
+  "maxHealth": 200,
+  "level": 15,
+  "type": "npc",
+  "dialogueTreeId": "thief-mr-null",
+  "hostile": true
+}

@@ -1,0 +1,16 @@
+{
+  "id": "bartender-unit-7",
+  "name": "Bartender Unit-7",
+  "description": "A robot bartender with a smooth voice and smoother drink-making skills. Polished chrome body. Metaphorical heart of gold (literal heart of circuitry). Mixes drinks, dispenses wisdom, listens to problems. Programmed with therapy algorithms and drink recipes.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 20
+  },
+  "health": 90,
+  "maxHealth": 90,
+  "level": 5,
+  "type": "npc",
+  "dialogueTreeId": "bartender-unit-7",
+  "hostile": false
+}

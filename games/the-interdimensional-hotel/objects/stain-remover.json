@@ -1,0 +1,8 @@
+{
+  "id": "stain-remover",
+  "name": "Universal Stain Remover",
+  "description": "A spray bottle that removes ALL stains\u2014blood, wine, coffee, existential dread, and sins. Warning: Do not spray on people. Do not spray on reality. Actually, just be careful with this.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

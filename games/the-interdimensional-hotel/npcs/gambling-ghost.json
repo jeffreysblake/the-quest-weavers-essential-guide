@@ -1,0 +1,16 @@
+{
+  "id": "gambling-ghost",
+  "name": "Smokey Joe (Spirit)",
+  "description": "A 1920s gangster ghost who haunts the casino, still chasing that one big score. Translucent fedora. Spectral cigar. Speaks in outdated slang. Died in a poker game gone wrong. Still plays poker. Still loses. Some habits transcend death.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 20
+  },
+  "health": 60,
+  "maxHealth": 60,
+  "level": 3,
+  "type": "npc",
+  "dialogueTreeId": "gambling-ghost",
+  "hostile": false
+}

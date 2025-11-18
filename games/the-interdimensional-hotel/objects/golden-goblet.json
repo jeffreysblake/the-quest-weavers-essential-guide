@@ -1,0 +1,8 @@
+{
+  "id": "golden-goblet",
+  "name": "Golden Goblet",
+  "description": "An ornate golden chalice encrusted with jewels. Either a priceless artifact or really convincing chocolate wrapped in foil\u2014hard to tell in the dragon's hoard lighting. Heavy enough to use as a weapon if you get desperate.",
+  "takeable": true,
+  "usable": true,
+  "type": "treasure"
+}

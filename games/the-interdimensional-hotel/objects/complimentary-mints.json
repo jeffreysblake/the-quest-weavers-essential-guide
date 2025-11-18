@@ -1,0 +1,8 @@
+{
+  "id": "complimentary-mints",
+  "name": "Complimentary Mints",
+  "description": "A bowl of complimentary mints from the front desk. They've been sitting here since the hotel opened. Some are stuck together. One appears to be evolving sentience. They taste like regret and artificial peppermint. +2 to Fresh Breath, -1 to Dignity.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "translator-booth",
+  "name": "Universal Translator Booth",
+  "description": "A tiny soundproof booth crammed with translation equipment that converts any language into any other language, with varying degrees of success. Screens scroll past phrases in thousands of languages, including several that exist only in song. A confused translator juggles multiple conversations, occasionally mixing up 'declaration of war' with 'Would you like fries with that?' Babel fish swim in a tank (decorative, not functional). The booth smells like burnt circuits and desperation.",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 40
+  },
+  "items": [
+    "translation-device",
+    "babel-fish",
+    "language-dictionary"
+  ],
+  "npcs": [
+    "translator-pat"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

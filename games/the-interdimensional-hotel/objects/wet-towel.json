@@ -1,0 +1,8 @@
+{
+  "id": "wet-towel",
+  "name": "Soaking Wet Towel",
+  "description": "A towel soaked in pool water (which is liquid time). Will never dry. Useful for cleaning, whipping people, or time-related shenanigans. Smells like chlorine and paradoxes.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

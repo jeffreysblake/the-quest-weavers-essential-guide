@@ -1,0 +1,16 @@
+{
+  "id": "chief-of-security",
+  "name": "Chief Murphy",
+  "description": "The hard-bitten chief of hotel security. Seen everything. Trusts nothing. Drinks coffee like fuel. Monitors screens showing impossible events with complete professional detachment. Former cop, current cynic, eternal pessimist.",
+  "position": {
+    "x": 40,
+    "y": 0,
+    "z": 50
+  },
+  "health": 100,
+  "maxHealth": 100,
+  "level": 8,
+  "type": "npc",
+  "dialogueTreeId": "chief-of-security",
+  "hostile": false
+}

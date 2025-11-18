@@ -1,0 +1,8 @@
+{
+  "id": "backwards-book",
+  "name": "Book Written in Reverse",
+  "description": "A book where the story runs backwards. Starts at the ending, ends at the beginning. Reading it is confusing and spoils all the surprises. The author was either a genius or having a stroke.",
+  "takeable": true,
+  "usable": false,
+  "type": "book"
+}

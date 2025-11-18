@@ -1,0 +1,8 @@
+{
+  "id": "bookmark-of-souls",
+  "name": "Bookmark of Souls",
+  "description": "A mystical bookmark that marks your place in both books and reality. Useful for keeping track of which dimension you're in. Made from woven ghost hair (ew).",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

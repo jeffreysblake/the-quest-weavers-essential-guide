@@ -1,0 +1,8 @@
+{
+  "id": "jackpot-token",
+  "name": "Jackpot Token",
+  "description": "A golden token that fell from a slot machine during a jackpot win. Worth exactly nothing outside the casino, but inside it's worth... also nothing, but it's shiny and makes you feel lucky.",
+  "takeable": true,
+  "usable": false,
+  "type": "collectible"
+}

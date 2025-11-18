@@ -1,0 +1,16 @@
+{
+  "id": "drunk-robot",
+  "name": "Unit-419 (Malfunctioning)",
+  "description": "A robot that's had too much motor oil. Slurs its speech (glitchy vocoder). Staggers (servos misaligned). Tells rambling stories about the good old days when robots knew their place. Needs a software update and maybe a meeting.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 20
+  },
+  "health": 40,
+  "maxHealth": 100,
+  "level": 3,
+  "type": "npc",
+  "dialogueTreeId": "drunk-robot",
+  "hostile": false
+}

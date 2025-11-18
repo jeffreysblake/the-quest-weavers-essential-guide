@@ -1,0 +1,8 @@
+{
+  "id": "mysterious-note",
+  "name": "Mysterious Note",
+  "description": "A hastily scrawled note found in your station this morning: 'REX - They're going to blame you for this. Find the Anchor. Trust no one. Especially not management. P.S. - Your cat misses you.' It's not signed. The handwriting looks familiar. The paper smells like ozone and regret.",
+  "takeable": true,
+  "usable": false,
+  "type": "document"
+}

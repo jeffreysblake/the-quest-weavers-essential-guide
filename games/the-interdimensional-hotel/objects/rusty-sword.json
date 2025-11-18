@@ -1,0 +1,8 @@
+{
+  "id": "rusty-sword",
+  "name": "Rusty Medieval Sword",
+  "description": "A sword that's seen better centuries. The blade is pitted with rust, the hilt is wrapped in rotting leather, and it smells like a museum. Still sharp enough to be dangerous, though it's more likely to give you tetanus than victory. Excalibur this ain't.",
+  "takeable": true,
+  "usable": true,
+  "type": "weapon"
+}

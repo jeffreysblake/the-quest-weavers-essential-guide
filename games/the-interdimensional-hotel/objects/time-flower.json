@@ -1,0 +1,8 @@
+{
+  "id": "time-flower",
+  "name": "Temporal Flower",
+  "description": "A flower that exists at all points in its life cycle simultaneously\u2014seed, sprout, bloom, and withered husk, all at once. Impossible to photograph. Makes your head hurt to look at. Beautiful in a way that defies description.",
+  "takeable": true,
+  "usable": true,
+  "type": "ingredient"
+}

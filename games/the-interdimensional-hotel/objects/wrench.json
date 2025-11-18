@@ -1,0 +1,8 @@
+{
+  "id": "wrench",
+  "name": "Adjustable Wrench",
+  "description": "A standard maintenance wrench, rusty and well-used. Can tighten bolts, loosen nuts, and serve as a makeshift weapon in a pinch. The essential tool of frustrated people everywhere.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}
