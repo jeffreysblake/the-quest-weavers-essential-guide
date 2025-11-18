@@ -2,7 +2,7 @@
   "id": "mysterious-figure",
   "name": "Mysterious Robed Figure",
   "description": "A high-ranking member of the Cog and Key, their face hidden beneath a brass mask.",
-  "position": {"x": 40, "y": -80, "z": -10},
+  "position": {"x": 40, "y": -70, "z": -15},
   "health": 100,
   "maxHealth": 100,
   "level": 5,

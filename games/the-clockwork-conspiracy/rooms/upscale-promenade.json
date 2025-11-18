@@ -4,7 +4,7 @@
   "description": "Where the wealthy of Gearhaven come to see and be seen. Elegant shops line the cobblestone street. Ladies in elaborate gowns and gentlemen in top hats stroll beneath gas lamps that actually work. Street musicians play for coins. The air smells of expensive perfume and fresh pastries, a stark contrast to the industrial stench elsewhere.",
   "position": {
     "x": 20,
-    "y": 0,
+    "y": 10,
     "z": 0
   },
   "items": [],
