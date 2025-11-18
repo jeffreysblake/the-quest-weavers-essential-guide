@@ -25,6 +25,8 @@ INVENTORY:
 INTERACTION:
   look (or l) - Look around the current room
   talk [npc] - Speak with an NPC
+  reply [number] (or choose, answer, select) - Choose a dialogue option
+  1, 2, 3, etc. - Quick dialogue choice by number
   attack [npc] - Attack an NPC
   open [container] - Open a container
   close [container] - Close a container
@@ -33,6 +35,12 @@ SYSTEM:
   help - Show this help message
   save - Save your progress
   load - Load your saved game
+
+TIPS:
+  - Talk to NPCs to learn about quests and get hints
+  - Use dialogue choices (1, 2, 3) to progress conversations
+  - Examine NPCs to see what items they might have
+  - Some NPCs may need to be defeated in combat to obtain quest items
 `;
 
     return {

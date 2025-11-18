@@ -50,23 +50,47 @@ export function normalizeNameForMatching(name: string): string {
  * Check if target matches object name (handles variations like hyphens vs spaces)
  *
  * Compares two names in a flexible way by normalizing both before comparison.
- * Uses substring matching, so partial names will match as long as they are
- * contained in the object name.
+ * Supports multiple matching strategies:
+ * 1. Exact match (after normalization)
+ * 2. Substring match (e.g., "mop" matches "Standard Issue Mop")
+ * 3. Word-based match (all target words appear in object name)
  *
  * @param objectName - The name of the object to match against
  * @param target - The target string to search for
- * @returns true if the normalized target is found within the normalized object name
+ * @returns true if the target matches the object name using any strategy
  *
  * @example
  * ```typescript
- * matchesName('Brass-Key', 'brass key') // Returns: true
- * matchesName('Ancient_Tome', 'ancient') // Returns: true (partial match)
- * matchesName('Glowing Flower', 'glowing-flower') // Returns: true
+ * matchesName('Brass-Key', 'brass key') // Returns: true (exact)
+ * matchesName('Ancient_Tome', 'ancient') // Returns: true (substring)
+ * matchesName('Standard Issue Mop', 'standard mop') // Returns: true (word-based)
+ * matchesName('Standard Issue Mop', 'issue standard') // Returns: true (word-based, any order)
  * matchesName('Brass Key', 'silver') // Returns: false
  * ```
  */
 export function matchesName(objectName: string, target: string): boolean {
   const normalizedObjectName = normalizeNameForMatching(objectName);
   const normalizedTarget = normalizeNameForMatching(target);
-  return normalizedObjectName.includes(normalizedTarget);
+
+  // Strategy 1: Exact match
+  if (normalizedObjectName === normalizedTarget) {
+    return true;
+  }
+
+  // Strategy 2: Substring match (original behavior)
+  if (normalizedObjectName.includes(normalizedTarget)) {
+    return true;
+  }
+
+  // Strategy 3: Word-based match - all target words must appear in object name
+  // This allows "standard mop" to match "standard issue mop"
+  const objectWords = normalizedObjectName.split(' ');
+  const targetWords = normalizedTarget.split(' ');
+
+  // Check if all target words appear in the object name
+  const allWordsMatch = targetWords.every((targetWord) =>
+    objectWords.some((objectWord) => objectWord.includes(targetWord)),
+  );
+
+  return allWordsMatch;
 }

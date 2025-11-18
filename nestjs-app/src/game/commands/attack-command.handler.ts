@@ -59,12 +59,12 @@ export class AttackCommandHandler implements ICommandHandler {
       const gameState = await this.gameStateService.getGameState(player.gameId);
       if (gameState.npcs) {
         const npcsInRoom = Object.values(gameState.npcs).filter((npc: any) => {
+          // Only check if NPC is in this room via room.players array
+          // Position-based matching is disabled to avoid NPCs appearing in multiple rooms
           if (room.players && room.players.includes(npc.id)) {
             return true;
           }
-          if (npc.position) {
-            return this.roomNavHelper.isPositionInRoom(npc.position, room);
-          }
+
           return false;
         });
         targetEntity = npcsInRoom.find((npc: any) =>
