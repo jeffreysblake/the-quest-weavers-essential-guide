@@ -133,8 +133,19 @@ export class DialogueCommandHandler implements ICommandHandler {
       // If dialogue tree data is provided but not registered, register it
       if (targetNpc.dialogueTreeData) {
         try {
-          this.dialogueManager.registerDialogueTree(targetNpc.dialogueTreeData);
+          // Convert NPC dialogue format to proper DialogueTreeData format
+          const convertedTreeData = this.convertNpcDialogueFormat(
+            targetNpc.dialogueTreeData,
+            dialogueTreeId,
+            targetNpc.id,
+            targetNpc.name,
+          );
+          this.dialogueManager.registerDialogueTree(convertedTreeData);
         } catch (error) {
+          console.error(
+            `Error converting dialogue for ${targetNpc.name}:`,
+            error,
+          );
           return {
             success: false,
             type: 'error',
@@ -255,5 +266,57 @@ export class DialogueCommandHandler implements ICommandHandler {
     };
 
     return context;
+  }
+
+  /**
+   * Convert NPC dialogue format (object with node IDs as keys) to proper DialogueTreeData format
+   */
+  private convertNpcDialogueFormat(
+    npcDialogueData: any,
+    treeId: string,
+    npcId: string,
+    npcName: string,
+  ): any {
+    const nodes: any[] = [];
+
+    // Convert object format to array of nodes
+    for (const [nodeId, nodeData] of Object.entries(npcDialogueData)) {
+      const node: any = {
+        id: nodeId,
+        type: 'text', // Default type
+        text: (nodeData as any).text || '',
+        speaker: npcId,
+      };
+
+      // Convert choices from "leads_to" format to "nextNodeId" format
+      if ((nodeData as any).choices && Array.isArray((nodeData as any).choices)) {
+        node.choices = (nodeData as any).choices.map((choice: any, index: number) => ({
+          id: `${nodeId}_choice_${index}`,
+          text: choice.text || '',
+          nextNodeId: choice.leads_to || choice.nextNodeId,
+          conditions: choice.conditions,
+          actions: choice.actions,
+          endsConversation: choice.endsConversation,
+        }));
+      }
+
+      // Copy actions if present
+      if ((nodeData as any).actions) {
+        node.actions = (nodeData as any).actions;
+      }
+
+      nodes.push(node);
+    }
+
+    // Return in DialogueTreeData format
+    return {
+      id: treeId,
+      npcId: npcId,
+      name: `${npcName} Dialogue`,
+      description: `Dialogue tree for ${npcName}`,
+      startNodeId: 'initial_greeting', // Default start node
+      nodes: nodes,
+      metadata: {},
+    };
   }
 }
