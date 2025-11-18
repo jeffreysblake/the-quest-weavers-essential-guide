@@ -131,16 +131,16 @@
     {
       "from_room": "airlock",
       "to_room": "closet-entrance",
-      "direction": "east",
-      "description": "A dark, dusty portal leads east into the Forgotten Closet dimension",
+      "direction": "down",
+      "description": "A dark, dusty portal leads down into the Forgotten Closet dimension",
       "is_locked": false,
       "required_key": null
     },
     {
       "from_room": "closet-entrance",
       "to_room": "airlock",
-      "direction": "west",
-      "description": "The portal back to the airlock glows faintly to the west",
+      "direction": "up",
+      "description": "The portal back to the airlock glows faintly above you",
       "is_locked": false,
       "required_key": null
     },

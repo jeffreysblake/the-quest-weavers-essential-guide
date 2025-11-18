@@ -3,6 +3,7 @@
   "name": "Rusty the Robot",
   "description": "An old cleaning robot whose mechanisms have seized up, leaving it stranded and sad",
   "npc_type": "quest-npc",
+  "room_id": "supply-vault",
   "position": { "x": 5, "y": 42, "z": 1 },
   "health": 30,
   "max_health": 100,

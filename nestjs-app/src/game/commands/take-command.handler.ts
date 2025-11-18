@@ -49,7 +49,8 @@ export class TakeCommandHandler implements ICommandHandler {
       };
     }
 
-    if (targetObject.canTake === false) {
+    // Check if the object is portable (check both canTake and is_portable for compatibility)
+    if (targetObject.canTake === false || targetObject.is_portable === false) {
       return {
         success: false,
         type: 'action_failure',

@@ -3,6 +3,7 @@
   "name": "The Lint King",
   "description": "A massive being formed from countless dryer lint sheets, self-proclaimed ruler of all things fuzzy and forgotten",
   "npc_type": "boss-enemy",
+  "room_id": "laundry-peak",
   "position": { "x": -28, "y": 141, "z": 51 },
   "health": 150,
   "max_health": 150,

@@ -3,6 +3,7 @@
   "name": "The Soap Golem",
   "description": "A massive humanoid guardian made of solidified soap suds, protector of the Bubble Plaza",
   "npc_type": "guardian",
+  "room_id": "bubble-plaza",
   "position": { "x": -30, "y": 78, "z": 0 },
   "health": 120,
   "max_health": 120,

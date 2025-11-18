@@ -3,6 +3,7 @@
   "name": "Sir Bleach-a-lot",
   "description": "A knight in mirror-polished armor who has been locked in eternal combat with his own reflection",
   "npc_type": "warrior",
+  "room_id": "crystal-heart",
   "position": { "x": -58, "y": 12, "z": 0 },
   "health": 100,
   "max_health": 100,
