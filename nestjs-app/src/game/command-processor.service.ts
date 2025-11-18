@@ -123,6 +123,14 @@ export class CommandProcessorService {
         case 'w':
         case 'up':
         case 'down':
+        case 'northeast':
+        case 'ne':
+        case 'northwest':
+        case 'nw':
+        case 'southeast':
+        case 'se':
+        case 'southwest':
+        case 'sw':
           return await this.movementHandler.handle(
             player,
             currentRoom,

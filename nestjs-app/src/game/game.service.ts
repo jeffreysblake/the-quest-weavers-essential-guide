@@ -475,6 +475,7 @@ export class GameService {
       const rooms = new Map<string, any>(); // Map of UUID to room object
       const slugToUuid = new Map<string, string>(); // Map of slug to UUID
       const roomItemsMap = new Map<string, string[]>(); // Map of room slug to items array
+      const roomNpcsMap = new Map<string, string[]>(); // Map of room slug to NPCs array
       let startingRoom: any = null;
 
       for (const file of roomFiles) {
@@ -507,6 +508,11 @@ export class GameService {
           roomItemsMap.set(roomJson.id, roomJson.items);
         }
 
+        // Store room's NPCs array for later placement
+        if (roomJson.npcs && Array.isArray(roomJson.npcs)) {
+          roomNpcsMap.set(roomJson.id, roomJson.npcs);
+        }
+
         // Track starting room (position 0,0,0)
         if (roomJson.position.x === 0 && roomJson.position.y === 0 && roomJson.position.z === 0) {
           startingRoom = room;
@@ -528,8 +534,8 @@ export class GameService {
         const objectJson = JSON.parse(objectData);
 
         // Create object with preserved ID
-        // Note: Portable attribute conversion handles canTake, is_portable, and isPortable
-        // Priority: isPortable > is_portable > canTake, default to true
+        // Note: Portable attribute conversion handles canTake, is_portable, isPortable, and takeable
+        // Priority: isPortable > is_portable > can_take > takeable, default to true
         let isPortable = true;
         if (objectJson.isPortable !== undefined) {
           isPortable = objectJson.isPortable;
@@ -537,13 +543,15 @@ export class GameService {
           isPortable = objectJson.is_portable;
         } else if (objectJson.can_take !== undefined) {
           isPortable = objectJson.can_take;
+        } else if (objectJson.takeable !== undefined) {
+          isPortable = objectJson.takeable;
         }
 
         const obj = this.objectService.createObject({
           id: objectJson.id,
           name: objectJson.name,
           description: objectJson.description,
-          objectType: objectJson.object_type || 'item',
+          objectType: objectJson.object_type || objectJson.type || 'item',
           position: objectJson.position || { x: 0, y: 0, z: 0 },
           material: objectJson.material || 'unknown',
           isPortable: isPortable,
@@ -661,6 +669,39 @@ export class GameService {
         }
 
         this.logger.log(`Loaded NPC: ${npcJson.name} (ID: ${npcJson.id})`);
+      }
+
+      // Place NPCs from room npcs arrays (authoritative placement based on room JSON)
+      for (const [roomSlug, npcIds] of roomNpcsMap.entries()) {
+        const roomUuid = slugToUuid.get(roomSlug);
+        if (!roomUuid) {
+          this.logger.warn(`Could not find room UUID for slug: ${roomSlug}`);
+          continue;
+        }
+
+        const room = rooms.get(roomUuid);
+        if (!room) {
+          this.logger.warn(`Could not find room object for UUID: ${roomUuid}`);
+          continue;
+        }
+
+        for (const npcId of npcIds) {
+          const npc = npcsMap[npcId];
+          if (npc) {
+            // Add NPC to room's players array
+            if (!room.players) {
+              room.players = [];
+            }
+            if (!room.players.includes(npc.id)) {
+              room.players.push(npc.id);
+              // Update the room in the service to persist the change
+              this.roomService.update(roomUuid, { players: room.players });
+              this.logger.log(`Placed NPC ${npc.name} in room ${roomSlug} (UUID: ${roomUuid}) from room JSON npcs array`);
+            }
+          } else {
+            this.logger.warn(`NPC ${npcId} not found for room ${roomSlug}`);
+          }
+        }
       }
 
       // Load connections
