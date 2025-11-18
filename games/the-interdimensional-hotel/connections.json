@@ -1,0 +1,123 @@
+{
+  "connections": [
+    {"from": "bellhop-station", "to": "grand-lobby", "direction": "north"},
+    {"from": "grand-lobby", "to": "bellhop-station", "direction": "south"},
+
+    {"from": "grand-lobby", "to": "front-desk", "direction": "east"},
+    {"from": "front-desk", "to": "grand-lobby", "direction": "west"},
+
+    {"from": "grand-lobby", "to": "gift-shop", "direction": "west"},
+    {"from": "gift-shop", "to": "grand-lobby", "direction": "east"},
+
+    {"from": "grand-lobby", "to": "elevator-bank", "direction": "north"},
+    {"from": "elevator-bank", "to": "grand-lobby", "direction": "south"},
+
+    {"from": "elevator-bank", "to": "victorian-hallway", "direction": "up"},
+    {"from": "victorian-hallway", "to": "elevator-bank", "direction": "down"},
+
+    {"from": "victorian-hallway", "to": "haunted-ballroom", "direction": "east"},
+    {"from": "haunted-ballroom", "to": "victorian-hallway", "direction": "west"},
+
+    {"from": "victorian-hallway", "to": "ghost-library", "direction": "north"},
+    {"from": "ghost-library", "to": "victorian-hallway", "direction": "south"},
+
+    {"from": "victorian-hallway", "to": "phantoms-suite", "direction": "northeast"},
+    {"from": "phantoms-suite", "to": "victorian-hallway", "direction": "southwest"},
+
+    {"from": "victorian-hallway", "to": "seance-room", "direction": "south"},
+    {"from": "seance-room", "to": "victorian-hallway", "direction": "north"},
+
+    {"from": "elevator-bank", "to": "neon-corridor", "direction": "up"},
+    {"from": "neon-corridor", "to": "elevator-bank", "direction": "down"},
+
+    {"from": "neon-corridor", "to": "cyber-casino-floor", "direction": "east"},
+    {"from": "cyber-casino-floor", "to": "neon-corridor", "direction": "west"},
+
+    {"from": "cyber-casino-floor", "to": "hackers-den", "direction": "north"},
+    {"from": "hackers-den", "to": "cyber-casino-floor", "direction": "south"},
+
+    {"from": "cyber-casino-floor", "to": "robot-bar", "direction": "east"},
+    {"from": "robot-bar", "to": "cyber-casino-floor", "direction": "west"},
+
+    {"from": "cyber-casino-floor", "to": "vip-lounge", "direction": "south"},
+    {"from": "vip-lounge", "to": "cyber-casino-floor", "direction": "north"},
+
+    {"from": "elevator-bank", "to": "medieval-hall", "direction": "up"},
+    {"from": "medieval-hall", "to": "elevator-bank", "direction": "down"},
+
+    {"from": "medieval-hall", "to": "dragons-chamber", "direction": "east"},
+    {"from": "dragons-chamber", "to": "medieval-hall", "direction": "west"},
+
+    {"from": "medieval-hall", "to": "wizards-tower", "direction": "north"},
+    {"from": "wizards-tower", "to": "medieval-hall", "direction": "south"},
+
+    {"from": "medieval-hall", "to": "enchanted-garden", "direction": "northeast"},
+    {"from": "enchanted-garden", "to": "medieval-hall", "direction": "southwest"},
+
+    {"from": "medieval-hall", "to": "tavern-of-heroes", "direction": "south"},
+    {"from": "tavern-of-heroes", "to": "medieval-hall", "direction": "north"},
+
+    {"from": "elevator-bank", "to": "xenobiology-wing", "direction": "up"},
+    {"from": "xenobiology-wing", "to": "elevator-bank", "direction": "down"},
+
+    {"from": "xenobiology-wing", "to": "intergalactic-conference-room", "direction": "east"},
+    {"from": "intergalactic-conference-room", "to": "xenobiology-wing", "direction": "west"},
+
+    {"from": "intergalactic-conference-room", "to": "zero-g-observation-deck", "direction": "north"},
+    {"from": "zero-g-observation-deck", "to": "intergalactic-conference-room", "direction": "south"},
+
+    {"from": "zero-g-observation-deck", "to": "alien-embassy", "direction": "east"},
+    {"from": "alien-embassy", "to": "zero-g-observation-deck", "direction": "west"},
+
+    {"from": "intergalactic-conference-room", "to": "translator-booth", "direction": "south"},
+    {"from": "translator-booth", "to": "intergalactic-conference-room", "direction": "north"},
+
+    {"from": "elevator-bank", "to": "service-tunnels", "direction": "down"},
+    {"from": "service-tunnels", "to": "elevator-bank", "direction": "up"},
+
+    {"from": "service-tunnels", "to": "boiler-room", "direction": "east"},
+    {"from": "boiler-room", "to": "service-tunnels", "direction": "west"},
+
+    {"from": "service-tunnels", "to": "lost-and-found", "direction": "north"},
+    {"from": "lost-and-found", "to": "service-tunnels", "direction": "south"},
+
+    {"from": "service-tunnels", "to": "employee-lounge", "direction": "northeast"},
+    {"from": "employee-lounge", "to": "service-tunnels", "direction": "southwest"},
+
+    {"from": "service-tunnels", "to": "maintenance-shaft", "direction": "south"},
+    {"from": "maintenance-shaft", "to": "service-tunnels", "direction": "north"},
+
+    {"from": "maintenance-shaft", "to": "rooftop-garden", "direction": "up"},
+    {"from": "rooftop-garden", "to": "maintenance-shaft", "direction": "down"},
+
+    {"from": "rooftop-garden", "to": "swimming-pool", "direction": "east"},
+    {"from": "swimming-pool", "to": "rooftop-garden", "direction": "west"},
+
+    {"from": "swimming-pool", "to": "kitchen", "direction": "east"},
+    {"from": "kitchen", "to": "swimming-pool", "direction": "west"},
+
+    {"from": "kitchen", "to": "laundry-room", "direction": "east"},
+    {"from": "laundry-room", "to": "kitchen", "direction": "west"},
+
+    {"from": "laundry-room", "to": "security-office", "direction": "east"},
+    {"from": "security-office", "to": "laundry-room", "direction": "west"},
+
+    {"from": "security-office", "to": "managers-office", "direction": "north"},
+    {"from": "managers-office", "to": "security-office", "direction": "south"},
+
+    {"from": "managers-office", "to": "vault", "direction": "east"},
+    {"from": "vault", "to": "managers-office", "direction": "west"},
+
+    {"from": "vault", "to": "interdimensional-rift", "direction": "east"},
+    {"from": "interdimensional-rift", "to": "vault", "direction": "west"},
+
+    {"from": "interdimensional-rift", "to": "dream-dimension", "direction": "north"},
+    {"from": "dream-dimension", "to": "interdimensional-rift", "direction": "south"},
+
+    {"from": "interdimensional-rift", "to": "the-void", "direction": "east"},
+    {"from": "the-void", "to": "interdimensional-rift", "direction": "west"},
+
+    {"from": "grand-lobby", "to": "swimming-pool", "direction": "up"},
+    {"from": "swimming-pool", "to": "grand-lobby", "direction": "down"}
+  ]
+}
