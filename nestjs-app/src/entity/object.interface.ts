@@ -15,7 +15,6 @@ export interface ISpatialRelationship {
 export interface IObject extends IEntity {
   description?: string;
   objectType: 'item' | 'furniture' | 'weapon' | 'consumable' | 'container';
-  canTake?: boolean;
   material?: string;
   weight?: number;
   properties?: {
@@ -27,6 +26,26 @@ export interface IObject extends IEntity {
   canContain?: boolean;
   isContainer?: boolean;
   containerCapacity?: number;
+  /**
+   * Indicates whether the object can be picked up and placed in the player's inventory.
+   *
+   * **Naming Conventions:**
+   * - `isPortable` is the canonical TypeScript property name (camelCase)
+   * - JSON files can use `is_portable` (snake_case) which gets auto-converted by the entity converter
+   * - Legacy `canTake` property is supported for backward compatibility
+   *
+   * **Default Value:** true (objects are portable by default unless explicitly set to false)
+   *
+   * @example
+   * // TypeScript usage
+   * const sword: IObject = { isPortable: true, ... };
+   *
+   * // JSON file (auto-converted to isPortable)
+   * { "is_portable": true }
+   *
+   * // Legacy JSON file (auto-converted to isPortable)
+   * { "canTake": true }
+   */
   isPortable?: boolean;
   containedObjects?: string[];
   state?: {

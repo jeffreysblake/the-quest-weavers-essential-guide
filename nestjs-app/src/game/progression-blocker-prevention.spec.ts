@@ -219,7 +219,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'A key for the door',
           position: { x: 5, y: 5, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           roomId: room.id,
         });
 
@@ -242,7 +242,7 @@ describe('Progression Blocker Prevention', () => {
         const keyInRoom = objectsInRoom.find((obj) => obj.name === 'Key');
 
         expect(keyInRoom).toBeDefined();
-        expect(keyInRoom.canTake).toBe(true);
+        expect(keyInRoom.isPortable).toBe(true);
       });
 
       it('should ensure key is available before allowing door lock', async () => {
@@ -308,7 +308,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Door key',
           position: { x: 5, y: 5, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           roomId: room.id,
         });
 
@@ -538,7 +538,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Required for main quest',
           position: { x: 5, y: 5, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           roomId: room.id,
         });
 
@@ -581,7 +581,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Critical to story progression',
           position: { x: 0, y: 0, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           metadata: {
             isQuestItem: true,
             isUnique: true,
@@ -609,7 +609,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Important item',
           position: { x: 0, y: 0, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           roomId: room.id,
           metadata: {
             isQuestItem: true,
@@ -638,7 +638,7 @@ describe('Progression Blocker Prevention', () => {
           ...originalState,
           description: 'Important item',
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
         });
 
         expect(restoredItem.name).toBe(originalState.name);
@@ -662,7 +662,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Required for progression',
           position: { x: 1000, y: 1000, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           roomId: unreachableRoom.id,
         });
 
@@ -703,7 +703,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Important',
           position: { x: 5, y: 5, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           roomId: room.id,
         });
 
@@ -722,7 +722,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Needed for quest',
           position: { x: 0, y: 0, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           health: 100,
           maxHealth: 100,
           metadata: {
@@ -742,7 +742,7 @@ describe('Progression Blocker Prevention', () => {
           description: 'Cannot be sold',
           position: { x: 0, y: 0, z: 0 },
           objectType: 'item',
-          canTake: true,
+          isPortable: true,
           metadata: {
             isQuestItem: true,
             canSell: false,
@@ -2002,7 +2002,7 @@ describe('Progression Blocker Prevention', () => {
         description: 'Needed for quest',
         position: { x: 10, y: 5, z: 0 },
         objectType: 'item',
-        canTake: true,
+        isPortable: true,
         roomId: questRoom.id,
       });
 
@@ -2098,7 +2098,7 @@ describe('Progression Blocker Prevention', () => {
         description: 'Needed to win',
         position: { x: 0, y: 0, z: 0 },
         objectType: 'item',
-        canTake: true,
+        isPortable: true,
         metadata: {
           isQuestItem: true,
           preventDestruction: true,

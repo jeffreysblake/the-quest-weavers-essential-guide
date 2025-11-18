@@ -78,7 +78,7 @@ describe('CommandProcessorService', () => {
     description: 'An old brass key',
     objectType: 'item',
     position: { x: 5, y: 5, z: 0 },
-    canTake: true,
+    isPortable: true,
   };
 
   const mockFixedObject = {
@@ -87,7 +87,7 @@ describe('CommandProcessorService', () => {
     description: 'A heavy stone statue',
     objectType: 'furniture',
     position: { x: 3, y: 3, z: 0 },
-    canTake: false,
+    isPortable: false,
   };
 
   beforeEach(async () => {

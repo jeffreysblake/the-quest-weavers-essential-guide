@@ -1,36 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { ICommandHandler } from './command-handler.interface';
 import { CommandResult } from '../game.service';
 import { PlayerService } from '../../entity/player.service';
 import { RoomService } from '../../entity/room.service';
 import { CommandValidatorService } from '../command-validator.service';
+import { BaseCommandHandler } from './base-command.handler';
 
 @Injectable()
-export class TakeCommandHandler implements ICommandHandler {
+export class TakeCommandHandler extends BaseCommandHandler {
   constructor(
-    private playerService: PlayerService,
-    private roomService: RoomService,
-    private validator: CommandValidatorService,
-  ) {}
-
-  /**
-   * Normalize item name for matching - handles hyphens, underscores, and spaces
-   */
-  private normalizeNameForMatching(name: string): string {
-    return name
-      .toLowerCase()
-      .replace(/[-_]/g, ' ') // Replace hyphens and underscores with spaces
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .trim();
-  }
-
-  /**
-   * Check if target matches object name (handles variations like hyphens vs spaces)
-   */
-  private matchesName(objectName: string, target: string): boolean {
-    const normalizedObjectName = this.normalizeNameForMatching(objectName);
-    const normalizedTarget = this.normalizeNameForMatching(target);
-    return normalizedObjectName.includes(normalizedTarget);
+    playerService: PlayerService,
+    roomService: RoomService,
+    validator: CommandValidatorService,
+  ) {
+    super(playerService, roomService, validator);
   }
 
   async handle(
@@ -38,39 +20,21 @@ export class TakeCommandHandler implements ICommandHandler {
     room: any,
     target: string,
   ): Promise<CommandResult> {
-    if (!target) {
-      return {
-        success: false,
-        type: 'error',
-        message: 'Take what?',
-      };
-    }
+    // VALIDATION: Validate target and item name
+    const validation = this.validateTarget(target, 'take');
+    if (validation) return validation;
 
-    // VALIDATION: Validate item name
-    const itemValidation = this.validator.validateItemName(target);
-    if (!itemValidation.valid) {
-      return {
-        success: false,
-        type: 'error',
-        message: itemValidation.error || 'Invalid item name',
-      };
-    }
-
-    const objects = this.roomService.getObjectsInRoom(room.id);
-    const targetObject = objects.find((obj) =>
-      obj.name ? this.matchesName(obj.name, target) : false,
-    );
+    // Find the target object in the room
+    const targetObject = this.findObjectInRoom(room, target);
 
     if (!targetObject) {
-      return {
-        success: false,
-        type: 'action_failure',
-        message: `You don't see a ${target} here.`,
-      };
+      return this.createNotFoundError(target);
     }
 
-    // Check if the object is portable (check all possible property names for compatibility)
-    if (targetObject.canTake === false || targetObject.is_portable === false || targetObject.isPortable === false) {
+    // Check if the object is portable
+    // Note: Entity converter ensures all naming conventions (canTake, is_portable, isPortable)
+    // are normalized to isPortable, so we only need to check one property
+    if (targetObject.isPortable === false) {
       return {
         success: false,
         type: 'action_failure',
