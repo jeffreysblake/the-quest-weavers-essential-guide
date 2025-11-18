@@ -3,6 +3,7 @@
   "name": "Captain Sparkle",
   "description": "An impossibly cheerful cleaning product mascot who achieved sentience and decided to dedicate their life to helping others clean",
   "npc_type": "vendor",
+  "room_id": "bubble-plaza",
   "position": { "x": -25, "y": 78, "z": 2 },
   "health": 80,
   "max_health": 80,

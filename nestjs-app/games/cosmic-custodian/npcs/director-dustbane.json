@@ -3,6 +3,7 @@
   "name": "Director Dustbane",
   "description": "Your boss: a stern, no-nonsense administrator who built their career on cleanliness and disappointed sighs",
   "npc_type": "quest-giver",
+  "room_id": "directors-office",
   "position": { "x": 7, "y": 25, "z": 0 },
   "health": 100,
   "max_health": 100,

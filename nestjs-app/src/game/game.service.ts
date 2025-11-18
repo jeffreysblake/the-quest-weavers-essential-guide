@@ -532,7 +532,8 @@ export class GameService {
           objectType: objectJson.object_type || 'item',
           position: objectJson.position || { x: 0, y: 0, z: 0 },
           material: objectJson.material || 'unknown',
-          canTake: objectJson.can_take !== false,
+          canTake: objectJson.can_take !== false && objectJson.is_portable !== false,
+          isPortable: objectJson.is_portable !== false && objectJson.can_take !== false,
           gameId: gameId,
         });
 
@@ -569,6 +570,7 @@ export class GameService {
       // Load all NPCs
       const npcsPath = path.join(basePath, 'npcs');
       const npcFiles = await fs.readdir(npcsPath);
+      const npcsMap: { [key: string]: any } = {}; // Map to store NPCs for game state
 
       for (const file of npcFiles) {
         if (!file.endsWith('.json')) continue;
@@ -590,6 +592,9 @@ export class GameService {
           experience: 0,
           gameId: gameId,
         });
+
+        // Add NPC to npcsMap for game state
+        npcsMap[npc.id] = npc;
 
         // Place NPC in room
         let roomToPlaceIn: any = null;
@@ -656,6 +661,7 @@ export class GameService {
 
       // Save initial state
       await this.gameStateService.updateGameState(gameId, {
+        npcs: npcsMap, // Add NPCs to game state
         startingRoomId: startingRoom?.id || Array.from(rooms.values())[0]?.id,
         initialized: true,
       });

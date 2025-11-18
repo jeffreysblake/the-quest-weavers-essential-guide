@@ -3,6 +3,7 @@
   "name": "Professor Scrubsworth",
   "description": "A brilliant but eccentric scientist who treats cleaning products like they're quantum physics experiments",
   "npc_type": "scientist",
+  "room_id": "laboratory",
   "position": { "x": 35, "y": 15, "z": 0 },
   "health": 60,
   "max_health": 60,

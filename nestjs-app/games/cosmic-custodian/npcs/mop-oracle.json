@@ -3,6 +3,7 @@
   "name": "The Mop Oracle",
   "description": "An ancient, sentient mop who has achieved enlightenment through countless cleaning sessions",
   "npc_type": "guide",
+  "room_id": "archive-entrance",
   "position": { "x": 5, "y": -15, "z": 0 },
   "health": 50,
   "max_health": 50,

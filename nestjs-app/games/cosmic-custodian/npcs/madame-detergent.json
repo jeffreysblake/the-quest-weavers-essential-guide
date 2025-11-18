@@ -3,6 +3,7 @@
   "name": "Madame Detergent",
   "description": "A fortune teller made entirely of swirling soap who claims to see the future in bubble patterns",
   "npc_type": "fortune-teller",
+  "room_id": "bubble-plaza",
   "position": { "x": -88, "y": 12, "z": 0 },
   "health": 50,
   "max_health": 50,
