@@ -1,0 +1,8 @@
+{
+  "id": "translation-device",
+  "name": "Pocket Translation Device",
+  "description": "A handheld translator for common alien languages. Works better than the universal translator but only knows seven languages. Three of them are extinct. One is just beeping. Still helpful.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

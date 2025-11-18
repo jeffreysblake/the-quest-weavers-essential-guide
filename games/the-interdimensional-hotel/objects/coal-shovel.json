@@ -1,0 +1,8 @@
+{
+  "id": "coal-shovel",
+  "name": "Coal Shovel",
+  "description": "A sturdy shovel for feeding coal (or broken dreams) into the furnace. Heavy, practical, and makes a satisfying 'clang' when you hit things with it. The maintenance worker's weapon of choice.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

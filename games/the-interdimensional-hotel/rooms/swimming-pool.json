@@ -1,0 +1,23 @@
+{
+  "id": "swimming-pool",
+  "name": "Liquid Time Pool",
+  "description": "An Olympic-sized pool filled with shimmering liquid time instead of water. Swimmers splash through past and future, occasionally emerging before they dive in. Pool toys from the 1950s float next to ones from 2150. The diving board launches you through temporal streams. A lifeguard watches events that haven't happened yet, preventing accidents before they occur. The pool rules are posted, but they change based on when you read them. Chlorine levels: timey-wimey.",
+  "position": {
+    "x": 10,
+    "y": 0,
+    "z": 50
+  },
+  "items": [
+    "pool-noodle",
+    "time-in-a-bottle",
+    "wet-towel"
+  ],
+  "npcs": [
+    "lifeguard-chronos"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

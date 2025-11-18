@@ -1,0 +1,8 @@
+{
+  "id": "ancient-tome",
+  "name": "Ancient Tome of Forbidden Knowledge",
+  "description": "A leather-bound book that's either full of dark secrets or just an old cookbook\u2014it's in Latin, hard to tell. Contains spells, hexes, and one recipe for pot roast. Reading it makes you feel smarter and slightly evil. Pages whisper when you're not looking at them.",
+  "takeable": true,
+  "usable": true,
+  "type": "book"
+}

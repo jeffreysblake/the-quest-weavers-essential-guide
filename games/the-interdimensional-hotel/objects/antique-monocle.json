@@ -1,0 +1,8 @@
+{
+  "id": "antique-monocle",
+  "name": "Gentleman's Monocle",
+  "description": "A Victorian monocle that makes everything look more sophisticated, including your questionable life choices. When worn, grants +5 to Looking Distinguished and the ability to say 'Good heavens!' convincingly.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

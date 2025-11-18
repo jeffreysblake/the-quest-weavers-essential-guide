@@ -1,0 +1,21 @@
+{
+  "id": "bellhop-station",
+  "name": "Bellhop Station",
+  "description": "Your cramped workspace behind a fake potted plant in the hotel lobby. A small desk holds your bell, a clipboard with incomprehensible guest requests, and a framed photo of your cat, Mr. Whiskers. Through the archway, you can see the Grand Lobby where reality is currently doing things reality really shouldn't do. A ghost just walked through a robot. This is fine. Everything is fine.",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "items": [
+    "bellhop-uniform",
+    "employee-handbook",
+    "mysterious-note"
+  ],
+  "npcs": [],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

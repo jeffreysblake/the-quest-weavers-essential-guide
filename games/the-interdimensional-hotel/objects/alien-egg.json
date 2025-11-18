@@ -1,0 +1,8 @@
+{
+  "id": "alien-egg",
+  "name": "Mysterious Alien Egg",
+  "description": "An ovoid object from an unknown alien species. Warm to the touch, pulsing with internal light. Either an egg about to hatch or a very weird lamp. Best not to shake it. Or drop it. Or anger it.",
+  "takeable": true,
+  "usable": false,
+  "type": "collectible"
+}

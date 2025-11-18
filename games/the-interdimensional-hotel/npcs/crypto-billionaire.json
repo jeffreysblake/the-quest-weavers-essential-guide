@@ -1,0 +1,16 @@
+{
+  "id": "crypto-billionaire",
+  "name": "Crypto Craig",
+  "description": "A tech billionaire who made his fortune in cryptocurrency (probably). Wears designer clothes and arrogance. Talks about 'disrupting' everything. Has opinions on everything. Listens to nothing. Currently 'disrupting' the hotel's peace and quiet.",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 20
+  },
+  "health": 75,
+  "maxHealth": 75,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "crypto-billionaire",
+  "hostile": false
+}

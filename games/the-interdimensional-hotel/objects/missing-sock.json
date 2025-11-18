@@ -1,0 +1,8 @@
+{
+  "id": "missing-sock",
+  "name": "The Other Sock",
+  "description": "The partner to the single-sock from Lost & Found! Red with green stripes. If you can reunite these socks, something magical might happen. Or you'll just have a pair of socks. Either outcome is nice.",
+  "takeable": true,
+  "usable": true,
+  "type": "misc"
+}

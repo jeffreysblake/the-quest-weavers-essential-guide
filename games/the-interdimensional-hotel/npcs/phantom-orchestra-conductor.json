@@ -1,0 +1,16 @@
+{
+  "id": "phantom-orchestra-conductor",
+  "name": "Maestro Spiritus",
+  "description": "The ghostly conductor of the phantom orchestra. Waves a spectral baton with dramatic flair. Hair frozen in a permanent wind-blown pose. Passionate about music, death, and proper tempo. Will argue about Mozart. Lost his baton in 1847, still mad about it.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 10
+  },
+  "health": 55,
+  "maxHealth": 55,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "phantom-orchestra-conductor",
+  "hostile": false
+}

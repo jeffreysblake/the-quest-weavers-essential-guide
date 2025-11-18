@@ -1,0 +1,21 @@
+{
+  "id": "elevator-bank",
+  "name": "Elevator Bank",
+  "description": "Six elevator doors stand in a row, each leading to a different dimensional floor. Helpful labels read: '1-Ghost Floor', '2-Cyber Casino', '3-Fantasy Realm', '4-Alien Convention', 'B-Basement', and one that just says 'YES'. The call buttons glow with impossible colors. One elevator keeps arriving before you push the button. A sign warns: 'Please do not attempt to exist on multiple floors simultaneously. Management is not responsible for temporal paradoxes, existential crises, or being your own grandfather.'",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 0
+  },
+  "items": [
+    "elevator-manual"
+  ],
+  "npcs": [
+    "elevator-operator-jenkins"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

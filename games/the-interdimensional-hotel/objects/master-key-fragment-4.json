@@ -1,0 +1,8 @@
+{
+  "id": "master-key-fragment-4",
+  "name": "Master Key Fragment 4/4",
+  "description": "The final piece of the Master Key, found in the Manager's desk (ironic). With all four fragments, you can forge the complete key and access anywhere in the hotel. The power!",
+  "takeable": true,
+  "usable": false,
+  "type": "quest"
+}

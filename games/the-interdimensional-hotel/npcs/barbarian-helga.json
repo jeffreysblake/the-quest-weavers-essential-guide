@@ -1,0 +1,16 @@
+{
+  "id": "barbarian-helga",
+  "name": "Helga the Hammer",
+  "description": "A seven-foot-tall barbarian woman with muscles on her muscles. Carries an ax bigger than most people. Drinks, fights, laughs loudly. Surprisingly philosophical after the third ale. Can arm-wrestle dragons (and win). Terrible at charades.",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 30
+  },
+  "health": 150,
+  "maxHealth": 150,
+  "level": 7,
+  "type": "npc",
+  "dialogueTreeId": "barbarian-helga",
+  "hostile": false
+}

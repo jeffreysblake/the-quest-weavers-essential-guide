@@ -1,0 +1,8 @@
+{
+  "id": "chefs-knife",
+  "name": "Professional Chef's Knife",
+  "description": "A razor-sharp chef's knife, perfectly balanced and intimidating. Cuts through vegetables, meat, and tension. The blade gleams with menace and professionalism. Do not run with this.",
+  "takeable": true,
+  "usable": true,
+  "type": "weapon"
+}

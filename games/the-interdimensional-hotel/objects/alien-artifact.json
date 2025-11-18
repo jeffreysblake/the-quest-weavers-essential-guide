@@ -1,0 +1,8 @@
+{
+  "id": "alien-artifact",
+  "name": "Mysterious Alien Artifact",
+  "description": "An object of unknown origin and purpose. It's metallic, glows faintly, and hums at a frequency that makes your teeth itch. Might be a weapon, might be a toothbrush. Alien design is inscrutable.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

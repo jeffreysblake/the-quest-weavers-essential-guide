@@ -1,0 +1,8 @@
+{
+  "id": "reverse-clock",
+  "name": "Backwards Clock",
+  "description": "A clock that runs counter-clockwise, tracking time in reverse. Useful for scheduling meetings that happened yesterday. The alarm goes off before you set it. Time is weird.",
+  "takeable": true,
+  "usable": false,
+  "type": "tool"
+}

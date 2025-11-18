@@ -1,0 +1,8 @@
+{
+  "id": "medieval-shield",
+  "name": "Wooden Shield",
+  "description": "A heavy wooden shield bearing a coat of arms featuring a confused dragon and the motto 'We Tried.' Useful for blocking attacks or pretending you're at a Renaissance faire. Warning: Not effective against bullets, lasers, or harsh criticism.",
+  "takeable": true,
+  "usable": true,
+  "type": "armor"
+}

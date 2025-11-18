@@ -1,0 +1,8 @@
+{
+  "id": "bellhop-uniform",
+  "name": "Bellhop Uniform",
+  "description": "Your slightly wrinkled bellhop uniform: red jacket with gold buttons, pill-box hat that never stays on straight, and pants that haven't fit right since orientation. The nametag says 'REX' in cheerful letters, mocking your current situation. Wearing this grants you +10 to Looking Official and -5 to Self Esteem.",
+  "takeable": true,
+  "usable": false,
+  "type": "clothing"
+}

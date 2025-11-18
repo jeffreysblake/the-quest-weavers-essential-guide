@@ -1,0 +1,8 @@
+{
+  "id": "complaint-forms",
+  "name": "Guest Complaint Forms",
+  "description": "A stack of complaint forms from various guests: 'Room too haunted,' 'Robot stole my towels,' 'Time paradox in shower,' 'Dragon won't stop smoking in non-smoking room,' and simply 'AAAAAAHHHHH.' Management's responses are all 'We apologize for any inconvenience.' Not helpful, but very on-brand.",
+  "takeable": true,
+  "usable": false,
+  "type": "document"
+}

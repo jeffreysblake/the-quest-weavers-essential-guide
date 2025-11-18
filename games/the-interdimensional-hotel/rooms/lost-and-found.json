@@ -1,0 +1,23 @@
+{
+  "id": "lost-and-found",
+  "name": "Infinite Lost & Found",
+  "description": "A room that's somehow larger than the entire hotel, filled with every object ever lost by any guest in any dimension. Mountains of unclaimed umbrellas reach the ceiling. Suitcases stack into towers. Single socks form their own ecosystem. You can find anything here, if you're willing to search for eternity. Items include: someone's dignity, lost time, forgotten dreams, and at least seventeen left shoes. A sign reads: 'If you can find it, you can have it.' Good luck.",
+  "position": {
+    "x": 20,
+    "y": 0,
+    "z": -10
+  },
+  "items": [
+    "mysterious-package",
+    "single-sock",
+    "useful-gadget"
+  ],
+  "npcs": [
+    "lost-and-found-clerk"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

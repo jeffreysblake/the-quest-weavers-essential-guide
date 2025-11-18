@@ -1,0 +1,8 @@
+{
+  "id": "energy-drink",
+  "name": "X-TREME Energy Drink",
+  "description": "A can of neon-colored energy drink that promises to give you 'MAXIMUM ENERGY!!!' Contains caffeine, taurine, sugar, and possibly liquid lightning. Drinking it makes you jittery, focused, and able to see sounds. Not FDA approved in this dimension.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "lord-evermore",
+  "name": "Lord Evermore",
+  "description": "An aristocratic ghost occupying the luxury suite. Died wealthy, stayed wealthy (ghosts can keep their money apparently). Smokes spectral cigars. Drinks spiritual champagne. Throws parties for the undead elite. Still charges rent to other ghosts.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 10
+  },
+  "health": 80,
+  "maxHealth": 80,
+  "level": 5,
+  "type": "npc",
+  "dialogueTreeId": "lord-evermore",
+  "hostile": false
+}

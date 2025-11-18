@@ -1,0 +1,8 @@
+{
+  "id": "reality-fragment-3",
+  "name": "Reality Fragment (Basement)",
+  "description": "A grimy chunk of reality pulled from the service tunnels. Less glamorous than the others but just as important. Smells like industrial cleaner and desperation. Even reality has a working class.",
+  "takeable": true,
+  "usable": false,
+  "type": "quest"
+}

@@ -30,8 +30,18 @@ export class UseCommandHandler extends BaseCommandHandler {
     const validation = this.validateTarget(target, 'use');
     if (validation) return validation;
 
+    // Parse "use X on Y" syntax
+    let itemToUse = target;
+    let targetForUse: string | null = null;
+
+    if (target.includes(' on ')) {
+      const parts = target.split(' on ');
+      itemToUse = parts[0].trim();
+      targetForUse = parts[1].trim();
+    }
+
     // Use base class method to find object
-    const targetObject = this.findObjectInInventoryOrRoom(player, room, target);
+    const targetObject = this.findObjectInInventoryOrRoom(player, room, itemToUse);
 
     if (!targetObject) {
       return this.createNotFoundError(target);

@@ -1,0 +1,23 @@
+{
+  "id": "rooftop-garden",
+  "name": "Backwards Time Garden",
+  "description": "A rooftop sanctuary where time flows in reverse. Plants grow younger, eventually becoming seeds. Rain falls upward. The sun sets in the east and rises in the west. Conversations happen backwards. You arrive before you leave. A sundial runs counterclockwise. This is either a peaceful meditation space or a headache factory, depending on your relationship with temporal mechanics. A sign reads: '?sdrawkcab siht si yhW'",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 50
+  },
+  "items": [
+    "time-flower",
+    "reverse-clock",
+    "backwards-book"
+  ],
+  "npcs": [
+    "time-gardener"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

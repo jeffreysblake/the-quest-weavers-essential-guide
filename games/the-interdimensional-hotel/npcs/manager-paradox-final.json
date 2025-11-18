@@ -1,0 +1,16 @@
+{
+  "id": "manager-paradox-final",
+  "name": "Manager Paradox",
+  "description": "The manager, in their office, ready for the final confrontation. Something is different about them. More honest. More dangerous. The pleasant corporate mask is slipping. Time for answers.",
+  "position": {
+    "x": 0,
+    "y": 40,
+    "z": 0
+  },
+  "health": 150,
+  "maxHealth": 150,
+  "level": 10,
+  "type": "npc",
+  "dialogueTreeId": "manager-paradox-final",
+  "hostile": false
+}

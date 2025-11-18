@@ -1,0 +1,23 @@
+{
+  "id": "enchanted-garden",
+  "name": "Enchanted Garden Terrace",
+  "description": "An impossible outdoor space that exists inside the hotel, because magic. Flowers bloom in impossible colors, singing softly in harmony. Trees grow upside down, their roots grasping at clouds. A fountain flows with water that grants minor wishes (like finding your keys). Butterflies phase between dimensions. Garden gnomes watch you with judgmental expressions. Paths wind through the greenery, leading everywhere and nowhere. The gardener is a sentient rosebush who takes their job very seriously.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 30
+  },
+  "items": [
+    "enchanted-flower",
+    "wishing-water",
+    "garden-gnome"
+  ],
+  "npcs": [
+    "rosebush-gardener"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

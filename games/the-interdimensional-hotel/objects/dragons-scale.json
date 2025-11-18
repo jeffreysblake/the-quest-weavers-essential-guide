@@ -1,0 +1,8 @@
+{
+  "id": "dragons-scale",
+  "name": "Dragon Scale",
+  "description": "A shimmering scale shed by a real dragon. Iridescent, fireproof, and worth a fortune to the right buyer. Could be crafted into armor, jewelry, or used as proof that dragons exist (which is less impressive when you're standing in a dragon's room).",
+  "takeable": true,
+  "usable": true,
+  "type": "component"
+}

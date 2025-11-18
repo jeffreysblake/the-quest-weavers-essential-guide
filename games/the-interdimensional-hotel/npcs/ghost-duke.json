@@ -1,0 +1,16 @@
+{
+  "id": "ghost-duke",
+  "name": "Duke Ectoplasm III",
+  "description": "A gambling ghost from the Victorian era who lost his fortune at cards and now haunts the ballroom, still trying to win it back. Translucent monocle. Spectral top hat. Speaks with a refined accent while making terrible bets. Death hasn't improved his poker face.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 10
+  },
+  "health": 60,
+  "maxHealth": 60,
+  "level": 3,
+  "type": "npc",
+  "dialogueTreeId": "ghost-duke",
+  "hostile": false
+}

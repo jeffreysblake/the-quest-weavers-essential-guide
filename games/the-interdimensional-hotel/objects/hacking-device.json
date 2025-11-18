@@ -1,0 +1,8 @@
+{
+  "id": "hacking-device",
+  "name": "Hacking Multi-Tool",
+  "description": "A cyberpunk device bristling with cables, antennas, and blinking LEDs. Can hack locks, computers, vending machines, and your self-esteem. Comes with seventeen adapters and zero instructions. User interface is a skull icon because hackers love drama.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

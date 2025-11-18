@@ -1,0 +1,23 @@
+{
+  "id": "robot-bar",
+  "name": "The Copper Circuit Bar",
+  "description": "A sleek chrome bar where automatons come to lubricate their social circuits with motor oil cocktails. The bartender is a smooth-talking service bot who makes drinks with mathematical precision. Neon beer signs advertise brands like 'Electric Dreams' and 'Quantum Lite.' A jukebox plays synth music exclusively. Bar stools adjust to any anatomy (very inclusive). The bowl of nuts is actually just small screws and bolts. Happy hour is from 11:11 to 11:12 because binary.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 20
+  },
+  "items": [
+    "robot-oil",
+    "electronic-schematic"
+  ],
+  "npcs": [
+    "bartender-unit-7",
+    "drunk-robot"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

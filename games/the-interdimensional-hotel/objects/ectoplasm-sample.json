@@ -1,0 +1,8 @@
+{
+  "id": "ectoplasm-sample",
+  "name": "Jar of Ectoplasm",
+  "description": "A mason jar full of glowing green ectoplasm collected from the Victorian floor. It sloshes when you shake it and occasionally forms faces that scream silently. Useful in various ghostly applications, or as a really unsettling lava lamp. Do not drink. Seriously.",
+  "takeable": true,
+  "usable": true,
+  "type": "ingredient"
+}

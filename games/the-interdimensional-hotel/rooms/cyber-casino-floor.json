@@ -1,0 +1,25 @@
+{
+  "id": "cyber-casino-floor",
+  "name": "Cyber Casino Floor",
+  "description": "A neon-drenched gambling paradise where the odds are calculated by quantum AI and the house always wins (it's math). Holographic dealers deal holographic cards to very real gamblers. Slot machines dispense cryptocurrency that may or may not be legal in this dimension. A roulette wheel spins in seventeen directions. Robots play poker with ghosts, and somehow the robots are worse at bluffing. The carpet pattern is designed to make you lose track of time, which is easy since time doesn't work right anyway.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 20
+  },
+  "items": [
+    "poker-chip",
+    "loaded-dice",
+    "jackpot-token"
+  ],
+  "npcs": [
+    "robot-dealer",
+    "gambling-ghost",
+    "card-shark-sally"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

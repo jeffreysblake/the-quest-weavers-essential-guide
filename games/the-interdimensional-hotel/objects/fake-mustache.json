@@ -1,0 +1,8 @@
+{
+  "id": "fake-mustache",
+  "name": "Novelty Mustache",
+  "description": "A ridiculous fake mustache from the gift shop. Black, bushy, and completely unconvincing. The package promises it will make you look 'sophisticated and mysterious.' It makes you look like you're wearing a fake mustache. Might be useful as a disguise if everyone you meet is extremely stupid.",
+  "takeable": true,
+  "usable": true,
+  "type": "disguise"
+}

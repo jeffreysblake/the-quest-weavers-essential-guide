@@ -1,0 +1,8 @@
+{
+  "id": "library-card",
+  "name": "Spectral Library Card",
+  "description": "A library card for the Ghost Library, valid for one eternity. 'Card Holder: REX DOORMAN. Please return books on time. Late fees accumulate even after death.'",
+  "takeable": true,
+  "usable": true,
+  "type": "document"
+}

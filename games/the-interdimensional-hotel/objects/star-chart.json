@@ -1,0 +1,8 @@
+{
+  "id": "star-chart",
+  "name": "Stellar Navigation Chart",
+  "description": "A map of the stars showing constellations, nebulae, and hyperspace routes. Most of it is beyond human comprehension. There's a star circled with 'YOU ARE HERE' which raises more questions than it answers.",
+  "takeable": true,
+  "usable": false,
+  "type": "document"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "dimension-goggles",
+  "name": "Dimension-Viewing Goggles",
+  "description": "Novelty goggles that supposedly let you 'See Through Dimensions!' They're just regular safety goggles with holographic stickers. However, since reality is broken, they might actually work now. Or they might just give you a headache. Only one way to find out!",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "robot-dealer",
+  "name": "Dealer-Bot Model 7",
+  "description": "A sleek casino robot that deals cards with mechanical precision. Chrome chassis. Digital display face showing playing card suits. Programmed with gambling algorithms and sarcasm. Can calculate odds in nanoseconds. Still loses to humans somehow.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 20
+  },
+  "health": 100,
+  "maxHealth": 100,
+  "level": 5,
+  "type": "npc",
+  "dialogueTreeId": "robot-dealer",
+  "hostile": false
+}

@@ -1,0 +1,8 @@
+{
+  "id": "reality-anchor-fragment",
+  "name": "Reality Anchor Fragment",
+  "description": "A piece of the stolen Reality Anchor, found in the Rift. Hums with stabilizing energy. You'll need to gather all pieces to restore it and save the hotel from dimensional collapse.",
+  "takeable": true,
+  "usable": false,
+  "type": "quest"
+}

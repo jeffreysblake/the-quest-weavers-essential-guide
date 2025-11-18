@@ -1,0 +1,8 @@
+{
+  "id": "stale-donuts",
+  "name": "Box of Stale Donuts",
+  "description": "Donuts from the employee lounge, hard as rocks and twice as appetizing. Glazed (allegedly), sprinkled with age, and suitable only for dunking in coffee or using as projectiles. Best by: Last Tuesday.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

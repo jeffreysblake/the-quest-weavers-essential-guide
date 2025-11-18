@@ -1,0 +1,22 @@
+{
+  "id": "neon-corridor",
+  "name": "Neon Corridor",
+  "description": "A hallway pulsing with electric life, bathed in pink and cyan neon that makes everyone look like they're in an 80s music video. Holographic advertisements flicker past, selling things that don't exist yet. The walls are chrome and circuit boards. Digital rain falls upward along the windows. Bass-heavy synth music throbs from hidden speakers. A vending machine offers 'Digital Snacks' (they're just regular snacks with LED lights glued on).",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 20
+  },
+  "items": [
+    "neon-sign",
+    "circuit-board"
+  ],
+  "npcs": [
+    "cyber-punk-kid"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

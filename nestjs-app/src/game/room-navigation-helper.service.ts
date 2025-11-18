@@ -123,7 +123,8 @@ export class RoomNavigationHelperService {
       exits.push('west');
     }
 
-    return exits.length > 0 ? exits : ['north', 'east']; // Default exits for demo
+    // Return actual exits found, or empty array if none (remove default fallback)
+    return exits;
   }
 
   findAdjacentRoom(currentRoom: any, direction: string): any {

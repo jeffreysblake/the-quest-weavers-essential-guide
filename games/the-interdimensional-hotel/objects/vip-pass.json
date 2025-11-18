@@ -1,0 +1,8 @@
+{
+  "id": "vip-pass",
+  "name": "VIP Access Pass",
+  "description": "A holographic pass granting access to exclusive areas. Says 'VIP - VERY INTERDIMENSIONAL PERSON' in shimmering letters. Makes you feel important. Doesn't actually make you important, but feelings matter.",
+  "takeable": true,
+  "usable": true,
+  "type": "document"
+}

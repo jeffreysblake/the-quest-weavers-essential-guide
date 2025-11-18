@@ -1,0 +1,16 @@
+{
+  "id": "protocol-droid",
+  "name": "C-347 (Protocol Droid)",
+  "description": "A golden protocol droid fluent in over six million forms of communication and anxious about all of them. Worries constantly. Follows rules religiously. Apologizes preemptively. Useful for translation, terrible for morale.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 40
+  },
+  "health": 60,
+  "maxHealth": 60,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "protocol-droid",
+  "hostile": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "maintenance-worker-joe",
+  "name": "Joe the Maintenance Guy",
+  "description": "A perpetually exhausted maintenance worker who keeps the hotel running (barely). Tool belt. Coffee addiction. Seen things. Fixed things. Given up on things. Knows where all the bodies are buried (metaphorically) (probably).",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": -10
+  },
+  "health": 75,
+  "maxHealth": 75,
+  "level": 4,
+  "type": "npc",
+  "dialogueTreeId": "maintenance-worker-joe",
+  "hostile": false
+}

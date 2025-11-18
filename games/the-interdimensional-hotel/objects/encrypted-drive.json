@@ -1,0 +1,8 @@
+{
+  "id": "encrypted-drive",
+  "name": "Encrypted Data Drive",
+  "description": "A thumb drive containing encrypted files about the hotel's darkest secrets. Probably. It's encrypted, so who knows. The password is probably 'password123.' Contains either vital information or someone's vacation photos.",
+  "takeable": true,
+  "usable": true,
+  "type": "data"
+}

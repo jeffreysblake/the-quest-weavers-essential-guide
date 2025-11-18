@@ -1,0 +1,16 @@
+{
+  "id": "hacker-zero",
+  "name": "Zero",
+  "description": "An elite hacker shrouded in mystery and a hoodie. Face hidden. Voice modulated. Fingers flying across keyboards. Has hacked everything hackable and some things that aren't. Knows the hotel's secrets. Might help you. For a price.",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 20
+  },
+  "health": 80,
+  "maxHealth": 80,
+  "level": 6,
+  "type": "npc",
+  "dialogueTreeId": "hacker-zero",
+  "hostile": false
+}

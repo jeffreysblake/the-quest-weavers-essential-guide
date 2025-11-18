@@ -1,0 +1,8 @@
+{
+  "id": "crystal-ball",
+  "name": "Crystal Ball",
+  "description": "A mystical crystal sphere for seeing the future, the past, and occasionally what's on TV. Currently showing only static and ominous shadows. Might work better once reality is fixed. Makes an excellent paperweight in the meantime.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

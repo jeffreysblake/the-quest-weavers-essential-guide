@@ -1,0 +1,8 @@
+{
+  "id": "exotic-ingredient",
+  "name": "Exotic Cooking Ingredient",
+  "description": "An ingredient from another dimension\u2014might be a truffle, might be a rock, hard to tell. Smells interesting. Tastes like colors. The chef insists it's essential for interdimensional cuisine.",
+  "takeable": true,
+  "usable": true,
+  "type": "ingredient"
+}

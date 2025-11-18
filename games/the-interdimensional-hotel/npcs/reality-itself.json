@@ -1,0 +1,16 @@
+{
+  "id": "reality-itself",
+  "name": "Reality (Personified)",
+  "description": "Reality itself, given form in the dimensional rift. Appears as constantly shifting forms\u2014human, alien, geometric shapes, pure light. Speaks in overlapping voices. Desperate. Dying. Needs your help to be whole again.",
+  "position": {
+    "x": 20,
+    "y": 40,
+    "z": 0
+  },
+  "health": 1,
+  "maxHealth": 1000,
+  "level": 99,
+  "type": "npc",
+  "dialogueTreeId": "reality-itself",
+  "hostile": false
+}

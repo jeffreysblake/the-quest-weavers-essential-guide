@@ -1,0 +1,8 @@
+{
+  "id": "reality-fragment-2",
+  "name": "Reality Fragment (Magic)",
+  "description": "A glowing piece of solidified reality from the Fantasy Realm floor. Tingles with magical energy and occasionally whispers spell incantations in ancient languages. Smells like dragon fire and old books. Part of the puzzle to fix everything.",
+  "takeable": true,
+  "usable": false,
+  "type": "quest"
+}

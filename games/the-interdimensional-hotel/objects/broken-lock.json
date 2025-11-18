@@ -1,0 +1,8 @@
+{
+  "id": "broken-lock",
+  "name": "Broken Vault Lock",
+  "description": "A lock from the vault, blown apart by unknown means. Scorch marks suggest dimensional explosives or really aggressive lock picking. Evidence of the break-in.",
+  "takeable": true,
+  "usable": false,
+  "type": "evidence"
+}

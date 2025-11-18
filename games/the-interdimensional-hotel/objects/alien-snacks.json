@@ -1,0 +1,8 @@
+{
+  "id": "alien-snacks",
+  "name": "Bag of Alien Snacks",
+  "description": "Snack foods from across the galaxy. Most look like cheese puffs, taste like motor oil, and cause unusual digestive effects. The nutrition label is in base-13 mathematics. May contain nuts, gluten, and things humans shouldn't eat.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

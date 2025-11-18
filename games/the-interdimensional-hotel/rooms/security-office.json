@@ -1,0 +1,23 @@
+{
+  "id": "security-office",
+  "name": "Security Office",
+  "description": "A room filled with monitors showing every corner of the hotel across all dimensions simultaneously. Security guards watch screens showing the past, present, and future, trying to prevent crimes before, during, and after they happen. A wall of keys holds access to every door. Coffee fuels the vigilance. A logbook records impossible incidents: 'Guest phased through wall,' 'Dragon set off smoke alarm,' 'Time loop in Room 404.' Red buttons promise emergency responses. One monitor just shows static and screaming.",
+  "position": {
+    "x": 40,
+    "y": 0,
+    "z": 50
+  },
+  "items": [
+    "security-keycard",
+    "surveillance-footage",
+    "taser"
+  ],
+  "npcs": [
+    "chief-of-security"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

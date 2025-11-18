@@ -1,0 +1,16 @@
+{
+  "id": "bard-finnegan",
+  "name": "Finnegan the Bard",
+  "description": "A cheerful bard with a lute, a voice, and an ego. Red hair, green tunic, terrible jokes. Sings ballads about heroes (mostly himself). Takes requests for gold. Makes up rhymes on the spot. Banned from three kingdoms for musical crimes against humanity.",
+  "position": {
+    "x": 10,
+    "y": 30,
+    "z": 30
+  },
+  "health": 65,
+  "maxHealth": 65,
+  "level": 3,
+  "type": "npc",
+  "dialogueTreeId": "bard-finnegan",
+  "hostile": false
+}

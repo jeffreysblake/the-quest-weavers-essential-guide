@@ -1,0 +1,8 @@
+{
+  "id": "magic-wand",
+  "name": "Wizard's Wand",
+  "description": "A genuine magical wand made from enchanted wood and phoenix feather (or possibly a chicken feather\u2014phoenixes are hard to source). Can cast spells if you know any spells, which you don't. Still makes cool swooshing sounds when you wave it.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

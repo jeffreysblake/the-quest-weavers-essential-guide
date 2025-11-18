@@ -1,0 +1,8 @@
+{
+  "id": "phantom-key",
+  "name": "Phantom Key",
+  "description": "A translucent key that phases through solid matter like a ghost. Opens the Phantom's Luxury Suite and possibly your third eye. Handle carefully\u2014it phases through your pocket sometimes.",
+  "takeable": true,
+  "usable": true,
+  "type": "key"
+}

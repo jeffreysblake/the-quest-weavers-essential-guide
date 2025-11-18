@@ -1,0 +1,8 @@
+{
+  "id": "dream-catcher",
+  "name": "Dimensional Dream Catcher",
+  "description": "A dream catcher that doesn't just catch dreams\u2014it catches reality fragments, stray thoughts, and occasionally flies. Woven with impossible geometry. Protects against nightmares and existential crises.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

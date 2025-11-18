@@ -1,0 +1,8 @@
+{
+  "id": "surveillance-footage",
+  "name": "Security Footage",
+  "description": "A USB drive containing surveillance footage from the night the Reality Anchor was stolen. Shows grainy video of the thief, blurred by dimensional interference. Might contain crucial evidence if you can enhance it (or find someone who can).",
+  "takeable": true,
+  "usable": false,
+  "type": "data"
+}

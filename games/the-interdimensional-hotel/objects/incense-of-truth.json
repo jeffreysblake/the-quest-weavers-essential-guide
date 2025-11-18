@@ -1,0 +1,8 @@
+{
+  "id": "incense-of-truth",
+  "name": "Incense of Truth",
+  "description": "Mystical incense that compels those who smell it to speak only the truth. Useful for interrogations and extremely awkward at parties. Smells like sandalwood and broken friendships.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}

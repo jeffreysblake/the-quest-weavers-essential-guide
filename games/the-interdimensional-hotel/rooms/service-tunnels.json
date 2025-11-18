@@ -1,0 +1,23 @@
+{
+  "id": "service-tunnels",
+  "name": "Service Tunnels",
+  "description": "The grimy underbelly of the hotel where the magic happens (the magic is plumbing). Pipes hiss and clank, carrying water, steam, and possibly souls. Flickering fluorescent lights buzz like dying insects. The walls are covered in cryptic maintenance notes: 'DON'T TOUCH THE RED VALVE,' 'Feed the furnace on Tuesdays,' 'The thing in Tunnel 7 is FRIENDLY.' Rats wear tiny maintenance badges. This is where employee morale comes to die.",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": -10
+  },
+  "items": [
+    "wrench",
+    "maintenance-manual",
+    "reality-fragment-3"
+  ],
+  "npcs": [
+    "maintenance-worker-joe"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

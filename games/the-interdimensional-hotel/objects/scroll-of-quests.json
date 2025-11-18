@@ -1,0 +1,8 @@
+{
+  "id": "scroll-of-quests",
+  "name": "Scroll of Legendary Quests",
+  "description": "An ancient scroll listing epic quests: 'Slay the dragon,' 'Find the Holy Grail,' 'Return the library books.' Someone has crossed out most of them and written 'COMPLETED' in blood. Or maybe ketchup. Hard to tell.",
+  "takeable": true,
+  "usable": false,
+  "type": "document"
+}

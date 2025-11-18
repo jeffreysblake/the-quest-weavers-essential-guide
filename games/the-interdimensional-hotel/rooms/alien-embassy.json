@@ -1,0 +1,23 @@
+{
+  "id": "alien-embassy",
+  "name": "Alien Embassy Suite",
+  "description": "The official diplomatic quarters for extraterrestrial guests, decorated in 'Universal Standard'\u2014which means it's weird to everyone. The atmosphere is methane-based (your mask is mandatory). Furniture defies both gravity and good taste. A flag of an unpronounceable star system hangs on the wall. Communication happens via telepathy, interpretive dance, and strongly worded memos. The minibar stocks nutrients that would melt human teeth. Cultural artifacts showcase civilizations you can't pronounce.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 40
+  },
+  "items": [
+    "breathing-apparatus",
+    "diplomatic-papers",
+    "alien-artifact"
+  ],
+  "npcs": [
+    "ambassador-glorp"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

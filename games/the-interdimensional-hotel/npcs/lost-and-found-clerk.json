@@ -1,0 +1,16 @@
+{
+  "id": "lost-and-found-clerk",
+  "name": "Lost & Found Clerk",
+  "description": "A mysterious figure who manages the infinite Lost & Found. Never ages. Always here. Knows where everything lost has gone. Might be the physical manifestation of misplaced items. Speaks in riddles about umbrellas.",
+  "position": {
+    "x": 20,
+    "y": 0,
+    "z": -10
+  },
+  "health": 100,
+  "maxHealth": 100,
+  "level": 7,
+  "type": "npc",
+  "dialogueTreeId": "lost-and-found-clerk",
+  "hostile": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "dragon-smalfoy",
+  "name": "Smalfoy the Dragon",
+  "description": "A massive dragon coiled in the luxury suite, grumpy about the WiFi signal. Scales shimmer like copper coins. Hoards gold and complaints. Breathes fire when upset (which is always). Ancient, powerful, and deeply unsatisfied with customer service.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 30
+  },
+  "health": 200,
+  "maxHealth": 200,
+  "level": 10,
+  "type": "npc",
+  "dialogueTreeId": "dragon-smalfoy",
+  "hostile": true
+}

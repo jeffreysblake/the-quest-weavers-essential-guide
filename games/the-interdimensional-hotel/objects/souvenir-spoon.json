@@ -1,0 +1,8 @@
+{
+  "id": "souvenir-spoon",
+  "name": "Collectible Spoon",
+  "description": "A commemorative spoon featuring the hotel logo and the slogan 'I Survived the Grand Paradox!' (premature). The spoon is made of 'dimensional silver' (nickel-plated tin). Absolutely useless, but collectors love these. Could potentially be used to eat soup, if you were having soup, which you're not.",
+  "takeable": true,
+  "usable": true,
+  "type": "misc"
+}

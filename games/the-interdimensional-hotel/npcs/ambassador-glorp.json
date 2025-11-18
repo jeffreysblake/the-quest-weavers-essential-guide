@@ -1,0 +1,16 @@
+{
+  "id": "ambassador-glorp",
+  "name": "Ambassador Glorp",
+  "description": "A gelatinous alien ambassador from the Slime Nebula. Translucent green. No bones. Communicates through bubbles and gestures. Very friendly. Leaves trails everywhere. Hotel housekeeping hates him. Genuinely nice person (person?). Smells like lime jello.",
+  "position": {
+    "x": 30,
+    "y": 20,
+    "z": 40
+  },
+  "health": 50,
+  "maxHealth": 50,
+  "level": 3,
+  "type": "npc",
+  "dialogueTreeId": "ambassador-glorp",
+  "hostile": false
+}

@@ -1,0 +1,8 @@
+{
+  "id": "pressure-gauge",
+  "name": "Reality Pressure Gauge",
+  "description": "A gauge showing the pressure levels in the reality stabilization system. Currently reading 'CRITICAL' in flashing red letters. Also shows measurements in 'Oh No,' 'Very Bad,' and 'We're Doomed.'",
+  "takeable": true,
+  "usable": false,
+  "type": "tool"
+}

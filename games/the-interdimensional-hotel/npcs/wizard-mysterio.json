@@ -1,0 +1,16 @@
+{
+  "id": "wizard-mysterio",
+  "name": "Wizard Mysterio the Magnificent",
+  "description": "A powerful wizard in star-covered robes. Long white beard. Pointed hat (obviously). Staff topped with a glowing orb. Speaks in mystical pronouncements. Turns things into newts. Forgets where he put things (usually his staff). 400 years old, memory of a goldfish.",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 30
+  },
+  "health": 80,
+  "maxHealth": 80,
+  "level": 8,
+  "type": "npc",
+  "dialogueTreeId": "wizard-mysterio",
+  "hostile": false
+}

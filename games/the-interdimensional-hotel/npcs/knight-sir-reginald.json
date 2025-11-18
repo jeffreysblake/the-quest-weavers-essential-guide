@@ -1,0 +1,16 @@
+{
+  "id": "knight-sir-reginald",
+  "name": "Sir Reginald the Brave",
+  "description": "A noble knight in shining armor (slightly tarnished). Speaks in flowery medieval language. Quests for honor, glory, and the WiFi password. Confused by modernity. Challenged the vending machine to a duel (lost). Heart pure, brain questionable.",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 30
+  },
+  "health": 100,
+  "maxHealth": 100,
+  "level": 6,
+  "type": "npc",
+  "dialogueTreeId": "knight-sir-reginald",
+  "hostile": false
+}

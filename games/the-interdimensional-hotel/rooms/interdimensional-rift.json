@@ -1,0 +1,22 @@
+{
+  "id": "interdimensional-rift",
+  "name": "The Interdimensional Rift",
+  "description": "A tear in reality where all dimensions collapse into chaotic soup. Colors that don't exist swirl in impossible patterns. Gravity is a suggestion. Time is a pretzel. Geometry weeps. Fragments of different realities collide: medieval castles made of circuit boards, cyberpunk dragons, ghostly robots. This is ground zero of the catastrophe. The air tastes like static and regret. Standing here, you can see everything and nothing. Reality begs you to fix this. Also, there's a vending machine. It still works.",
+  "position": {
+    "x": 20,
+    "y": 40,
+    "z": 0
+  },
+  "items": [
+    "reality-anchor-fragment",
+    "chaos-crystal"
+  ],
+  "npcs": [
+    "reality-itself"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

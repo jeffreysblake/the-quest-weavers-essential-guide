@@ -1,0 +1,16 @@
+{
+  "id": "receptionist-gloria",
+  "name": "Gloria the Receptionist",
+  "description": "A perpetually stressed receptionist with a tight bun and glasses on a chain. Simultaneously checks in a ghost, a robot, and something that might be a sentient gas cloud. Types at superhuman speed. Drinks coffee like it's water. Her smile is professional but her eyes scream for help.",
+  "position": {
+    "x": 10,
+    "y": 10,
+    "z": 0
+  },
+  "health": 60,
+  "maxHealth": 60,
+  "level": 2,
+  "type": "npc",
+  "dialogueTreeId": "receptionist-gloria",
+  "hostile": false
+}

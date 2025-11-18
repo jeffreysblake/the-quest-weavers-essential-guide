@@ -1,0 +1,23 @@
+{
+  "id": "hackers-den",
+  "name": "Hacker's Den",
+  "description": "A dark room lit only by the glow of seventeen monitors, each showing code that's definitely not supposed to be accessible. Energy drink cans form a small fortress around a gaming chair held together by hope and duct tape. Cables snake across the floor like technological spaghetti. Post-it notes with passwords cover every surface (the password is always 'password123'). A VR headset sits abandoned after someone saw what the hotel management doesn't want you to see. The smell of pizza and desperation lingers.",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 20
+  },
+  "items": [
+    "hacking-device",
+    "encrypted-drive",
+    "energy-drink"
+  ],
+  "npcs": [
+    "hacker-zero"
+  ],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

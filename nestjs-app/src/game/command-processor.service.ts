@@ -143,6 +143,7 @@ export class CommandProcessorService {
 
         case 'examine':
         case 'inspect':
+        case 'x':
           return await this.examineHandler.handle(player, currentRoom, target);
 
         case 'open':

@@ -1,0 +1,16 @@
+{
+  "id": "princess-dracona",
+  "name": "Princess Dracona",
+  "description": "A dragon princess in humanoid form (mostly). Scales show through skin. Eyes glow amber. Literally breathes fire when angry (hotel insurance hates her). Daughter of Dragon Smalfoy. Here on diplomatic vacation. Not impressed.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 30
+  },
+  "health": 120,
+  "maxHealth": 120,
+  "level": 7,
+  "type": "npc",
+  "dialogueTreeId": "princess-dracona",
+  "hostile": false
+}

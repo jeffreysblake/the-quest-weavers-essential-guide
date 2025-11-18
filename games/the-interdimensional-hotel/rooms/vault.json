@@ -1,0 +1,20 @@
+{
+  "id": "vault",
+  "name": "The Reality Vault",
+  "description": "An impossibly secure chamber where the hotel stores its most valuable asset: the Reality Anchor. Thick steel walls lined with mystical wards. The door has seventeen locks, each requiring a different key fragment. Inside, a pedestal should hold the Anchor\u2014but it's empty. Someone broke in, and from the looks of the scorch marks, explosions, and ominous warning signs they ignored, they knew what they were doing. Or they got very lucky. Either way, reality is unmoored, and you're the poor bellhop who has to fix it.",
+  "position": {
+    "x": 10,
+    "y": 40,
+    "z": 0
+  },
+  "items": [
+    "vault-schematic",
+    "broken-lock"
+  ],
+  "npcs": [],
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

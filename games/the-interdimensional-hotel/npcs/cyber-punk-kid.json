@@ -1,0 +1,16 @@
+{
+  "id": "cyber-punk-kid",
+  "name": "Neon",
+  "description": "A teenager with neon hair, cybernetic implants, and attitude. Wears VR goggles on their forehead. Speaks in slang from the future. Think they're a hacker (they're not). Mostly just breaks the hotel WiFi. Parents are very disappointed.",
+  "position": {
+    "x": 0,
+    "y": 20,
+    "z": 20
+  },
+  "health": 50,
+  "maxHealth": 50,
+  "level": 2,
+  "type": "npc",
+  "dialogueTreeId": "cyber-punk-kid",
+  "hostile": false
+}

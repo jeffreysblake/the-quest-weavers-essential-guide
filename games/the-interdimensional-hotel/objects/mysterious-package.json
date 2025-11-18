@@ -1,0 +1,8 @@
+{
+  "id": "mysterious-package",
+  "name": "Mysterious Package",
+  "description": "A package from the Lost & Found with no label, no sender, and suspicious ticking sounds. Wrapped in brown paper and paranoia. Contains either something useful or a mild explosive. Only one way to find out!",
+  "takeable": true,
+  "usable": true,
+  "type": "container"
+}

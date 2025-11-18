@@ -1,0 +1,16 @@
+{
+  "id": "ambassador-zyx",
+  "name": "Ambassador Zyx",
+  "description": "A crystalline alien being representing seventeen star systems. Communicates through light patterns and formal diplomatic language. Patient, precise, and completely baffled by Earth customs. Wears what might be formal diplomatic attire or just rocks. Hard to tell.",
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 40
+  },
+  "health": 80,
+  "maxHealth": 80,
+  "level": 6,
+  "type": "npc",
+  "dialogueTreeId": "ambassador-zyx",
+  "hostile": false
+}

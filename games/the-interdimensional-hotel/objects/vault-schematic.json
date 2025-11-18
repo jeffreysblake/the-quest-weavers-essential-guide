@@ -1,0 +1,8 @@
+{
+  "id": "vault-schematic",
+  "name": "Vault Blueprints",
+  "description": "Technical drawings showing the vault's security systems: locks, wards, traps, and one very angry guard dog (metaphysical). Useful for breaking in or understanding how someone else broke in.",
+  "takeable": true,
+  "usable": false,
+  "type": "document"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "recipe-book",
+  "name": "Interdimensional Cookbook",
+  "description": "A cookbook with recipes from across the multiverse. Includes: 'Scrambled Eggs (Schr\u00f6dinger's Style),' 'Toast from the Future,' and 'Soup that Remembers Being a Salad.' Measurements are approximate and often paradoxical.",
+  "takeable": true,
+  "usable": false,
+  "type": "book"
+}

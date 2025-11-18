@@ -1,0 +1,8 @@
+{
+  "id": "anti-gravity-boots",
+  "name": "Anti-Gravity Boots",
+  "description": "Boots that negate gravity, allowing you to walk on walls and ceilings. Very useful in zero-G environments. In normal gravity, they just make you float awkwardly. The user manual is in space-Sanskrit.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

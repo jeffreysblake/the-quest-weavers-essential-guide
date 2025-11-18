@@ -1,0 +1,8 @@
+{
+  "id": "babel-fish",
+  "name": "Babel Fish",
+  "description": "A small yellow fish that, when placed in your ear, translates any language in the universe. Grosser than it sounds. Wrigglier than you'd like. Surprisingly effective. Don't think about how it works.",
+  "takeable": true,
+  "usable": true,
+  "type": "tool"
+}

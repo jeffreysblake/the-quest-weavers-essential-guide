@@ -1,0 +1,8 @@
+{
+  "id": "spiritual-champagne",
+  "name": "Bottle of Spiritual Champagne",
+  "description": "A bottle of champagne from the spectral realm. The bubbles float upward, sideways, and through time. Drinking it makes you feel fancy and slightly transparent. Warning: May cause temporary out-of-body experiences.",
+  "takeable": true,
+  "usable": true,
+  "type": "consumable"
+}
