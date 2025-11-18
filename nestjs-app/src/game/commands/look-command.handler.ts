@@ -4,6 +4,7 @@ import { CommandResult } from '../game.service';
 import { RoomService } from '../../entity/room.service';
 import { RoomNavigationHelperService } from '../room-navigation-helper.service';
 import { ExamineCommandHandler } from './examine-command.handler';
+import { GameStateService } from '../game-state.service';
 
 @Injectable()
 export class LookCommandHandler implements ICommandHandler {
@@ -11,6 +12,7 @@ export class LookCommandHandler implements ICommandHandler {
     private roomService: RoomService,
     private roomNavHelper: RoomNavigationHelperService,
     private examineHandler: ExamineCommandHandler,
+    private gameStateService: GameStateService,
   ) {}
 
   async handle(
@@ -32,11 +34,29 @@ export class LookCommandHandler implements ICommandHandler {
       const exits = this.roomNavHelper.getAvailableExits(room);
       console.log(`[DEBUG] Available exits: ${exits.join(', ')}`);
 
+      // Get NPCs in the room
+      const gameState = await this.gameStateService.getGameState(player.gameId);
+      const npcsInRoom: string[] = [];
+
+      if (gameState.npcs) {
+        Object.values(gameState.npcs).forEach((npc: any) => {
+          // Check if NPC is in this room
+          if (room.players && room.players.includes(npc.id)) {
+            npcsInRoom.push(npc.name);
+          } else if (npc.position && this.roomNavHelper.isPositionInRoom(npc.position, room)) {
+            npcsInRoom.push(npc.name);
+          }
+        });
+      }
+
+      console.log(`[DEBUG] NPCs in room: ${npcsInRoom.join(', ')}`);
+
       const result = {
         success: true,
         type: 'room_description',
         roomDescription: room.description,
         items: objectNames,
+        npcs: npcsInRoom,
         exits: exits,
         playerStatus: {
           location: room.name,

@@ -179,16 +179,16 @@
     {
       "from_room": "crystal-entrance",
       "to_room": "crystal-heart",
-      "direction": "east",
-      "description": "The crystal maze continues east toward its heart, reflections multiplying infinitely",
+      "direction": "west",
+      "description": "The crystal maze continues west toward its heart, reflections multiplying infinitely",
       "is_locked": false,
       "required_key": null
     },
     {
       "from_room": "crystal-heart",
       "to_room": "crystal-entrance",
-      "direction": "west",
-      "description": "The maze continues west back toward the entrance",
+      "direction": "east",
+      "description": "The maze continues east back toward the entrance",
       "is_locked": false,
       "required_key": null
     },

@@ -24,6 +24,8 @@ import { OpenCommandHandler, CloseCommandHandler } from './commands/container-co
 import { DialogueCommandHandler } from './commands/dialogue-command.handler';
 import { AttackCommandHandler } from './commands/attack-command.handler';
 import { CastCommandHandler } from './commands/cast-command.handler';
+import { InventoryCommandHandler } from './commands/inventory-command.handler';
+import { HelpCommandHandler } from './commands/help-command.handler';
 
 @Module({
   imports: [
@@ -54,6 +56,8 @@ import { CastCommandHandler } from './commands/cast-command.handler';
     DialogueCommandHandler,
     AttackCommandHandler,
     CastCommandHandler,
+    InventoryCommandHandler,
+    HelpCommandHandler,
   ],
   exports: [GameService, GameStateService],
 })
