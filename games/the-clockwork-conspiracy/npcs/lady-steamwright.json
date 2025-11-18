@@ -1,0 +1,85 @@
+{
+  "id": "lady-steamwright",
+  "name": "Lady Genevieve Steamwright",
+  "description": "The Professor's widow, elegantly dressed in mourning black. Her composed demeanor barely conceals deep grief—or is it something else? She stands to inherit considerable wealth and secrets.",
+  "position": {"x": 40, "y": 0, "z": 5},
+  "health": 60,
+  "maxHealth": 60,
+  "level": 1,
+  "inventory": ["manor-key", "marriage-certificate", "love-letters"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*dabbing eyes with lace handkerchief* Detective. I've been expecting you. My husband... *voice breaks* ...he didn't deserve this. He was a good man, working to better the world. Please, find who did this.",
+      "choices": [
+        {"text": "I'm sorry for your loss. I need to ask some questions.", "leads_to": "questions"},
+        {"text": "Did your husband have enemies?", "leads_to": "enemies"},
+        {"text": "I'll need access to his private study.", "leads_to": "manor_access"}
+      ]
+    },
+    "questions": {
+      "text": "Of course. Anything to help catch his killer. What do you need to know?",
+      "choices": [
+        {"text": "Was he working on anything dangerous?", "leads_to": "dangerous_work"},
+        {"text": "Did he seem worried recently?", "leads_to": "worried_behavior"}
+      ]
+    },
+    "enemies": {
+      "text": "Thaddeus? He was brilliant but... he made people uncomfortable. His inventions threatened established industries. He received threatening letters. I have them in his study. *hesitates* There's something else. He mentioned discovering something terrible. A conspiracy. But he wouldn't tell me details—said it was safer if I didn't know.",
+      "choices": [
+        {"text": "What kind of conspiracy?", "leads_to": "conspiracy_details"},
+        {"text": "I need to see those letters.", "leads_to": "manor_access"}
+      ],
+      "flags": ["knows_conspiracy_mentioned"]
+    },
+    "manor_access": {
+      "text": "*hands you a key* The manor key. His study is upstairs, first door on the right. Everything is as he left it. I... I haven't been able to bring myself to go through his things. There's also a basement workshop he used for his most sensitive projects. Few people knew it existed.",
+      "choices": [
+        {"text": "Thank you. This will help immensely.", "leads_to": "gratitude"}
+      ],
+      "actions": [{"type": "give_item", "value": "manor-key"}],
+      "flags": ["manor_access_granted"]
+    },
+    "dangerous_work": {
+      "text": "He was always working on something revolutionary. Recently, he was obsessed with autonomous machines—clockwork devices that could think. But more than that... he discovered something about the city's leadership. He said 'they're planning something terrible.' I begged him to stop, to leave it alone. And now...",
+      "choices": [
+        {"text": "Who is 'they'?", "leads_to": "they_identity"},
+        {"text": "Did he leave any evidence?", "leads_to": "evidence_location"}
+      ]
+    },
+    "worried_behavior": {
+      "text": "Terribly. The last few weeks, he barely slept. Constantly looking over his shoulder. He hired private guards, installed new locks. He was preparing for something. The night he died, he told me: 'If anything happens to me, it wasn't an accident.' I thought he was being paranoid. I was wrong.",
+      "choices": [
+        {"text": "I'll find the truth, Lady Steamwright.", "leads_to": "promise"}
+      ],
+      "flags": ["confirmed_murder"]
+    },
+    "conspiracy_details": {
+      "text": "He never gave me specifics. Only that it involved the highest levels of power in Gearhaven. Politicians, industrialists... even the police. He said he had proof, hidden somewhere safe. Find that proof, Detective. It might explain everything.",
+      "choices": [
+        {"text": "I will. I promise.", "leads_to": "promise"}
+      ]
+    },
+    "they_identity": {
+      "text": "*whispers* He called them the Cog and Key. A secret society that's controlled Gearhaven for generations. I thought it was just a legend. But Thaddeus said they were real, and they were planning a coup. Political and economic control wasn't enough—they wanted absolute power.",
+      "choices": [
+        {"text": "I'll investigate this thoroughly.", "leads_to": "promise"}
+      ],
+      "flags": ["learned_cog_and_key"]
+    },
+    "evidence_location": {
+      "text": "In his secret workshop, in the manor basement. He told me there's a hidden safe behind the bookshelf. The combination is... our wedding anniversary. Please, Detective. Find the truth.",
+      "choices": [
+        {"text": "I will.", "leads_to": "gratitude"}
+      ],
+      "flags": ["safe_combination_hint"]
+    },
+    "promise": {
+      "text": "*grasps your hand* Thank you, Detective. Bring my husband's killers to justice—all of them.",
+      "choices": []
+    },
+    "gratitude": {
+      "text": "Thank you, Detective. Please... be careful. If they killed Thaddeus, they won't hesitate to kill you too.",
+      "choices": []
+    }
+  }
+}

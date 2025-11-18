@@ -1,0 +1,24 @@
+{
+  "id": "evidence-room",
+  "name": "Evidence Room",
+  "description": "A secure room filled with shelves of carefully catalogued evidence from countless cases. Each item is tagged, numbered, and stored behind a heavy iron door with a complex lock. The murder weapon and key pieces of evidence from the Steamwright case are stored here\u2014if you can get access.",
+  "position": {
+    "x": 20,
+    "y": -40,
+    "z": 0
+  },
+  "items": [
+    "murder-weapon",
+    "evidence-board"
+  ],
+  "exits": {
+    "west": "police-station"
+  },
+  "locked": true,
+  "requiredItem": "evidence-room-key",
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

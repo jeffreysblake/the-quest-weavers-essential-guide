@@ -1,0 +1,44 @@
+{
+  "id": "nigel-brassgear",
+  "name": "Nigel Brassgear",
+  "description": "Owner of Gearcog Manufacturing, the city's largest factory. A ruthless industrialist and secret member of the Cog and Key. His workers fear him, his competitors envy him, and he'll do anything to maintain power.",
+  "position": {"x": 40, "y": 0, "z": 0},
+  "health": 100,
+  "maxHealth": 100,
+  "level": 4,
+  "inventory": ["factory-access-card", "incriminating-documents"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "A detective in my factory? This better be important. I run a business here, not a charity for lazy investigators.",
+      "choices": [
+        {"text": "I'm investigating Professor Steamwright's murder.", "leads_to": "steamwright_question"},
+        {"text": "What can you tell me about illegal activities here?", "leads_to": "accusation"}
+      ]
+    },
+    "steamwright_question": {
+      "text": "That inventor? Good riddance. He was trying to automate everything, put my workers out of jobs. His 'innovations' would have destroyed Gearhaven's economy. Someone did us a favor.",
+      "choices": [
+        {"text": "That sounds like a confession.", "leads_to": "denial"},
+        {"text": "Where were you the night he died?", "leads_to": "alibi"}
+      ]
+    },
+    "accusation": {
+      "text": "*laughs* Illegal? Everything I do is perfectly legal. I have friends in high places who make sure of it. Now leave before I have security escort you out.",
+      "choices": [
+        {"text": "I'll be back with a warrant.", "leads_to": "threat"}
+      ]
+    },
+    "denial": {
+      "text": "I said someone did us a favor. I didn't say it was me. I have alibis, lawyers, and political connections. You have nothing.",
+      "choices": []
+    },
+    "alibi": {
+      "text": "At the Gilded Gear Club, playing cards with the Mayor and several council members. All night. All verified. Now get out.",
+      "choices": []
+    },
+    "threat": {
+      "text": "Good luck with that, Detective. My lawyers will tear it apart. And you'll find yourself reassigned to the worst precinct in Gearhaven.",
+      "choices": []
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "journalist-inkwell",
+  "name": "Clara Inkwell",
+  "description": "An investigative journalist who's been digging into corruption in Gearhaven. She knows more than she's published—because printing it would get her killed.",
+  "position": {"x": 20, "y": 0, "z": 0},
+  "health": 50,
+  "maxHealth": 50,
+  "level": 1,
+  "inventory": ["press-pass", "investigative-notes", "unpublished-article"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "Detective Cogsworth? I've been hoping you'd show up. I've been investigating the same conspiracy that got Steamwright killed. We should share information.",
+      "choices": [
+        {"text": "What have you found?", "leads_to": "information_share"},
+        {"text": "This is police business.", "leads_to": "rejected"}
+      ]
+    },
+    "information_share": {
+      "text": "The Cog and Key controls everything—industry, politics, law enforcement. Steamwright discovered their plan to stage a political coup. I have names, dates, evidence. But I can't publish without corroboration. Help me expose them, and I'll help you solve the murder.",
+      "choices": [
+        {"text": "Deal. Let's work together.", "leads_to": "alliance"}
+      ],
+      "actions": [{"type": "give_item", "value": "investigative-notes"}],
+      "flags": ["clara_ally"]
+    },
+    "alliance": {
+      "text": "Together, we can take them down. Meet me at the docks tonight—I have more evidence hidden there. And Detective? Trust no one in uniform. The conspiracy runs deep.",
+      "choices": []
+    },
+    "rejected": {
+      "text": "Suit yourself. But when you realize how deep this goes, you'll wish you had an ally. My offer stands.",
+      "choices": []
+    }
+  }
+}

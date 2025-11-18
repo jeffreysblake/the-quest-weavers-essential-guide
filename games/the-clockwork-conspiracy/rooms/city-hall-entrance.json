@@ -1,0 +1,21 @@
+{
+  "id": "city-hall-entrance",
+  "name": "City Hall Entrance",
+  "description": "The grand entrance to Gearhaven's City Hall. Massive bronze doors decorated with gear motifs tower above you. Marble columns support a vaulted ceiling adorned with frescoes depicting the city's industrial glory. Well-dressed bureaucrats and officials hurry past, clutching leather briefcases.",
+  "position": {
+    "x": 0,
+    "y": -60,
+    "z": 0
+  },
+  "items": [],
+  "exits": {
+    "north": "police-station",
+    "south": "mayors-office",
+    "east": "records-hall"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

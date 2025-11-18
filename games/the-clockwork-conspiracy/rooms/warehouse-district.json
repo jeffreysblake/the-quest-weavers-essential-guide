@@ -1,0 +1,21 @@
+{
+  "id": "warehouse-district",
+  "name": "Warehouse District",
+  "description": "Rows of identical brick warehouses stretch as far as the eye can see. Most are legitimate storage for the city's commerce, but rumors persist of smuggling operations, black market dealings, and worse. At night, strange lights can be seen through warehouse windows, and the sound of illicit machinery echoes through empty streets.",
+  "position": {
+    "x": 40,
+    "y": -40,
+    "z": 0
+  },
+  "items": [],
+  "exits": {
+    "north": "factory-district",
+    "west": "dockside-tavern",
+    "south": "abandoned-warehouse"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

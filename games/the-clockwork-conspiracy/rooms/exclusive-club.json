@@ -1,0 +1,24 @@
+{
+  "id": "exclusive-club",
+  "name": "The Gilded Gear Club",
+  "description": "An exclusive gentlemen's club for Gearhaven's elite. Leather chairs, crystal decanters of expensive spirits, and walls lined with first-edition books. Members discuss business deals over cigars and brandy. The real power in Gearhaven is exercised not in City Hall, but in rooms like this. Getting inside requires connections\u2014or clever detective work.",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 0
+  },
+  "items": [
+    "membership-list",
+    "private-correspondence"
+  ],
+  "exits": {
+    "south": "upscale-promenade"
+  },
+  "locked": true,
+  "requiredItem": "club-invitation",
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

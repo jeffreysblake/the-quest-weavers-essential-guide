@@ -1,0 +1,21 @@
+{
+  "id": "the-clockwork-conspiracy",
+  "name": "The Clockwork Conspiracy",
+  "description": "A steampunk detective noir adventure. Investigate a murder in the city of Gearhaven and uncover a conspiracy that threatens the entire metropolis.",
+  "version": 1,
+  "metadata": {
+    "difficulty": "hard",
+    "estimated_playtime": "3-4 hours",
+    "themes": ["detective", "noir", "steampunk", "mystery", "conspiracy"],
+    "starting_room": "detectives-office",
+    "victory_conditions": [
+      {
+        "type": "use_object",
+        "item_id": "evidence-board",
+        "description": "Compile all evidence to solve the conspiracy"
+      }
+    ],
+    "author": "Quest Weavers Studio",
+    "required_level": 1
+  }
+}

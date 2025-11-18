@@ -1,0 +1,25 @@
+{
+  "id": "steamwright-manor",
+  "name": "Steamwright Manor",
+  "description": "The late Professor Steamwright's residence, a Gothic mansion of grey stone and wrought iron. Now sealed by police order, the house seems to watch you with dark windows. Inside, the Professor's personal effects remain undisturbed\u2014including his private study where he kept his most sensitive work. Breaking in would be illegal, but might reveal crucial evidence.",
+  "position": {
+    "x": 40,
+    "y": 0,
+    "z": 5
+  },
+  "items": [
+    "professors-diary",
+    "hidden-safe-contents"
+  ],
+  "exits": {
+    "west": "upscale-promenade",
+    "down": "secret-basement"
+  },
+  "locked": true,
+  "requiredItem": "manor-key",
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "professor-tick",
+  "name": "Professor Aloysius Tick",
+  "description": "Steamwright's rival inventor, jealous of his success but genuinely shocked by his death.",
+  "position": {"x": -20, "y": -20, "z": 0},
+  "health": 60,
+  "maxHealth": 60,
+  "level": 2,
+  "inventory": ["rival-blueprints", "telegram"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "Steamwright's dead? Good heavens! We were rivals, yes, but I never wished him harm. His death is a loss for all of science.",
+      "choices": [
+        {"text": "Did you see him recently?", "leads_to": "last_meeting"},
+        {"text": "Where were you when he died?", "leads_to": "alibi"}
+      ]
+    },
+    "last_meeting": {
+      "text": "Two weeks ago. He was agitated, paranoid. Said he'd discovered something that would 'change everything.' I thought he was just being dramatic. Now I wonder...",
+      "choices": []
+    },
+    "alibi": {
+      "text": "In my laboratory, working all night. My assistant can confirm. I swear I had nothing to do with this!",
+      "choices": []
+    }
+  }
+}

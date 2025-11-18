@@ -1,0 +1,34 @@
+{
+  "id": "madame-verity",
+  "name": "Madame Verity",
+  "description": "The enigmatic proprietress of an exclusive establishment, keeper of secrets and seller of information.",
+  "position": {"x": 20, "y": 0, "z": 0},
+  "health": 70,
+  "maxHealth": 70,
+  "level": 2,
+  "inventory": ["secret-ledger", "blackmail-files"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*elegant smile* Detective Cogsworth. I wondered when you'd find your way to me. In my line of work, I learn everyone's secrets. What would you like to know?",
+      "choices": [
+        {"text": "Tell me about the Cog and Key.", "leads_to": "society_knowledge"},
+        {"text": "What do you know about Steamwright's murder?", "leads_to": "murder_knowledge"}
+      ]
+    },
+    "society_knowledge": {
+      "text": "Ah, the shadow government of Gearhaven. They meet in my establishment sometimes—they think I'm discreet. I am, mostly. But for the right person... Mayor Gildhart leads them. They're planning a takeover. Steamwright threatened to expose them.",
+      "choices": [
+        {"text": "Can you testify to this?", "leads_to": "testimony"}
+      ]
+    },
+    "murder_knowledge": {
+      "text": "The night he died, several society members met here. They discussed 'handling the inventor problem.' Then they left together. An hour later, Steamwright was dead. Coincidence? I don't believe in those.",
+      "choices": []
+    },
+    "testimony": {
+      "text": "*laughs bitterly* And sign my own death warrant? I'll help you, Detective, but I won't die for you. Take this ledger—it has names, dates, meetings. It should be enough. But it never came from me.",
+      "choices": [],
+      "actions": [{"type": "give_item", "value": "secret-ledger"}]
+    }
+  }
+}

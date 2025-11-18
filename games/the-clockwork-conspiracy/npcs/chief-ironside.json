@@ -1,0 +1,69 @@
+{
+  "id": "chief-ironside",
+  "name": "Chief Inspector Ironside",
+  "description": "Your superior officer—a bull of a man with a iron-grey mustache and eyes like cold steel. He's been on the force for thirty years and has the political connections to prove it. But something about his behavior regarding the Steamwright case seems... off.",
+  "position": {"x": 0, "y": -40, "z": 0},
+  "health": 150,
+  "maxHealth": 150,
+  "level": 5,
+  "inventory": ["evidence-room-key", "sealed-orders"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "*looks up from paperwork* Cogsworth. About time. The Steamwright case—I'm assigning it to you. High-profile victim, lots of political pressure. Find out who killed the Professor, wrap it up quickly and quietly. The city doesn't need more scandal.",
+      "choices": [
+        {"text": "I'll need full access to the evidence.", "leads_to": "evidence_discussion"},
+        {"text": "Do we have any suspects yet?", "leads_to": "suspects_discussion"},
+        {"text": "Why me specifically, sir?", "leads_to": "assignment_reason"}
+      ]
+    },
+    "evidence_discussion": {
+      "text": "*slides a key across the desk* Evidence room key. Everything we've collected is there. The murder weapon, some personal effects. Don't lose that key, Cogsworth. And don't go showing evidence to anyone who doesn't have clearance. Understand?",
+      "choices": [
+        {"text": "Understood, sir. I'll be discreet.", "leads_to": "professional_response"},
+        {"text": "Is there something you're not telling me?", "leads_to": "suspicion_response"}
+      ],
+      "actions": [{"type": "give_item", "value": "evidence-room-key"}]
+    },
+    "suspects_discussion": {
+      "text": "*leans back in chair* Several persons of interest. Steamwright had enemies—business rivals, disgruntled workers. He was working on something revolutionary, apparently. Made some powerful people nervous. Start with his workshop, talk to his widow. Follow standard procedure.",
+      "choices": [
+        {"text": "I'll start immediately.", "leads_to": "departure"},
+        {"text": "Who were these powerful people?", "leads_to": "powerful_enemies"}
+      ]
+    },
+    "assignment_reason": {
+      "text": "*eyes narrow* Because you're competent and you follow orders. Because this case needs to be handled delicately. Because I'm your superior and I'm assigning it to you. Are we going to have a problem, Detective?",
+      "choices": [
+        {"text": "No sir. I'll handle it.", "leads_to": "departure"},
+        {"text": "I just want to do my job properly.", "leads_to": "professional_response"}
+      ]
+    },
+    "powerful_enemies": {
+      "text": "*stands abruptly* That's not relevant to your investigation. Focus on finding the killer, not chasing conspiracy theories. Gearhaven doesn't need detectives who see phantoms in the fog. Stick to the facts. Now get to work.",
+      "choices": [
+        {"text": "Yes, sir.", "leads_to": "departure"}
+      ],
+      "flags": ["ironside_suspicious", "warned_off_conspiracy"]
+    },
+    "suspicion_response": {
+      "text": "*cold stare* I'm telling you to do your job, Detective. Nothing more, nothing less. Or are you suggesting your Chief Inspector is somehow involved? Because that would be a very serious accusation...",
+      "choices": [
+        {"text": "Of course not, sir. My apologies.", "leads_to": "departure"},
+        {"text": "*hold his gaze* Just being thorough.", "leads_to": "tension"}
+      ],
+      "flags": ["ironside_very_suspicious"]
+    },
+    "tension": {
+      "text": "*long pause* Thoroughness is admirable. Insubordination is not. Tread carefully, Cogsworth. Now dismissed.",
+      "choices": []
+    },
+    "professional_response": {
+      "text": "Good. That's what I like to hear. Keep me informed of any major developments. Dismissed.",
+      "choices": []
+    },
+    "departure": {
+      "text": "*returns to paperwork* Dismissed, Detective. And Cogsworth? Be careful out there.",
+      "choices": []
+    }
+  }
+}

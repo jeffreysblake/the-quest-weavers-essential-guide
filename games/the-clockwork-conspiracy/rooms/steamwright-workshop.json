@@ -1,0 +1,25 @@
+{
+  "id": "steamwright-workshop",
+  "name": "Steamwright's Workshop - Crime Scene",
+  "description": "The workshop where Professor Thaddeus Steamwright met his untimely end. Workbenches overflow with gears, springs, and half-assembled mechanisms. A chalk outline marks where the body was found. Blood stains the floor near an overturned chair. The air smells of oil, copper, and death. This is where it all began.",
+  "position": {
+    "x": -20,
+    "y": -20,
+    "z": 0
+  },
+  "items": [
+    "bloodstained-wrench",
+    "torn-letter",
+    "clockwork-component"
+  ],
+  "exits": {
+    "east": "foggy-street"
+  },
+  "locked": false,
+  "crimescene": true,
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

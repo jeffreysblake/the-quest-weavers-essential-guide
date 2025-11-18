@@ -1,0 +1,23 @@
+{
+  "id": "dockside-tavern",
+  "name": "The Rusty Cog Tavern",
+  "description": "A rough establishment catering to dock workers, sailors, and those who prefer to conduct business away from prying eyes. The air is thick with tobacco smoke and the smell of cheap ale. A mechanical pianist plays jaunty tunes in the corner. Information flows as freely as the alcohol here\u2014for the right price.",
+  "position": {
+    "x": 20,
+    "y": -40,
+    "z": 0
+  },
+  "items": [
+    "tavern-rumors"
+  ],
+  "exits": {
+    "north": "clocktower-square",
+    "east": "warehouse-district",
+    "south": "docks"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

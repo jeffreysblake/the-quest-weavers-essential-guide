@@ -1,0 +1,22 @@
+{
+  "id": "smugglers-den",
+  "name": "Smuggler's Den",
+  "description": "A hidden cave beneath the docks, accessible only at low tide. Crates of contraband are stacked along the walls\u2014illegal weapons, stolen clockwork components, forbidden books. A makeshift office in the corner contains ledgers detailing illegal transactions. The smugglers know more about the city's underworld than anyone.",
+  "position": {
+    "x": 40,
+    "y": -60,
+    "z": -5
+  },
+  "items": [
+    "smuggling-ledger",
+    "illegal-weapon"
+  ],
+  "exits": {
+    "west": "docks"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "dr-cogsworth",
+  "name": "Dr. Helena Cogsworth",
+  "description": "The city medical examiner and, coincidentally, a distant relative. Brilliant, methodical, and unafraid to speak truth to power.",
+  "position": {"x": 0, "y": -40, "z": -5},
+  "health": 60,
+  "maxHealth": 60,
+  "level": 2,
+  "inventory": ["autopsy-report", "toxicology-results"],
+  "dialogueTree": {
+    "initial_greeting": {
+      "text": "Cousin! Here about the Steamwright case? The official cause of death is 'blunt force trauma,' but that's only part of the story.",
+      "choices": [
+        {"text": "What else did you find?", "leads_to": "findings"}
+      ]
+    },
+    "findings": {
+      "text": "Traces of a rare poison in his system—not enough to kill, but enough to disorient. Someone wanted him confused before they struck. Also, defensive wounds suggest he fought back. This wasn't random—it was an assassination.",
+      "choices": [
+        {"text": "Who has access to such poisons?", "leads_to": "poison_source"}
+      ],
+      "actions": [{"type": "give_item", "value": "autopsy-report"}]
+    },
+    "poison_source": {
+      "text": "High-level chemists, certain doctors, and... members of secret societies known for using exotic substances. I can't say more officially, but unofficially? Watch your back, cousin.",
+      "choices": []
+    }
+  }
+}

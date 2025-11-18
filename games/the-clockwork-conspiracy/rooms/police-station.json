@@ -1,0 +1,24 @@
+{
+  "id": "police-station",
+  "name": "Gearhaven Police Station",
+  "description": "The main police station, a fortress of brass and stone. Clockwork automatons stand guard at the entrance. Inside, officers in blue uniforms bustle about, processing criminals, filing reports, and maintaining order in a city that constantly teeters on chaos. The air smells of tobacco and stale coffee.",
+  "position": {
+    "x": 0,
+    "y": -40,
+    "z": 0
+  },
+  "items": [
+    "police-report"
+  ],
+  "exits": {
+    "north": "foggy-street",
+    "east": "evidence-room",
+    "west": "interrogation-room",
+    "south": "city-hall-entrance"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

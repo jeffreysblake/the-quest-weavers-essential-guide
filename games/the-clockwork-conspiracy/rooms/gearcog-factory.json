@@ -1,0 +1,23 @@
+{
+  "id": "gearcog-factory",
+  "name": "Gearcog Manufacturing Factory",
+  "description": "The largest clockwork component factory in Gearhaven. Assembly lines staffed by both human workers and primitive automatons produce thousands of gears daily. The noise is deafening. Overseers in black suits watch from catwalks above. Workers whisper about accidents, mysterious disappearances, and strange experiments in the basement.",
+  "position": {
+    "x": 40,
+    "y": 0,
+    "z": 0
+  },
+  "items": [
+    "factory-schematic",
+    "workers-complaint"
+  ],
+  "exits": {
+    "south": "factory-district",
+    "down": "secret-laboratory"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}

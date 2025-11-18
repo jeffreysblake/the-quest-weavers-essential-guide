@@ -1,0 +1,23 @@
+{
+  "id": "abandoned-warehouse",
+  "name": "Abandoned Warehouse",
+  "description": "An old warehouse that's supposedly been empty for years. But fresh footprints in the dust tell a different story. Crates are stacked haphazardly, some bearing shipping marks from companies that don't officially exist. A trapdoor in the floor leads to something below. This is a front for something sinister.",
+  "position": {
+    "x": 40,
+    "y": -60,
+    "z": 0
+  },
+  "items": [
+    "shipping-manifest",
+    "mysterious-key"
+  ],
+  "exits": {
+    "north": "warehouse-district",
+    "down": "secret-society-entrance"
+  },
+  "size": {
+    "width": 10,
+    "height": 10,
+    "depth": 10
+  }
+}
