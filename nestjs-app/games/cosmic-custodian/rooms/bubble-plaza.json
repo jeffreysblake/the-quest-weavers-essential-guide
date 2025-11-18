@@ -17,5 +17,6 @@
     "allow_combat": false,
     "respawn_point": false,
     "vendor_area": true
-  }
+  },
+  "items": ["vacuum-shard-2", "celestial-spray-bottle"]
 }

@@ -26,7 +26,10 @@ export class RoomNavigationHelperService {
       return undefined;
     }
 
-    const rooms = this.roomService.getAllRooms();
+    // Filter rooms by player's gameId to avoid cross-game contamination
+    const rooms = player.gameId
+      ? this.roomService.getAllRooms().filter(room => room.gameId === player.gameId)
+      : this.roomService.getAllRooms();
     return rooms.find((room) => this.isPositionInRoom(player.position, room));
   }
 
@@ -75,12 +78,18 @@ export class RoomNavigationHelperService {
   }
 
   getAvailableExits(room: any): string[] {
-    // Simple exit detection based on room boundaries
-    // In a real implementation, this would be more sophisticated
+    // Use room's connections if available (from game data files)
+    if (room.connections && typeof room.connections === 'object') {
+      return Object.keys(room.connections);
+    }
+
+    // Fallback to position-based detection
     const exits: string[] = [];
 
-    // Check for adjacent rooms (simplified)
-    const rooms = this.roomService.getAllRooms();
+    // Filter rooms by gameId if available
+    const rooms = room.gameId
+      ? this.roomService.getAllRooms().filter(r => r.gameId === room.gameId)
+      : this.roomService.getAllRooms();
 
     // North
     if (
@@ -105,7 +114,17 @@ export class RoomNavigationHelperService {
   }
 
   findAdjacentRoom(currentRoom: any, direction: string): any {
-    const rooms = this.roomService.getAllRooms();
+    // Use room's connections if available (from game data files)
+    if (currentRoom.connections && currentRoom.connections[direction]) {
+      const roomId = currentRoom.connections[direction];
+      return this.roomService.getRoom(roomId);
+    }
+
+    // Fallback to position-based detection
+    // Filter rooms by gameId if available
+    const rooms = currentRoom.gameId
+      ? this.roomService.getAllRooms().filter(r => r.gameId === currentRoom.gameId)
+      : this.roomService.getAllRooms();
 
     switch (direction) {
       case 'north':

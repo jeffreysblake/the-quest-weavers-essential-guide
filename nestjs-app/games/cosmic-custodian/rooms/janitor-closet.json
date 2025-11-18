@@ -17,5 +17,6 @@
     "allow_combat": false,
     "respawn_point": true,
     "vendor_area": false
-  }
+  },
+  "items": ["standard-mop", "motivational-poster"]
 }

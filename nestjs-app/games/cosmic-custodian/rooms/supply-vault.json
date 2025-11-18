@@ -17,5 +17,6 @@
     "allow_combat": false,
     "respawn_point": false,
     "vendor_area": false
-  }
+  },
+  "items": ["vacuum-shard-3", "divine-duster", "bucket-shield"]
 }
