@@ -600,6 +600,12 @@ export class GameService {
           this.logger.log(`Added dialogue tree to NPC ${npcJson.name} (${npcJson.id})`);
         }
 
+        // CRITICAL FIX: Add inventory data from JSON to NPC for loot drops
+        if (npcJson.inventory_data && Array.isArray(npcJson.inventory_data)) {
+          npc.inventory = npcJson.inventory_data;
+          this.logger.log(`Added ${npcJson.inventory_data.length} items to NPC ${npcJson.name}'s inventory`);
+        }
+
         // Add NPC to npcsMap for game state
         npcsMap[npc.id] = npc;
 
