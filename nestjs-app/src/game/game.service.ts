@@ -593,6 +593,13 @@ export class GameService {
           gameId: gameId,
         });
 
+        // CRITICAL FIX: Add dialogue tree data to NPC for dialogue system
+        if (npcJson.dialogue_tree_data) {
+          npc.dialogueTreeData = npcJson.dialogue_tree_data;
+          npc.dialogueTreeData.id = npcJson.id; // Use NPC ID as dialogue tree ID
+          this.logger.log(`Added dialogue tree to NPC ${npcJson.name} (${npcJson.id})`);
+        }
+
         // Add NPC to npcsMap for game state
         npcsMap[npc.id] = npc;
 
@@ -651,7 +658,11 @@ export class GameService {
             fromRoom.connections = {};
           }
           fromRoom.connections[conn.direction] = toUuid;
-          this.logger.log(`Connected ${conn.from_room} -> ${conn.to_room} via ${conn.direction}`);
+
+          // CRITICAL FIX: Explicitly update the room in the service to persist connections
+          this.roomService.update(fromUuid, { connections: fromRoom.connections });
+
+          this.logger.log(`Connected ${conn.from_room} (${fromUuid}) -> ${conn.to_room} (${toUuid}) via ${conn.direction}`);
         } else {
           this.logger.warn(`Could not find rooms for connection: ${conn.from_room} -> ${conn.to_room}`);
         }
