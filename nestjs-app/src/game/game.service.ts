@@ -532,7 +532,8 @@ export class GameService {
           objectType: objectJson.object_type || 'item',
           position: objectJson.position || { x: 0, y: 0, z: 0 },
           material: objectJson.material || 'unknown',
-          canTake: objectJson.can_take !== false,
+          canTake: objectJson.can_take !== false && objectJson.is_portable !== false,
+          isPortable: objectJson.is_portable !== false && objectJson.can_take !== false,
           gameId: gameId,
         });
 
