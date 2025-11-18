@@ -13,6 +13,7 @@ Available Commands:
 
 MOVEMENT:
   north, south, east, west (or n, s, e, w) - Move in a direction
+  northeast, northwest, southeast, southwest (or ne, nw, se, sw) - Move diagonally
   up, down - Move vertically
 
 INVENTORY:
