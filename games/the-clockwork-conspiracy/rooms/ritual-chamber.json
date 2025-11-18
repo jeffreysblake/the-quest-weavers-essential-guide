@@ -1,11 +1,11 @@
 {
   "id": "ritual-chamber",
   "name": "Ritual Chamber",
-  "description": "The inner sanctum of the Cog and Key society. A circular chamber with a domed ceiling painted with astrological and mechanical symbols. Robed figures have met here for generations, plotting the course of Gearhaven's future. A large table holds maps, documents, and a list of names\u2014politicians, industrialists, even police captains. Evidence of the conspiracy is everywhere.",
+  "description": "The inner sanctum of the Cog and Key society. A circular chamber with a domed ceiling painted with astrological and mechanical symbols. Robed figures have met here for generations, plotting the course of Gearhaven's future. A large table holds maps, documents, and a list of names—politicians, industrialists, even police captains. Evidence of the conspiracy is everywhere.",
   "position": {
     "x": 40,
-    "y": -80,
-    "z": -10
+    "y": -70,
+    "z": -15
   },
   "items": [
     "secret-documents",

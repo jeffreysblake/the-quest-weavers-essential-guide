@@ -3,7 +3,7 @@
   "name": "Public Records Hall",
   "description": "A vast hall filled with filing cabinets and pneumatic tube systems that deliver documents throughout the building. Clerks operate card catalogue machines, their fingers flying over brass keyboards. The hiss and clatter of the filing system creates a constant backdrop. Here, every transaction, every deed, every birth and death in Gearhaven is recorded.",
   "position": {
-    "x": 20,
+    "x": 10,
     "y": -60,
     "z": 0
   },

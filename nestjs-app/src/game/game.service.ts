@@ -604,9 +604,11 @@ export class GameService {
         });
 
         // CRITICAL FIX: Add dialogue tree data to NPC for dialogue system
-        if (npcJson.dialogue_tree_data) {
-          npc.dialogueTreeData = npcJson.dialogue_tree_data;
-          npc.dialogueTreeData.id = npcJson.id; // Use NPC ID as dialogue tree ID
+        // Support both dialogue_tree_data and dialogueTree naming conventions
+        const dialogueData = npcJson.dialogue_tree_data || npcJson.dialogueTree;
+        if (dialogueData) {
+          npc.dialogueTreeData = dialogueData;
+          npc.dialogueTreeId = npcJson.id; // Use NPC ID as dialogue tree ID
           this.logger.log(`Added dialogue tree to NPC ${npcJson.name} (${npcJson.id})`);
         }
 
