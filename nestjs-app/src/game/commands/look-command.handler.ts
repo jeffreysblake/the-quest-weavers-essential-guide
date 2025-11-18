@@ -34,12 +34,17 @@ export class LookCommandHandler implements ICommandHandler {
       const exits = this.roomNavHelper.getAvailableExits(room);
       console.log(`[DEBUG] Available exits: ${exits.join(', ')}`);
 
-      // Get NPCs in the room
+      // Get NPCs in the room (filter out defeated NPCs)
       const gameState = await this.gameStateService.getGameState(player.gameId);
       const npcsInRoom: string[] = [];
 
       if (gameState.npcs) {
         Object.values(gameState.npcs).forEach((npc: any) => {
+          // Skip defeated NPCs (health <= 0)
+          if (npc.health !== undefined && npc.health <= 0) {
+            return;
+          }
+
           // Check if NPC is in this room
           if (room.players && room.players.includes(npc.id)) {
             npcsInRoom.push(npc.name);

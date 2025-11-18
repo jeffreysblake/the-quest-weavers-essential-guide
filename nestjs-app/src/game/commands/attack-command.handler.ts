@@ -270,26 +270,40 @@ export class AttackCommandHandler implements ICommandHandler {
     );
 
     // Handle loot drop (if target has inventory)
-    if (targetEntity.inventory && targetEntity.inventory.length > 0) {
-      const lootItems = targetEntity.inventory || [];
-      const lootNames = lootItems
-        .map((item: any) => {
-          if (typeof item === 'string') {
-            const obj = this.objectService.getObject(item);
-            return obj?.name || item;
-          }
-          return item.name || 'an item';
-        })
-        .join(', ');
+    // Check both inventory property and direct array
+    const lootItems = targetEntity.inventory || [];
 
-      message += ` The ${targetEntity.name} dropped: ${lootNames}.`;
+    if (lootItems.length > 0) {
+      const lootNames: string[] = [];
 
       // Add loot to room (not automatically to player inventory)
       for (const item of lootItems) {
-        const itemId = typeof item === 'string' ? item : item.id;
-        if (itemId) {
-          this.roomService.addObjectToRoom(room.id, itemId);
+        let itemId: string | null = null;
+        let itemName: string | null = null;
+
+        if (typeof item === 'string') {
+          itemId = item;
+          const obj = this.objectService.getObject(item);
+          itemName = obj?.name || item;
+        } else if (item && item.id) {
+          itemId = item.id;
+          itemName = item.name || 'an item';
         }
+
+        if (itemId) {
+          try {
+            this.roomService.addObjectToRoom(room.id, itemId);
+            if (itemName) {
+              lootNames.push(itemName);
+            }
+          } catch (error) {
+            console.error(`Failed to add loot item ${itemId} to room:`, error);
+          }
+        }
+      }
+
+      if (lootNames.length > 0) {
+        message += ` The ${targetEntity.name} dropped: ${lootNames.join(', ')}.`;
       }
     }
 

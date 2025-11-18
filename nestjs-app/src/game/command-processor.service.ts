@@ -13,6 +13,7 @@ import { ExamineCommandHandler } from './commands/examine-command.handler';
 import { UseCommandHandler } from './commands/use-command.handler';
 import { OpenCommandHandler, CloseCommandHandler } from './commands/container-command.handler';
 import { DialogueCommandHandler } from './commands/dialogue-command.handler';
+import { DialogueChoiceCommandHandler } from './commands/dialogue-choice-command.handler';
 import { AttackCommandHandler } from './commands/attack-command.handler';
 import { CastCommandHandler } from './commands/cast-command.handler';
 import { InventoryCommandHandler } from './commands/inventory-command.handler';
@@ -35,6 +36,7 @@ export class CommandProcessorService {
     private openHandler: OpenCommandHandler,
     private closeHandler: CloseCommandHandler,
     private dialogueHandler: DialogueCommandHandler,
+    private dialogueChoiceHandler: DialogueChoiceCommandHandler,
     private attackHandler: AttackCommandHandler,
     private castHandler: CastCommandHandler,
     private inventoryHandler: InventoryCommandHandler,
@@ -158,6 +160,12 @@ export class CommandProcessorService {
             gameId,
           );
 
+        case 'reply':
+        case 'choose':
+        case 'answer':
+        case 'select':
+          return await this.dialogueChoiceHandler.handle(player, currentRoom, target);
+
         case 'attack':
         case 'fight':
           return await this.attackHandler.handle(player, currentRoom, target);
@@ -180,6 +188,11 @@ export class CommandProcessorService {
           return await this.loadHandler.handle(player, currentRoom, target);
 
         default:
+          // Check if the command is a numeric choice (1, 2, 3, etc.)
+          if (/^\d+$/.test(verb)) {
+            return await this.dialogueChoiceHandler.handle(player, currentRoom, verb);
+          }
+
           return {
             success: false,
             type: 'error',
