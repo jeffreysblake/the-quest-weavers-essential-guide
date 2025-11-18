@@ -30,7 +30,20 @@ export class RoomNavigationHelperService {
     const rooms = player.gameId
       ? this.roomService.getAllRooms().filter(room => room.gameId === player.gameId)
       : this.roomService.getAllRooms();
-    return rooms.find((room) => this.isPositionInRoom(player.position, room));
+
+    // Find all rooms containing the player
+    const matchingRooms = rooms.filter((room) => this.isPositionInRoom(player.position, room));
+
+    // If multiple rooms match, prefer the smallest one (most specific location)
+    if (matchingRooms.length > 1) {
+      return matchingRooms.reduce((smallest, room) => {
+        const roomVolume = room.size.width * room.size.height * room.size.depth;
+        const smallestVolume = smallest.size.width * smallest.size.height * smallest.size.depth;
+        return roomVolume < smallestVolume ? room : smallest;
+      });
+    }
+
+    return matchingRooms[0];
   }
 
   isPositionInRoom(position: any, room: any): boolean {

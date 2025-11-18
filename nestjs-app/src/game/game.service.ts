@@ -599,6 +599,13 @@ export class GameService {
           await this.playerService.updatePlayer(npc.id, {
             position: room.position,
           });
+          // Add NPC to room's players array
+          if (!room.players) {
+            room.players = [];
+          }
+          if (!room.players.includes(npc.id)) {
+            room.players.push(npc.id);
+          }
           this.logger.log(`Placed NPC ${npcJson.name} in room ${npcJson.room_id} (UUID: ${roomUuid})`);
         }
 

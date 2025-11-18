@@ -36,8 +36,17 @@ export class DialogueCommandHandler implements ICommandHandler {
       };
     }
 
+    // Remove common prepositions from target (e.g., "talk to knight" -> "knight")
+    let cleanedTarget = target.trim();
+    if (cleanedTarget.startsWith('to ')) {
+      cleanedTarget = cleanedTarget.substring(3).trim();
+    }
+    if (cleanedTarget.startsWith('with ')) {
+      cleanedTarget = cleanedTarget.substring(5).trim();
+    }
+
     // VALIDATION: Validate NPC name
-    const nameValidation = this.validator.validateItemName(target);
+    const nameValidation = this.validator.validateItemName(cleanedTarget);
     if (!nameValidation.valid) {
       return {
         success: false,
@@ -45,6 +54,9 @@ export class DialogueCommandHandler implements ICommandHandler {
         message: nameValidation.error || 'Invalid NPC name',
       };
     }
+
+    // Use cleaned target for NPC lookup
+    target = cleanedTarget;
 
     // Get game state to access NPCs
     const gameState = await this.gameStateService.getGameState(player.gameId);

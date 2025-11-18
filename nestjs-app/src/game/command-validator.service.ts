@@ -40,6 +40,12 @@ export class CommandValidatorService {
     }
 
     // Check for SQL injection patterns
+    // Note: Allow common game verbs like "drop", "put", "insert" when used as game commands
+    const lowerSanitized = sanitized.toLowerCase();
+    const firstWord = lowerSanitized.split(/\s+/)[0];
+    const allowedGameVerbs = ['drop', 'put', 'insert', 'create', 'delete', 'update', 'select'];
+
+    // Only check for SQL injection if it's not a known game verb
     const sqlInjectionPatterns = [
       /(\bUNION\b|\bSELECT\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b|\bDROP\b|\bCREATE\b|\bALTER\b)/i,
       /--\s*$/,
@@ -48,12 +54,15 @@ export class CommandValidatorService {
       /".*OR.*"/i,
     ];
 
-    for (const pattern of sqlInjectionPatterns) {
-      if (pattern.test(sanitized)) {
-        return {
-          valid: false,
-          error: 'Invalid command: potential injection detected',
-        };
+    // Skip SQL injection check if the first word is a game verb
+    if (!allowedGameVerbs.includes(firstWord)) {
+      for (const pattern of sqlInjectionPatterns) {
+        if (pattern.test(sanitized)) {
+          return {
+            valid: false,
+            error: 'Invalid command: potential injection detected',
+          };
+        }
       }
     }
 
