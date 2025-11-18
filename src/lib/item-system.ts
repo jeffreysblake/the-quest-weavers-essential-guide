@@ -11,7 +11,11 @@ export interface ItemState {
   type?: 'weapon' | 'armor' | 'consumable' | 'key' | 'quest-item' | 'container' | 'door' | 'tree' | 'glass';
   value?: number; // For currency or other values
   weight?: number;
-  canTake?: boolean;
+  /**
+   * Indicates whether the item can be picked up and placed in the player's inventory.
+   * This is the canonical property name. Default: true
+   */
+  isPortable?: boolean;
   
   // Container properties
   isContainer?: boolean;
@@ -44,7 +48,7 @@ export class ItemSystem {
     type?: 'weapon' | 'armor' | 'consumable' | 'key' | 'quest-item' | 'container' | 'door' | 'tree' | 'glass',
     value?: number,
     weight?: number,
-    canTake?: boolean,
+    isPortable?: boolean,
     isContainer?: boolean,
     containedItems?: string[],
     state?: 'normal' | 'burned' | 'broken' | 'locked' | 'unlocked' | 'shattered',
@@ -59,7 +63,7 @@ export class ItemSystem {
       type,
       value,
       weight,
-      canTake: canTake !== undefined ? canTake : true, // Default to true if not specified
+      isPortable: isPortable !== undefined ? isPortable : true, // Default to true if not specified
       isContainer,
       containedItems,
       state,
@@ -67,7 +71,7 @@ export class ItemSystem {
       requiresKey,
       interactionEffect
     };
-    
+
     this.allItems.set(id, item);
     return item;
   }

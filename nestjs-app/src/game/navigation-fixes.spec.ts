@@ -54,10 +54,10 @@ describe('CommandProcessorService - Navigation Fixes', () => {
   ];
 
   const mockObjects = [
-    { id: 'torch-1', name: 'Flickering Torch', canTake: false },
-    { id: 'key-1', name: 'Brass Key', canTake: true },
-    { id: 'flower-1', name: 'Glowing Flower', canTake: true },
-    { id: 'book-1', name: 'Ancient Tome', canTake: true },
+    { id: 'torch-1', name: 'Flickering Torch', isPortable: false },
+    { id: 'key-1', name: 'Brass Key', isPortable: true },
+    { id: 'flower-1', name: 'Glowing Flower', isPortable: true },
+    { id: 'book-1', name: 'Ancient Tome', isPortable: true },
   ];
 
   beforeEach(async () => {

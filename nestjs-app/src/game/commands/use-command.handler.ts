@@ -7,35 +7,18 @@ import { ObjectService } from '../../entity/object.service';
 import { CommandValidatorService } from '../command-validator.service';
 import { EventEmitterService } from '../../events/event-emitter.service';
 import { GameEventType } from '../../events/event.interfaces';
+import { BaseCommandHandler } from './base-command.handler';
 
 @Injectable()
-export class UseCommandHandler implements ICommandHandler {
+export class UseCommandHandler extends BaseCommandHandler {
   constructor(
-    private playerService: PlayerService,
-    private roomService: RoomService,
+    playerService: PlayerService,
+    roomService: RoomService,
     private objectService: ObjectService,
-    private validator: CommandValidatorService,
+    validator: CommandValidatorService,
     private eventEmitter: EventEmitterService,
-  ) {}
-
-  /**
-   * Normalize item name for matching - handles hyphens, underscores, and spaces
-   */
-  private normalizeNameForMatching(name: string): string {
-    return name
-      .toLowerCase()
-      .replace(/[-_]/g, ' ') // Replace hyphens and underscores with spaces
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .trim();
-  }
-
-  /**
-   * Check if target matches object name (handles variations like hyphens vs spaces)
-   */
-  private matchesName(objectName: string, target: string): boolean {
-    const normalizedObjectName = this.normalizeNameForMatching(objectName);
-    const normalizedTarget = this.normalizeNameForMatching(target);
-    return normalizedObjectName.includes(normalizedTarget);
+  ) {
+    super(playerService, roomService, validator);
   }
 
   async handle(
@@ -43,48 +26,24 @@ export class UseCommandHandler implements ICommandHandler {
     room: any,
     target: string,
   ): Promise<CommandResult> {
-    if (!target) {
-      return {
-        success: false,
-        type: 'error',
-        message: 'Use what?',
-      };
+    // Use base class validation
+    const validation = this.validateTarget(target, 'use');
+    if (validation) return validation;
+
+    // Use base class method to find object
+    const targetObject = this.findObjectInInventoryOrRoom(player, room, target);
+
+    if (!targetObject) {
+      return this.createNotFoundError(target);
     }
 
-    // VALIDATION: Validate item name
-    const itemValidation = this.validator.validateItemName(target);
-    if (!itemValidation.valid) {
-      return {
-        success: false,
-        type: 'error',
-        message: itemValidation.error || 'Invalid item name',
-      };
-    }
-
-    // Find the item in inventory first, then in room
+    // Determine item location for later use
     const inventory = this.playerService.getInventory(player.id);
-    let targetObject = inventory.find((obj) =>
-      obj.name ? this.matchesName(obj.name, target) : false,
-    );
-
-    let itemLocation: 'inventory' | 'room' = 'inventory';
-
-    // If not in inventory, check room objects
-    if (!targetObject) {
-      const objects = this.roomService.getObjectsInRoom(room.id);
-      targetObject = objects.find((obj) =>
-        obj.name ? this.matchesName(obj.name, target) : false,
-      );
-      itemLocation = 'room';
-    }
-
-    if (!targetObject) {
-      return {
-        success: false,
-        type: 'action_failure',
-        message: `You don't see a ${target} here.`,
-      };
-    }
+    const itemLocation: 'inventory' | 'room' = inventory.find(
+      (obj) => obj.id === targetObject.id,
+    )
+      ? 'inventory'
+      : 'room';
 
     // Handle different item types
     switch (targetObject.objectType) {

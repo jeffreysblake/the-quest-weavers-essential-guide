@@ -1,38 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { ICommandHandler } from './command-handler.interface';
 import { CommandResult } from '../game.service';
 import { PlayerService } from '../../entity/player.service';
 import { RoomService } from '../../entity/room.service';
 import { ObjectService } from '../../entity/object.service';
 import { CommandValidatorService } from '../command-validator.service';
+import { BaseCommandHandler } from './base-command.handler';
 
 @Injectable()
-export class DropCommandHandler implements ICommandHandler {
+export class DropCommandHandler extends BaseCommandHandler {
   constructor(
-    private playerService: PlayerService,
-    private roomService: RoomService,
+    playerService: PlayerService,
+    roomService: RoomService,
     private objectService: ObjectService,
-    private validator: CommandValidatorService,
-  ) {}
-
-  /**
-   * Normalize item name for matching - handles hyphens, underscores, and spaces
-   */
-  private normalizeNameForMatching(name: string): string {
-    return name
-      .toLowerCase()
-      .replace(/[-_]/g, ' ') // Replace hyphens and underscores with spaces
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .trim();
-  }
-
-  /**
-   * Check if target matches object name (handles variations like hyphens vs spaces)
-   */
-  private matchesName(objectName: string, target: string): boolean {
-    const normalizedObjectName = this.normalizeNameForMatching(objectName);
-    const normalizedTarget = this.normalizeNameForMatching(target);
-    return normalizedObjectName.includes(normalizedTarget);
+    validator: CommandValidatorService,
+  ) {
+    super(playerService, roomService, validator);
   }
 
   async handle(
@@ -40,28 +22,12 @@ export class DropCommandHandler implements ICommandHandler {
     room: any,
     target: string,
   ): Promise<CommandResult> {
-    if (!target) {
-      return {
-        success: false,
-        type: 'error',
-        message: 'Drop what?',
-      };
-    }
+    // VALIDATION: Validate target and item name
+    const validation = this.validateTarget(target, 'drop');
+    if (validation) return validation;
 
-    // VALIDATION: Validate item name
-    const itemValidation = this.validator.validateItemName(target);
-    if (!itemValidation.valid) {
-      return {
-        success: false,
-        type: 'error',
-        message: itemValidation.error || 'Invalid item name',
-      };
-    }
-
-    const inventory = this.playerService.getInventory(player.id);
-    const targetObject = inventory.find((obj) =>
-      obj.name ? this.matchesName(obj.name, target) : false,
-    );
+    // Find object in player's inventory
+    const targetObject = this.findObjectInInventory(player, target);
 
     if (!targetObject) {
       return {

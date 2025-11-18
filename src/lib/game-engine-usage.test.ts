@@ -31,7 +31,7 @@ describe('Game Engine Usage Test', () => {
       'container',
       undefined, // value
       undefined, // weight
-      true,      // canTake
+      true,      // isPortable
       true,      // isContainer
       [],        // containedItems (empty chest)
       'normal',  // state

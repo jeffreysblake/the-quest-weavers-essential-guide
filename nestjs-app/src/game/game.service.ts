@@ -376,7 +376,7 @@ export class GameService {
       objectType: 'furniture',
       position: { x: 1, y: 1, z: 1 },
       material: 'wood',
-      canTake: false,
+      isPortable: false,
       gameId: gameId,
     });
 
@@ -386,7 +386,7 @@ export class GameService {
       objectType: 'item',
       position: { x: 5, y: 5, z: 0 },
       material: 'metal',
-      canTake: true,
+      isPortable: true,
       gameId: gameId,
     });
 
@@ -429,7 +429,7 @@ export class GameService {
       objectType: 'item',
       position: { x: 2, y: 3, z: 0 },
       material: 'paper',
-      canTake: true,
+      isPortable: true,
       gameId: gameId,
     });
 
@@ -439,7 +439,7 @@ export class GameService {
       objectType: 'item',
       position: { x: 5, y: 5, z: 0 },
       material: 'organic',
-      canTake: true,
+      isPortable: true,
       gameId: gameId,
     });
 
@@ -525,6 +525,17 @@ export class GameService {
         const objectJson = JSON.parse(objectData);
 
         // Create object with preserved ID
+        // Note: Portable attribute conversion handles canTake, is_portable, and isPortable
+        // Priority: isPortable > is_portable > canTake, default to true
+        let isPortable = true;
+        if (objectJson.isPortable !== undefined) {
+          isPortable = objectJson.isPortable;
+        } else if (objectJson.is_portable !== undefined) {
+          isPortable = objectJson.is_portable;
+        } else if (objectJson.can_take !== undefined) {
+          isPortable = objectJson.can_take;
+        }
+
         const obj = this.objectService.createObject({
           id: objectJson.id,
           name: objectJson.name,
@@ -532,8 +543,7 @@ export class GameService {
           objectType: objectJson.object_type || 'item',
           position: objectJson.position || { x: 0, y: 0, z: 0 },
           material: objectJson.material || 'unknown',
-          canTake: objectJson.can_take !== false && objectJson.is_portable !== false,
-          isPortable: objectJson.is_portable !== false && objectJson.can_take !== false,
+          isPortable: isPortable,
           gameId: gameId,
         });
 

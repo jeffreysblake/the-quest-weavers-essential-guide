@@ -57,8 +57,29 @@ export class EntityConverterHelper {
 
   /**
    * Convert raw object JSON to ObjectData format
+   *
+   * PORTABLE ATTRIBUTE HANDLING:
+   * This converter accepts all three naming conventions for backward compatibility:
+   * - is_portable (snake_case, preferred in JSON files)
+   * - canTake (legacy property name)
+   * - isPortable (camelCase, canonical TypeScript property)
+   *
+   * All three are converted to the canonical "isPortable" property internally.
+   * Priority order: isPortable > is_portable > canTake
+   * Default value: true (objects are portable by default)
    */
   convertToObjectData(rawObject: any, gameId: string): ObjectData {
+    // Portable attribute conversion with backward compatibility
+    // Priority: isPortable > is_portable > canTake, default to true
+    let isPortable = true;
+    if (rawObject.isPortable !== undefined) {
+      isPortable = rawObject.isPortable;
+    } else if (rawObject.is_portable !== undefined) {
+      isPortable = rawObject.is_portable;
+    } else if (rawObject.canTake !== undefined) {
+      isPortable = rawObject.canTake;
+    }
+
     return {
       id: rawObject.id,
       gameId: gameId,
@@ -71,7 +92,7 @@ export class EntityConverterHelper {
       weight: rawObject.weight || 0,
       health: rawObject.health,
       maxHealth: rawObject.max_health,
-      isPortable: rawObject.is_portable ?? true,
+      isPortable: isPortable,
       isContainer: rawObject.is_container ?? false,
       canContain: rawObject.can_contain ?? false,
       containerCapacity: rawObject.container_capacity || 0,
