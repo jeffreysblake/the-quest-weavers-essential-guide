@@ -8,4 +8,6 @@ export interface IPlayer extends IEntity {
   experience: number;
   gameId?: string;
   roomId?: string;
+  dialogueTreeData?: any; // For NPCs with dialogue trees
+  dialogueTreeId?: string; // Alternative: reference to dialogue tree
 }

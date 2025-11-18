@@ -130,7 +130,22 @@ export class RoomNavigationHelperService {
     // Use room's connections if available (from game data files)
     if (currentRoom.connections && currentRoom.connections[direction]) {
       const roomId = currentRoom.connections[direction];
-      return this.roomService.getRoom(roomId);
+      const targetRoom = this.roomService.getRoom(roomId);
+
+      if (targetRoom) {
+        console.log(
+          `[RoomNav] Using connection: ${currentRoom.name} --${direction}--> ${targetRoom.name}`,
+        );
+        return targetRoom;
+      } else {
+        console.warn(
+          `[RoomNav] Connection exists but target room ${roomId} not found for ${currentRoom.name} --${direction}-->`,
+        );
+      }
+    } else {
+      console.log(
+        `[RoomNav] No connection found for ${currentRoom.name} --${direction}-->, using position-based fallback. Connections: ${JSON.stringify(Object.keys(currentRoom.connections || {}))}`,
+      );
     }
 
     // Fallback to position-based detection

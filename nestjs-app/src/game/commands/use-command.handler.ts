@@ -18,6 +18,26 @@ export class UseCommandHandler implements ICommandHandler {
     private eventEmitter: EventEmitterService,
   ) {}
 
+  /**
+   * Normalize item name for matching - handles hyphens, underscores, and spaces
+   */
+  private normalizeNameForMatching(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[-_]/g, ' ') // Replace hyphens and underscores with spaces
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .trim();
+  }
+
+  /**
+   * Check if target matches object name (handles variations like hyphens vs spaces)
+   */
+  private matchesName(objectName: string, target: string): boolean {
+    const normalizedObjectName = this.normalizeNameForMatching(objectName);
+    const normalizedTarget = this.normalizeNameForMatching(target);
+    return normalizedObjectName.includes(normalizedTarget);
+  }
+
   async handle(
     player: any,
     room: any,
@@ -44,7 +64,7 @@ export class UseCommandHandler implements ICommandHandler {
     // Find the item in inventory first, then in room
     const inventory = this.playerService.getInventory(player.id);
     let targetObject = inventory.find((obj) =>
-      obj.name?.toLowerCase().includes(target.toLowerCase()),
+      obj.name ? this.matchesName(obj.name, target) : false,
     );
 
     let itemLocation: 'inventory' | 'room' = 'inventory';
@@ -53,7 +73,7 @@ export class UseCommandHandler implements ICommandHandler {
     if (!targetObject) {
       const objects = this.roomService.getObjectsInRoom(room.id);
       targetObject = objects.find((obj) =>
-        obj.name?.toLowerCase().includes(target.toLowerCase()),
+        obj.name ? this.matchesName(obj.name, target) : false,
       );
       itemLocation = 'room';
     }

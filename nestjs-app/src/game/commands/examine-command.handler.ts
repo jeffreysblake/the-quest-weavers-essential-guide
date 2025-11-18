@@ -13,6 +13,26 @@ export class ExamineCommandHandler implements ICommandHandler {
     private validator: CommandValidatorService,
   ) {}
 
+  /**
+   * Normalize item name for matching - handles hyphens, underscores, and spaces
+   */
+  private normalizeNameForMatching(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[-_]/g, ' ') // Replace hyphens and underscores with spaces
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .trim();
+  }
+
+  /**
+   * Check if target matches object name (handles variations like hyphens vs spaces)
+   */
+  private matchesName(objectName: string, target: string): boolean {
+    const normalizedObjectName = this.normalizeNameForMatching(objectName);
+    const normalizedTarget = this.normalizeNameForMatching(target);
+    return normalizedObjectName.includes(normalizedTarget);
+  }
+
   async handle(
     player: any,
     room: any,
@@ -36,17 +56,17 @@ export class ExamineCommandHandler implements ICommandHandler {
       };
     }
 
-    // Check inventory first
+    // Check inventory first (prioritize inventory over room objects)
     const inventory = this.playerService.getInventory(player.id);
     let targetObject = inventory.find((obj) =>
-      obj.name?.toLowerCase().includes(target.toLowerCase()),
+      obj.name ? this.matchesName(obj.name, target) : false,
     );
 
     // If not in inventory, check room objects
     if (!targetObject) {
       const objects = this.roomService.getObjectsInRoom(room.id);
       targetObject = objects.find((obj) =>
-        obj.name?.toLowerCase().includes(target.toLowerCase()),
+        obj.name ? this.matchesName(obj.name, target) : false,
       );
     }
 
