@@ -591,22 +591,40 @@ export class GameService {
           gameId: gameId,
         });
 
-        // Place NPC in room if specified (use slug mapping)
+        // Place NPC in room
+        let roomToPlaceIn: any = null;
+        let roomUuidToPlaceIn: string | null = null;
+
+        // First try to use room_id if specified
         if (npcJson.room_id && slugToUuid.has(npcJson.room_id)) {
-          const roomUuid = slugToUuid.get(npcJson.room_id)!;
-          const room = rooms.get(roomUuid);
-          // Move NPC to the room's position
-          await this.playerService.updatePlayer(npc.id, {
-            position: room.position,
-          });
+          roomUuidToPlaceIn = slugToUuid.get(npcJson.room_id)!;
+          roomToPlaceIn = rooms.get(roomUuidToPlaceIn);
+        }
+        // Otherwise, find room by NPC's position
+        else if (npcJson.position) {
+          for (const [uuid, room] of rooms.entries()) {
+            if (this.isPlayerInRoom(npc, room)) {
+              roomUuidToPlaceIn = uuid;
+              roomToPlaceIn = room;
+              break;
+            }
+          }
+        }
+
+        // Place NPC in the found room
+        if (roomToPlaceIn && roomUuidToPlaceIn) {
           // Add NPC to room's players array
-          if (!room.players) {
-            room.players = [];
+          if (!roomToPlaceIn.players) {
+            roomToPlaceIn.players = [];
           }
-          if (!room.players.includes(npc.id)) {
-            room.players.push(npc.id);
+          if (!roomToPlaceIn.players.includes(npc.id)) {
+            roomToPlaceIn.players.push(npc.id);
+            // Update the room in the service to persist the change
+            this.roomService.update(roomUuidToPlaceIn, { players: roomToPlaceIn.players });
           }
-          this.logger.log(`Placed NPC ${npcJson.name} in room ${npcJson.room_id} (UUID: ${roomUuid})`);
+          this.logger.log(`Placed NPC ${npcJson.name} in room ${roomToPlaceIn.name} (UUID: ${roomUuidToPlaceIn})`);
+        } else {
+          this.logger.warn(`Could not find room for NPC ${npcJson.name} at position (${npcJson.position?.x}, ${npcJson.position?.y}, ${npcJson.position?.z})`);
         }
 
         this.logger.log(`Loaded NPC: ${npcJson.name} (ID: ${npcJson.id})`);

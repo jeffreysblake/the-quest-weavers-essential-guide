@@ -30,13 +30,27 @@ export class MovementCommandHandler implements ICommandHandler {
     }
 
     const normalizedDirection = direction.toLowerCase().trim();
-    const validDirections = ['north', 'south', 'east', 'west', 'up', 'down'];
 
-    if (!validDirections.includes(normalizedDirection)) {
+    // Map shorthand directions to full names
+    const directionMap: { [key: string]: string } = {
+      'n': 'north',
+      's': 'south',
+      'e': 'east',
+      'w': 'west',
+      'north': 'north',
+      'south': 'south',
+      'east': 'east',
+      'west': 'west',
+      'up': 'up',
+      'down': 'down',
+    };
+
+    const mappedDirection = directionMap[normalizedDirection];
+    if (!mappedDirection) {
       return {
         success: false,
         type: 'error',
-        message: `I don't understand the direction "${direction}". Valid directions are: ${validDirections.join(', ')}.`,
+        message: `I don't understand the direction "${direction}". Valid directions are: north, south, east, west, up, down (or n, s, e, w).`,
       };
     }
 
@@ -52,14 +66,14 @@ export class MovementCommandHandler implements ICommandHandler {
     // Find the adjacent room in the specified direction
     const targetRoom = this.roomNavHelper.findAdjacentRoom(
       currentRoom,
-      normalizedDirection,
+      mappedDirection,
     );
 
     if (!targetRoom) {
       return {
         success: false,
         type: 'movement_blocked',
-        message: `You cannot go ${normalizedDirection} from here.`,
+        message: `You cannot go ${mappedDirection} from here.`,
       };
     }
 
@@ -94,7 +108,7 @@ export class MovementCommandHandler implements ICommandHandler {
     return {
       success: true,
       type: 'movement_success',
-      message: `You move ${normalizedDirection}.`,
+      message: `You move ${mappedDirection}.`,
       roomDescription: targetRoom.description,
       items: objectNames,
       exits: this.roomNavHelper.getAvailableExits(targetRoom),

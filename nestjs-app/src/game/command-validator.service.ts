@@ -8,7 +8,7 @@ export class CommandValidatorService {
   private readonly MAX_POSITION = 10000;
   private readonly MAX_HEALTH = Number.MAX_SAFE_INTEGER;
   private readonly MAX_INVENTORY_QUANTITY = 999999;
-  private readonly ALLOWED_COMMAND_PATTERN = /^[a-z0-9\s\-_.,'":!?]+$/i;
+  private readonly ALLOWED_COMMAND_PATTERN = /^[a-z0-9\s\-_.,'":!?()\[\]]+$/i;
 
   /**
    * Validate command string - sanitize and check for malicious input
@@ -194,8 +194,8 @@ export class CommandValidatorService {
       }
     }
 
-    // Only allow alphanumeric, spaces, hyphens, underscores, and basic punctuation
-    const allowedPattern = /^[a-z0-9\s\-_',.!?]+$/i;
+    // Only allow alphanumeric, spaces, hyphens, underscores, parentheses, and basic punctuation
+    const allowedPattern = /^[a-z0-9\s\-_',.!?()\[\]]+$/i;
     if (!allowedPattern.test(sanitized)) {
       return {
         valid: false,
