@@ -45,10 +45,9 @@ export class LookCommandHandler implements ICommandHandler {
             return;
           }
 
-          // Check if NPC is in this room
+          // Only check if NPC is in this room via room.players array
+          // Position-based matching is disabled to avoid NPCs appearing in multiple rooms
           if (room.players && room.players.includes(npc.id)) {
-            npcsInRoom.push(npc.name);
-          } else if (npc.position && this.roomNavHelper.isPositionInRoom(npc.position, room)) {
             npcsInRoom.push(npc.name);
           }
         });

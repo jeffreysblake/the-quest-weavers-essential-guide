@@ -99,6 +99,11 @@ export class DialogueChoiceCommandHandler implements ICommandHandler {
       }
 
       // Return the next dialogue node
+      // Format choices with numbers for easier selection
+      const numberedChoices = dialogueResult.availableChoices.map(
+        (c, index) => `${index + 1}. ${c.text}`,
+      );
+
       return {
         success: true,
         type: 'dialogue',
@@ -106,7 +111,7 @@ export class DialogueChoiceCommandHandler implements ICommandHandler {
         dialogue: {
           npcName: 'NPC', // Will be filled in by context
           text: dialogueResult.currentNode.text || '',
-          choices: dialogueResult.availableChoices.map((c) => c.text),
+          choices: numberedChoices,
         },
       };
     } catch (error) {

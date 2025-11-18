@@ -70,15 +70,12 @@ export class DialogueCommandHandler implements ICommandHandler {
     }
 
     // Find NPCs in the current room
+    // Priority: Use room.players array ONLY (most reliable, prevents duplicates)
+    // Position-based matching is disabled to avoid NPCs appearing in multiple rooms
     const npcsInRoom = Object.values(gameState.npcs).filter((npc: any) => {
-      // Check if NPC is in the same room (stored in room.players array or has matching position)
+      // Only check if NPC is in this room via room.players array
       if (room.players && room.players.includes(npc.id)) {
         return true;
-      }
-
-      // Fallback: Check if NPC position is within room bounds
-      if (npc.position) {
-        return this.roomNavHelper.isPositionInRoom(npc.position, room);
       }
 
       return false;
@@ -210,6 +207,11 @@ export class DialogueCommandHandler implements ICommandHandler {
       );
 
       // Convert dialogue result to command result
+      // Format choices with numbers for easier selection
+      const numberedChoices = dialogueResult.availableChoices.map(
+        (choice, index) => `${index + 1}. ${choice.text}`,
+      );
+
       return {
         success: true,
         type: 'dialogue',
@@ -217,7 +219,7 @@ export class DialogueCommandHandler implements ICommandHandler {
         dialogue: {
           npcName: targetNpc.name,
           text: dialogueResult.currentNode.text || '',
-          choices: dialogueResult.availableChoices.map((choice) => choice.text),
+          choices: numberedChoices,
         },
       };
     } catch (error) {
