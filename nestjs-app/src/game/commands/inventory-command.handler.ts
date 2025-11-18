@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CommandResult } from '../game.service';
+import { ObjectService } from '../../entity/object.service';
 
 @Injectable()
 export class InventoryCommandHandler {
+  constructor(private objectService: ObjectService) {}
+
   async handle(
     player: any,
     currentRoom: any,
@@ -18,8 +21,13 @@ export class InventoryCommandHandler {
       };
     }
 
+    // Get actual objects from inventory IDs
+    const inventoryObjects = player.inventory
+      .map((itemId) => this.objectService.getObject(itemId))
+      .filter(Boolean);
+
     // Format inventory list
-    const itemList = player.inventory
+    const itemList = inventoryObjects
       .map((item) => `- ${item.name}`)
       .join('\n');
 
@@ -27,7 +35,7 @@ export class InventoryCommandHandler {
       success: true,
       type: 'inventory',
       message: `You are carrying:\n${itemList}`,
-      items: player.inventory.map((item) => item.name),
+      items: inventoryObjects.map((item) => item.name),
     };
   }
 }

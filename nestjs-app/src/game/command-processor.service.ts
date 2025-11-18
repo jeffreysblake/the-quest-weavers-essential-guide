@@ -17,6 +17,8 @@ import { AttackCommandHandler } from './commands/attack-command.handler';
 import { CastCommandHandler } from './commands/cast-command.handler';
 import { InventoryCommandHandler } from './commands/inventory-command.handler';
 import { HelpCommandHandler } from './commands/help-command.handler';
+import { SaveCommandHandler } from './commands/save-command.handler';
+import { LoadCommandHandler } from './commands/load-command.handler';
 
 @Injectable()
 export class CommandProcessorService {
@@ -37,6 +39,8 @@ export class CommandProcessorService {
     private castHandler: CastCommandHandler,
     private inventoryHandler: InventoryCommandHandler,
     private helpHandler: HelpCommandHandler,
+    private saveHandler: SaveCommandHandler,
+    private loadHandler: LoadCommandHandler,
   ) {}
 
   async processCommand(
@@ -108,9 +112,13 @@ export class CommandProcessorService {
         case 'go':
         case 'move':
         case 'north':
+        case 'n':
         case 'south':
+        case 's':
         case 'east':
+        case 'e':
         case 'west':
+        case 'w':
         case 'up':
         case 'down':
           return await this.movementHandler.handle(
@@ -164,6 +172,12 @@ export class CommandProcessorService {
 
         case 'help':
           return await this.helpHandler.handle(player, currentRoom, target);
+
+        case 'save':
+          return await this.saveHandler.handle(player, currentRoom, target);
+
+        case 'load':
+          return await this.loadHandler.handle(player, currentRoom, target);
 
         default:
           return {

@@ -26,6 +26,8 @@ import { AttackCommandHandler } from './commands/attack-command.handler';
 import { CastCommandHandler } from './commands/cast-command.handler';
 import { InventoryCommandHandler } from './commands/inventory-command.handler';
 import { HelpCommandHandler } from './commands/help-command.handler';
+import { SaveCommandHandler } from './commands/save-command.handler';
+import { LoadCommandHandler } from './commands/load-command.handler';
 
 @Module({
   imports: [
@@ -58,6 +60,8 @@ import { HelpCommandHandler } from './commands/help-command.handler';
     CastCommandHandler,
     InventoryCommandHandler,
     HelpCommandHandler,
+    SaveCommandHandler,
+    LoadCommandHandler,
   ],
   exports: [GameService, GameStateService],
 })
