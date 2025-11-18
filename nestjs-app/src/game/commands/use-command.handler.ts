@@ -124,11 +124,29 @@ export class UseCommandHandler implements ICommandHandler {
         break;
 
       case 'furniture':
+        // Check if it's the Cosmic Repair Station
+        if (
+          targetObject.name &&
+          (targetObject.name.toLowerCase().includes('cosmic repair station') ||
+            targetObject.name.toLowerCase().includes('repair station'))
+        ) {
+          return await this.handleCosmicRepairStation(player, targetObject);
+        }
+
         return {
           success: false,
           type: 'action_failure',
           message: `You can't use the ${targetObject.name} like that.`,
         };
+    }
+
+    // Check if it's the Cosmic Repair Station (might not be typed as furniture)
+    if (
+      targetObject.name &&
+      (targetObject.name.toLowerCase().includes('cosmic repair station') ||
+        targetObject.name.toLowerCase().includes('repair station'))
+    ) {
+      return await this.handleCosmicRepairStation(player, targetObject);
     }
 
     // Generic use for other items
@@ -476,6 +494,130 @@ export class UseCommandHandler implements ICommandHandler {
       success: true,
       type: 'action_result',
       message,
+    };
+  }
+
+  /**
+   * Handle using the Cosmic Repair Station to win the game
+   */
+  private async handleCosmicRepairStation(
+    player: any,
+    repairStation: any,
+  ): Promise<CommandResult> {
+    // Get player's inventory
+    const inventory = this.playerService.getInventory(player.id);
+    const inventoryNames = inventory.map((item) =>
+      item.name ? item.name.toLowerCase() : '',
+    );
+
+    // Define required items
+    const requiredShards = [
+      'vacuum shard',
+      'nozzle fragment',
+      'canister fragment',
+      'filter fragment',
+      'handle fragment',
+      'power core fragment',
+    ];
+
+    const requiredArtifacts = [
+      'celestial spray bottle',
+      'divine duster',
+      'quantum mop',
+      'holy scrub brush',
+      'eternal sponge',
+    ];
+
+    // Count how many shards player has (looking for "shard" or "fragment" in name)
+    const shardsFound = inventory.filter((item) => {
+      const itemName = item.name ? item.name.toLowerCase() : '';
+      return itemName.includes('shard') || itemName.includes('fragment');
+    });
+
+    // Count how many artifacts player has
+    const artifactsFound = inventory.filter((item) => {
+      const itemName = item.name ? item.name.toLowerCase() : '';
+      return (
+        itemName.includes('celestial spray') ||
+        itemName.includes('divine duster') ||
+        itemName.includes('quantum mop') ||
+        itemName.includes('holy scrub') ||
+        itemName.includes('scrub brush') ||
+        itemName.includes('eternal sponge')
+      );
+    });
+
+    const hasAllShards = shardsFound.length >= 5;
+    const hasAllArtifacts = artifactsFound.length >= 5;
+
+    // Check if player has all required items
+    if (!hasAllShards || !hasAllArtifacts) {
+      let message = `You activate the Cosmic Repair Station, but it hums disappointedly. You need:\n\n`;
+
+      if (!hasAllShards) {
+        message += `- All 5 Vacuum Shards (you have ${shardsFound.length}/5)\n`;
+      } else {
+        message += `- All 5 Vacuum Shards ✓\n`;
+      }
+
+      if (!hasAllArtifacts) {
+        message += `- All 5 Sacred Cleaning Artifacts (you have ${artifactsFound.length}/5)\n`;
+      } else {
+        message += `- All 5 Sacred Cleaning Artifacts ✓\n`;
+      }
+
+      message += `\nFind the missing items and return!`;
+
+      return {
+        success: false,
+        type: 'action_result',
+        message: message,
+      };
+    }
+
+    // Player has everything - VICTORY!
+    const victoryMessage = `
+╔═══════════════════════════════════════════════════════════════╗
+║                    🌟 VICTORY! 🌟                             ║
+╚═══════════════════════════════════════════════════════════════╝
+
+You place all five Vacuum Shards and five Sacred Cleaning Artifacts into the Cosmic Repair Station!
+
+The machine springs to life with a brilliant glow. Energy arcs between the sacred artifacts as the vacuum shards begin to merge together. The room fills with the sound of cosmic humming and the scent of lemon-fresh cleanliness.
+
+With a final burst of light, the VACUUM OF ETERNITY reforms before you - whole, pristine, and radiating with power!
+
+Professor Scrubsworth rushes in: "By the Great Mop! You did it! The fabric of reality stabilizes! The cosmic mess recedes! You've saved the universe from descending into eternal chaos!"
+
+Director Dustbane appears, actually smiling: "Rodriguez... I never doubted you. Well, maybe a little. Okay, a lot. But you proved yourself! You're not just a janitor - you're the COSMIC CUSTODIAN!"
+
+The Vacuum of Eternity hums with approval. Reality itself feels cleaner. The station is safe. The universe is tidy once more.
+
+═══════════════════════════════════════════════════════════════
+
+           🎉 CONGRATULATIONS - GAME COMPLETED! 🎉
+
+              You have saved reality from disorder!
+                  The cosmos thanks you, janitor!
+
+═══════════════════════════════════════════════════════════════
+`;
+
+    // Emit victory event
+    await this.eventEmitter.emit(
+      GameEventType.CUSTOM_EVENT,
+      {
+        action: 'game_completed',
+        playerId: player.id,
+        completionTime: new Date().toISOString(),
+      },
+      player.gameId,
+    );
+
+    return {
+      success: true,
+      type: 'victory',
+      message: victoryMessage,
     };
   }
 }

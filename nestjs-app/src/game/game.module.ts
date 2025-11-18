@@ -22,6 +22,7 @@ import { ExamineCommandHandler } from './commands/examine-command.handler';
 import { UseCommandHandler } from './commands/use-command.handler';
 import { OpenCommandHandler, CloseCommandHandler } from './commands/container-command.handler';
 import { DialogueCommandHandler } from './commands/dialogue-command.handler';
+import { DialogueChoiceCommandHandler } from './commands/dialogue-choice-command.handler';
 import { AttackCommandHandler } from './commands/attack-command.handler';
 import { CastCommandHandler } from './commands/cast-command.handler';
 import { InventoryCommandHandler } from './commands/inventory-command.handler';
@@ -56,6 +57,7 @@ import { LoadCommandHandler } from './commands/load-command.handler';
     OpenCommandHandler,
     CloseCommandHandler,
     DialogueCommandHandler,
+    DialogueChoiceCommandHandler,
     AttackCommandHandler,
     CastCommandHandler,
     InventoryCommandHandler,
