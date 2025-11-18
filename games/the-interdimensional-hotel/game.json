@@ -1,0 +1,332 @@
+{
+  "id": "the-interdimensional-hotel",
+  "title": "The Interdimensional Hotel Catastrophe",
+  "description": "A reality-bending adventure across dimensions where you, a lowly bellhop, must save the multiverse from collapsing. Someone stole the Reality Anchor, and now ghosts are playing poker with robots, aliens are checking into medieval suites, and the pool contains liquid time. Navigate 40 bizarre rooms, help eccentric guests, solve weird puzzles, and restore reality before your shift ends!",
+  "author": "The Quest Weavers",
+  "version": "1.0.0",
+  "startingRoom": "bellhop-station",
+  "difficulty": "Hard",
+  "estimatedPlaytime": "5-6 hours",
+  "rooms": {
+    "bellhop-station": {
+      "id": "bellhop-station",
+      "name": "Bellhop Station",
+      "description": "Your cramped workspace behind a fake potted plant in the hotel lobby. A small desk holds your bell, a clipboard with incomprehensible guest requests, and a framed photo of your cat, Mr. Whiskers. Through the archway, you can see the Grand Lobby where reality is currently doing things reality really shouldn't do. A ghost just walked through a robot. This is fine. Everything is fine.",
+      "position": {"x": 0, "y": 0, "z": 0},
+      "items": ["bellhop-uniform", "employee-handbook", "mysterious-note"],
+      "npcs": []
+    },
+    "grand-lobby": {
+      "id": "grand-lobby",
+      "name": "Grand Lobby",
+      "description": "The magnificent heart of the Grand Paradox Hotel, usually a testament to art deco elegance. Currently, it's a testament to dimensional chaos. The chandelier is dripping upwards. A Victorian gentleman is arguing with a tentacled alien about checkout times. The floor tiles are playing musical chairs with each other. Reality keeps stuttering like a bad video stream. The elevator bank glows ominously to the north, while the front desk somehow faces seventeen directions at once.",
+      "position": {"x": 0, "y": 10, "z": 0},
+      "items": ["reality-fragment-1", "complimentary-mints"],
+      "npcs": ["manager-paradox", "confused-guest"]
+    },
+    "front-desk": {
+      "id": "front-desk",
+      "name": "Front Desk",
+      "description": "An impossibly long marble counter that curves into dimensions your eyes can't quite follow. Computer screens display room availability in languages that haven't been invented yet. The reservation book is simultaneously checked-in and checked-out. Behind the desk, cubby holes for room keys spiral into infinity. A sign reads: 'We Put the PARA in Paradox!' Someone has crossed out 'PARA' and written 'PAIN.'",
+      "position": {"x": 10, "y": 10, "z": 0},
+      "items": ["master-key-fragment-1", "complaint-forms"],
+      "npcs": ["receptionist-gloria"]
+    },
+    "gift-shop": {
+      "id": "gift-shop",
+      "name": "Interdimensional Gift Shop",
+      "description": "A tourist trap that exists in all dimensions simultaneously, maximizing its ability to sell overpriced souvenirs. Shelves contain: 'I Survived the Reality Collapse' t-shirts (premature), snowglobes with impossible geometries, postcards from dimensions that don't exist, and those little spoons collectors love. A rack of sunglasses promises to let you 'See Through Time!' (They're just regular sunglasses.) Everything is 20% off, except reality, which is 100% off.",
+      "position": {"x": -10, "y": 10, "z": 0},
+      "items": ["souvenir-spoon", "fake-mustache", "dimension-goggles"],
+      "npcs": ["shopkeeper-marv"]
+    },
+    "elevator-bank": {
+      "id": "elevator-bank",
+      "name": "Elevator Bank",
+      "description": "Six elevator doors stand in a row, each leading to a different dimensional floor. Helpful labels read: '1-Ghost Floor', '2-Cyber Casino', '3-Fantasy Realm', '4-Alien Convention', 'B-Basement', and one that just says 'YES'. The call buttons glow with impossible colors. One elevator keeps arriving before you push the button. A sign warns: 'Please do not attempt to exist on multiple floors simultaneously. Management is not responsible for temporal paradoxes, existential crises, or being your own grandfather.'",
+      "position": {"x": 0, "y": 20, "z": 0},
+      "items": ["elevator-manual"],
+      "npcs": ["elevator-operator-jenkins"]
+    },
+    "victorian-hallway": {
+      "id": "victorian-hallway",
+      "name": "Victorian Hallway",
+      "description": "A gloomy corridor straight from the 1800s, wallpapered in faded burgundy with patterns that might be flowers or might be screaming faces—it's hard to tell in the gaslight. Ornate doors lead to various ghostly chambers. A portrait's eyes follow you, which is standard haunted hallway protocol. The floor creaks dramatically with each step, even when you're not moving. Ectoplasm drips from the ceiling like the world's worst humidifier.",
+      "position": {"x": 0, "y": 20, "z": 10},
+      "items": ["ectoplasm-sample", "old-key"],
+      "npcs": ["lady-phantomworth"]
+    },
+    "haunted-ballroom": {
+      "id": "haunted-ballroom",
+      "name": "Haunted Ballroom",
+      "description": "A vast ballroom where eternal waltzing ghosts spin to music only they can hear. Crystal chandeliers cast spectral light across the dance floor. Transparent couples in Victorian finery sweep past, occasionally passing through you (rude). A ghostly orchestra plays in the corner, though the conductor lost his baton in 1847 and has been improvising ever since. The buffet table still has appetizers from 1892, which look fresher than the ones in the employee lounge.",
+      "position": {"x": 10, "y": 20, "z": 10},
+      "items": ["ghostly-invitation", "antique-monocle"],
+      "npcs": ["ghost-duke", "phantom-orchestra-conductor"]
+    },
+    "ghost-library": {
+      "id": "ghost-library",
+      "name": "Spectral Library",
+      "description": "Floor-to-ceiling bookshelves crammed with moldering tomes that detail every boring thing that ever happened to anyone, ever. Ghosts read silently in overstuffed armchairs, occasionally tutting at the living for making noise by existing. The books are organized by the Dewey Decimal System, the Library of Congress system, and pure spite. A card catalog contains cards for books that haven't been written yet. The librarian shushes people preemptively.",
+      "position": {"x": 20, "y": 20, "z": 10},
+      "items": ["ancient-tome", "library-card", "bookmark-of-souls"],
+      "npcs": ["librarian-specter"]
+    },
+    "phantoms-suite": {
+      "id": "phantoms-suite",
+      "name": "Phantom's Luxury Suite",
+      "description": "The most expensive haunted room in the hotel, decorated in 'Early Opulent Deceased' style. A four-poster bed floats three feet off the ground because why not. The bathtub is filled with ectoplasmic bath bombs. Paintings of stern ancestors judge your life choices. A spectral fireplace provides ambiance without heat. The minibar contains spirits (both kinds). Room service never arrives, but you still get charged for it.",
+      "position": {"x": 30, "y": 20, "z": 10},
+      "items": ["phantom-key", "spiritual-champagne"],
+      "npcs": ["lord-evermore"]
+    },
+    "seance-room": {
+      "id": "seance-room",
+      "name": "Séance Chamber",
+      "description": "A circular room draped in dark velvet, lit by candles that burn with green flames. A round table sits in the center with a Ouija board that spells out stock tips. The walls are covered in mystical symbols, half of which are definitely made up. Incense smoke forms suspicious shapes. A crystal ball shows only static. Somewhere, a theremin plays itself. This is either the real deal or the world's most committed theme room—the hotel reviews are mixed.",
+      "position": {"x": 10, "y": 30, "z": 10},
+      "items": ["ouija-board", "crystal-ball", "incense-of-truth"],
+      "npcs": ["medium-madame-zelda"]
+    },
+    "neon-corridor": {
+      "id": "neon-corridor",
+      "name": "Neon Corridor",
+      "description": "A hallway pulsing with electric life, bathed in pink and cyan neon that makes everyone look like they're in an 80s music video. Holographic advertisements flicker past, selling things that don't exist yet. The walls are chrome and circuit boards. Digital rain falls upward along the windows. Bass-heavy synth music throbs from hidden speakers. A vending machine offers 'Digital Snacks' (they're just regular snacks with LED lights glued on).",
+      "position": {"x": 0, "y": 20, "z": 20},
+      "items": ["neon-sign", "circuit-board"],
+      "npcs": ["cyber-punk-kid"]
+    },
+    "cyber-casino-floor": {
+      "id": "cyber-casino-floor",
+      "name": "Cyber Casino Floor",
+      "description": "A neon-drenched gambling paradise where the odds are calculated by quantum AI and the house always wins (it's math). Holographic dealers deal holographic cards to very real gamblers. Slot machines dispense cryptocurrency that may or may not be legal in this dimension. A roulette wheel spins in seventeen directions. Robots play poker with ghosts, and somehow the robots are worse at bluffing. The carpet pattern is designed to make you lose track of time, which is easy since time doesn't work right anyway.",
+      "position": {"x": 10, "y": 20, "z": 20},
+      "items": ["poker-chip", "loaded-dice", "jackpot-token"],
+      "npcs": ["robot-dealer", "gambling-ghost", "card-shark-sally"]
+    },
+    "hackers-den": {
+      "id": "hackers-den",
+      "name": "Hacker's Den",
+      "description": "A dark room lit only by the glow of seventeen monitors, each showing code that's definitely not supposed to be accessible. Energy drink cans form a small fortress around a gaming chair held together by hope and duct tape. Cables snake across the floor like technological spaghetti. Post-it notes with passwords cover every surface (the password is always 'password123'). A VR headset sits abandoned after someone saw what the hotel management doesn't want you to see. The smell of pizza and desperation lingers.",
+      "position": {"x": 20, "y": 20, "z": 20},
+      "items": ["hacking-device", "encrypted-drive", "energy-drink"],
+      "npcs": ["hacker-zero"]
+    },
+    "robot-bar": {
+      "id": "robot-bar",
+      "name": "The Copper Circuit Bar",
+      "description": "A sleek chrome bar where automatons come to lubricate their social circuits with motor oil cocktails. The bartender is a smooth-talking service bot who makes drinks with mathematical precision. Neon beer signs advertise brands like 'Electric Dreams' and 'Quantum Lite.' A jukebox plays synth music exclusively. Bar stools adjust to any anatomy (very inclusive). The bowl of nuts is actually just small screws and bolts. Happy hour is from 11:11 to 11:12 because binary.",
+      "position": {"x": 30, "y": 20, "z": 20},
+      "items": ["robot-oil", "electronic-schematic"],
+      "npcs": ["bartender-unit-7", "drunk-robot"]
+    },
+    "vip-lounge": {
+      "id": "vip-lounge",
+      "name": "VIP Lounge",
+      "description": "An exclusive area for high-rollers and digital aristocracy, separated from the common floor by a velvet rope and crushing social hierarchy. Plush seating made from memory foam that actually remembers. A champagne fountain flows with liquid gold (it's just food coloring). Floor-to-ceiling windows show a cityscape that doesn't exist in this dimension. Everything is expensive, exclusive, and slightly disappointing—the true VIP experience. A sign reads: 'If you have to ask if you belong here, you don't.'",
+      "position": {"x": 10, "y": 30, "z": 20},
+      "items": ["vip-pass", "expensive-cigar", "master-key-fragment-2"],
+      "npcs": ["crypto-billionaire"]
+    },
+    "medieval-hall": {
+      "id": "medieval-hall",
+      "name": "Medieval Great Hall",
+      "description": "A stone corridor lit by torches that somehow don't set off the sprinkler system. Tapestries depict legendary battles between heroes and what appears to be the hotel's legal team. Suits of armor stand guard, occasionally moving when you're not looking. The floor is rushes and regret. A feast table is permanently set for a banquet that never starts. Somewhere, a lute plays 'Greensleeves' on an infinite loop. The Wi-Fi password is written in ancient runes.",
+      "position": {"x": 0, "y": 20, "z": 30},
+      "items": ["rusty-sword", "medieval-shield", "scroll-of-quests"],
+      "npcs": ["knight-sir-reginald"]
+    },
+    "dragons-chamber": {
+      "id": "dragons-chamber",
+      "name": "Dragon's Chamber",
+      "description": "A massive cavern-like suite with a hoard of gold coins, most of which are actually chocolate wrapped in foil. A dragon's nest sits in the corner, currently occupied by a very large, very grumpy dragon who's upset about the WiFi signal. Scorch marks decorate the walls in artistic patterns. Treasure chests overflow with loot that may or may not be cursed. The thermostat is set to 'Volcano.' A 'Do Not Disturb' sign hangs on the door, singed around the edges.",
+      "position": {"x": 10, "y": 20, "z": 30},
+      "items": ["dragons-scale", "golden-goblet", "fire-resistant-cloak"],
+      "npcs": ["princess-dracona", "dragon-smalfoy"]
+    },
+    "wizards-tower": {
+      "id": "wizards-tower",
+      "name": "Wizard's Tower Suite",
+      "description": "A impossibly tall tower room that's bigger on the inside (time lord technology or building code violations, hard to say). Spell books float in orbit around a central desk. A cauldron bubbles with something that's either a potion or hotel soup. Crystal balls show different channels. Magical artifacts clutter every surface: wands, orbs, a staff that keeps falling over. The window shows a view of stars that don't exist in this universe. A sign reads: 'Spellcasting after 10 PM will result in additional fees.'",
+      "position": {"x": 20, "y": 20, "z": 30},
+      "items": ["magic-wand", "spell-book", "reality-fragment-2"],
+      "npcs": ["wizard-mysterio"]
+    },
+    "enchanted-garden": {
+      "id": "enchanted-garden",
+      "name": "Enchanted Garden Terrace",
+      "description": "An impossible outdoor space that exists inside the hotel, because magic. Flowers bloom in impossible colors, singing softly in harmony. Trees grow upside down, their roots grasping at clouds. A fountain flows with water that grants minor wishes (like finding your keys). Butterflies phase between dimensions. Garden gnomes watch you with judgmental expressions. Paths wind through the greenery, leading everywhere and nowhere. The gardener is a sentient rosebush who takes their job very seriously.",
+      "position": {"x": 30, "y": 20, "z": 30},
+      "items": ["enchanted-flower", "wishing-water", "garden-gnome"],
+      "npcs": ["rosebush-gardener"]
+    },
+    "tavern-of-heroes": {
+      "id": "tavern-of-heroes",
+      "name": "Tavern of Legendary Heroes",
+      "description": "A rowdy medieval bar where legendary heroes come to drink ale and tell lies about their adventures. Wooden tables are carved with initials and quest logs. A roaring fireplace crackles merrily. The menu offers 'Dragon Wings' (chicken), 'Troll Brew' (beer), and 'Health Potions' (tomato juice). Adventurers compare swords, argue about XP distribution, and sing bawdy songs. A bard in the corner strums a lute, taking requests for gold. Someone's pet owlbear is definitely violating hotel policy.",
+      "position": {"x": 10, "y": 30, "z": 30},
+      "items": ["ale-mug", "quest-map", "tavern-key"],
+      "npcs": ["bard-finnegan", "barbarian-helga"]
+    },
+    "xenobiology-wing": {
+      "id": "xenobiology-wing",
+      "name": "Xenobiology Wing",
+      "description": "A clinical white corridor filled with the sounds of alien life forms doing alien things. Glass tanks contain creatures from across the cosmos: a blob that contemplates existence, a gas cloud with opinions, something with too many eyes and not enough spatial awareness. Bio-hazard symbols suggest caution. Weird smells emanate from various doors. A universal translator crackles with seventeen languages simultaneously. The floor is slightly sticky for reasons you don't want to know.",
+      "position": {"x": 0, "y": 20, "z": 40},
+      "items": ["alien-egg", "universal-translator"],
+      "npcs": ["xenobiologist-dr-kree"]
+    },
+    "intergalactic-conference-room": {
+      "id": "intergalactic-conference-room",
+      "name": "Intergalactic Conference Room",
+      "description": "A vast chamber designed to accommodate beings of all shapes, sizes, and number of dimensions. The conference table is a perfect circle, square, and triangle simultaneously. Chairs adapt to any anatomy. A holographic projector displays presentations in formats your brain can't quite process. Coffee and snacks cater to every metabolism (including silicon-based). Alien delegates argue about trade agreements in seventeen languages. The whiteboard has equations that make physicists cry. Climate control accommodates temperatures from -273°C to 'surface of a star.'",
+      "position": {"x": 10, "y": 20, "z": 40},
+      "items": ["conference-badge", "alien-snacks", "master-key-fragment-3"],
+      "npcs": ["ambassador-zyx", "protocol-droid"]
+    },
+    "zero-g-observation-deck": {
+      "id": "zero-g-observation-deck",
+      "name": "Zero-G Observation Deck",
+      "description": "A transparent dome offering breathtaking views of space, dimensions, and the cosmic horror of reality's true nature. Floating lounge chairs drift peacefully. Guests bob through the air like confused fish. The bar serves drinks in floating spheres (cleanup after someone sneezes is a nightmare). Stars wheel overhead, occasionally spelling out messages. A telescope lets you observe distant galaxies or spy on Room 237. The view includes at least three paradoxes and a nebula shaped suspiciously like the hotel logo.",
+      "position": {"x": 20, "y": 20, "z": 40},
+      "items": ["star-chart", "space-suit-helmet", "anti-gravity-boots"],
+      "npcs": ["astronomer-ptolemy"]
+    },
+    "alien-embassy": {
+      "id": "alien-embassy",
+      "name": "Alien Embassy Suite",
+      "description": "The official diplomatic quarters for extraterrestrial guests, decorated in 'Universal Standard'—which means it's weird to everyone. The atmosphere is methane-based (your mask is mandatory). Furniture defies both gravity and good taste. A flag of an unpronounceable star system hangs on the wall. Communication happens via telepathy, interpretive dance, and strongly worded memos. The minibar stocks nutrients that would melt human teeth. Cultural artifacts showcase civilizations you can't pronounce.",
+      "position": {"x": 30, "y": 20, "z": 40},
+      "items": ["breathing-apparatus", "diplomatic-papers", "alien-artifact"],
+      "npcs": ["ambassador-glorp"]
+    },
+    "translator-booth": {
+      "id": "translator-booth",
+      "name": "Universal Translator Booth",
+      "description": "A tiny soundproof booth crammed with translation equipment that converts any language into any other language, with varying degrees of success. Screens scroll past phrases in thousands of languages, including several that exist only in song. A confused translator juggles multiple conversations, occasionally mixing up 'declaration of war' with 'Would you like fries with that?' Babel fish swim in a tank (decorative, not functional). The booth smells like burnt circuits and desperation.",
+      "position": {"x": 10, "y": 30, "z": 40},
+      "items": ["translation-device", "babel-fish", "language-dictionary"],
+      "npcs": ["translator-pat"]
+    },
+    "service-tunnels": {
+      "id": "service-tunnels",
+      "name": "Service Tunnels",
+      "description": "The grimy underbelly of the hotel where the magic happens (the magic is plumbing). Pipes hiss and clank, carrying water, steam, and possibly souls. Flickering fluorescent lights buzz like dying insects. The walls are covered in cryptic maintenance notes: 'DON'T TOUCH THE RED VALVE,' 'Feed the furnace on Tuesdays,' 'The thing in Tunnel 7 is FRIENDLY.' Rats wear tiny maintenance badges. This is where employee morale comes to die.",
+      "position": {"x": 0, "y": 0, "z": -10},
+      "items": ["wrench", "maintenance-manual", "reality-fragment-3"],
+      "npcs": ["maintenance-worker-joe"]
+    },
+    "boiler-room": {
+      "id": "boiler-room",
+      "name": "Dimensional Boiler Room",
+      "description": "A sweltering chamber dominated by a massive boiler that powers the hotel's reality stabilizers. Gauges show pressure readings in imaginary numbers. The furnace door glows with otherworldly heat—inside, dimensions burn to keep the lights on. Steam hisses from every joint, creating ghostly shapes. A chart on the wall tracks 'Reality Integrity' (currently: 'Not Great'). The temperature is 'way too hot,' the humidity is 'yes,' and OSHA would have several questions.",
+      "position": {"x": 10, "y": 0, "z": -10},
+      "items": ["boiler-key", "pressure-gauge", "coal-shovel"],
+      "npcs": ["boiler-man-smith"]
+    },
+    "lost-and-found": {
+      "id": "lost-and-found",
+      "name": "Infinite Lost & Found",
+      "description": "A room that's somehow larger than the entire hotel, filled with every object ever lost by any guest in any dimension. Mountains of unclaimed umbrellas reach the ceiling. Suitcases stack into towers. Single socks form their own ecosystem. You can find anything here, if you're willing to search for eternity. Items include: someone's dignity, lost time, forgotten dreams, and at least seventeen left shoes. A sign reads: 'If you can find it, you can have it.' Good luck.",
+      "position": {"x": 20, "y": 0, "z": -10},
+      "items": ["mysterious-package", "single-sock", "useful-gadget"],
+      "npcs": ["lost-and-found-clerk"]
+    },
+    "employee-lounge": {
+      "id": "employee-lounge",
+      "name": "Employee Break Room",
+      "description": "A depressing room where hotel staff come to remember why they need this job. Uncomfortable chairs surround wobbly tables. A microwave that hasn't been cleaned since the hotel opened. A refrigerator labeled 'CLEAN OUT FRIDAYS' (it's never Friday). Motivational posters peel from walls: 'Hang in There!' shows a cat hanging from reality itself. A coffee maker produces liquid that's technically drinkable. Time cards punch themselves. The TV only gets one channel, and it's just management meetings.",
+      "position": {"x": 30, "y": 0, "z": -10},
+      "items": ["stale-donuts", "employee-badge", "complaint-box"],
+      "npcs": ["janitor-frank", "tired-waitress"]
+    },
+    "maintenance-shaft": {
+      "id": "maintenance-shaft",
+      "name": "Vertical Maintenance Shaft",
+      "description": "A claustrophobic vertical tunnel with ladders stretching up and down into infinity. Pipes and cables line the walls like metal veins. Echo makes every sound haunting. Emergency lights cast red shadows. Graffiti from maintenance workers past reads: 'Abandon hope,' 'The cake is a lie,' and 'Bert was here 1987-2087.' Something drips from above. Something growls from below. This is why you should have taken that job at the nice, normal, non-dimensional hotel.",
+      "position": {"x": 40, "y": 0, "z": -10},
+      "items": ["safety-harness", "flashlight"],
+      "npcs": []
+    },
+    "rooftop-garden": {
+      "id": "rooftop-garden",
+      "name": "Backwards Time Garden",
+      "description": "A rooftop sanctuary where time flows in reverse. Plants grow younger, eventually becoming seeds. Rain falls upward. The sun sets in the east and rises in the west. Conversations happen backwards. You arrive before you leave. A sundial runs counterclockwise. This is either a peaceful meditation space or a headache factory, depending on your relationship with temporal mechanics. A sign reads: '?sdrawkcab siht si yhW'",
+      "position": {"x": 0, "y": 0, "z": 50},
+      "items": ["time-flower", "reverse-clock", "backwards-book"],
+      "npcs": ["time-gardener"]
+    },
+    "swimming-pool": {
+      "id": "swimming-pool",
+      "name": "Liquid Time Pool",
+      "description": "An Olympic-sized pool filled with shimmering liquid time instead of water. Swimmers splash through past and future, occasionally emerging before they dive in. Pool toys from the 1950s float next to ones from 2150. The diving board launches you through temporal streams. A lifeguard watches events that haven't happened yet, preventing accidents before they occur. The pool rules are posted, but they change based on when you read them. Chlorine levels: timey-wimey.",
+      "position": {"x": 10, "y": 0, "z": 50},
+      "items": ["pool-noodle", "time-in-a-bottle", "wet-towel"],
+      "npcs": ["lifeguard-chronos"]
+    },
+    "kitchen": {
+      "id": "kitchen",
+      "name": "Reality Kitchen",
+      "description": "A chaotic culinary space where chefs cook meals from every dimension. Stoves burn with blue flame, red flame, and existential dread. The walk-in freezer is dimensionally transcendent (bigger on the inside). Pots boil with soups from alien worlds. The sous chef is literally a robot, the line cook is a ghost, and the dishwasher is something that shouldn't exist. Menu items include: 'Quantum Quiche' (exists in all states until ordered), 'Grandfather Paradox Pie,' and 'Wednesday Soup' (it's always Wednesday in here).",
+      "position": {"x": 20, "y": 0, "z": 50},
+      "items": ["chefs-knife", "exotic-ingredient", "recipe-book"],
+      "npcs": ["head-chef-ramsey", "robot-sous-chef"]
+    },
+    "laundry-room": {
+      "id": "laundry-room",
+      "name": "Dimensional Laundry",
+      "description": "An industrial laundry facility where they wash more than just sheets. Machines tumble clothes from every era and dimension, occasionally mixing them up (leading to angry emails from Victorian ghosts who got cyber-punk socks). The dryers create wormholes—that's where all the missing socks go. Detergent bottles contain solutions to clean temporal stains. An ironing board removes wrinkles from space-time. The lint trap has achieved sentience and demands union representation.",
+      "position": {"x": 30, "y": 0, "z": 50},
+      "items": ["clean-towel", "stain-remover", "missing-sock"],
+      "npcs": ["laundry-worker-marie"]
+    },
+    "security-office": {
+      "id": "security-office",
+      "name": "Security Office",
+      "description": "A room filled with monitors showing every corner of the hotel across all dimensions simultaneously. Security guards watch screens showing the past, present, and future, trying to prevent crimes before, during, and after they happen. A wall of keys holds access to every door. Coffee fuels the vigilance. A logbook records impossible incidents: 'Guest phased through wall,' 'Dragon set off smoke alarm,' 'Time loop in Room 404.' Red buttons promise emergency responses. One monitor just shows static and screaming.",
+      "position": {"x": 40, "y": 0, "z": 50},
+      "items": ["security-keycard", "surveillance-footage", "taser"],
+      "npcs": ["chief-of-security"]
+    },
+    "managers-office": {
+      "id": "managers-office",
+      "name": "Manager's Office",
+      "description": "The inner sanctum of hotel management, decorated in 'Corporate Dystopia' style. A massive desk holds paperwork from seventeen dimensions. Motivational posters encourage 'Synergy!' and 'Think Outside the Box!' (ironic, given the reality collapse). Filing cabinets contain guest complaints dating back to the Big Bang. A window offers a view of the void. The manager's chair is suspiciously throne-like. A nameplate reads: 'Manager Paradox - Making the Impossible Merely Improbable Since Forever.'",
+      "position": {"x": 0, "y": 40, "z": 0},
+      "items": ["manager-key", "master-key-fragment-4"],
+      "npcs": ["manager-paradox-final"]
+    },
+    "vault": {
+      "id": "vault",
+      "name": "The Reality Vault",
+      "description": "An impossibly secure chamber where the hotel stores its most valuable asset: the Reality Anchor. Thick steel walls lined with mystical wards. The door has seventeen locks, each requiring a different key fragment. Inside, a pedestal should hold the Anchor—but it's empty. Someone broke in, and from the looks of the scorch marks, explosions, and ominous warning signs they ignored, they knew what they were doing. Or they got very lucky. Either way, reality is unmoored, and you're the poor bellhop who has to fix it.",
+      "position": {"x": 10, "y": 40, "z": 0},
+      "items": ["vault-schematic", "broken-lock"],
+      "npcs": []
+    },
+    "interdimensional-rift": {
+      "id": "interdimensional-rift",
+      "name": "The Interdimensional Rift",
+      "description": "A tear in reality where all dimensions collapse into chaotic soup. Colors that don't exist swirl in impossible patterns. Gravity is a suggestion. Time is a pretzel. Geometry weeps. Fragments of different realities collide: medieval castles made of circuit boards, cyberpunk dragons, ghostly robots. This is ground zero of the catastrophe. The air tastes like static and regret. Standing here, you can see everything and nothing. Reality begs you to fix this. Also, there's a vending machine. It still works.",
+      "position": {"x": 20, "y": 40, "z": 0},
+      "items": ["reality-anchor-fragment", "chaos-crystal"],
+      "npcs": ["reality-itself"]
+    },
+    "dream-dimension": {
+      "id": "dream-dimension",
+      "name": "The Dream Dimension",
+      "description": "A surreal space where the hotel's collective unconscious manifests. Salvador Dalí would feel at home. Staircases lead nowhere and everywhere. Doors open into memories. The ceiling is the floor is the wall. Fish swim through air. Clocks melt. Your childhood teddy bear judges your life choices. Logic is optional. Physics are on vacation. This is either the most relaxing place in the hotel or the most terrifying, depending on what you've been dreaming about lately. Also, you're in your underwear. Classic dream.",
+      "position": {"x": 30, "y": 40, "z": 0},
+      "items": ["dream-catcher", "nightmare-fuel", "lucid-dream-pill"],
+      "npcs": ["dream-avatar", "nightmare-king"]
+    },
+    "the-void": {
+      "id": "the-void",
+      "name": "The Void",
+      "description": "The space between spaces. The nothing between everything. Absolute emptiness stretches infinitely in all directions, which is impressive since there are no directions. Floating here, you realize how small you are, how vast existence is, and how much you hate your job. This is where reality goes when it gives up. This is where the thief plans to escape. This is the final confrontation. The hotel's fate, reality's survival, and your overtime pay all depend on what happens next. No pressure.",
+      "position": {"x": 40, "y": 40, "z": 0},
+      "items": ["reality-anchor"],
+      "npcs": ["thief-mr-null"]
+    }
+  }
+}

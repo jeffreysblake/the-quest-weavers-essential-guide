@@ -1,0 +1,32 @@
+{
+  "id": "the-interdimensional-hotel",
+  "name": "The Interdimensional Hotel Catastrophe",
+  "description": "A reality-bending comedy adventure across dimensions. You're Rex Doorman, a bellhop who must save the multiverse when someone steals the Reality Anchor. Navigate 40 bizarre rooms, meet 36 eccentric characters, solve weird puzzles, and restore reality before your shift ends!",
+  "version": 1,
+  "metadata": {
+    "difficulty": "hard",
+    "estimated_playtime": "5-6 hours",
+    "themes": ["comedy", "adventure", "science-fiction", "fantasy", "puzzle", "multiverse"],
+    "starting_room": "bellhop-station",
+    "victory_conditions": [
+      {
+        "type": "use_object",
+        "item_id": "reality-anchor",
+        "description": "Restore the Reality Anchor to save the hotel and fix reality"
+      }
+    ],
+    "author": "The Quest Weavers",
+    "required_level": 1,
+    "features": [
+      "40 interconnected rooms across 6 dimensional zones",
+      "36 unique NPCs with distinct personalities",
+      "78 items with creative uses and combinations",
+      "Multiple quest lines and branching dialogues",
+      "Time manipulation mechanics",
+      "Reality-bending puzzles",
+      "Combat encounters with dragons and void beings",
+      "Easter eggs referencing classic adventure games",
+      "Heavy dose of humor and absurdity"
+    ]
+  }
+}

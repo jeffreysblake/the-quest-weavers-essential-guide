@@ -1,0 +1,836 @@
+{
+  "items": {
+    "bellhop-uniform": {
+      "id": "bellhop-uniform",
+      "name": "Bellhop Uniform",
+      "description": "Your slightly wrinkled bellhop uniform: red jacket with gold buttons, pill-box hat that never stays on straight, and pants that haven't fit right since orientation. The nametag says 'REX' in cheerful letters, mocking your current situation. Wearing this grants you +10 to Looking Official and -5 to Self Esteem.",
+      "takeable": true,
+      "usable": false,
+      "type": "clothing"
+    },
+    "employee-handbook": {
+      "id": "employee-handbook",
+      "name": "Employee Handbook",
+      "description": "The Grand Paradox Hotel Employee Manual, 47th edition (they update it every time something impossible happens). Contains helpful information like 'How to fold fitted sheets,' 'Dealing with difficult guests (corporeal and non-corporeal),' and 'What to do if reality collapses' (spoiler: you're doing it wrong). Most pages are redacted. Chapter 7 doesn't exist. Chapter 9 repeats twice.",
+      "takeable": true,
+      "usable": true,
+      "type": "book"
+    },
+    "mysterious-note": {
+      "id": "mysterious-note",
+      "name": "Mysterious Note",
+      "description": "A hastily scrawled note found in your station this morning: 'REX - They're going to blame you for this. Find the Anchor. Trust no one. Especially not management. P.S. - Your cat misses you.' It's not signed. The handwriting looks familiar. The paper smells like ozone and regret.",
+      "takeable": true,
+      "usable": false,
+      "type": "document"
+    },
+    "reality-fragment-1": {
+      "id": "reality-fragment-1",
+      "name": "Reality Fragment (Lobby)",
+      "description": "A shimmering shard of crystallized reality, about the size of a playing card. It hums with dimensional energy and shows swirling images of the lobby when it was stable. One of several fragments you'll need to restore the Reality Anchor. Handle with care—dropped reality is very hard to clean up.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "reality-fragment-2": {
+      "id": "reality-fragment-2",
+      "name": "Reality Fragment (Magic)",
+      "description": "A glowing piece of solidified reality from the Fantasy Realm floor. Tingles with magical energy and occasionally whispers spell incantations in ancient languages. Smells like dragon fire and old books. Part of the puzzle to fix everything.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "reality-fragment-3": {
+      "id": "reality-fragment-3",
+      "name": "Reality Fragment (Basement)",
+      "description": "A grimy chunk of reality pulled from the service tunnels. Less glamorous than the others but just as important. Smells like industrial cleaner and desperation. Even reality has a working class.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "complimentary-mints": {
+      "id": "complimentary-mints",
+      "name": "Complimentary Mints",
+      "description": "A bowl of complimentary mints from the front desk. They've been sitting here since the hotel opened. Some are stuck together. One appears to be evolving sentience. They taste like regret and artificial peppermint. +2 to Fresh Breath, -1 to Dignity.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "master-key-fragment-1": {
+      "id": "master-key-fragment-1",
+      "name": "Master Key Fragment 1/4",
+      "description": "Part of the hotel's Master Key, which opens all doors. This fragment is ornately carved with the hotel logo and mystical symbols. When you collect all four fragments, you can access the Manager's Office and the Vault. Currently, it's just an expensive paperweight.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "master-key-fragment-2": {
+      "id": "master-key-fragment-2",
+      "name": "Master Key Fragment 2/4",
+      "description": "The second piece of the Master Key, found in the VIP Lounge where it was being used as a swizzle stick. Wealthy guests have no respect for mystical artifacts.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "master-key-fragment-3": {
+      "id": "master-key-fragment-3",
+      "name": "Master Key Fragment 3/4",
+      "description": "Fragment three of the Master Key, recovered from the aliens who were studying it for its 'primitive Earth craftsmanship.' They seemed disappointed.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "master-key-fragment-4": {
+      "id": "master-key-fragment-4",
+      "name": "Master Key Fragment 4/4",
+      "description": "The final piece of the Master Key, found in the Manager's desk (ironic). With all four fragments, you can forge the complete key and access anywhere in the hotel. The power!",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "complaint-forms": {
+      "id": "complaint-forms",
+      "name": "Guest Complaint Forms",
+      "description": "A stack of complaint forms from various guests: 'Room too haunted,' 'Robot stole my towels,' 'Time paradox in shower,' 'Dragon won't stop smoking in non-smoking room,' and simply 'AAAAAAHHHHH.' Management's responses are all 'We apologize for any inconvenience.' Not helpful, but very on-brand.",
+      "takeable": true,
+      "usable": false,
+      "type": "document"
+    },
+    "souvenir-spoon": {
+      "id": "souvenir-spoon",
+      "name": "Collectible Spoon",
+      "description": "A commemorative spoon featuring the hotel logo and the slogan 'I Survived the Grand Paradox!' (premature). The spoon is made of 'dimensional silver' (nickel-plated tin). Absolutely useless, but collectors love these. Could potentially be used to eat soup, if you were having soup, which you're not.",
+      "takeable": true,
+      "usable": true,
+      "type": "misc"
+    },
+    "fake-mustache": {
+      "id": "fake-mustache",
+      "name": "Novelty Mustache",
+      "description": "A ridiculous fake mustache from the gift shop. Black, bushy, and completely unconvincing. The package promises it will make you look 'sophisticated and mysterious.' It makes you look like you're wearing a fake mustache. Might be useful as a disguise if everyone you meet is extremely stupid.",
+      "takeable": true,
+      "usable": true,
+      "type": "disguise"
+    },
+    "dimension-goggles": {
+      "id": "dimension-goggles",
+      "name": "Dimension-Viewing Goggles",
+      "description": "Novelty goggles that supposedly let you 'See Through Dimensions!' They're just regular safety goggles with holographic stickers. However, since reality is broken, they might actually work now. Or they might just give you a headache. Only one way to find out!",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "elevator-manual": {
+      "id": "elevator-manual",
+      "name": "Elevator Operations Manual",
+      "description": "An instruction manual for operating the hotel's dimensional elevators. Written in seventeen languages and illustrated with helpful diagrams showing stick figures being torn apart by dimensional rifts. Safety tips include: 'Always press the correct floor button,' 'Do not stick any body part out of the elevator,' and 'Pray.'",
+      "takeable": true,
+      "usable": false,
+      "type": "book"
+    },
+    "ectoplasm-sample": {
+      "id": "ectoplasm-sample",
+      "name": "Jar of Ectoplasm",
+      "description": "A mason jar full of glowing green ectoplasm collected from the Victorian floor. It sloshes when you shake it and occasionally forms faces that scream silently. Useful in various ghostly applications, or as a really unsettling lava lamp. Do not drink. Seriously.",
+      "takeable": true,
+      "usable": true,
+      "type": "ingredient"
+    },
+    "old-key": {
+      "id": "old-key",
+      "name": "Antique Brass Key",
+      "description": "An ornate Victorian key covered in verdigris. Opens something old and probably haunted. The head is shaped like a skull, because of course it is. Ghosts have no subtlety.",
+      "takeable": true,
+      "usable": true,
+      "type": "key"
+    },
+    "ghostly-invitation": {
+      "id": "ghostly-invitation",
+      "name": "Spectral Ball Invitation",
+      "description": "An elegant invitation to the Eternal Phantom Ball, written in flowing script on parchment that phases in and out of visibility. 'Dress code: Formal. The living are barely tolerated but technically allowed.' Grants access to exclusive ghost social events.",
+      "takeable": true,
+      "usable": true,
+      "type": "document"
+    },
+    "antique-monocle": {
+      "id": "antique-monocle",
+      "name": "Gentleman's Monocle",
+      "description": "A Victorian monocle that makes everything look more sophisticated, including your questionable life choices. When worn, grants +5 to Looking Distinguished and the ability to say 'Good heavens!' convincingly.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "ancient-tome": {
+      "id": "ancient-tome",
+      "name": "Ancient Tome of Forbidden Knowledge",
+      "description": "A leather-bound book that's either full of dark secrets or just an old cookbook—it's in Latin, hard to tell. Contains spells, hexes, and one recipe for pot roast. Reading it makes you feel smarter and slightly evil. Pages whisper when you're not looking at them.",
+      "takeable": true,
+      "usable": true,
+      "type": "book"
+    },
+    "library-card": {
+      "id": "library-card",
+      "name": "Spectral Library Card",
+      "description": "A library card for the Ghost Library, valid for one eternity. 'Card Holder: REX DOORMAN. Please return books on time. Late fees accumulate even after death.'",
+      "takeable": true,
+      "usable": true,
+      "type": "document"
+    },
+    "bookmark-of-souls": {
+      "id": "bookmark-of-souls",
+      "name": "Bookmark of Souls",
+      "description": "A mystical bookmark that marks your place in both books and reality. Useful for keeping track of which dimension you're in. Made from woven ghost hair (ew).",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "phantom-key": {
+      "id": "phantom-key",
+      "name": "Phantom Key",
+      "description": "A translucent key that phases through solid matter like a ghost. Opens the Phantom's Luxury Suite and possibly your third eye. Handle carefully—it phases through your pocket sometimes.",
+      "takeable": true,
+      "usable": true,
+      "type": "key"
+    },
+    "spiritual-champagne": {
+      "id": "spiritual-champagne",
+      "name": "Bottle of Spiritual Champagne",
+      "description": "A bottle of champagne from the spectral realm. The bubbles float upward, sideways, and through time. Drinking it makes you feel fancy and slightly transparent. Warning: May cause temporary out-of-body experiences.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "ouija-board": {
+      "id": "ouija-board",
+      "name": "Ouija Board",
+      "description": "A spirit communication board covered in mysterious symbols and letters. When used properly, it contacts the dead. When used improperly, it spells out investment tips and rude messages. The planchette moves by itself, which is either supernatural or just drafty.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "crystal-ball": {
+      "id": "crystal-ball",
+      "name": "Crystal Ball",
+      "description": "A mystical crystal sphere for seeing the future, the past, and occasionally what's on TV. Currently showing only static and ominous shadows. Might work better once reality is fixed. Makes an excellent paperweight in the meantime.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "incense-of-truth": {
+      "id": "incense-of-truth",
+      "name": "Incense of Truth",
+      "description": "Mystical incense that compels those who smell it to speak only the truth. Useful for interrogations and extremely awkward at parties. Smells like sandalwood and broken friendships.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "neon-sign": {
+      "id": "neon-sign",
+      "name": "Neon Sign",
+      "description": "A small neon sign that flickers with pink and blue light. Says 'OPEN' on one side and 'REGRETS' on the other. Runs on AA batteries and existential dread. Might be useful for signaling or causing distractions.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "circuit-board": {
+      "id": "circuit-board",
+      "name": "Circuit Board",
+      "description": "A complex circuit board covered in chips, resistors, and tiny components you can't identify. Might be from a computer, might be from a toaster—electronics all look the same when they're broken. Could be repaired or repurposed by someone who knows what they're doing.",
+      "takeable": true,
+      "usable": true,
+      "type": "component"
+    },
+    "poker-chip": {
+      "id": "poker-chip",
+      "name": "Quantum Poker Chip",
+      "description": "A casino chip that exists in a state of quantum superposition—it's both worth $100 and worthless until someone observes it. The casino hates these. Schrödinger's gambling problem.",
+      "takeable": true,
+      "usable": true,
+      "type": "currency"
+    },
+    "loaded-dice": {
+      "id": "loaded-dice",
+      "name": "Weighted Dice",
+      "description": "A pair of dice that are definitely not regulation. They're weighted to always roll sevens (which is suspicious when one die shows 4 and the other shows 3). Perfect for cheating at games or getting banned from casinos.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "jackpot-token": {
+      "id": "jackpot-token",
+      "name": "Jackpot Token",
+      "description": "A golden token that fell from a slot machine during a jackpot win. Worth exactly nothing outside the casino, but inside it's worth... also nothing, but it's shiny and makes you feel lucky.",
+      "takeable": true,
+      "usable": false,
+      "type": "collectible"
+    },
+    "hacking-device": {
+      "id": "hacking-device",
+      "name": "Hacking Multi-Tool",
+      "description": "A cyberpunk device bristling with cables, antennas, and blinking LEDs. Can hack locks, computers, vending machines, and your self-esteem. Comes with seventeen adapters and zero instructions. User interface is a skull icon because hackers love drama.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "encrypted-drive": {
+      "id": "encrypted-drive",
+      "name": "Encrypted Data Drive",
+      "description": "A thumb drive containing encrypted files about the hotel's darkest secrets. Probably. It's encrypted, so who knows. The password is probably 'password123.' Contains either vital information or someone's vacation photos.",
+      "takeable": true,
+      "usable": true,
+      "type": "data"
+    },
+    "energy-drink": {
+      "id": "energy-drink",
+      "name": "X-TREME Energy Drink",
+      "description": "A can of neon-colored energy drink that promises to give you 'MAXIMUM ENERGY!!!' Contains caffeine, taurine, sugar, and possibly liquid lightning. Drinking it makes you jittery, focused, and able to see sounds. Not FDA approved in this dimension.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "robot-oil": {
+      "id": "robot-oil",
+      "name": "Premium Robot Oil",
+      "description": "High-grade lubricant for mechanical beings. To robots, this is like fine wine. To humans, it's just oil that smells faintly of WD-40 and broken dreams. Might make a good gift for your robot friends.",
+      "takeable": true,
+      "usable": true,
+      "type": "ingredient"
+    },
+    "electronic-schematic": {
+      "id": "electronic-schematic",
+      "name": "Electronic Schematic",
+      "description": "A technical diagram showing how to build or repair something electronic. It's all resistors and capacitors and squiggly lines that mean things to engineers. To you, it looks like a maze drawn by someone having a breakdown.",
+      "takeable": true,
+      "usable": false,
+      "type": "document"
+    },
+    "vip-pass": {
+      "id": "vip-pass",
+      "name": "VIP Access Pass",
+      "description": "A holographic pass granting access to exclusive areas. Says 'VIP - VERY INTERDIMENSIONAL PERSON' in shimmering letters. Makes you feel important. Doesn't actually make you important, but feelings matter.",
+      "takeable": true,
+      "usable": true,
+      "type": "document"
+    },
+    "expensive-cigar": {
+      "id": "expensive-cigar",
+      "name": "Cuban Cigar (Probably Fake)",
+      "description": "An allegedly expensive cigar from the VIP lounge. Wrapped in gold foil, smells like old wood and poor financial decisions. Smoking it makes you feel sophisticated. Might be useful for trading with NPCs who value pointless luxury items.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "rusty-sword": {
+      "id": "rusty-sword",
+      "name": "Rusty Medieval Sword",
+      "description": "A sword that's seen better centuries. The blade is pitted with rust, the hilt is wrapped in rotting leather, and it smells like a museum. Still sharp enough to be dangerous, though it's more likely to give you tetanus than victory. Excalibur this ain't.",
+      "takeable": true,
+      "usable": true,
+      "type": "weapon"
+    },
+    "medieval-shield": {
+      "id": "medieval-shield",
+      "name": "Wooden Shield",
+      "description": "A heavy wooden shield bearing a coat of arms featuring a confused dragon and the motto 'We Tried.' Useful for blocking attacks or pretending you're at a Renaissance faire. Warning: Not effective against bullets, lasers, or harsh criticism.",
+      "takeable": true,
+      "usable": true,
+      "type": "armor"
+    },
+    "scroll-of-quests": {
+      "id": "scroll-of-quests",
+      "name": "Scroll of Legendary Quests",
+      "description": "An ancient scroll listing epic quests: 'Slay the dragon,' 'Find the Holy Grail,' 'Return the library books.' Someone has crossed out most of them and written 'COMPLETED' in blood. Or maybe ketchup. Hard to tell.",
+      "takeable": true,
+      "usable": false,
+      "type": "document"
+    },
+    "dragons-scale": {
+      "id": "dragons-scale",
+      "name": "Dragon Scale",
+      "description": "A shimmering scale shed by a real dragon. Iridescent, fireproof, and worth a fortune to the right buyer. Could be crafted into armor, jewelry, or used as proof that dragons exist (which is less impressive when you're standing in a dragon's room).",
+      "takeable": true,
+      "usable": true,
+      "type": "component"
+    },
+    "golden-goblet": {
+      "id": "golden-goblet",
+      "name": "Golden Goblet",
+      "description": "An ornate golden chalice encrusted with jewels. Either a priceless artifact or really convincing chocolate wrapped in foil—hard to tell in the dragon's hoard lighting. Heavy enough to use as a weapon if you get desperate.",
+      "takeable": true,
+      "usable": true,
+      "type": "treasure"
+    },
+    "fire-resistant-cloak": {
+      "id": "fire-resistant-cloak",
+      "name": "Fire-Resistant Cloak",
+      "description": "A heavy cloak woven from asbestos and wishes. Protects against dragon fire, angry wizards, and fashion police. Makes you look like a mysterious stranger. Probably causes cancer in California.",
+      "takeable": true,
+      "usable": true,
+      "type": "armor"
+    },
+    "magic-wand": {
+      "id": "magic-wand",
+      "name": "Wizard's Wand",
+      "description": "A genuine magical wand made from enchanted wood and phoenix feather (or possibly a chicken feather—phoenixes are hard to source). Can cast spells if you know any spells, which you don't. Still makes cool swooshing sounds when you wave it.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "spell-book": {
+      "id": "spell-book",
+      "name": "Spell Book of Minor Inconveniences",
+      "description": "A wizard's spell book containing powerful magics: 'Make Toast Slightly Too Dark,' 'Summon Mild Headache,' 'Turn Water into Slightly Different Water.' Not the most impressive magic, but it's honest work.",
+      "takeable": true,
+      "usable": true,
+      "type": "book"
+    },
+    "enchanted-flower": {
+      "id": "enchanted-flower",
+      "name": "Singing Enchanted Flower",
+      "description": "A magical flower that sings softly in a language you don't understand. Glows with gentle light and smells like hope. Probably cursed, but in a friendly way.",
+      "takeable": true,
+      "usable": true,
+      "type": "ingredient"
+    },
+    "wishing-water": {
+      "id": "wishing-water",
+      "name": "Bottle of Wishing Water",
+      "description": "Water from the enchanted fountain that grants minor wishes. Can't make you rich or powerful, but it can help you find your keys or remember where you parked. Wishes must be reasonable. No refunds.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "garden-gnome": {
+      "id": "garden-gnome",
+      "name": "Judgmental Garden Gnome",
+      "description": "A ceramic garden gnome with a painted beard and a judgmental expression. Watches you silently. Judges your life choices. Might be sentient. Definitely disapproves of your outfit.",
+      "takeable": true,
+      "usable": false,
+      "type": "collectible"
+    },
+    "ale-mug": {
+      "id": "ale-mug",
+      "name": "Tankard of Ale",
+      "description": "A hefty mug full of foamy ale from the Tavern of Heroes. Tastes like adventure and poor decisions. Drinking it gives you +2 Courage and -1 Common Sense. The mug itself makes a decent bludgeoning weapon.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "quest-map": {
+      "id": "quest-map",
+      "name": "Quest Map",
+      "description": "A hand-drawn map showing the location of legendary treasures, dangerous monsters, and the nearest bathroom. 'X marks the spot' appears seventeen times. Most of the X's are crossed out. One just says 'NOPE.'",
+      "takeable": true,
+      "usable": false,
+      "type": "document"
+    },
+    "tavern-key": {
+      "id": "tavern-key",
+      "name": "Tavern Cellar Key",
+      "description": "A large iron key that opens the tavern's cellar where they keep the good ale and, reportedly, a portal to another dimension. The key smells like beer and adventure.",
+      "takeable": true,
+      "usable": true,
+      "type": "key"
+    },
+    "alien-egg": {
+      "id": "alien-egg",
+      "name": "Mysterious Alien Egg",
+      "description": "An ovoid object from an unknown alien species. Warm to the touch, pulsing with internal light. Either an egg about to hatch or a very weird lamp. Best not to shake it. Or drop it. Or anger it.",
+      "takeable": true,
+      "usable": false,
+      "type": "collectible"
+    },
+    "universal-translator": {
+      "id": "universal-translator",
+      "name": "Universal Translator",
+      "description": "A device that translates any language into any other language with 70% accuracy. The other 30% is where things get interesting. May translate 'Hello' as 'Your mother is a llama.' Use with caution during diplomatic situations.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "conference-badge": {
+      "id": "conference-badge",
+      "name": "Intergalactic Conference Badge",
+      "description": "An official badge for the Intergalactic Trade Conference. Says 'HELLO MY NAME IS: REX DOORMAN' in seventeen languages. Grants access to alien buffets and boring presentations about interstellar commerce regulations.",
+      "takeable": true,
+      "usable": true,
+      "type": "document"
+    },
+    "alien-snacks": {
+      "id": "alien-snacks",
+      "name": "Bag of Alien Snacks",
+      "description": "Snack foods from across the galaxy. Most look like cheese puffs, taste like motor oil, and cause unusual digestive effects. The nutrition label is in base-13 mathematics. May contain nuts, gluten, and things humans shouldn't eat.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "star-chart": {
+      "id": "star-chart",
+      "name": "Stellar Navigation Chart",
+      "description": "A map of the stars showing constellations, nebulae, and hyperspace routes. Most of it is beyond human comprehension. There's a star circled with 'YOU ARE HERE' which raises more questions than it answers.",
+      "takeable": true,
+      "usable": false,
+      "type": "document"
+    },
+    "space-suit-helmet": {
+      "id": "space-suit-helmet",
+      "name": "Space Suit Helmet",
+      "description": "A transparent helmet designed for space walks and vacuum environments. Provides breathable atmosphere and makes you look like an astronaut. Warning: Wearing this on Earth makes you look like an idiot, but a well-protected idiot.",
+      "takeable": true,
+      "usable": true,
+      "type": "armor"
+    },
+    "anti-gravity-boots": {
+      "id": "anti-gravity-boots",
+      "name": "Anti-Gravity Boots",
+      "description": "Boots that negate gravity, allowing you to walk on walls and ceilings. Very useful in zero-G environments. In normal gravity, they just make you float awkwardly. The user manual is in space-Sanskrit.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "breathing-apparatus": {
+      "id": "breathing-apparatus",
+      "name": "Atmospheric Breathing Apparatus",
+      "description": "A mask that filters alien atmospheres into breathable air. Necessary for visiting methane-breathing aliens without suffocating. Makes you sound like Darth Vader. Kids love it. Adults fear it.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "diplomatic-papers": {
+      "id": "diplomatic-papers",
+      "name": "Diplomatic Credentials",
+      "description": "Official papers granting diplomatic immunity across seventeen star systems. Useful for avoiding parking tickets, getting out of trouble, and looking important at customs. Warning: Not valid in New Jersey.",
+      "takeable": true,
+      "usable": true,
+      "type": "document"
+    },
+    "alien-artifact": {
+      "id": "alien-artifact",
+      "name": "Mysterious Alien Artifact",
+      "description": "An object of unknown origin and purpose. It's metallic, glows faintly, and hums at a frequency that makes your teeth itch. Might be a weapon, might be a toothbrush. Alien design is inscrutable.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "translation-device": {
+      "id": "translation-device",
+      "name": "Pocket Translation Device",
+      "description": "A handheld translator for common alien languages. Works better than the universal translator but only knows seven languages. Three of them are extinct. One is just beeping. Still helpful.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "babel-fish": {
+      "id": "babel-fish",
+      "name": "Babel Fish",
+      "description": "A small yellow fish that, when placed in your ear, translates any language in the universe. Grosser than it sounds. Wrigglier than you'd like. Surprisingly effective. Don't think about how it works.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "language-dictionary": {
+      "id": "language-dictionary",
+      "name": "Xenolinguistics Dictionary",
+      "description": "A massive dictionary containing phrases in thousands of alien languages. Useful for looking up 'Where is the bathroom?' in Klingon. Less useful when you need to know NOW.",
+      "takeable": true,
+      "usable": false,
+      "type": "book"
+    },
+    "wrench": {
+      "id": "wrench",
+      "name": "Adjustable Wrench",
+      "description": "A standard maintenance wrench, rusty and well-used. Can tighten bolts, loosen nuts, and serve as a makeshift weapon in a pinch. The essential tool of frustrated people everywhere.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "maintenance-manual": {
+      "id": "maintenance-manual",
+      "name": "Hotel Maintenance Manual",
+      "description": "A grease-stained manual explaining how to maintain the hotel's systems. Chapters include: 'Fixing Reality Stabilizers,' 'Unclogging Dimensional Drains,' and 'What To Do When The Furnace Gains Sentience.'",
+      "takeable": true,
+      "usable": false,
+      "type": "book"
+    },
+    "boiler-key": {
+      "id": "boiler-key",
+      "name": "Boiler Room Key",
+      "description": "A heat-resistant key for accessing the dimensional boiler. Warm to the touch and smells like burnt offerings. Opens the heart of the hotel's power system.",
+      "takeable": true,
+      "usable": true,
+      "type": "key"
+    },
+    "pressure-gauge": {
+      "id": "pressure-gauge",
+      "name": "Reality Pressure Gauge",
+      "description": "A gauge showing the pressure levels in the reality stabilization system. Currently reading 'CRITICAL' in flashing red letters. Also shows measurements in 'Oh No,' 'Very Bad,' and 'We're Doomed.'",
+      "takeable": true,
+      "usable": false,
+      "type": "tool"
+    },
+    "coal-shovel": {
+      "id": "coal-shovel",
+      "name": "Coal Shovel",
+      "description": "A sturdy shovel for feeding coal (or broken dreams) into the furnace. Heavy, practical, and makes a satisfying 'clang' when you hit things with it. The maintenance worker's weapon of choice.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "mysterious-package": {
+      "id": "mysterious-package",
+      "name": "Mysterious Package",
+      "description": "A package from the Lost & Found with no label, no sender, and suspicious ticking sounds. Wrapped in brown paper and paranoia. Contains either something useful or a mild explosive. Only one way to find out!",
+      "takeable": true,
+      "usable": true,
+      "type": "container"
+    },
+    "single-sock": {
+      "id": "single-sock",
+      "name": "Single Sock",
+      "description": "A lone sock that lost its partner to the dimensional dryers. Red with green stripes—absolutely useless without its mate. Represents the futility of existence. Or laundry. Probably laundry.",
+      "takeable": true,
+      "usable": false,
+      "type": "misc"
+    },
+    "useful-gadget": {
+      "id": "useful-gadget",
+      "name": "Multi-Purpose Gadget",
+      "description": "A Swiss Army knife on steroids. Has seventeen tools including: screwdriver, can opener, toothpick, flamethrower (safety recall pending), and something that might be a reality wrench. Instructions were lost decades ago.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "stale-donuts": {
+      "id": "stale-donuts",
+      "name": "Box of Stale Donuts",
+      "description": "Donuts from the employee lounge, hard as rocks and twice as appetizing. Glazed (allegedly), sprinkled with age, and suitable only for dunking in coffee or using as projectiles. Best by: Last Tuesday.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "employee-badge": {
+      "id": "employee-badge",
+      "name": "Employee ID Badge",
+      "description": "Your official hotel employee badge with a terrible photo that makes you look like a criminal. Grants access to employee-only areas and identifies you as someone who works here (unfortunately).",
+      "takeable": true,
+      "usable": true,
+      "type": "document"
+    },
+    "complaint-box": {
+      "id": "complaint-box",
+      "name": "Employee Complaint Box",
+      "description": "A locked box where employees can submit anonymous complaints. It's full. Overfull. Complaints spill out. Management has never opened it. Management will never open it.",
+      "takeable": false,
+      "usable": false,
+      "type": "container"
+    },
+    "safety-harness": {
+      "id": "safety-harness",
+      "name": "Safety Harness",
+      "description": "A harness for working in dangerous vertical environments. Features clips, straps, and a reassuring label: 'OSHA Compliant (in some dimensions).' Prevents fatal falls, promotes safer plummeting.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "flashlight": {
+      "id": "flashlight",
+      "name": "Flashlight",
+      "description": "A heavy-duty flashlight that cuts through darkness like a knife through butter (assuming very soft butter). Burns through batteries like a politician through campaign promises. Essential for exploring dark places full of things you don't want to see.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "time-flower": {
+      "id": "time-flower",
+      "name": "Temporal Flower",
+      "description": "A flower that exists at all points in its life cycle simultaneously—seed, sprout, bloom, and withered husk, all at once. Impossible to photograph. Makes your head hurt to look at. Beautiful in a way that defies description.",
+      "takeable": true,
+      "usable": true,
+      "type": "ingredient"
+    },
+    "reverse-clock": {
+      "id": "reverse-clock",
+      "name": "Backwards Clock",
+      "description": "A clock that runs counter-clockwise, tracking time in reverse. Useful for scheduling meetings that happened yesterday. The alarm goes off before you set it. Time is weird.",
+      "takeable": true,
+      "usable": false,
+      "type": "tool"
+    },
+    "backwards-book": {
+      "id": "backwards-book",
+      "name": "Book Written in Reverse",
+      "description": "A book where the story runs backwards. Starts at the ending, ends at the beginning. Reading it is confusing and spoils all the surprises. The author was either a genius or having a stroke.",
+      "takeable": true,
+      "usable": false,
+      "type": "book"
+    },
+    "pool-noodle": {
+      "id": "pool-noodle",
+      "name": "Pool Noodle",
+      "description": "A foam pool noodle from the Liquid Time Pool. Soggy with temporal fluid. Hitting someone with it causes minor time loops. Also good for floating.",
+      "takeable": true,
+      "usable": true,
+      "type": "weapon"
+    },
+    "time-in-a-bottle": {
+      "id": "time-in-a-bottle",
+      "name": "Time in a Bottle",
+      "description": "A bottle full of liquid time siphoned from the pool. Swirls with colors that haven't been invented yet. Drinking it lets you experience moments outside of normal temporal flow. Or gives you really weird dreams. Hard to say.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "wet-towel": {
+      "id": "wet-towel",
+      "name": "Soaking Wet Towel",
+      "description": "A towel soaked in pool water (which is liquid time). Will never dry. Useful for cleaning, whipping people, or time-related shenanigans. Smells like chlorine and paradoxes.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "chefs-knife": {
+      "id": "chefs-knife",
+      "name": "Professional Chef's Knife",
+      "description": "A razor-sharp chef's knife, perfectly balanced and intimidating. Cuts through vegetables, meat, and tension. The blade gleams with menace and professionalism. Do not run with this.",
+      "takeable": true,
+      "usable": true,
+      "type": "weapon"
+    },
+    "exotic-ingredient": {
+      "id": "exotic-ingredient",
+      "name": "Exotic Cooking Ingredient",
+      "description": "An ingredient from another dimension—might be a truffle, might be a rock, hard to tell. Smells interesting. Tastes like colors. The chef insists it's essential for interdimensional cuisine.",
+      "takeable": true,
+      "usable": true,
+      "type": "ingredient"
+    },
+    "recipe-book": {
+      "id": "recipe-book",
+      "name": "Interdimensional Cookbook",
+      "description": "A cookbook with recipes from across the multiverse. Includes: 'Scrambled Eggs (Schrödinger's Style),' 'Toast from the Future,' and 'Soup that Remembers Being a Salad.' Measurements are approximate and often paradoxical.",
+      "takeable": true,
+      "usable": false,
+      "type": "book"
+    },
+    "clean-towel": {
+      "id": "clean-towel",
+      "name": "Freshly Laundered Towel",
+      "description": "A towel fresh from the dimensional laundry, soft and warm. Smells like fabric softener and reality stabilization. According to Douglas Adams, this is the most useful item a traveler can have. He was right.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "stain-remover": {
+      "id": "stain-remover",
+      "name": "Universal Stain Remover",
+      "description": "A spray bottle that removes ALL stains—blood, wine, coffee, existential dread, and sins. Warning: Do not spray on people. Do not spray on reality. Actually, just be careful with this.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "missing-sock": {
+      "id": "missing-sock",
+      "name": "The Other Sock",
+      "description": "The partner to the single-sock from Lost & Found! Red with green stripes. If you can reunite these socks, something magical might happen. Or you'll just have a pair of socks. Either outcome is nice.",
+      "takeable": true,
+      "usable": true,
+      "type": "misc"
+    },
+    "security-keycard": {
+      "id": "security-keycard",
+      "name": "Security Access Card",
+      "description": "A keycard granting access to the security office and surveillance systems. The magnetic strip contains your biometric data and embarrassing secrets. Property of Hotel Security—unauthorized use is frowned upon.",
+      "takeable": true,
+      "usable": true,
+      "type": "key"
+    },
+    "surveillance-footage": {
+      "id": "surveillance-footage",
+      "name": "Security Footage",
+      "description": "A USB drive containing surveillance footage from the night the Reality Anchor was stolen. Shows grainy video of the thief, blurred by dimensional interference. Might contain crucial evidence if you can enhance it (or find someone who can).",
+      "takeable": true,
+      "usable": false,
+      "type": "data"
+    },
+    "taser": {
+      "id": "taser",
+      "name": "Security Taser",
+      "description": "An electric weapon used by hotel security. Shoots electrified barbs that incapacitate targets with 50,000 volts of 'please stop.' Non-lethal but very convincing. Safety off. Batteries included.",
+      "takeable": true,
+      "usable": true,
+      "type": "weapon"
+    },
+    "manager-key": {
+      "id": "manager-key",
+      "name": "Manager's Master Key",
+      "description": "The ultimate key—opens every door in the hotel, including metaphorical doors and some doors that shouldn't be opened. Forged from the four master key fragments, this represents absolute access and absolute responsibility.",
+      "takeable": true,
+      "usable": true,
+      "type": "key"
+    },
+    "vault-schematic": {
+      "id": "vault-schematic",
+      "name": "Vault Blueprints",
+      "description": "Technical drawings showing the vault's security systems: locks, wards, traps, and one very angry guard dog (metaphysical). Useful for breaking in or understanding how someone else broke in.",
+      "takeable": true,
+      "usable": false,
+      "type": "document"
+    },
+    "broken-lock": {
+      "id": "broken-lock",
+      "name": "Broken Vault Lock",
+      "description": "A lock from the vault, blown apart by unknown means. Scorch marks suggest dimensional explosives or really aggressive lock picking. Evidence of the break-in.",
+      "takeable": true,
+      "usable": false,
+      "type": "evidence"
+    },
+    "reality-anchor-fragment": {
+      "id": "reality-anchor-fragment",
+      "name": "Reality Anchor Fragment",
+      "description": "A piece of the stolen Reality Anchor, found in the Rift. Hums with stabilizing energy. You'll need to gather all pieces to restore it and save the hotel from dimensional collapse.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "chaos-crystal": {
+      "id": "chaos-crystal",
+      "name": "Chaos Crystal",
+      "description": "A crystal formed from pure chaos energy at the dimensional rift. Pulsates with unstable power. Could be weaponized, could explode, could turn into a butterfly. Chaos is unpredictable like that.",
+      "takeable": true,
+      "usable": true,
+      "type": "component"
+    },
+    "dream-catcher": {
+      "id": "dream-catcher",
+      "name": "Dimensional Dream Catcher",
+      "description": "A dream catcher that doesn't just catch dreams—it catches reality fragments, stray thoughts, and occasionally flies. Woven with impossible geometry. Protects against nightmares and existential crises.",
+      "takeable": true,
+      "usable": true,
+      "type": "tool"
+    },
+    "nightmare-fuel": {
+      "id": "nightmare-fuel",
+      "name": "Bottled Nightmare Fuel",
+      "description": "Literally fuel made from nightmares. Black, oily, and screaming faintly. Powers nightmare engines and gives people very bad dreams. Handle with extreme caution and therapy.",
+      "takeable": true,
+      "usable": true,
+      "type": "ingredient"
+    },
+    "lucid-dream-pill": {
+      "id": "lucid-dream-pill",
+      "name": "Lucid Dream Pill",
+      "description": "A pill that grants control over dreams and dream dimensions. Allows you to navigate the Dream Dimension safely, manipulate dream logic, and wake up refreshed. Side effects include: vivid imagination, false awakenings, and profound philosophical insights at 3 AM.",
+      "takeable": true,
+      "usable": true,
+      "type": "consumable"
+    },
+    "reality-anchor": {
+      "id": "reality-anchor",
+      "name": "Reality Anchor",
+      "description": "The complete, restored Reality Anchor—a magnificent device that keeps all dimensions stable and separate. Glows with pure possibility. Installing this in the vault will fix everything, save the hotel, and probably earn you Employee of the Month. Finally.",
+      "takeable": true,
+      "usable": true,
+      "type": "quest"
+    }
+  }
+}
