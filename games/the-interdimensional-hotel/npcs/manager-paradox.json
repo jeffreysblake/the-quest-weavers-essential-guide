@@ -12,5 +12,168 @@
   "level": 10,
   "type": "npc",
   "dialogueTreeId": "manager-paradox",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "Ah, our newest employee! Welcome to the Grand Paradox Hotel, where we specialize in impossible service and improbable hospitality. I trust you're finding the dimensional chaos within acceptable parameters?",
+      "choices": [
+        {
+          "text": "What's happening to the hotel?",
+          "leads_to": "explain_situation"
+        },
+        {
+          "text": "How do I fix this?",
+          "leads_to": "fixing_chaos"
+        },
+        {
+          "text": "Are you responsible for this?",
+          "leads_to": "deny_responsibility"
+        }
+      ]
+    },
+    "explain_situation": {
+      "text": "Excellent question! The hotel is experiencing a minor case of catastrophic dimensional convergence. All six floors are attempting to exist in the same space-time simultaneously. Very efficient, really. We're saving on elevator costs.",
+      "choices": [
+        {
+          "text": "That doesn't sound minor.",
+          "leads_to": "corporate_speak"
+        },
+        {
+          "text": "How did this happen?",
+          "leads_to": "mystery_answer"
+        }
+      ]
+    },
+    "fixing_chaos": {
+      "text": "Ah, initiative! I like that. To stabilize the hotel, you'll need to collect Reality Fragments from each dimensional floor. There are six total - one from each floor. Once assembled, they should theoretically restore normal space-time. Or make things worse. Market research is inconclusive.",
+      "choices": [
+        {
+          "text": "Where are these fragments?",
+          "leads_to": "fragment_locations"
+        },
+        {
+          "text": "What if it makes things worse?",
+          "leads_to": "corporate_optimism"
+        }
+      ]
+    },
+    "deny_responsibility": {
+      "text": "*adjusts tie mysteriously* Responsible? I'm the manager. I'm responsible for everything and nothing. The hotel runs itself, really. I just... facilitate the inevitable. Besides, proving causation across multiple timelines is a legal nightmare.",
+      "choices": [
+        {
+          "text": "That's not reassuring.",
+          "leads_to": "reassurance"
+        },
+        {
+          "text": "Fine. What should I do?",
+          "leads_to": "fixing_chaos"
+        }
+      ]
+    },
+    "corporate_speak": {
+      "text": "I prefer to think of it as an 'opportunity for synergistic dimensional integration.' Corporate called it an 'extinction-level hospitality event,' but they're always so dramatic. The hotel has a 73% chance of continued existence. Those are solid numbers!",
+      "choices": [
+        {
+          "text": "73% isn't that good!",
+          "leads_to": "glass_half_full"
+        },
+        {
+          "text": "What can I do to help?",
+          "leads_to": "fixing_chaos"
+        }
+      ]
+    },
+    "mystery_answer": {
+      "text": "If I knew that, we wouldn't be having this delightful conversation. Someone - or something - triggered a dimensional cascade. Could be a guest, could be staff, could be the hotel itself achieving sentience. The employee handbook was vague on that last point.",
+      "choices": [
+        {
+          "text": "The hotel might be sentient?",
+          "leads_to": "sentient_hotel"
+        },
+        {
+          "text": "Let's focus on solutions.",
+          "leads_to": "fixing_chaos"
+        }
+      ]
+    },
+    "fragment_locations": {
+      "text": "Each dimensional floor has one fragment. Lobby, Ghost Floor, Cyber Casino, Fantasy Realm, Alien Convention, and the Basement. Look for shimmering objects that shouldn't exist. You'll know them when you see them. Or when they see you. Causality is flexible here.",
+      "choices": [
+        {
+          "text": "Thanks, I think.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "corporate_optimism": {
+      "text": "Then we'll have a valuable learning experience! Plus, corporate has excellent liability insurance for reality breaches. Probably. I should check on that. Anyway, what's the worst that could happen? Don't answer that.",
+      "choices": [
+        {
+          "text": "I'll get those fragments.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "reassurance": {
+      "text": "Reassurance is a customer service add-on. You're an employee. I can offer you existential uncertainty and a 15% discount at the gift shop. Marv will honor it. Probably.",
+      "choices": [
+        {
+          "text": "Just tell me what to do.",
+          "leads_to": "fixing_chaos"
+        }
+      ]
+    },
+    "glass_half_full": {
+      "text": "I see you're a 'glass 27% empty' type. Noted. Look, the fragments will stabilize things. Collect them, bring them back here, and we'll attempt a reality reconstruction. It's in your contract. Subsection 4, paragraph 12: 'Emergency dimensional crisis response.'",
+      "choices": [
+        {
+          "text": "I never signed a contract!",
+          "leads_to": "contract_paradox"
+        },
+        {
+          "text": "Fine. I'll find the fragments.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "sentient_hotel": {
+      "text": "Architecture achieving consciousness is more common than you'd think. Most buildings just choose not to talk. This one, however, has opinions. Strong ones. Mostly about WiFi coverage and the breakfast buffet. Frankly, I'm not sure who's managing whom anymore.",
+      "choices": [
+        {
+          "text": "This is insane.",
+          "leads_to": "insanity_clause"
+        },
+        {
+          "text": "Let's fix this mess.",
+          "leads_to": "fixing_chaos"
+        }
+      ]
+    },
+    "contract_paradox": {
+      "text": "You will sign it yesterday. Temporal causation. Very convenient for HR. Now, about those fragments...",
+      "choices": [
+        {
+          "text": "...I'll get them.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "insanity_clause": {
+      "text": "Sanity is a spectrum, and the Grand Paradox Hotel operates on a wavelength most minds can't perceive. That's why we're hiring! Now, shall we discuss your impossible mission to save reality as we know it?",
+      "choices": [
+        {
+          "text": "Yes. What do I need to do?",
+          "leads_to": "fixing_chaos"
+        }
+      ]
+    },
+    "farewell": {
+      "text": "Excellent. Remember: stay calm, don't feed the dragon, and if you meet yourself from a parallel timeline, don't shake hands. The paperwork is horrendous. Good luck!",
+      "choices": []
+    }
+  }
 }
