@@ -68,7 +68,11 @@ export class CommandProcessorService {
     const normalizedCommand = commandValidation.sanitized!.toLowerCase();
     const parts = normalizedCommand.split(' ');
     const verb = parts[0];
-    const target = parts.slice(1).join(' ');
+    let target = parts.slice(1).join(' ');
+
+    // Strip common prepositions and articles for natural language support
+    // Handles: "look at X", "pick up X", "talk to X", "use X on Y"
+    target = this.stripPrepositions(target);
 
     console.log(
       `[DEBUG] Parsed command - verb: "${verb}", target: "${target}"`,
@@ -215,5 +219,37 @@ export class CommandProcessorService {
         message: `Command processing failed: ${error.message}`,
       };
     }
+  }
+
+  /**
+   * Strip common prepositions and articles from target string for natural language support
+   * Examples:
+   *   "at manager" -> "manager"
+   *   "up mints" -> "mints"
+   *   "to jenkins" -> "jenkins"
+   *   "the key" -> "key"
+   */
+  private stripPrepositions(target: string): string {
+    if (!target) return target;
+
+    // Common prepositions and articles to strip from the beginning
+    const prepositions = ['at', 'to', 'with', 'from', 'on', 'in', 'up', 'down', 'the', 'a', 'an'];
+
+    let cleaned = target.trim();
+
+    // Keep stripping until no more prepositions at the start
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const prep of prepositions) {
+        if (cleaned.startsWith(prep + ' ')) {
+          cleaned = cleaned.substring(prep.length + 1).trim();
+          changed = true;
+          break;
+        }
+      }
+    }
+
+    return cleaned;
   }
 }
