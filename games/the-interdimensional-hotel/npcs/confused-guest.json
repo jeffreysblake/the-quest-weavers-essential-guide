@@ -12,5 +12,191 @@
   "level": 1,
   "type": "npc",
   "dialogueTreeId": "confused-guest",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*frantically flipping through guidebook* This isn't... my guidebook said 'charming boutique hotel' not 'existential nightmare!' The chandelier is going UP! Why is it going UP?! Do you work here? Can you explain ANY of this?!",
+      "choices": [
+        {
+          "text": "Calm down. What happened?",
+          "leads_to": "panic_story"
+        },
+        {
+          "text": "I'm trying to fix things.",
+          "leads_to": "relief"
+        },
+        {
+          "text": "Have you tried leaving?",
+          "leads_to": "cant_leave"
+        }
+      ]
+    },
+    "panic_story": {
+      "text": "*takes shaky breath* I booked a room online. Reviews said 'unique experience.' I thought they meant the breakfast buffet! Not... *gestures wildly* ...this! I checked in yesterday. Or maybe tomorrow. Time's weird here. The receptionist gave me a room key, but my room is... inside another room? Which is also outside?",
+      "choices": [
+        {
+          "text": "That sounds confusing.",
+          "leads_to": "very_confusing"
+        },
+        {
+          "text": "Did you see anything strange?",
+          "leads_to": "everything_strange"
+        }
+      ]
+    },
+    "relief": {
+      "text": "*grabs your shoulders desperately* You're fixing it? PLEASE fix it! I just wanted a nice vacation! Pool, maybe some sightseeing, NOT watching a Victorian ghost argue with a robot about cryptocurrency! I have photos but my phone thinks they're from 1847 AND 2087!",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "encouragement"
+        },
+        {
+          "text": "What photos did you take?",
+          "leads_to": "photo_evidence"
+        }
+      ]
+    },
+    "cant_leave": {
+      "text": "*laughs hysterically* Leave? LEAVE?! The exit signs keep pointing to different dimensions! I tried the front door - it led to the roof! The fire escape went to the basement through the fourth floor! Even the windows show different outsides depending on which eye you close!",
+      "choices": [
+        {
+          "text": "Maybe stay put for now.",
+          "leads_to": "staying_put"
+        },
+        {
+          "text": "Have you talked to the Manager?",
+          "leads_to": "manager_encounter"
+        }
+      ]
+    },
+    "very_confusing": {
+      "text": "CONFUSING?! It's IMPOSSIBLE! I'm a middle school science teacher! I teach kids about gravity and matter! This hotel is breaking every law of physics while serving complimentary breakfast! How is that even... *deep breath* I'm losing it. I'm completely losing it.",
+      "choices": [
+        {
+          "text": "You're handling it well, actually.",
+          "leads_to": "handling_it"
+        },
+        {
+          "text": "Focus on surviving.",
+          "leads_to": "survival_mode"
+        }
+      ]
+    },
+    "everything_strange": {
+      "text": "*pulls out phone with trembling hands* I saw a maid clean a room that doesn't exist. Twice. I watched the elevator arrive before anyone called it. The vending machine dispensed snacks from alternate timelines. I got a bag of chips that won't be invented for another fifty years. They were DELICIOUS. And I hate myself for caring about that.",
+      "choices": [
+        {
+          "text": "At least the snacks are good?",
+          "leads_to": "silver_lining"
+        },
+        {
+          "text": "Stay strong. I'm working on it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*sniffles* Thank you. I'm sorry for yelling. It's been a very weird 24 hours. Or 48 hours. Or negative 12 hours. The hotel gift shop sold me a watch that shows three different times and all of them are wrong.",
+      "choices": [
+        {
+          "text": "Hang in there.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "photo_evidence": {
+      "text": "*scrolls through phone frantically* Look at THIS! A dragon playing poker with robots! And THIS - a ghost crying about WiFi passwords! Oh, and my favorite - me, shaking hands with myself from a parallel dimension. We're both terrified. It's the only photo that makes sense.",
+      "choices": [
+        {
+          "text": "Those are... something.",
+          "leads_to": "documentation"
+        }
+      ]
+    },
+    "staying_put": {
+      "text": "*nods vigorously* Yes. Yes, that makes sense. Don't move. Don't touch anything. Don't look at anything too hard. Just... exist minimally until someone fixes reality. I can do that. I'm good at existing minimally. It's basically my hobby.",
+      "choices": [
+        {
+          "text": "Good plan.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "manager_encounter": {
+      "text": "*shivers* The Manager? I asked them about checkout time. They said 'Eventually, always, and never, depending on your perspective.' Then they smiled and walked through a wall. I didn't ask again. Some questions aren't worth the answers.",
+      "choices": [
+        {
+          "text": "That's... probably wise.",
+          "leads_to": "wisdom"
+        }
+      ]
+    },
+    "handling_it": {
+      "text": "*weak laugh* Am I though? I've cried twice, screamed into my pillow four times, and tried to bargain with the hotel itself. I think I'm in the acceptance stage of grief. For reality. I'm grieving reality. Is that normal here?",
+      "choices": [
+        {
+          "text": "Probably.",
+          "leads_to": "new_normal"
+        }
+      ]
+    },
+    "survival_mode": {
+      "text": "*straightens up* Right. Survive. I can do that. Rule one: don't make eye contact with anything that shouldn't have eyes. Rule two: if a room has more corners than it should, leave immediately. Rule three: trust no elevator that hums show tunes. I've learned so much.",
+      "choices": [
+        {
+          "text": "Good rules.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "silver_lining": {
+      "text": "*small smile* They were really good chips. Quantum Salt and Vinegar. The packaging said 'Taste the Future.' It wasn't lying. At least if reality collapses, I'll die having eaten snacks that defy causality. Could be worse.",
+      "choices": [
+        {
+          "text": "That's the spirit!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "documentation": {
+      "text": "I'm either documenting the strangest hotel in existence or having a very specific nervous breakdown. Either way, these photos are going on my blog. Nobody will believe me, but I'll have evidence. Useless, reality-defying evidence.",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "wisdom": {
+      "text": "I've learned that ignorance is bliss and knowledge is terrifying. The hotel runs on both. I'm just trying to get through this with my sanity mostly intact. Mostly being the operative word.",
+      "choices": [
+        {
+          "text": "You've got this.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "new_normal": {
+      "text": "*sighs deeply* Normal left the building. Along with logic, physics, and my will to live. But I'm still here. Still breathing. Still witnessing impossible things. I guess that counts for something.",
+      "choices": [
+        {
+          "text": "It definitely counts.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*manages a weak smile* Thanks for listening. And for trying to fix... *waves at everything* ...all this. If you see the hotel getting any weirder, come find me. I'll be here. Panicking quietly. With my guidebook that's now completely useless.",
+      "choices": []
+    }
+  }
 }

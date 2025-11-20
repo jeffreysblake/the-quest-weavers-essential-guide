@@ -12,5 +12,178 @@
   "level": 5,
   "type": "npc",
   "dialogueTreeId": "elevator-operator-jenkins",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*tips cap* Been working these elevators for... well, longer than memory serves. Seen a lot in my time. This dimensional mess? Not even in the top ten strangest days. Where to, friend?",
+      "choices": [
+        {
+          "text": "What do you know about the dimensional chaos?",
+          "leads_to": "chaos_knowledge"
+        },
+        {
+          "text": "How do the elevators still work?",
+          "leads_to": "elevator_magic"
+        },
+        {
+          "text": "Have you seen anything unusual?",
+          "leads_to": "everything_unusual"
+        }
+      ]
+    },
+    "chaos_knowledge": {
+      "text": "*strokes beard thoughtfully* Seen this building do a lot of impossible things. Started small - doors leading where they shouldn't, time running backwards in the break room. Then it got... ambitious. Six floors trying to occupy one space? That's new. But the elevators? They always know where they're going.",
+      "choices": [
+        {
+          "text": "The elevators are sentient?",
+          "leads_to": "sentient_elevators"
+        },
+        {
+          "text": "What caused it?",
+          "leads_to": "mystery"
+        }
+      ]
+    },
+    "elevator_magic": {
+      "text": "These lifts have been running since before elevators were invented. Don't ask me how. The hotel... provides. You want Ghost Floor? Just think about ghosts. Want Cyber Casino? Think neon and bad decisions. The elevators listen. Not always to words, mind you.",
+      "choices": [
+        {
+          "text": "That's unsettling.",
+          "leads_to": "unsettling_comfort"
+        },
+        {
+          "text": "Can they take me anywhere?",
+          "leads_to": "elevator_limits"
+        }
+      ]
+    },
+    "everything_unusual": {
+      "text": "*chuckles dryly* Son, I've seen a dragon argue with a robot about cryptocurrency. I've watched time tourists try to book rooms in the past. I've escorted ghosts complaining about the living. 'Unusual' is our Tuesday. But if you're asking about suspicious? Keep an eye on the rift in the basement. Things come through. Not all of them leave.",
+      "choices": [
+        {
+          "text": "What kind of things?",
+          "leads_to": "basement_warning"
+        },
+        {
+          "text": "Should I be worried?",
+          "leads_to": "always_worried"
+        }
+      ]
+    },
+    "sentient_elevators": {
+      "text": "Sentient? Maybe. Older than me? Definitely. These shafts go deeper than physics allows and higher than the building has floors. I just work here. Been doing it so long, I've forgotten how to quit. Or maybe the hotel forgot to let me.",
+      "choices": [
+        {
+          "text": "Can you leave?",
+          "leads_to": "cant_leave"
+        },
+        {
+          "text": "Thanks for the information.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "mystery": {
+      "text": "Been asking myself that for decades. Or centuries. Time's funny here. Could be the Manager, could be the hotel itself, could be something from outside trying to get in. Or inside trying to get out. I've learned not to ask too many questions. The answers tend to create more problems.",
+      "choices": [
+        {
+          "text": "That's not helpful.",
+          "leads_to": "helpful_limits"
+        },
+        {
+          "text": "Fair enough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "unsettling_comfort": {
+      "text": "You get used to it. Or you go mad. Most guests choose the former. Some choose both. The hotel appreciates commitment to the experience either way.",
+      "choices": [
+        {
+          "text": "I'll try to stay sane.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "elevator_limits": {
+      "text": "The six floors, yes. The basement if you're brave or foolish. But beyond that? The elevators have their limits. Or maybe they just pretend to. Like I said, they listen. But whether they obey... that's between you and them.",
+      "choices": [
+        {
+          "text": "Good to know.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "basement_warning": {
+      "text": "*voice drops lower* Things with too many eyes. Things with no eyes but see anyway. Echoes of people who never existed. The basement's where reality's at its thinnest. Manager says it's 'character.' I say it's a lawsuit waiting to happen. But nobody listens to the elevator operator.",
+      "choices": [
+        {
+          "text": "I'll be careful.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "always_worried": {
+      "text": "In this hotel? Always. But worry keeps you sharp. Complacency gets you merged with a parallel timeline version of yourself. Happened to Ted from housekeeping. Now there's two of him. They don't get along.",
+      "choices": [
+        {
+          "text": "That's horrifying.",
+          "leads_to": "horror_normal"
+        }
+      ]
+    },
+    "cant_leave": {
+      "text": "*distant look in eyes* Last time I tried, elevator brought me right back. Been here so long, I'm part of the architecture now. Or maybe I always was. Memory's hazy on the details. But I've made my peace with it. The uniform's comfortable, and the benefits are... unique.",
+      "choices": [
+        {
+          "text": "I'm sorry.",
+          "leads_to": "no_pity"
+        },
+        {
+          "text": "Thanks for the chat.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "helpful_limits": {
+      "text": "I run elevators. I'm not a philosopher. You want deep answers, talk to the Manager. You want to get to Floor 3 without merging with the space between moments, you talk to me. Different skill sets.",
+      "choices": [
+        {
+          "text": "Point taken.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "horror_normal": {
+      "text": "You say horrifying, the Manager calls it 'enhanced workforce efficiency.' Perspective is everything in the hotel business. Especially when perspectives start overlapping from different dimensions.",
+      "choices": [
+        {
+          "text": "I need to go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "no_pity": {
+      "text": "*waves hand dismissively* Don't waste pity on me. I've seen things most people can't imagine. I've been to floors that don't exist. I've outlived everyone I knew. But I've also got job security that's literally impossible to beat. Glass half full, kid.",
+      "choices": [
+        {
+          "text": "Stay strong, Jenkins.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*tips cap again* Watch yourself out there. The hotel's got its quirks, but it usually means well. Usually. And if you need a ride to any floor - or a cryptic warning about your future - you know where to find me.",
+      "choices": []
+    }
+  }
 }

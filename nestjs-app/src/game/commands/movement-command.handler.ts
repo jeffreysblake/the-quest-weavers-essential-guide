@@ -5,6 +5,7 @@ import { PlayerService } from '../../entity/player.service';
 import { RoomService } from '../../entity/room.service';
 import { CommandValidatorService } from '../command-validator.service';
 import { RoomNavigationHelperService } from '../room-navigation-helper.service';
+import { GameStateService } from '../game-state.service';
 
 @Injectable()
 export class MovementCommandHandler implements ICommandHandler {
@@ -13,6 +14,7 @@ export class MovementCommandHandler implements ICommandHandler {
     private roomService: RoomService,
     private validator: CommandValidatorService,
     private roomNavHelper: RoomNavigationHelperService,
+    private gameStateService: GameStateService,
   ) {}
 
   async handle(
@@ -120,12 +122,31 @@ export class MovementCommandHandler implements ICommandHandler {
     const objects = this.roomService.getObjectsInRoom(targetRoom.id);
     const objectNames = objects.map((obj) => obj.name).filter(Boolean);
 
+    // Get NPCs in the new room (filter out defeated NPCs)
+    const gameState = await this.gameStateService.getGameState(player.gameId);
+    const npcsInRoom: string[] = [];
+
+    if (gameState.npcs) {
+      Object.values(gameState.npcs).forEach((npc: any) => {
+        // Skip defeated NPCs (health <= 0)
+        if (npc.health !== undefined && npc.health <= 0) {
+          return;
+        }
+
+        // Only check if NPC is in this room via room.players array
+        if (targetRoom.players && targetRoom.players.includes(npc.id)) {
+          npcsInRoom.push(npc.name);
+        }
+      });
+    }
+
     return {
       success: true,
       type: 'movement_success',
       message: `You move ${mappedDirection}.`,
       roomDescription: targetRoom.description,
       items: objectNames,
+      npcs: npcsInRoom,
       exits: this.roomNavHelper.getAvailableExits(targetRoom),
       playerStatus: {
         location: targetRoom.name,
