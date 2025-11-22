@@ -94,3 +94,44 @@ export function matchesName(objectName: string, target: string): boolean {
 
   return allWordsMatch;
 }
+
+/**
+ * Calculate match quality score for prioritizing multiple matches
+ * Higher score = better match
+ *
+ * @param objectName - The name of the object being matched
+ * @param target - The target string being searched for
+ * @returns A numeric score (higher is better), or 0 if no match
+ *
+ * @example
+ * ```typescript
+ * getMatchScore('Reality Anchor', 'reality anchor') // Returns: 100 (exact)
+ * getMatchScore('Reality Anchor Fragment', 'reality anchor') // Returns: 50 (substring)
+ * getMatchScore('Ancient Tome', 'reality anchor') // Returns: 0 (no match)
+ * ```
+ */
+export function getMatchScore(objectName: string, target: string): number {
+  const normalizedObjectName = normalizeNameForMatching(objectName);
+  const normalizedTarget = normalizeNameForMatching(target);
+
+  // No match
+  if (!matchesName(objectName, target)) {
+    return 0;
+  }
+
+  // Exact match - highest priority
+  if (normalizedObjectName === normalizedTarget) {
+    return 100;
+  }
+
+  // Substring match - prefer shorter object names (less extra text)
+  // Score inversely proportional to length difference
+  if (normalizedObjectName.includes(normalizedTarget)) {
+    const lengthDiff = normalizedObjectName.length - normalizedTarget.length;
+    // Shorter names get higher scores (0 extra chars = 90, 1 char = 89, etc.)
+    return Math.max(50, 90 - lengthDiff);
+  }
+
+  // Word-based match - lowest priority
+  return 25;
+}
