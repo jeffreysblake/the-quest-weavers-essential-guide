@@ -118,6 +118,15 @@ export class UseCommandHandler extends BaseCommandHandler {
       return await this.handleCosmicRepairStation(player, targetObject);
     }
 
+    // Check if it's the Reality Anchor in the Hotel game
+    if (
+      targetObject.name &&
+      targetObject.name.toLowerCase().includes('reality anchor') &&
+      !targetObject.name.toLowerCase().includes('fragment')
+    ) {
+      return await this.handleRealityAnchorVictory(player, room, targetObject);
+    }
+
     // Generic use for other items
     await this.eventEmitter.emit(
       GameEventType.OBJECT_USED,
@@ -577,6 +586,132 @@ The Vacuum of Eternity hums with approval. Reality itself feels cleaner. The sta
       GameEventType.CUSTOM_EVENT,
       {
         action: 'game_completed',
+        playerId: player.id,
+        completionTime: new Date().toISOString(),
+      },
+      player.gameId,
+    );
+
+    return {
+      success: true,
+      type: 'victory',
+      message: victoryMessage,
+    };
+  }
+
+  /**
+   * Handle using the Reality Anchor to win the Hotel game
+   */
+  private async handleRealityAnchorVictory(
+    player: any,
+    room: any,
+    realityAnchor: any,
+  ): Promise<CommandResult> {
+    // Check if player is in the Reality Vault
+    const isInVault =
+      room.name &&
+      (room.name.toLowerCase().includes('reality vault') ||
+        room.name.toLowerCase().includes('vault'));
+
+    if (!isInVault) {
+      return {
+        success: false,
+        type: 'action_result',
+        message: `The Reality Anchor hums with power, but you need to be in the Reality Vault to install it properly. It was stolen from there - that's where it belongs.`,
+      };
+    }
+
+    // Get player's inventory
+    const inventory = this.playerService.getInventory(player.id);
+    const inventoryNames = inventory.map((item) =>
+      item.name ? item.name.toLowerCase() : '',
+    );
+
+    // Count Reality Fragments (need 3)
+    const realityFragments = inventory.filter((item) => {
+      const itemName = item.name ? item.name.toLowerCase() : '';
+      return (
+        itemName.includes('reality fragment') && !itemName.includes('anchor')
+      );
+    });
+
+    // Count Master Key Fragments (need 4)
+    const masterKeyFragments = inventory.filter((item) => {
+      const itemName = item.name ? item.name.toLowerCase() : '';
+      return itemName.includes('master key fragment');
+    });
+
+    const hasAllFragments = realityFragments.length >= 3;
+    const hasAllKeyFragments = masterKeyFragments.length >= 4;
+
+    // Check if player has all required items
+    if (!hasAllFragments || !hasAllKeyFragments) {
+      let message = `You hold the Reality Anchor above the empty pedestal, but it resists installation. The mystical wards demand proper authorization:\n\n`;
+
+      if (!hasAllFragments) {
+        message += `- 3 Reality Fragments (you have ${realityFragments.length}/3)\n`;
+      } else {
+        message += `- 3 Reality Fragments ✓\n`;
+      }
+
+      if (!hasAllKeyFragments) {
+        message += `- 4 Master Key Fragments (you have ${masterKeyFragments.length}/4)\n`;
+      } else {
+        message += `- 4 Master Key Fragments ✓\n`;
+      }
+
+      message += `\nThe Anchor won't activate until you've collected everything. The hotel's security system is strict about these things.`;
+
+      return {
+        success: false,
+        type: 'action_result',
+        message: message,
+      };
+    }
+
+    // Player has everything - VICTORY!
+    const victoryMessage = `
+╔═══════════════════════════════════════════════════════════════╗
+║                    🏨 VICTORY! 🏨                             ║
+╚═══════════════════════════════════════════════════════════════╝
+
+You place the Reality Anchor onto the pedestal in the center of the vault!
+
+The three Reality Fragments begin to glow, their light merging with the Anchor's core. The four Master Key Fragments orbit the device, clicking into place one by one with satisfying metallic clinks.
+
+The vault hums with power. Mystical wards flare to life along the walls, creating a web of protective energy. The Reality Anchor blazes with brilliant light, sending waves of stabilizing force throughout the hotel!
+
+Through the vault door, you hear reality itself sigh with relief:
+
+The Victorian ghosts stop phasing through the cyberpunk floor.
+The dragons return to the fantasy realm where they belong.
+The aliens teleport back to their proper convention.
+The swimming pool becomes regular water (slightly disappointing).
+Time flows forward again (mostly).
+
+Manager Paradox appears, looking genuinely impressed: "Well, well, Rex. You actually did it. You saved reality, restored order, and didn't even complain about overtime. I'm... I'm proud of you. Here's your Employee of the Month parking spot. You've earned it."
+
+Jenkins the elevator operator tips his hat: "Knew you had it in you, kid. Now reality can get back to being properly weird instead of catastrophically weird."
+
+The hotel settles into its usual controlled chaos. Dimensions stable. Guests confused but safe. Reality anchored.
+
+You, Rex Doorman, lowly bellhop turned reality-saver, can finally clock out.
+
+═══════════════════════════════════════════════════════════════
+
+           🎉 CONGRATULATIONS - GAME COMPLETED! 🎉
+
+         You have saved the Grand Paradox Hotel!
+              Reality thanks you, bellhop!
+
+═══════════════════════════════════════════════════════════════
+`;
+
+    // Emit victory event
+    await this.eventEmitter.emit(
+      GameEventType.CUSTOM_EVENT,
+      {
+        action: 'hotel_game_completed',
         playerId: player.id,
         completionTime: new Date().toISOString(),
       },

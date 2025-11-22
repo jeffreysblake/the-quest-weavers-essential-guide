@@ -4,7 +4,10 @@ import { CommandResult } from '../game.service';
 import { PlayerService } from '../../entity/player.service';
 import { RoomService } from '../../entity/room.service';
 import { CommandValidatorService } from '../command-validator.service';
-import { matchesName as utilMatchesName } from '../utils/item-name-matcher.util';
+import {
+  matchesName as utilMatchesName,
+  getMatchScore,
+} from '../utils/item-name-matcher.util';
 
 /**
  * Abstract base class for all command handlers.
@@ -120,7 +123,8 @@ export abstract class BaseCommandHandler implements ICommandHandler {
   /**
    * Finds an object by name in the player's inventory or the current room.
    * Searches inventory first (prioritizing items the player is carrying),
-   * then checks room objects.
+   * then checks room objects. Uses match scoring to prefer better matches
+   * (e.g., "reality anchor" prefers "Reality Anchor" over "Reality Anchor Fragment").
    *
    * @param player - The player to search inventory for
    * @param room - The room to search objects in
@@ -142,23 +146,38 @@ export abstract class BaseCommandHandler implements ICommandHandler {
   ): any | null {
     // Check inventory first (prioritize inventory over room objects)
     const inventory = this.playerService.getInventory(player.id);
-    let targetObject = inventory.find((obj) =>
-      obj.name ? this.matchesName(obj.name, target) : false,
-    );
 
-    // If not in inventory, check room objects
-    if (!targetObject) {
-      const objects = this.roomService.getObjectsInRoom(room.id);
-      targetObject = objects.find((obj) =>
-        obj.name ? this.matchesName(obj.name, target) : false,
-      );
+    // Find all matching items in inventory and score them
+    const inventoryMatches = inventory
+      .filter((obj) => (obj.name ? this.matchesName(obj.name, target) : false))
+      .map((obj) => ({
+        object: obj,
+        score: getMatchScore(obj.name, target),
+      }))
+      .sort((a, b) => b.score - a.score); // Sort by score descending
+
+    // Return best inventory match if found
+    if (inventoryMatches.length > 0) {
+      return inventoryMatches[0].object;
     }
 
-    return targetObject || null;
+    // If not in inventory, check room objects
+    const objects = this.roomService.getObjectsInRoom(room.id);
+    const roomMatches = objects
+      .filter((obj) => (obj.name ? this.matchesName(obj.name, target) : false))
+      .map((obj) => ({
+        object: obj,
+        score: getMatchScore(obj.name, target),
+      }))
+      .sort((a, b) => b.score - a.score); // Sort by score descending
+
+    // Return best room match if found
+    return roomMatches.length > 0 ? roomMatches[0].object : null;
   }
 
   /**
    * Finds an object by name only in the player's inventory.
+   * Uses match scoring to prefer better matches.
    *
    * @param player - The player to search inventory for
    * @param target - The target object name to find
@@ -174,14 +193,20 @@ export abstract class BaseCommandHandler implements ICommandHandler {
    */
   protected findObjectInInventory(player: any, target: string): any | null {
     const inventory = this.playerService.getInventory(player.id);
-    const targetObject = inventory.find((obj) =>
-      obj.name ? this.matchesName(obj.name, target) : false,
-    );
-    return targetObject || null;
+    const matches = inventory
+      .filter((obj) => (obj.name ? this.matchesName(obj.name, target) : false))
+      .map((obj) => ({
+        object: obj,
+        score: getMatchScore(obj.name, target),
+      }))
+      .sort((a, b) => b.score - a.score);
+
+    return matches.length > 0 ? matches[0].object : null;
   }
 
   /**
    * Finds an object by name only in the current room.
+   * Uses match scoring to prefer better matches.
    *
    * @param room - The room to search objects in
    * @param target - The target object name to find
@@ -197,10 +222,15 @@ export abstract class BaseCommandHandler implements ICommandHandler {
    */
   protected findObjectInRoom(room: any, target: string): any | null {
     const objects = this.roomService.getObjectsInRoom(room.id);
-    const targetObject = objects.find((obj) =>
-      obj.name ? this.matchesName(obj.name, target) : false,
-    );
-    return targetObject || null;
+    const matches = objects
+      .filter((obj) => (obj.name ? this.matchesName(obj.name, target) : false))
+      .map((obj) => ({
+        object: obj,
+        score: getMatchScore(obj.name, target),
+      }))
+      .sort((a, b) => b.score - a.score);
+
+    return matches.length > 0 ? matches[0].object : null;
   }
 
   /**

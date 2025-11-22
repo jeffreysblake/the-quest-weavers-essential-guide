@@ -86,12 +86,22 @@ export class DialogueChoiceCommandHandler implements ICommandHandler {
 
       // Check if conversation ended
       if (dialogueResult.conversationEnded) {
+        // Get NPC from gameState to check if hostile (combat should start)
+        const gameState = await this.gameStateService.getGameState(player.gameId);
+        const npc = gameState.npcs ? gameState.npcs[activeConversation.npcId] : null;
+
+        // If NPC is hostile, suggest combat
+        let endMessage = dialogueResult.currentNode.text || 'The conversation has ended.';
+        if (npc && npc.hostile) {
+          endMessage += '\n\n[The tension rises. Combat is imminent! Type "attack ' + (npc.name || 'enemy').toLowerCase() + '" to fight!]';
+        }
+
         return {
           success: true,
           type: 'dialogue',
-          message: dialogueResult.currentNode.text || 'The conversation has ended.',
+          message: endMessage,
           dialogue: {
-            npcName: 'NPC', // Will be filled in by context
+            npcName: npc ? npc.name : 'NPC',
             text: dialogueResult.currentNode.text || '',
             choices: [],
           },
