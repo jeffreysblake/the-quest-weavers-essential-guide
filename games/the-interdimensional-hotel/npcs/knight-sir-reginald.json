@@ -12,5 +12,301 @@
   "level": 6,
   "type": "npc",
   "dialogueTreeId": "knight-sir-reginald",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*clanks armor heroically* Hark! A fellow traveler in this most peculiar realm! I am Sir Reginald the Brave, noble knight and seeker of righteous quests! This enchanted castle hath fallen under most FOUL sorcery! Fear not, for I shall vanquish this dimensional evil! Once I understand what 'dimensional' meaneth!",
+      "choices": [
+        {
+          "text": "It's a hotel, not a castle.",
+          "leads_to": "castle_confusion"
+        },
+        {
+          "text": "Do you know what's happening?",
+          "leads_to": "medieval_understanding"
+        },
+        {
+          "text": "Have you been here long?",
+          "leads_to": "time_displacement"
+        }
+      ]
+    },
+    "castle_confusion": {
+      "text": "*looks around confused* A... hotel? Is that some manner of modern castle? With rooms for rent instead of feudal lords? And a 'front desk' instead of a throne room? *taps armor thoughtfully* Strange times indeed! Though I must say, the complimentary breakfast buffet is MOST generous! Even if I understand not what 'WiFi' is!",
+      "choices": [
+        {
+          "text": "WiFi is... complicated.",
+          "leads_to": "wifi_mystery"
+        },
+        {
+          "text": "How did you get here?",
+          "leads_to": "arrival_story"
+        }
+      ]
+    },
+    "medieval_understanding": {
+      "text": "*gestures dramatically with sword* Aye! 'Tis clearly a curse! An evil wizard hath rent the very fabric of reality asunder! The laws of nature art broken! I witnessed a DRAGON playing cards with mechanical men! A chandelier that defies gravity! 'Tis dark sorcery most foul!",
+      "choices": [
+        {
+          "text": "That's... actually accurate.",
+          "leads_to": "accurate_assessment"
+        },
+        {
+          "text": "Have you tried to fight it?",
+          "leads_to": "combat_attempt"
+        }
+      ]
+    },
+    "time_displacement": {
+      "text": "*scratches helmet* Long? Time hath become most strange! I arrived yesterday, or mayhaps tomorrow, or perchance a fortnight hence! The sun rises and sets in the same instant! I have broken my fast thrice in what I believe to be one day! Most confusing! Also, I am quite full!",
+      "choices": [
+        {
+          "text": "That sounds disorienting.",
+          "leads_to": "disorientation"
+        },
+        {
+          "text": "What's your quest here?",
+          "leads_to": "noble_quest"
+        }
+      ]
+    },
+    "wifi_mystery": {
+      "text": "*nods sagely* Aye, 'tis clearly powerful magic! The innkeeper spoke of 'connecting to the WiFi' and I drew my sword to defend against this WiFi beast! Turns out 'tis not a beast. Most embarrassing. I apologized to the router. Which I am told is also not alive. Modern times art CONFUSING!",
+      "choices": [
+        {
+          "text": "You apologized to a router?",
+          "leads_to": "router_honor"
+        },
+        {
+          "text": "Tell me about your other encounters.",
+          "leads_to": "modern_struggles"
+        }
+      ]
+    },
+    "arrival_story": {
+      "text": "*strikes heroic pose* I was on a noble quest through the enchanted forest! Seeking the Holy Grail! Or a decent inn! Mostly the inn! I saw a grand castle and entered seeking shelter! Instead I found THIS - a realm of impossible wonders and confusing technology! But a knight adapts! Sort of!",
+      "choices": [
+        {
+          "text": "You're adapting well?",
+          "leads_to": "adaptation_status"
+        },
+        {
+          "text": "Have you seen Reality Fragments?",
+          "leads_to": "fragment_knowledge"
+        }
+      ]
+    },
+    "accurate_assessment": {
+      "text": "*brightens* Truly?! Then my knightly training serves me well! I may not understand 'elevators' or 'electricity' or why people carry tiny glowing rectangles, but I KNOW dark magic when I see it! And this hotel is FULL of it! I shall aid thee in thy quest to break the curse!",
+      "choices": [
+        {
+          "text": "I appreciate the help.",
+          "leads_to": "helpful_knight"
+        },
+        {
+          "text": "What have you discovered?",
+          "leads_to": "knightly_reconnaissance"
+        }
+      ]
+    },
+    "combat_attempt": {
+      "text": "*sheepish* Aye... I attempted to smite the dimensional chaos with my sword. I challenged it to honorable combat! It did not respond. Because it is... not a physical being. I also challenged the vending machine. It dispensed a 'soda pop' and I declared victory! Then the machine ate my coins. I am still bitter!",
+      "choices": [
+        {
+          "text": "You lost to a vending machine?",
+          "leads_to": "vending_defeat"
+        },
+        {
+          "text": "Maybe try a different approach.",
+          "leads_to": "new_strategy"
+        }
+      ]
+    },
+    "disorientation": {
+      "text": "*sits on nearby chair heavily* MOST disorienting! I am a knight! I face dragons and giants without fear! But temporal paradoxes? Non-linear causality? I met myself from the future! He warned me not to challenge the vending machine! I did not listen! I am not a clever knight!",
+      "choices": [
+        {
+          "text": "At least you're honest.",
+          "leads_to": "honest_knight"
+        }
+      ]
+    },
+    "noble_quest": {
+      "text": "*stands proudly* My quest is to restore honor and order to this enchanted castle-hotel! To vanquish the dark sorcery! To help the innocent! And to obtain the sacred WiFi password so I might send a message to my squire! He worries! I have been gone for days! Or hours! Or years!",
+      "choices": [
+        {
+          "text": "The password is probably at the front desk.",
+          "leads_to": "password_revelation"
+        },
+        {
+          "text": "I'm working on fixing everything.",
+          "leads_to": "fixing_alliance"
+        }
+      ]
+    },
+    "router_honor": {
+      "text": "*defensive* 'Twas the honorable thing to do! I drew my weapon on an innocent device! A knight must acknowledge his errors! Even if that device is a small glowing box that I understand not! Honor demands it! The router accepted my apology! I think! It blinked!",
+      "choices": [
+        {
+          "text": "You have interesting priorities.",
+          "leads_to": "knightly_priorities"
+        }
+      ]
+    },
+    "modern_struggles": {
+      "text": "*sighs deeply* The elevator TERRIFIES me! A room that moves between floors?! WITCHCRAFT! The ice machine? Clearly a frozen demon! The television? A window to other realms showing entertainment! I watched 'reality TV.' Most confusing! Nothing about it seemed REAL!",
+      "choices": [
+        {
+          "text": "You're not wrong about reality TV.",
+          "leads_to": "tv_wisdom"
+        },
+        {
+          "text": "Focus on the dimensional chaos.",
+          "leads_to": "chaos_focus"
+        }
+      ]
+    },
+    "adaptation_status": {
+      "text": "*unconvincing* SPLENDIDLY! I have learned to use the 'light switch!' I comprehend that the 'microwave' is not a tiny dragon! I understand that 'please do not disturb' signs are not magical wards! I am practically a man of this era! Except I still don't know what a 'meme' is!",
+      "choices": [
+        {
+          "text": "Don't worry about memes.",
+          "leads_to": "meme_advice"
+        }
+      ]
+    },
+    "fragment_knowledge": {
+      "text": "*nods vigorously* AYE! Glowing mystical artifacts scattered throughout the realm! I saw one near the training grounds! Or mayhaps 'twas the gymnasium! Modern words confuse me! It shimmered with magical power! Most definitely related to the curse! Collect them to break the spell!",
+      "choices": [
+        {
+          "text": "Exactly right. Thank you!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "helpful_knight": {
+      "text": "*bows deeply* 'Tis my sacred duty! A knight must aid those in need! Even if I understand not the nature of the threat! My sword arm is strong! My heart is true! My understanding of modern technology is lacking! But I shall persevere!",
+      "choices": [
+        {
+          "text": "Your enthusiasm is admirable.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "knightly_reconnaissance": {
+      "text": "*shares findings* I have scouted the realm! The breakfast buffet operates on impossible physics! The ghosts art VERY rude! I challenged Lord Evermore to a duel - he laughed and offered me champagne! I discovered magical fragments scattered about! Glowing! Powerful! Obviously important!",
+      "choices": [
+        {
+          "text": "Good work, Sir Reginald.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "vending_defeat": {
+      "text": "*embarrassed* 'TWAS A TACTICAL WITHDRAWAL! The machine fought dishonorably! It made strange sounds! It glowed! It kept my gold coins! A most unworthy opponent! I demand a rematch! With better understanding of 'how vending machines work!' Which someone explained to me! Still bitter though!",
+      "choices": [
+        {
+          "text": "Maybe let this one go.",
+          "leads_to": "letting_go"
+        }
+      ]
+    },
+    "new_strategy": {
+      "text": "*considers* Aye, mayhaps brute force is not the answer! Though 'tis served me well against dragons! I shall instead offer my services to thee! Together we shall collect the magical fragments! Restore order! And defeat the vending machine! Wait, no, forget that last one!",
+      "choices": [
+        {
+          "text": "Sounds like a plan.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "honest_knight": {
+      "text": "*stands proudly* A knight's honor demands honesty! I may be confused! Displaced in time! Defeated by modern convenience! But I am TRUE! And truth is more valuable than understanding! Though understanding would also be nice! Very nice! I am quite lost!",
+      "choices": [
+        {
+          "text": "You're doing fine.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "password_revelation": {
+      "text": "*amazed* THE FRONT DESK?! 'Tis that simple?! I thought I must slay a dragon or solve a riddle! Modern quests art disappointingly straightforward! Though I suppose that's... good? Less life-threatening! More efficient! I shall inquire immediately! After this conversation!",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fixing_alliance": {
+      "text": "*offers armored handshake* EXCELLENT! I pledge my sword to thy noble cause! Together we shall restore this realm! Vanquish the dimensional chaos! And perhaps obtain the WiFi password! A worthy quest! I am honored to serve! Even if I don't fully understand what we're doing!",
+      "choices": [
+        {
+          "text": "Glad to have you as an ally.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "knightly_priorities": {
+      "text": "*firmly* A knight without honor is merely a man with a sword! Honor must be maintained! Even toward mysterious technological devices! ESPECIALLY then! 'Tis what separates us from barbarians! And people who don't apologize to routers!",
+      "choices": [
+        {
+          "text": "I respect that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "tv_wisdom": {
+      "text": "*nods knowingly* I KNEW IT! 'Twas false reality! Deceptive! Unlike TRUE reality which is... also confusing currently! But at least it's HONEST confusion! Not staged confusion! I prefer my dimensional chaos authentic!",
+      "choices": [
+        {
+          "text": "Fair point.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "chaos_focus": {
+      "text": "*refocuses* AYE! The curse! The dark magic! The dimensional convergence! I shall put aside my fear of elevators and focus on the quest! A knight must prioritize! Save reality first! Understand technology later! Probably much later! Like decades!",
+      "choices": [
+        {
+          "text": "Good priorities.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "meme_advice": {
+      "text": "*relieved* THANK GOODNESS! Someone tried to explain 'memes' to me! Something about cats and jokes and the internet? Which is apparently not a physical net? Most befuddling! I shall focus on traditional knightly pursuits! Like smiting evil and eating breakfast!",
+      "choices": [
+        {
+          "text": "Stick to what you know.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "letting_go": {
+      "text": "*reluctant* Aye... thou art probably correct. A knight must choose his battles wisely. And battling a vending machine is... not wise. Even if it started it. By existing. And taking my coins. *grumbles* I shall be the bigger person. Even though I am CLEARLY more honorable!",
+      "choices": [
+        {
+          "text": "Very mature of you.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*salutes with sword* Fare thee well, noble companion! May thy quest be successful! May the dark magic be vanquished! And may we both survive to see a properly functioning hotel! With WiFi! And less dimensional instability! ONWARDS TO GLORY! *clanks away heroically*",
+      "choices": []
+    }
+  }
 }

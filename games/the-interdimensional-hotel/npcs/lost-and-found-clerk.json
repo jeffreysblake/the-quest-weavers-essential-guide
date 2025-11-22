@@ -12,5 +12,163 @@
   "level": 7,
   "type": "npc",
   "dialogueTreeId": "lost-and-found-clerk",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*looks up from sorting umbrellas* Ah. Another soul seeking what was lost. Or perhaps losing what was sought? The distinction blurs here. I am the Keeper of Forgotten Things. Everything misplaced finds its way to me. Eventually. Sometimes before it was lost. Time is... flexible... in the Lost & Found.",
+      "choices": [
+        {
+          "text": "How long have you worked here?",
+          "leads_to": "timeless_service"
+        },
+        {
+          "text": "Why so many umbrellas?",
+          "leads_to": "umbrella_mystery"
+        },
+        {
+          "text": "I'm looking for Reality Fragments.",
+          "leads_to": "fragments_inquiry"
+        }
+      ]
+    },
+    "timeless_service": {
+      "text": "*contemplates an ancient pocketwatch* How long? I was here before the hotel. I will be here after. Lost things exist outside time. And I exist with them. Was I a person once? Or am I the collective memory of misplaced objects? The line between keeper and kept has... dissolved.",
+      "choices": [
+        {
+          "text": "That's unsettling.",
+          "leads_to": "unsettling_truth"
+        },
+        {
+          "text": "Have you seen strange things lately?",
+          "leads_to": "strange_observations"
+        }
+      ]
+    },
+    "umbrella_mystery": {
+      "text": "*reverently touches a black umbrella* Ah, the eternal question. Why umbrellas? Because they are ALWAYS lost. Never returned. Humanity loses 80 million umbrellas per year. Where do they go? Here. To me. I am drowning in umbrellas. Blessed and cursed by their infinite accumulation.",
+      "choices": [
+        {
+          "text": "That's... a lot of umbrellas.",
+          "leads_to": "umbrella_philosophy"
+        },
+        {
+          "text": "Do lost things hold power?",
+          "leads_to": "power_of_lost"
+        }
+      ]
+    },
+    "fragments_inquiry": {
+      "text": "*eyes gleam with knowing* Reality Fragments? Yes. They are the most lost things of all. Lost from their proper places. Lost in time. Lost in space. But not lost to ME. I know where all lost things dwell. The question is: are you ready to find them?",
+      "choices": [
+        {
+          "text": "Can you help me find them?",
+          "leads_to": "cryptic_help"
+        },
+        {
+          "text": "Why were they lost?",
+          "leads_to": "fragment_origin"
+        }
+      ]
+    },
+    "unsettling_truth": {
+      "text": "*faint smile* Truth often is. Comfort is a luxury the Lost & Found cannot afford. We deal in absence. In the spaces between. In the moment after you realize your keys are gone. That moment of panic? I live there. Eternally.",
+      "choices": [
+        {
+          "text": "That sounds lonely.",
+          "leads_to": "loneliness"
+        }
+      ]
+    },
+    "strange_observations": {
+      "text": "Strange is relative. But yes. Items are being lost that were never found. Paradoxes appearing in my catalog. Someone is STEALING the concept of loss itself. Creating voids where things should be. This troubles me. Even lost things deserve to exist. Somewhere.",
+      "choices": [
+        {
+          "text": "Who would steal loss?",
+          "leads_to": "thief_hint"
+        }
+      ]
+    },
+    "umbrella_philosophy": {
+      "text": "Each umbrella represents a moment. A rainstorm. A forgotten thought. A hasty exit. I preserve these moments. Guard them. The umbrellas are not just objects. They are MEMORIES given form. To lose an umbrella is to lose a piece of time. I am the cemetery of forgotten afternoons.",
+      "choices": [
+        {
+          "text": "That's actually beautiful.",
+          "leads_to": "appreciation"
+        }
+      ]
+    },
+    "power_of_lost": {
+      "text": "*holds up a single sock* Immense power. A lost thing exists in superposition. It is everywhere you look and nowhere you search. Quantum uncertainty made mundane. The Reality Fragments? They are lost on PURPOSE. Their absence holds reality together. Or tears it apart. Depends on perspective.",
+      "choices": [
+        {
+          "text": "How do I find them?",
+          "leads_to": "finding_guide"
+        }
+      ]
+    },
+    "cryptic_help": {
+      "text": "Help? I can offer... guidance. The Fragments hide in obvious places. The Lobby's order. The Ghost Floor's memory. The Casino's chance. The Fantasy Realm's story. The Alien Convention's observation. The Basement's truth. Seek what doesn't belong, and you'll find what was taken.",
+      "choices": [
+        {
+          "text": "Thank you. I think.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fragment_origin": {
+      "text": "They were never meant to be separate. Reality was whole. Then someone broke it. Deliberately. Scattered the pieces across dimensions. The fragments WANT to be found. They whisper to those who listen. Can you hear them? Calling through the chaos?",
+      "choices": [
+        {
+          "text": "I'll find them.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "loneliness": {
+      "text": "*touches an old photograph* Lonely? Perhaps. But I have company. Every lost item carries the essence of who lost it. Their frustration. Their sadness. Their hope they'll return. I am never alone. I am crowded with the echoes of a million moments of loss.",
+      "choices": [
+        {
+          "text": "I should let you get back to work.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "thief_hint": {
+      "text": "*whispers* Someone who IS loss. Who embodies absence. A void walking. They came to the Lost & Found once. Tried to catalog THEMSELVES. Failed. You cannot lose what was never there. They left angry. Reality trembled. Be careful of the one called Null.",
+      "choices": [
+        {
+          "text": "I'll be careful. Thanks.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "appreciation": {
+      "text": "*rare genuine smile* You understand. Few do. Most see junk. You see meaning. The hotel chose well when it hired you. Or will hire you. Or has always employed you. Causality is broken, but intent remains. Fix this place. Restore what was lost.",
+      "choices": [
+        {
+          "text": "I will. I promise.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "finding_guide": {
+      "text": "To find the lost, become lost yourself. Wander without purpose. Look without seeking. The fragments will reveal themselves to those who understand paradox. And bring me an umbrella when you're done. I'm running low. *gestures at thousands of umbrellas* Relatively speaking.",
+      "choices": [
+        {
+          "text": "I'll see what I can do.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*returns to sorting* May you find what you seek. Or seek what you find. The order rarely matters. And remember: everything lost wants to be found. Even you. Especially you. Safe travels through the impossible.",
+      "choices": []
+    }
+  }
 }

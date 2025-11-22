@@ -12,5 +12,218 @@
   "level": 5,
   "type": "npc",
   "dialogueTreeId": "lord-evermore",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*puffs spectral cigar* Ah, a visitor! Welcome to my luxury suite. Or what remains of it after this dimensional nonsense. The walls keep shifting through different centuries. Very inconvenient for my art collection. *sips ghostly champagne* Tell me, are you here about the rent, the party, or the apocalypse?",
+      "choices": [
+        {
+          "text": "You charge rent? You're a ghost.",
+          "leads_to": "ghost_capitalism"
+        },
+        {
+          "text": "What party?",
+          "leads_to": "eternal_party"
+        },
+        {
+          "text": "The apocalypse, I suppose.",
+          "leads_to": "apocalypse_casual"
+        }
+      ]
+    },
+    "ghost_capitalism": {
+      "text": "*laughs richly* My dear fellow, death is merely a career transition! I was wealthy in life, I'm wealthy in death. Money transcends mortality! Besides, other ghosts need housing. I provide premium spectral real estate. Duke Ectoplasm owes me three months. I'd haunt him, but we're already both ghosts. Makes it awkward.",
+      "choices": [
+        {
+          "text": "That's... entrepreneurial.",
+          "leads_to": "business_mindset"
+        },
+        {
+          "text": "Do you own this hotel?",
+          "leads_to": "hotel_ownership"
+        }
+      ]
+    },
+    "eternal_party": {
+      "text": "*gestures expansively* Every Friday! Or Saturday. Or whenever, really - time is meaningless when you're dead. I host the most exclusive undead soirées! Ghosts, specters, the occasional poltergeist. We serve spiritual champagne, ethereal hors d'oeuvres, and existential dread! It's all very sophisticated.",
+      "choices": [
+        {
+          "text": "Sounds expensive.",
+          "leads_to": "party_costs"
+        },
+        {
+          "text": "Has the chaos affected your parties?",
+          "leads_to": "chaos_parties"
+        }
+      ]
+    },
+    "apocalypse_casual": {
+      "text": "*waves cigar dismissively* Ah yes, the dimensional convergence. Very dramatic. Very expensive. Do you know how hard it is to maintain property value when your property exists in six dimensions simultaneously? My insurance premiums are going to be ASTRONOMICAL. If dimensional insurance even exists.",
+      "choices": [
+        {
+          "text": "You're worried about insurance?",
+          "leads_to": "priorities"
+        },
+        {
+          "text": "I'm trying to fix it.",
+          "leads_to": "fixing_response"
+        }
+      ]
+    },
+    "business_mindset": {
+      "text": "*taps translucent temple* Death doesn't excuse poor financial planning! I've been investing in spectral real estate for decades. The Duke gambles, Lady Phantomworth judges, the Maestro conducts - I BUILD WEALTH. When this hotel stabilizes, I'll own half of it. Metaphorically. And possibly literally.",
+      "choices": [
+        {
+          "text": "That's very capitalist of you.",
+          "leads_to": "proud_capitalist"
+        },
+        {
+          "text": "Any tips for fixing the hotel?",
+          "leads_to": "helpful_info"
+        }
+      ]
+    },
+    "hotel_ownership": {
+      "text": "*smirks ghostly* Not YET. But Manager Paradox is... difficult to negotiate with. They exist in too many timelines simultaneously. Hard to get a straight answer about property deeds. However, I DO own the luxury suite, parts of the ballroom, and mineral rights to the basement. The ghosts need leadership!",
+      "choices": [
+        {
+          "text": "Mineral rights? To a basement?",
+          "leads_to": "basement_rights"
+        },
+        {
+          "text": "Tell me about the dimensional chaos.",
+          "leads_to": "chaos_investment"
+        }
+      ]
+    },
+    "party_costs": {
+      "text": "*laughs* Expensive? My dear person, I'm WEALTHY! The champagne is imported from the ethereal plane. The caviar is from an alternate timeline where fish are fancy. The entertainment is Maestro Spiritus arguing with Duke Ectoplasm about music and gambling. Priceless! Literally - I don't pay them.",
+      "choices": [
+        {
+          "text": "You don't pay your entertainment?",
+          "leads_to": "exposure_payment"
+        }
+      ]
+    },
+    "chaos_parties": {
+      "text": "*thoughtful puff of cigar* Actually, the chaos has IMPROVED attendance! Guests from multiple dimensions show up! Last week I hosted myself from three different timelines. We had a lovely chat about investments. Agreed on everything. Very productive. Though the catering bill was confusing.",
+      "choices": [
+        {
+          "text": "You partied with yourself?",
+          "leads_to": "self_party"
+        },
+        {
+          "text": "That's... weird.",
+          "leads_to": "weird_normal"
+        }
+      ]
+    },
+    "priorities": {
+      "text": "*serious tone* Insurance is ALWAYS the priority! Do you think spectral property just maintains itself? I have a reputation to uphold! The luxury suite must remain luxurious, regardless of dimensional stability. Standards, my good person. Standards!",
+      "choices": [
+        {
+          "text": "Your priorities are unique.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fixing_response": {
+      "text": "*perks up* Fixing it? EXCELLENT! The sooner we restore stability, the sooner I can resume charging full rent! The chaos has everyone distracted from their lease agreements! Do you need funding? I could invest. For a percentage. Say... 40% of reality?",
+      "choices": [
+        {
+          "text": "You want 40% of reality?",
+          "leads_to": "negotiate_reality"
+        },
+        {
+          "text": "I'll pass. Any useful information?",
+          "leads_to": "helpful_info"
+        }
+      ]
+    },
+    "proud_capitalist": {
+      "text": "*raises ghostly glass* Capitalism transcends mortality! Besides, what else am I going to do? Float around aimlessly? Wallow in death? No! I shall build an empire! Even if that empire is technically non-corporeal and possibly doesn't exist in this timeline!",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "helpful_info": {
+      "text": "*considers* Well, if you're ACTUALLY fixing things... I did notice some Reality Fragments near the more expensive areas of the hotel. Quality items gravitate toward quality locations. That's just economics. Check the luxury suite, the premium ballroom, anywhere with HIGH PROPERTY VALUE.",
+      "choices": [
+        {
+          "text": "That's actually helpful. Thanks.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "basement_rights": {
+      "text": "*nods seriously* ESPECIALLY the basement! Who knows what's down there? Could be treasure! Could be dimensional artifacts! Could be MORE REAL ESTATE! I'm playing the long game. Very long. I have eternity, after all.",
+      "choices": [
+        {
+          "text": "You're something else.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "chaos_investment": {
+      "text": "Chaos is merely opportunity in disguise! Yes, the hotel is collapsing dimensionally. But consider: more dimensions equals MORE PROPERTY! If I can claim ownership across multiple timelines, I'll be the wealthiest ghost in existence! It's all about perspective!",
+      "choices": [
+        {
+          "text": "That's optimistic?",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "exposure_payment": {
+      "text": "*waves cigar* I pay them in EXPOSURE! They get to perform at Lord Evermore's exclusive soirées! That's worth more than money! Plus, we're all dead. What are they going to spend money on? More ectoplasm? *laughs* They should pay ME!",
+      "choices": [
+        {
+          "text": "That's definitely ghostly capitalism.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "self_party": {
+      "text": "*grins* Indeed! Past me, present me, and future me! We discussed investments, shared market tips, and compared cigars. Future me has excellent taste. Past me was a bit naive about real estate. Present me is perfect. We all agreed on that last point.",
+      "choices": [
+        {
+          "text": "At least you get along with yourself.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "weird_normal": {
+      "text": "*shrugs elegantly* Weird is the new normal. I'm making the best of it. When life gives you dimensional chaos, throw a party! When death gives you dimensional chaos, throw a BETTER party and charge admission! Entrepreneurship never dies!",
+      "choices": [
+        {
+          "text": "I see.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "negotiate_reality": {
+      "text": "*considering* Well, that's my opening offer. We can negotiate. 30%? 25%? I'm flexible! Death has taught me patience. And the importance of diversifying one's portfolio across multiple planes of existence!",
+      "choices": [
+        {
+          "text": "I'll just fix it for free, thanks.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*raises ghostly champagne glass* Best of luck with your reality-saving endeavor! Remember - if you need funding, investors, or spiritual champagne, you know where to find me! The luxury suite! Assuming it's still in this dimension! *puffs cigar confidently*",
+      "choices": []
+    }
+  }
 }

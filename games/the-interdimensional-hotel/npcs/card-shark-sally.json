@@ -12,5 +12,392 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "card-shark-sally",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*eyes glow with augmented reality interface* Sally Stevens. They call me 'The Shark.' *shuffles cards with one hand* Professional gambler, card counter, winner of seventeen interdimensional poker championships. Banned from seven casinos for being 'too good.' Currently stuck in THIS casino where the house edge is 'dimensional instability.' Not ideal. You play?",
+      "choices": [
+        {
+          "text": "How do cybernetic eyes help with cards?",
+          "leads_to": "augmented_vision"
+        },
+        {
+          "text": "You've been banned seven times?",
+          "leads_to": "casino_bans"
+        },
+        {
+          "text": "Are you winning here?",
+          "leads_to": "current_results"
+        }
+      ]
+    },
+    "augmented_vision": {
+      "text": "*taps temple where cybernetic eye gleams* These beauties? Custom AR implants. They see through cards, calculate odds in real-time, track betting patterns, read micro-expressions. Cost me two years' winnings and a shady surgeon in Neo-Vegas. Worth every credit. Though right now they keep showing me cards from alternate timelines. Very distracting.",
+      "choices": [
+        {
+          "text": "That sounds like cheating.",
+          "leads_to": "cheating_debate"
+        },
+        {
+          "text": "Alternate timeline cards?",
+          "leads_to": "timeline_cards"
+        }
+      ]
+    },
+    "casino_bans": {
+      "text": "*grins sharply* Seven bans across three dimensions. Badge of honor in my profession. Vegas Prime, Lunar Casino Station, The Quantum Royale, Neo-Macau... All claimed I was 'enhancing' my abilities. I was! That's not illegal! Well... *pauses* ...it's complicated. Depends on jurisdiction. And whether security catches you.",
+      "choices": [
+        {
+          "text": "What did you do?",
+          "leads_to": "ban_stories"
+        },
+        {
+          "text": "Aren't you worried about this casino?",
+          "leads_to": "current_casino"
+        }
+      ]
+    },
+    "current_results": {
+      "text": "*frowns at chip stack* Define 'winning.' I'm up 30,000 credits from the robot dealer. But I've lost count in three games where the cards kept changing suits mid-deal. Hard to maintain edge when reality itself is bluffing. Also played against my own temporal duplicate. She knew all my tells. We split the pot. Very surreal.",
+      "choices": [
+        {
+          "text": "You played yourself?",
+          "leads_to": "temporal_poker"
+        },
+        {
+          "text": "How do you beat changing cards?",
+          "leads_to": "adaptive_strategy"
+        }
+      ]
+    },
+    "cheating_debate": {
+      "text": "*leans back coolly* 'Cheating' is a strong word. I prefer 'competitive optimization.' Everyone at the table uses their advantages. Some people have natural math skills. Others have experience. I have technology. If casinos don't want enhanced players, they should screen better. Not my fault their security is outdated.",
+      "choices": [
+        {
+          "text": "That's... one perspective.",
+          "leads_to": "moral_flexibility"
+        },
+        {
+          "text": "Fair point actually.",
+          "leads_to": "professional_respect"
+        }
+      ]
+    },
+    "timeline_cards": {
+      "text": "*cybernetic eyes flicker* Yeah. I'm seeing the ace of spades from three different timelines simultaneously. One where it's been dealt, one where it's in the deck, one where it doesn't exist. My implants can't process it. I keep folding winning hands and betting on impossible outcomes. My win rate has dropped to 67%. SIXTY-SEVEN. It's humiliating.",
+      "choices": [
+        {
+          "text": "67% is still pretty good.",
+          "leads_to": "standards"
+        },
+        {
+          "text": "Must be frustrating.",
+          "leads_to": "professional_frustration"
+        }
+      ]
+    },
+    "ban_stories": {
+      "text": "*counts on fingers* Vegas Prime: Won 47 hands straight. Security got suspicious. Neo-Macau: Counted cards too obviously, got cocky. Lunar Station: May have hacked their shuffle algorithm. Quantum Royale: They couldn't prove anything but asked me to leave. Politely. With security escorts. The others were... less polite.",
+      "choices": [
+        {
+          "text": "Any regrets?",
+          "leads_to": "no_regrets"
+        },
+        {
+          "text": "Sounds exciting.",
+          "leads_to": "gambler_life"
+        }
+      ]
+    },
+    "current_casino": {
+      "text": "*shrugs* Can't ban me if reality is collapsing! Silver lining! Though honestly, this casino is too chaotic to cheat effectively. Cards phase through dimensions. Chips change value randomly. Dealers are robots having existential crises. I'm playing STRAIGHT for the first time in years. It's weird. Also: I'm still winning. Turns out I'm actually good at poker. Who knew?",
+      "choices": [
+        {
+          "text": "That's a nice discovery!",
+          "leads_to": "genuine_skill"
+        },
+        {
+          "text": "Maybe you should play fair more often.",
+          "leads_to": "fair_play_suggestion"
+        }
+      ]
+    },
+    "temporal_poker": {
+      "text": "*shakes head in disbelief* Most bizarre game of my life. Sat down, saw myself across the table. Same augments, same tells, same strategy. We stared at each other for five minutes. Then played the most conservative poker imaginable. Every hand went to showdown. We both folded premium pairs knowing the other had better. Ended in draw. Other-me disappeared. Never spoke.",
+      "choices": [
+        {
+          "text": "That's deeply weird.",
+          "leads_to": "weird_agreement"
+        },
+        {
+          "text": "What did you learn?",
+          "leads_to": "self_reflection"
+        }
+      ]
+    },
+    "adaptive_strategy": {
+      "text": "*leans forward conspiratorially* You don't. You adapt. Can't calculate odds when reality is negotiable. So I'm using old-school techniques: reading people, trusting instincts, playing the player not the cards. It's TERRIFYING. No data. No certainty. Just gut feelings and bluffs. Like gambling in the dark ages. I hate it. Also: it's working. I don't understand why.",
+      "choices": [
+        {
+          "text": "Maybe you're naturally talented.",
+          "leads_to": "natural_talent"
+        },
+        {
+          "text": "Instinct is powerful.",
+          "leads_to": "instinct_wisdom"
+        }
+      ]
+    },
+    "moral_flexibility": {
+      "text": "*cybernetic eye gleams* I'm aware my ethics are... flexible. But gambling IS about edges. Finding advantages. Exploiting weaknesses. I just use technology instead of luck. Though I'll admit: beating people purely through skill feels... different. Better? Worse? I can't decide. Ask me when reality stabilizes and I can think clearly.",
+      "choices": [
+        {
+          "text": "That's honest at least.",
+          "leads_to": "honest_assessment"
+        }
+      ]
+    },
+    "professional_respect": {
+      "text": "*nods approvingly* Exactly! You get it! Casinos make billions using mathematics against players. I just reversed the equation. They call it 'advantage play.' It's a war. They have security, algorithms, house edge. I have augments, skill, and determination. May the best system win. Usually me.",
+      "choices": [
+        {
+          "text": "Interesting philosophy.",
+          "leads_to": "philosophy"
+        }
+      ]
+    },
+    "standards": {
+      "text": "*looks offended* Good? GOOD?! I maintain 94% win rate across seventeen casinos! Sixty-seven is AMATEUR numbers! That's barely better than skilled play! My reputation is built on DOMINANCE, not 'pretty good'! Though... *grudgingly* ...I suppose given the circumstances, 67% is... acceptable. Barely.",
+      "choices": [
+        {
+          "text": "You have high standards.",
+          "leads_to": "perfectionism"
+        }
+      ]
+    },
+    "professional_frustration": {
+      "text": "*runs hand through hair* SO frustrating! I've spent years perfecting my craft! Built my rep on consistency! Now reality is literally changing rules mid-game! It's like... imagine being a master chef and the ingredients keep turning into different foods while you cook! That's what I'm dealing with! Dimensional poker is BROKEN!",
+      "choices": [
+        {
+          "text": "That's a fair complaint.",
+          "leads_to": "validation"
+        },
+        {
+          "text": "Maybe it's a new challenge.",
+          "leads_to": "new_challenge"
+        }
+      ]
+    },
+    "no_regrets": {
+      "text": "*firm shake of head* Zero regrets. Every ban taught me something. Better security awareness. Subtler tells. When to walk away. I'm the best because I push boundaries. You don't become legendary by playing safe. You become forgotten. I'd rather be banned and famous than mediocre and welcome.",
+      "choices": [
+        {
+          "text": "That's very principled.",
+          "leads_to": "principles"
+        }
+      ]
+    },
+    "gambler_life": {
+      "text": "*grins* Exciting doesn't cover it! High stakes, higher risks, private games with crime lords, tournaments worth millions! I've played poker in zero gravity! Bet against AI that could calculate every possible outcome! Won a starship in a single hand! Lost it two days later, but still! This life is NEVER boring! Even during apocalypses!",
+      "choices": [
+        {
+          "text": "You won a starship?!",
+          "leads_to": "starship_story"
+        },
+        {
+          "text": "Sounds like you love it.",
+          "leads_to": "passion"
+        }
+      ]
+    },
+    "genuine_skill": {
+      "text": "*looks genuinely surprised* Right? WEIRD discovery! Turns out I have actual talent! Not just technological advantage! All these years I thought I was good because of the implants. But no! I can read people! I understand probability! I know when to bluff! The implants were just... confidence boosters? This is... huh. I need to process this.",
+      "choices": [
+        {
+          "text": "That's great!",
+          "leads_to": "self_discovery"
+        }
+      ]
+    },
+    "fair_play_suggestion": {
+      "text": "*considers seriously* Maybe. MAYBE. But old habits die hard. And cheating - sorry, 'advantage play' - is profitable! Though I admit: winning fair feels... cleaner? More earned? I don't know. Ask me after I've had time to think. And after reality stops being drunk. Hard to make life choices during dimensional collapse.",
+      "choices": [
+        {
+          "text": "Fair enough!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "weird_agreement": {
+      "text": "*shudders* DEEPLY weird. Imagine everything you hide from the world - your tells, your thoughts, your strategy - sitting across from you knowing it all. We were perfectly matched. Perfect stalemate. I learned something though: I'm predictable. Need to work on that. If I ever escape this hotel. Big if.",
+      "choices": [
+        {
+          "text": "That's valuable insight.",
+          "leads_to": "growth"
+        }
+      ]
+    },
+    "self_reflection": {
+      "text": "*thoughtful pause* I learned I rely too much on systems. Technology. Patterns. When faced with myself - pure mirror match - I had nothing. No edge. No advantage. Just... me. And 'just me' was enough for a draw. That's... actually kind of profound? Or maybe I'm reading too much into weird dimensional poker. Could go either way.",
+      "choices": [
+        {
+          "text": "Sounds profound to me.",
+          "leads_to": "philosophical_moment"
+        }
+      ]
+    },
+    "natural_talent": {
+      "text": "*skeptical* Talented? At cards? Without augments? That would mean... *processing* ...I've been good this WHOLE TIME and didn't know it? I've been using technological crutches when I could have just... played? That's either empowering or the saddest thing ever. I haven't decided which.",
+      "choices": [
+        {
+          "text": "Why not both?",
+          "leads_to": "complexity"
+        }
+      ]
+    },
+    "instinct_wisdom": {
+      "text": "*nods slowly* Instinct. Reading people. The human element. I'd forgotten that existed. Been too focused on data, probabilities, augmented reality overlays. But the best players - the LEGENDS - they have something beyond math. Intuition. Feel. Maybe I've been chasing the wrong advantage this whole time.",
+      "choices": [
+        {
+          "text": "Worth exploring.",
+          "leads_to": "future_plans"
+        }
+      ]
+    },
+    "honest_assessment": {
+      "text": "*half-smile* Honesty is good policy. At cards and in life. Well, at cards when you're bluffing. And in life when you're caught. Otherwise: flexibility is key. But yeah, I'm honest about BEING dishonest. That's... something? Better than lying about lying? Ethics are complicated.",
+      "choices": [
+        {
+          "text": "They really are.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "philosophy": {
+      "text": "*shuffles cards absently* My philosophy: Everyone's playing angles. Casinos, players, dealers, security. It's all one big game of optimization. I just optimize better. With technology. And skill. And occasionally bribing floor managers. Whatever works. Adapt or lose. I choose adapt.",
+      "choices": [
+        {
+          "text": "Very pragmatic.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "perfectionism": {
+      "text": "*crosses arms* HIGH standards made me rich! Made me famous! Can't settle for 'good enough' in competitive fields! Every percentage point matters! Every edge counts! That's the difference between winning and losing! Between legend and nobody! I don't do 'acceptable.' I do 'exceptional.'",
+      "choices": [
+        {
+          "text": "That's admirable!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "validation": {
+      "text": "*appreciative nod* THANK you! Finally someone understands! This isn't normal variance! This is reality actively sabotaging professional gambling! How am I supposed to make a living when the cards won't stay in one dimension?! It's like the universe is personally offended by my skillset!",
+      "choices": [
+        {
+          "text": "The universe is rude.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "new_challenge": {
+      "text": "*considers* New challenge... I suppose you're right. Never played dimensional poker before. If I can master THIS, regular poker will be EASY! I'll be the only player who's won across collapsed timelines! That's a hell of a resume builder! 'Sally Stevens: Interdimensional Card Champion!' I like it!",
+      "choices": [
+        {
+          "text": "That's the spirit!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "principles": {
+      "text": "*firm nod* Principles. I live by them. Never cheat friends. Always pay debts. And never, EVER play small. Go big or go home. That's the gambler's code. Well, MY code. Other gamblers can do what they want. But I stick to mine. Even when they get me banned.",
+      "choices": [
+        {
+          "text": "Respect.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "starship_story": {
+      "text": "*eyes light up* YES! Small cargo ship! Opponent was drunk! I had pocket aces! All-in! Won the ship! Title and everything! Took it for a spin, realized I hate piloting, sold it two days later for twice its value! Best hand of my life! Still have the title deed framed in my apartment! If apartment still exists after this mess!",
+      "choices": [
+        {
+          "text": "Incredible story!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "passion": {
+      "text": "*genuine smile* I LOVE it! The thrill! The strategy! The pure competition! Every hand is a puzzle! Every opponent a challenge! Money's great, but the GAME is everything! That moment when you're all-in, cards revealed, waiting for the river... THAT'S living! Even in dimensional chaos, I still feel it! That's how you know you've found your calling!",
+      "choices": [
+        {
+          "text": "Beautiful!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "self_discovery": {
+      "text": "*processing shock* This is HUGE! This changes everything! All these years thinking I'm a fraud with fancy tech! But I'm ACTUALLY GOOD! I have REAL SKILL! This is... validating? Confusing? Both? I need to sit down. Wait, I am sitting down. I need to... think. Process. Maybe play some honest poker. See what happens.",
+      "choices": [
+        {
+          "text": "Good luck with that!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "growth": {
+      "text": "*nods thoughtfully* Valuable insight from the weirdest possible source: myself. Classic. But yeah, I need to evolve. Change strategies. Maybe even... *struggles* ...reduce reliance on augments? Use them as backup, not primary? This is character growth. I don't like it. But I respect it.",
+      "choices": [
+        {
+          "text": "Growth is good!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "philosophical_moment": {
+      "text": "*cybernetic eyes dim slightly* Profound. Yeah. Dimensional poker as therapy. Who'd have thought? Maybe when reality stabilizes, I'll remember this. Remember that technology is a tool, not a crutch. That I'm good with or without it. Maybe even play a few hands clean. MAYBE. No promises.",
+      "choices": [
+        {
+          "text": "I'll take maybe!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "complexity": {
+      "text": "*slight grin* Both. Empowering AND sad. I'm complex like that! Powerful realization wrapped in existential crisis! Very on-brand for this hotel! But seriously: this is good to know. When I get out - IF I get out - I'll play differently. Smarter. More confident. Less reliant on tech. Could be game-changing. Literally.",
+      "choices": [
+        {
+          "text": "Rooting for you!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "future_plans": {
+      "text": "*deals cards thoughtfully* Worth exploring. Maybe I'll try some games without augments. See what happens. Test this 'natural talent' theory. Could be liberating. Or disastrous. But hey, that's gambling! You bet on uncertainty! I'll bet on myself! For once, purely on myself! Not my technology! MYSELF! That's... scary. Also exciting.",
+      "choices": [
+        {
+          "text": "That's brave!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*shuffles cards with practiced ease* Thanks for the talk. Needed that. Perspective. Reflection. The kind of thing you don't get at poker tables. If you ever want to play a hand - fair game, no augments - find me. I'll deal you in. And hey, if we survive this dimensional mess, drinks on me. I'm up 30,000 credits. I can afford it. *winks with cybernetic eye*",
+      "choices": []
+    }
+  }
 }

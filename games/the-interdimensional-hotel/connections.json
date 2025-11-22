@@ -21,14 +21,14 @@
     {"from": "victorian-hallway", "to": "ghost-library", "direction": "north"},
     {"from": "ghost-library", "to": "victorian-hallway", "direction": "south"},
 
-    {"from": "victorian-hallway", "to": "phantoms-suite", "direction": "northeast"},
-    {"from": "phantoms-suite", "to": "victorian-hallway", "direction": "southwest"},
+    {"from": "victorian-hallway", "to": "phantoms-suite", "direction": "east"},
+    {"from": "phantoms-suite", "to": "victorian-hallway", "direction": "west"},
 
     {"from": "victorian-hallway", "to": "seance-room", "direction": "south"},
     {"from": "seance-room", "to": "victorian-hallway", "direction": "north"},
 
-    {"from": "elevator-bank", "to": "neon-corridor", "direction": "up"},
-    {"from": "neon-corridor", "to": "elevator-bank", "direction": "down"},
+    {"from": "victorian-hallway", "to": "neon-corridor", "direction": "up"},
+    {"from": "neon-corridor", "to": "victorian-hallway", "direction": "down"},
 
     {"from": "neon-corridor", "to": "cyber-casino-floor", "direction": "east"},
     {"from": "cyber-casino-floor", "to": "neon-corridor", "direction": "west"},
@@ -42,8 +42,8 @@
     {"from": "cyber-casino-floor", "to": "vip-lounge", "direction": "south"},
     {"from": "vip-lounge", "to": "cyber-casino-floor", "direction": "north"},
 
-    {"from": "elevator-bank", "to": "medieval-hall", "direction": "up"},
-    {"from": "medieval-hall", "to": "elevator-bank", "direction": "down"},
+    {"from": "neon-corridor", "to": "medieval-hall", "direction": "up"},
+    {"from": "medieval-hall", "to": "neon-corridor", "direction": "down"},
 
     {"from": "medieval-hall", "to": "dragons-chamber", "direction": "east"},
     {"from": "dragons-chamber", "to": "medieval-hall", "direction": "west"},
@@ -51,14 +51,14 @@
     {"from": "medieval-hall", "to": "wizards-tower", "direction": "north"},
     {"from": "wizards-tower", "to": "medieval-hall", "direction": "south"},
 
-    {"from": "medieval-hall", "to": "enchanted-garden", "direction": "northeast"},
-    {"from": "enchanted-garden", "to": "medieval-hall", "direction": "southwest"},
+    {"from": "medieval-hall", "to": "enchanted-garden", "direction": "east"},
+    {"from": "enchanted-garden", "to": "medieval-hall", "direction": "west"},
 
     {"from": "medieval-hall", "to": "tavern-of-heroes", "direction": "south"},
     {"from": "tavern-of-heroes", "to": "medieval-hall", "direction": "north"},
 
-    {"from": "elevator-bank", "to": "xenobiology-wing", "direction": "up"},
-    {"from": "xenobiology-wing", "to": "elevator-bank", "direction": "down"},
+    {"from": "medieval-hall", "to": "xenobiology-wing", "direction": "up"},
+    {"from": "xenobiology-wing", "to": "medieval-hall", "direction": "down"},
 
     {"from": "xenobiology-wing", "to": "intergalactic-conference-room", "direction": "east"},
     {"from": "intergalactic-conference-room", "to": "xenobiology-wing", "direction": "west"},
@@ -81,8 +81,8 @@
     {"from": "service-tunnels", "to": "lost-and-found", "direction": "north"},
     {"from": "lost-and-found", "to": "service-tunnels", "direction": "south"},
 
-    {"from": "service-tunnels", "to": "employee-lounge", "direction": "northeast"},
-    {"from": "employee-lounge", "to": "service-tunnels", "direction": "southwest"},
+    {"from": "lost-and-found", "to": "employee-lounge", "direction": "east"},
+    {"from": "employee-lounge", "to": "lost-and-found", "direction": "west"},
 
     {"from": "service-tunnels", "to": "maintenance-shaft", "direction": "south"},
     {"from": "maintenance-shaft", "to": "service-tunnels", "direction": "north"},

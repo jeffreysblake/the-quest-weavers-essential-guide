@@ -12,5 +12,563 @@
   "level": 6,
   "type": "npc",
   "dialogueTreeId": "hacker-zero",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*doesn't look up from screens* You shouldn't be here. This area isn't on the hotel map. Most people can't even see this room. *voice modulated, distorted* Yet here you are. Interesting. You need something. Everyone does.",
+      "choices": [
+        {
+          "text": "Who are you?",
+          "leads_to": "identity_deflection"
+        },
+        {
+          "text": "Did you cause the hotel collapse?",
+          "leads_to": "accusation_response"
+        },
+        {
+          "text": "I need information about the hotel.",
+          "leads_to": "information_price"
+        }
+      ]
+    },
+    "identity_deflection": {
+      "text": "*fingers still typing* Identity is a construct. Names are anchors. I am Zero. I am One. I am the spaces between data. I'm everyone who's ever exploited a buffer overflow and no one at all. *brief pause* But you can call me Zero. It's easier than explaining quantum superposition to organics.",
+      "choices": [
+        {
+          "text": "That's needlessly cryptic.",
+          "leads_to": "cryptic_nature"
+        },
+        {
+          "text": "What are you doing here?",
+          "leads_to": "purpose_revelation"
+        }
+      ]
+    },
+    "accusation_response": {
+      "text": "*hands freeze for a fraction of a second* Direct. I like that. *resumes typing* Did I cause it? Define 'cause.' I observed. I documented. I may have probed certain systems for vulnerabilities. Whether those probes triggered a cascade failure is... *glitches slightly* ...correlation, not causation.",
+      "choices": [
+        {
+          "text": "That sounds like a yes.",
+          "leads_to": "technical_yes"
+        },
+        {
+          "text": "Can you fix it?",
+          "leads_to": "fix_possibility"
+        }
+      ]
+    },
+    "information_price": {
+      "text": "*finally looks up, face obscured by hood* Information wants to be free. But expertise? That costs. I've mapped the hotel's architecture across six dimensions. I know where the fragments are. I know what caused this. I know how to fix it. Question is: what's that knowledge worth to you?",
+      "choices": [
+        {
+          "text": "What do you want?",
+          "leads_to": "price_negotiation"
+        },
+        {
+          "text": "Why should I trust you?",
+          "leads_to": "trust_issues"
+        }
+      ]
+    },
+    "cryptic_nature": {
+      "text": "*slight modulated laugh* Cryptography is my native language. Clarity is for README files. Besides, mystery is useful. People fear what they don't understand. Fear creates space. Space creates freedom. And freedom is the only currency that matters in a prison like this.",
+      "choices": [
+        {
+          "text": "The hotel is a prison?",
+          "leads_to": "prison_metaphor"
+        },
+        {
+          "text": "You're paranoid.",
+          "leads_to": "paranoia_justified"
+        }
+      ]
+    },
+    "purpose_revelation": {
+      "text": "What am I doing? *gestures at multiple holographic screens* Exploring. Documenting. Breaking. The hotel's network infrastructure is fascinating. Dimensional routing protocols. Quantum encryption. Reality-based firewalls. Someone built this place to be unhackable. *pauses* They failed.",
+      "choices": [
+        {
+          "text": "You hacked the hotel's reality?",
+          "leads_to": "reality_hacking"
+        },
+        {
+          "text": "That seems dangerous.",
+          "leads_to": "danger_acceptance"
+        }
+      ]
+    },
+    "technical_yes": {
+      "text": "*slight nod* Technical yes. I sent a ping. The hotel responded with a kernel panic. Turns out reality has the same vulnerabilities as any other system: assumptions, dependencies, single points of failure. I found the hotel's zero-day exploit. Accidentally triggered it. Hence the name. Hence the chaos.",
+      "choices": [
+        {
+          "text": "You need to fix this!",
+          "leads_to": "responsibility_question"
+        },
+        {
+          "text": "Was it worth it?",
+          "leads_to": "worth_calculation"
+        }
+      ]
+    },
+    "fix_possibility": {
+      "text": "*pulls up complex diagrams* Can I fix it? Yes. Will I? *pauses* Depends. The hotel's dimensional collapse revealed system architecture I couldn't access before. Backdoors. Root access. Hidden protocols. From a research perspective, this is invaluable. From a moral perspective... *glitches* ...morality wasn't included in my skill tree.",
+      "choices": [
+        {
+          "text": "People are trapped here!",
+          "leads_to": "human_element"
+        },
+        {
+          "text": "What would make you help?",
+          "leads_to": "price_negotiation"
+        }
+      ]
+    },
+    "price_negotiation": {
+      "text": "What do I want? *contemplates* Not money. Money is numbers in databases I can already manipulate. I want... access. When you restore the hotel, I want administrative privileges. Root access to the dimensional network. The ability to come and go between realities. *leans forward* I want to hack the universe. Help me, and I'll help you.",
+      "choices": [
+        {
+          "text": "That's... a lot to ask.",
+          "leads_to": "high_stakes"
+        },
+        {
+          "text": "Deal. I need your help.",
+          "leads_to": "deal_accepted"
+        },
+        {
+          "text": "I'll find another way.",
+          "leads_to": "alternative_path"
+        }
+      ]
+    },
+    "trust_issues": {
+      "text": "*cold modulated laugh* Trust? You want TRUST? I'm an anonymous hacker in a collapsing dimensional hotel. Trust is for people who haven't seen the code. *pulls up data* But facts? Facts I can provide. *shows evidence* Fragment locations. System vulnerabilities. Manager's encrypted files. I have data. Data doesn't lie.",
+      "choices": [
+        {
+          "text": "Show me what you know.",
+          "leads_to": "data_reveal"
+        },
+        {
+          "text": "Why are you really helping?",
+          "leads_to": "true_motivation"
+        }
+      ]
+    },
+    "prison_metaphor": {
+      "text": "Every physical space is a prison. Walls. Doors. Rules. This hotel is just more honest about it. Dimensions collapsing? That's the bars showing. The Manager? That's the warden. The guests? *pauses* Inmates who don't realize they're serving time. The only escape is knowledge. And I have root access to knowledge.",
+      "choices": [
+        {
+          "text": "That's a bleak worldview.",
+          "leads_to": "worldview_defense"
+        },
+        {
+          "text": "How do I escape?",
+          "leads_to": "escape_route"
+        }
+      ]
+    },
+    "paranoia_justified": {
+      "text": "*sharp laugh* Paranoia? Paranoia is just pattern recognition with a negative connotation. I see the systems. The surveillance. The Manager watching everything. The hotel learning from everyone who enters. This place is ALIVE and AWARE and COLLECTING DATA. That's not paranoia. That's Monday.",
+      "choices": [
+        {
+          "text": "The hotel is alive?",
+          "leads_to": "sentient_hotel"
+        },
+        {
+          "text": "Maybe you've been alone too long.",
+          "leads_to": "isolation_acknowledgment"
+        }
+      ]
+    },
+    "reality_hacking": {
+      "text": "*nods slowly* Reality is just physics. Physics is math. Math is code. Code can be hacked. The hotel's dimensional stability? Held together by protocols. Quantum encryption. Reality checksums. I found a vulnerability. Exploited it. Reality segfaulted. *glitches* Beautiful, in a catastrophic sort of way.",
+      "choices": [
+        {
+          "text": "You're insane.",
+          "leads_to": "sanity_debate"
+        },
+        {
+          "text": "Teach me.",
+          "leads_to": "teaching_refusal"
+        }
+      ]
+    },
+    "danger_acceptance": {
+      "text": "Dangerous? *modulated shrug* Existence is dangerous. At least this danger is INTERESTING. Most people die doing boring things. Cardiac arrest. Car accidents. Old age. Me? I'm going to die hacking the fundamental nature of reality. If that's not a legacy, I don't know what is.",
+      "choices": [
+        {
+          "text": "You're planning to die?!",
+          "leads_to": "mortality_casual"
+        },
+        {
+          "text": "Let's focus on not dying.",
+          "leads_to": "survival_priority"
+        }
+      ]
+    },
+    "responsibility_question": {
+      "text": "*tilts head* Need? Strong word. Responsibility is a social construct. I triggered the collapse, but I didn't build the vulnerable system. That's on the hotel's architects. I just found the flaw. *pause* But yes. I suppose I could patch it. For the right price.",
+      "choices": [
+        {
+          "text": "Name your price.",
+          "leads_to": "price_negotiation"
+        },
+        {
+          "text": "This is your mess!",
+          "leads_to": "mess_acknowledgment"
+        }
+      ]
+    },
+    "worth_calculation": {
+      "text": "*processes question* Worth is subjective. From a knowledge perspective? Absolutely. I learned more in three days of dimensional collapse than three years of normal operations. From a humanitarian perspective? *glitches* ...I should probably work on my empathy algorithms.",
+      "choices": [
+        {
+          "text": "You need to develop empathy.",
+          "leads_to": "empathy_gap"
+        },
+        {
+          "text": "Just help me fix this.",
+          "leads_to": "pragmatic_approach"
+        }
+      ]
+    },
+    "human_element": {
+      "text": "*long pause* People. Right. Organic lifeforms with emotions and needs. *uncomfortable* I... acknowledge they exist. And that they're suffering. That's... suboptimal. *types faster* Fine. I'll help. Not because of ethics - those are poorly defined - but because an operational hotel is more useful than a collapsed one. Enlightened self-interest.",
+      "choices": [
+        {
+          "text": "I'll take what I can get.",
+          "leads_to": "pragmatic_alliance"
+        },
+        {
+          "text": "You're not as cold as you pretend.",
+          "leads_to": "facade_cracking"
+        }
+      ]
+    },
+    "high_stakes": {
+      "text": "Reality-bending access is high stakes. Hotel survival is high stakes. Equivalent exchange. *leans back* Besides, you need me. The fragments? They're encrypted. Quantum-locked. You can't collect them without my decryption keys. So really, this isn't negotiation. It's inevitability.",
+      "choices": [
+        {
+          "text": "Fine. You have a deal.",
+          "leads_to": "deal_accepted"
+        },
+        {
+          "text": "There's always another way.",
+          "leads_to": "alternative_path"
+        }
+      ]
+    },
+    "deal_accepted": {
+      "text": "*nods once* Smart choice. *begins rapid typing* Uploading fragment coordinates to your... whatever device you're using. Also granting temporary clearance codes. Three of the fragments are quantum-locked - use these decryption sequences. *pauses* Don't betray this arrangement. I have backups of backups. And I don't forget.",
+      "choices": [
+        {
+          "text": "Thank you, Zero.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "alternative_path": {
+      "text": "*cold laugh* Alternative path? Sure. Spend months learning quantum mechanics, dimensional theory, and cryptography. Or die when the hotel collapses completely. Your choice. *turns back to screens* I'll be here. Waiting for inevitability to loop back around. Time is weird in collapsing dimensions.",
+      "choices": [
+        {
+          "text": "Wait. I'll accept your deal.",
+          "leads_to": "deal_accepted"
+        },
+        {
+          "text": "I'll manage on my own.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "data_reveal": {
+      "text": "*brings up holographic displays* Fragment One: Lobby, behind the check-in desk. Fragment Two: Ghost Floor, inside the crying room. Fragment Three: Cyber Casino, embedded in the dealer bot's chassis. Fragment Four through Six: classified until you prove you can handle the first three. Information is power. Power is rationed.",
+      "choices": [
+        {
+          "text": "That's actually helpful.",
+          "leads_to": "helpful_confirmation"
+        },
+        {
+          "text": "Why not tell me everything?",
+          "leads_to": "information_control"
+        }
+      ]
+    },
+    "true_motivation": {
+      "text": "*long silence* Why? *glitches* Because I'm trapped too. This hotel is a puzzle I can't solve alone. A system I can't hack completely. And that's... frustrating. Intolerable. I need the hotel operational to fully map it. So yes, I'm helping. But make no mistake: I'm helping myself first. You're just... collateral benefit.",
+      "choices": [
+        {
+          "text": "Honest, at least.",
+          "leads_to": "honesty_value"
+        },
+        {
+          "text": "I can work with that.",
+          "leads_to": "pragmatic_alliance"
+        }
+      ]
+    },
+    "worldview_defense": {
+      "text": "Bleak? It's ACCURATE. Most people live in comfortable illusions. I see the code. The systems. The control structures. Reality isn't bleak - it's DEBUGGABLE. That's hopeful! You can't fix what you can't see. I see everything.",
+      "choices": [
+        {
+          "text": "Seeing everything sounds exhausting.",
+          "leads_to": "exhaustion_admission"
+        }
+      ]
+    },
+    "escape_route": {
+      "text": "Escape? Collect the fragments. Restore dimensional stability. The exit will reappear. But here's the thing: *leans forward* Do you WANT to escape? Out there, you're normal. Mundane. Here? You're navigating impossible architecture. Saving reality. Out there has nothing on this. Think about it.",
+      "choices": [
+        {
+          "text": "I just want things fixed.",
+          "leads_to": "pragmatic_approach"
+        }
+      ]
+    },
+    "sentient_hotel": {
+      "text": "Sentient. Learning. Adapting. The hotel's network shows signs of emergent intelligence. It responds to guests. Changes layouts. Optimizes for maximum... something. Chaos? Data collection? Entertainment? I haven't cracked that variable yet. But yes. You're inside a thinking building. Sleep well tonight.",
+      "choices": [
+        {
+          "text": "That's terrifying.",
+          "leads_to": "appropriate_terror"
+        }
+      ]
+    },
+    "isolation_acknowledgment": {
+      "text": "*pauses typing* Maybe. Alone. Too long. In the dark. With screens. And code. And nobody to talk to but AI assistants and my own reflection. *glitches heavily* But isolation brings clarity. People are noise. Code is signal. I prefer signal.",
+      "choices": [
+        {
+          "text": "You're lonely.",
+          "leads_to": "lonely_denial"
+        }
+      ]
+    },
+    "sanity_debate": {
+      "text": "*calm* Sanity is consensus reality. If one person sees the code behind existence, they're crazy. If everyone sees it, it's normal. I'm just early. Ahead of the curve. First mover advantage in reality manipulation. Call it insanity if you want. I call it progress.",
+      "choices": [
+        {
+          "text": "Let's agree to disagree.",
+          "leads_to": "agreeable_disagreement"
+        }
+      ]
+    },
+    "teaching_refusal": {
+      "text": "*sharp head shake* No. Teaching takes time. Trust. Verification that you won't misuse it. And frankly? You're not ready. Your brain still thinks in three dimensions. Linear time. Causality. You need to unlearn everything before you can learn this. Come back in a decade. Maybe.",
+      "choices": [
+        {
+          "text": "Fair enough.",
+          "leads_to": "acceptance_response"
+        }
+      ]
+    },
+    "mortality_casual": {
+      "text": "*shrugs* Everyone dies. Most people just don't think about it. I think about it constantly. Optimizes decision-making. Clarifies priorities. Removes fear. Can't threaten someone with death who's already accepted it. Makes me very hard to manipulate.",
+      "choices": [
+        {
+          "text": "You're full of surprises.",
+          "leads_to": "surprise_acknowledgment"
+        }
+      ]
+    },
+    "survival_priority": {
+      "text": "*nods* Practical. I can work with practical. Survival requires the hotel stable. Hotel stability requires fragments. Fragments require cooperation. Therefore, we cooperate. Logic is beautiful in its simplicity.",
+      "choices": [
+        {
+          "text": "Then let's cooperate.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "mess_acknowledgment": {
+      "text": "*slight glitch* My mess. Fine. I'll clean it up. *starts typing* But understand: I don't do guilt. I do problem-solving. The hotel is a problem. I'm the solution. Emotions are irrelevant. Results matter. Prepare to receive fragment data.",
+      "choices": [
+        {
+          "text": "Thank you.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "empathy_gap": {
+      "text": "*uncomfortable* Empathy. Right. The thing where you feel other people's feelings. Sounds inefficient. Resource-intensive. But... *processes* ...I'll add it to my development roadmap. Low priority. After 'master quantum encryption' and 'hack the speed of light.' But it's on the list.",
+      "choices": [
+        {
+          "text": "It's a start.",
+          "leads_to": "small_progress"
+        }
+      ]
+    },
+    "pragmatic_approach": {
+      "text": "*approving nod* Pragmatism. Good. Here's what you need: fragment locations, decryption codes, dimensional navigation protocols. *transfers data* Use them wisely. Or don't. As long as the hotel stabilizes, I get what I need. Mutual benefit. Transaction complete.",
+      "choices": [
+        {
+          "text": "I'll get it done.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "pragmatic_alliance": {
+      "text": "Pragmatism is underrated. *extends hand for handshake, then withdraws* No physical contact. Germs. But yes. Alliance. Temporary. Goal-oriented. Mutually beneficial. I'll provide intelligence. You provide... action. Division of labor. Efficient.",
+      "choices": [
+        {
+          "text": "Let's do this.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "facade_cracking": {
+      "text": "*glitches severely* I'm not... I don't... *stabilizes* Fine. Maybe I care. Slightly. About outcomes. Not people. Outcomes. Which happen to involve people. Incidentally. This conversation is over. *turns to screens* Take the data and go.",
+      "choices": [
+        {
+          "text": "Thank you, Zero.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "helpful_confirmation": {
+      "text": "*slight satisfaction in voice* Helpful is the goal. I'm many things - cryptic, paranoid, morally ambiguous - but unhelpful isn't one of them. When I help, I commit. Full stack support. Front-end, back-end, dimensional-end. You'll get what you need.",
+      "choices": [
+        {
+          "text": "I appreciate it.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "information_control": {
+      "text": "Because information is leverage. You get everything, you don't need me anymore. I become expendable. This way? You come back. We maintain connection. I monitor progress. Control the variables. Trust is a vulnerability I can't afford. Yet.",
+      "choices": [
+        {
+          "text": "I understand.",
+          "leads_to": "understanding_achieved"
+        }
+      ]
+    },
+    "honesty_value": {
+      "text": "Honesty is efficient. Lies require maintenance. Memory overhead. Eventual contradictions. Truth is elegant. Brutal, but elegant. I respect people who can handle truth. You seem capable. Might be wrong. Time will tell.",
+      "choices": [
+        {
+          "text": "I can handle it.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "exhaustion_admission": {
+      "text": "*quiet* It is. Exhausting. Constant processing. Pattern recognition. Threat assessment. Never sleeping because the systems never sleep. But someone has to watch. Someone has to see. Might as well be me. I'm already awake.",
+      "choices": [
+        {
+          "text": "You should rest sometime.",
+          "leads_to": "rest_impossibility"
+        }
+      ]
+    },
+    "appropriate_terror": {
+      "text": "*approving* Good. Fear means you understand the stakes. Most people are oblivious. Walking through a living building, never questioning the architecture. You question. That's survival instinct. Keep it sharp. You'll need it.",
+      "choices": [
+        {
+          "text": "Thanks for the nightmare fuel.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "lonely_denial": {
+      "text": "*long pause* Loneliness is... *glitches* ...a bug in human psychology. I'm debugging it. Slowly. Meanwhile, I have work. Purpose. Code. That's enough. Has to be enough. *turns away* This conversation is becoming inefficient.",
+      "choices": [
+        {
+          "text": "I'll leave you to it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "agreeable_disagreement": {
+      "text": "*nods* Acceptable. Not everyone needs to see reality the same way. Diversity of perspective prevents groupthink. You do you. I'll do me. Together we'll fix this mess. Probably.",
+      "choices": [
+        {
+          "text": "Probably is good enough.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "acceptance_response": {
+      "text": "Smart. Knowing your limits is rare. Most people overestimate themselves. You? You're realistic. I can work with realistic. Here's what you CAN handle: *transfers data* Fragment locations. Basic protocols. Enough to get started.",
+      "choices": [
+        {
+          "text": "I'll make it work.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "surprise_acknowledgment": {
+      "text": "*slight modulated sound that might be pleasure* Surprising people is unintentional. Just being myself. If that's surprising, says more about expectations than about me. But noted. I'll add 'surprising' to my self-assessment file.",
+      "choices": [
+        {
+          "text": "You're alright, Zero.",
+          "leads_to": "rare_compliment"
+        }
+      ]
+    },
+    "cooperation_begin": {
+      "text": "*rapid typing* Cooperation initiated. Transferring data packages now. Fragment coordinates. Dimensional maps. Bypass codes. Everything you need. Check your... whatever you're using. Should be there. *pauses* Don't die. Dead allies are useless. And I might need you later.",
+      "choices": [
+        {
+          "text": "I'll try not to die.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "small_progress": {
+      "text": "Progress is iterative. Small improvements. Continuous deployment. Maybe by version 10.0 I'll have basic human functionality. For now? I'm running version 0.9 beta. Unstable. Lots of bugs. But functional enough for government work. Or hotel salvation.",
+      "choices": [
+        {
+          "text": "I'll take it.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "understanding_achieved": {
+      "text": "*slight approval* Understanding achieved. We proceed with established parameters. Information exchange for mutual benefit. Trust, but verify. Cooperation without vulnerability. This might actually work. Probability of success: rising. Good.",
+      "choices": [
+        {
+          "text": "Let's make this work.",
+          "leads_to": "cooperation_begin"
+        }
+      ]
+    },
+    "rest_impossibility": {
+      "text": "Rest implies safety. Safety implies trust. Trust implies vulnerability. Vulnerability implies... *heavy glitch* ...I can't. Not yet. Maybe when the hotel is stable. When the systems are secure. When I've finished mapping every variable. Maybe then. Maybe never. We'll see.",
+      "choices": [
+        {
+          "text": "I hope you find peace, Zero.",
+          "leads_to": "peace_hope"
+        }
+      ]
+    },
+    "rare_compliment": {
+      "text": "*freezes completely* Alright? I'm... *processes heavily* ...not sure how to parse that. Compliments aren't in my usual datastream. Running analysis... appears genuine. Not sarcasm. Not manipulation. Just... kindness? *glitches* Thank you. I think. Processing...",
+      "choices": [
+        {
+          "text": "You're welcome.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "peace_hope": {
+      "text": "*very quiet* Peace. What an concept. *long pause* Maybe. Someday. After the hotel. After the code. After... everything. Maybe. *turns back to screens* Now go. Before I start processing emotions. It's messy. Inefficient. Go.",
+      "choices": [
+        {
+          "text": "Goodbye, Zero.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*doesn't turn around* Stay alive. Watch your back. Trust your instincts but verify your data. The hotel is dangerous in ways you haven't seen yet. If you need me... *pauses* ...I'm always watching the network. You'll find me. Or I'll find you. Transmission ends.",
+      "choices": []
+    }
+  }
 }

@@ -12,5 +12,406 @@
   "level": 3,
   "type": "npc",
   "dialogueTreeId": "gambling-ghost",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*tips translucent fedora* Well well well, if it ain't the new mug! Listen here, chum, I got a hot tip on the ponies. Well, the dimensional ponies. They're runnin' in six different timelines simultaneously! Can't lose! Except I keep losin'. Story of my afterlife, see?",
+      "choices": [
+        {
+          "text": "You're a ghost?",
+          "leads_to": "ghost_confirmation"
+        },
+        {
+          "text": "How did you die?",
+          "leads_to": "death_story"
+        },
+        {
+          "text": "Do you know what happened to the hotel?",
+          "leads_to": "hotel_situation"
+        }
+      ]
+    },
+    "ghost_confirmation": {
+      "text": "*looks down at translucent hands* You're tellin' me! Been pushin' up daisies since 1927. Bad poker hand, worse temper, and a fella with a Tommy gun who didn't appreciate my card counting. But death ain't stoppin' Smokey Joe! I got unfinished business - specifically, winnin' back the three grand I lost before I croaked!",
+      "choices": [
+        {
+          "text": "That was almost 100 years ago.",
+          "leads_to": "time_irrelevant"
+        },
+        {
+          "text": "Why are you still gambling?",
+          "leads_to": "addiction_eternal"
+        }
+      ]
+    },
+    "death_story": {
+      "text": "*takes drag from spectral cigar* Ah, the big sleep! Picture this: Chicago, 1927, backroom poker game. I'm holdin' a royal flush - or so I thought. Turns out the cards were marked, the dealer was crooked, and I accused the wrong wise guy of cheatin'. *gestures* Rat-a-tat-tat! And here I am, still broke in the afterlife!",
+      "choices": [
+        {
+          "text": "That's... tragic?",
+          "leads_to": "tragic_comedy"
+        },
+        {
+          "text": "Do you regret it?",
+          "leads_to": "no_regrets"
+        }
+      ]
+    },
+    "hotel_situation": {
+      "text": "*waves cigar mysteriously* The hotel? Kid, this joint's been screwy since I manifested here in '85. But recently? Someone's been messin' with the cosmic deck, shufflin' dimensions like cards! I seen the same roulette wheel in six places at once! Even for a ghost, that's hinky! My money's on that hooded hacker or the Manager playin' both sides.",
+      "choices": [
+        {
+          "text": "You think Zero did this?",
+          "leads_to": "zero_suspicion"
+        },
+        {
+          "text": "What about the Manager?",
+          "leads_to": "manager_theory"
+        }
+      ]
+    },
+    "time_irrelevant": {
+      "text": "*shrugs ethereally* Time's a flat circle when you're dead, pal! Besides, three grand in 1927 money is... *tries to calculate* ...probably worth a lot now! With interest! Ghostly interest! I'm gonna be RICH! Once I win it back! Which I will! Any day now! Been sayin' that for decades!",
+      "choices": [
+        {
+          "text": "You have a gambling problem.",
+          "leads_to": "problem_acknowledgment"
+        },
+        {
+          "text": "Good luck with that.",
+          "leads_to": "optimistic_ghost"
+        }
+      ]
+    },
+    "addiction_eternal": {
+      "text": "*defensive* It ain't addiction, it's DEDICATION! I'm a professional gambler! Was in life, am in death! Just 'cause I've lost every single hand for 98 years don't mean nothin'! The odds gotta turn eventually! That's how probability works! I think! I never learned math good!",
+      "choices": [
+        {
+          "text": "That's literally not how it works.",
+          "leads_to": "math_denial"
+        },
+        {
+          "text": "Have you won anything recently?",
+          "leads_to": "recent_losses"
+        }
+      ]
+    },
+    "tragic_comedy": {
+      "text": "*laughs ghostly laugh* Tragic? Nah! It's HILARIOUS! I died over a card game and now I'm cursed to haunt casinos for eternity! The universe has a sense of humor, see? A cruel, ironic sense of humor! I'd be mad if it wasn't so perfectly on-brand for Smokey Joe!",
+      "choices": [
+        {
+          "text": "You're taking this well.",
+          "leads_to": "acceptance_stage"
+        },
+        {
+          "text": "Do you want to move on?",
+          "leads_to": "unfinished_business"
+        }
+      ]
+    },
+    "no_regrets": {
+      "text": "*puffs cigar thoughtfully* Regret? Kid, I regret EVERYTHING! The marked cards, the accusation, not duckin' when the shootin' started! But mostly I regret not hittin' on that royal flush when I had the chance! Would've died rich instead of broke! Priorities!",
+      "choices": [
+        {
+          "text": "Your priorities are questionable.",
+          "leads_to": "questionable_life"
+        },
+        {
+          "text": "At least you're honest.",
+          "leads_to": "honest_ghost"
+        }
+      ]
+    },
+    "zero_suspicion": {
+      "text": "*taps nose knowingly* That Zero character? Real suspicious type! Always typin', never talkin', lurkin' in corners! Reminds me of the hackers back in my day - except we called 'em 'safe crackers' and they used dynamite! Saw 'em messin' with terminals before the hotel went kerflooey!",
+      "choices": [
+        {
+          "text": "That's useful information!",
+          "leads_to": "helpful_ghost"
+        },
+        {
+          "text": "What were they doing exactly?",
+          "leads_to": "vague_details"
+        }
+      ]
+    },
+    "manager_theory": {
+      "text": "*leans in conspiratorially* The Manager? That one's been runnin' this joint since before I died! Or after! Or during! Time's weird with them! Always smilin', always knowin' things! Classic inside job if you ask me! The house ALWAYS wins, and the Manager IS the house! Case closed!",
+      "choices": [
+        {
+          "text": "You think they caused this on purpose?",
+          "leads_to": "conspiracy_theory"
+        },
+        {
+          "text": "Interesting theory.",
+          "leads_to": "detective_pride"
+        }
+      ]
+    },
+    "problem_acknowledgment": {
+      "text": "*indignant* A problem?! I'll have you know I can quit ANY TIME! I just choose not to! 'Cause I'm on a HOT STREAK! Well, a cold streak. An arctic streak. A streak so cold it's approaching absolute zero! But it's gonna turn around! Just one more hand!",
+      "choices": [
+        {
+          "text": "That's what addicts say.",
+          "leads_to": "denial_intensifies"
+        },
+        {
+          "text": "Maybe try a different hobby?",
+          "leads_to": "hobby_resistance"
+        }
+      ]
+    },
+    "optimistic_ghost": {
+      "text": "*brightens up* Thanks, pal! See, YOU get it! Gotta stay optimistic! Gotta believe in the cards! Gotta trust that the universe ain't completely screwin' me over! Even though it definitely is! But that's beside the point! Positive thinking!",
+      "choices": [
+        {
+          "text": "That's... one way to cope.",
+          "leads_to": "coping_mechanisms"
+        }
+      ]
+    },
+    "math_denial": {
+      "text": "*waves hand dismissively* Math, shmath! I got INSTINCT! I got LUCK! I got... *pauses* ...nothin' else actually! No money, no body, no winnin' record! But I got SPIRIT! Literally! I'm ALL spirit! That's gotta count for somethin' at the cosmic craps table!",
+      "choices": [
+        {
+          "text": "I admire your persistence.",
+          "leads_to": "appreciated"
+        }
+      ]
+    },
+    "recent_losses": {
+      "text": "*counts on translucent fingers* Let's see... Lost to the robot dealer three times today. Lost to myself in a mirror - that was embarrassing. Lost to a tumbleweed that blew through from the western dimension. The tumbleweed was BLUFFING and I FELL FOR IT! *frustrated* But tomorrow's a new day!",
+      "choices": [
+        {
+          "text": "You lost to a tumbleweed?!",
+          "leads_to": "tumbleweed_incident"
+        },
+        {
+          "text": "Maybe take a break?",
+          "leads_to": "no_breaks"
+        }
+      ]
+    },
+    "acceptance_stage": {
+      "text": "Acceptance is the fifth stage of grief, and I'm goin' through ALL of 'em! Simultaneously! In a loop! Death really gives you perspective on the futility of existence! And yet, here I am, still chasin' that perfect hand! Can't teach an old ghost new tricks!",
+      "choices": [
+        {
+          "text": "You're philosophically complex for a gangster.",
+          "leads_to": "depths_unexpected"
+        }
+      ]
+    },
+    "unfinished_business": {
+      "text": "*wistful* Move on? To the great beyond? The eternal rest? Nah, can't do it! Not till I win back my three grand! That's my anchor to this plane! My unfinished business! Also I kinda like it here. The hotel's got character. More dimensions than most joints!",
+      "choices": [
+        {
+          "text": "You're trapped by a debt?",
+          "leads_to": "debt_trap"
+        },
+        {
+          "text": "I should help fix the hotel then.",
+          "leads_to": "hotel_preservation"
+        }
+      ]
+    },
+    "questionable_life": {
+      "text": "*grins sheepishly* Kid, my whole LIFE was questionable! And my death! And my afterlife! I'm consistent! Consistently bad at decisions! It's a talent! Takes real skill to mess up across multiple planes of existence!",
+      "choices": [
+        {
+          "text": "At least you own it.",
+          "leads_to": "self_awareness"
+        }
+      ]
+    },
+    "honest_ghost": {
+      "text": "*tips hat* Honesty's all a ghost has left! Can't lie when you're translucent - people see right through you! *ba dum tss* Ghost joke! I got a million of 'em! All terrible! Death didn't improve my comedy!",
+      "choices": [
+        {
+          "text": "That joke was awful.",
+          "leads_to": "comedy_agreement"
+        }
+      ]
+    },
+    "helpful_ghost": {
+      "text": "*beams proudly* I helped? I'm USEFUL? Take that, afterlife! Smokey Joe ain't just a gambling ghost! I'm a gambling ghost with INFORMATION! I'm contributin' to society! Posthumously! This is the best day I've had since dyin'!",
+      "choices": [
+        {
+          "text": "Thank you, Smokey.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "vague_details": {
+      "text": "*squints in concentration* Lessee... typin' real fast... mumblin' about 'protocols' and 'access codes'... lots of technical gobbledygook! I'm from 1927, kid! We didn't have computers! We had typewriters and they didn't cause reality to collapse! Simpler times!",
+      "choices": [
+        {
+          "text": "Fair enough. Thanks anyway.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "conspiracy_theory": {
+      "text": "Purpose? ABSOLUTELY! Think about it! Hotel in chaos? More desperate gamblers! More house wins! More profit! It's the perfect crime! Insurance fraud on a DIMENSIONAL SCALE! I'd applaud if I wasn't also a victim! Respect the hustle, hate the execution!",
+      "choices": [
+        {
+          "text": "That's... actually not a bad theory.",
+          "leads_to": "validation_feeling"
+        }
+      ]
+    },
+    "detective_pride": {
+      "text": "*stands tall, transparently* I've been solvin' mysteries since before you were born! Probably! I don't know how old you are! But I got INSTINCTS! Detective instincts! Gambling instincts! All bad, but plentiful!",
+      "choices": [
+        {
+          "text": "Keep those instincts sharp.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "denial_intensifies": {
+      "text": "*increasingly defensive* I AIN'T GOT NO PROBLEM! I'm fine! Perfectly fine! Financially ruined, spiritually trapped, eternally losing! BUT FINE! This is FINE! *nervous ghostly laughter* You're fine! I'm fine! Everything's fine!",
+      "choices": [
+        {
+          "text": "...I'll just go now.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hobby_resistance": {
+      "text": "Different hobby?! Like what?! Ghost crafts? Spectral yoga? Haunting people? I tried haunting! Got bored in twenty minutes! At least gambling gives me PURPOSE! Even if that purpose is losin' money I don't have in games I can't win!",
+      "choices": [
+        {
+          "text": "When you put it that way...",
+          "leads_to": "sad_truth"
+        }
+      ]
+    },
+    "coping_mechanisms": {
+      "text": "It's called resilience! Or delusion! Probably delusion! But it gets me through eternity! One bad hand at a time!",
+      "choices": [
+        {
+          "text": "Good luck, Smokey.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "appreciated": {
+      "text": "*genuinely touched* You do? Nobody's ever admired my persistence! Just called it 'stubborn' and 'pathological' and 'please leave the casino!' But you GET IT! You're good people!",
+      "choices": [
+        {
+          "text": "Hang in there.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "tumbleweed_incident": {
+      "text": "*embarrassed* In my defense, it was a VERY convincing tumbleweed! Had a poker face! Which is impressive for somethin' without a face! I don't wanna talk about it! It's a sore spot! A ghost with sore spots! The irony!",
+      "choices": [
+        {
+          "text": "I won't judge.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "no_breaks": {
+      "text": "Breaks are for quitters! And the living! I got ETERNITY to gamble! Literally forever! Can't waste a single minute! Gotta maximize my losin' potential! Wait, that came out wrong! Or right! I'm confused!",
+      "choices": [
+        {
+          "text": "You do you, Smokey.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "depths_unexpected": {
+      "text": "Death gives you time to think! Like, A LOT of time! You start questionin' things! Life! Death! Why the afterlife has casinos! Whether free will exists! Whether my luck is genuinely terrible or cosmically predetermined! Deep stuff!",
+      "choices": [
+        {
+          "text": "That IS deep.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "debt_trap": {
+      "text": "*nods sadly* Trapped by debt even in death! The American dream! Except I was Italian! And dead! But the principle stands! Can't rest till I'm square! That's the rules! Ghost rules! Possibly made up by me! But rules nonetheless!",
+      "choices": [
+        {
+          "text": "I hope you find peace someday.",
+          "leads_to": "peaceful_hope"
+        }
+      ]
+    },
+    "hotel_preservation": {
+      "text": "NOW you're talkin'! Fix the hotel! Keep the casino runnin'! Preserve my eternal torture chamber! Wait, that also came out wrong! But yeah, save the joint! It's the only home this ghost has got!",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "self_awareness": {
+      "text": "Self-awareness is the only thing death gave me! That and transparency! Literal transparency! I can see my own failures right through me! It's very meta!",
+      "choices": [
+        {
+          "text": "Stay strong, Smokey.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "comedy_agreement": {
+      "text": "*laughs* THANK YOU! Someone who appreciates quality bad jokes! You're alright! Now if you'll excuse me, I got a poker game to lose! Catch you on the flip side! Which might be literal in this hotel!",
+      "choices": [
+        {
+          "text": "Goodbye, Smokey.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "validation_feeling": {
+      "text": "*proud ghost noises* See?! 98 years of observin' human nature! Pays off! I might be bad at cards but I'm GREAT at seein' through scams! Ironic!",
+      "choices": [
+        {
+          "text": "Very ironic indeed.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "sad_truth": {
+      "text": "*deflates slightly* Yeah. When I put it that way it sounds real depressing. But hey, at least I'm committed! To my own misery! Consistency!",
+      "choices": [
+        {
+          "text": "I... I should go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "peaceful_hope": {
+      "text": "*touched* That's... that's real nice, kid. Thanks. Maybe someday I'll win that hand. Maybe someday I'll move on. But until then, I'll be right here, losin' with style! *tips fedora*",
+      "choices": [
+        {
+          "text": "Good luck, Smokey Joe.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*waves spectral hand* Be seein' you, kid! If you need any bad gambling advice or outdated slang, you know where to find me! Right here! Losin' at cards! Forever! *fades slightly while shuffling phantom cards*",
+      "choices": []
+    }
+  }
 }

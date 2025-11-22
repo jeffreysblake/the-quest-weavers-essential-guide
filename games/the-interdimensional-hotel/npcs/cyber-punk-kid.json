@@ -12,5 +12,251 @@
   "level": 2,
   "type": "npc",
   "dialogueTreeId": "cyber-punk-kid",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*doesn't look up from holographic display* Yo, what's the vibe, normie? This hotel is totally glitched, yeah? Reality.exe has stopped responding. I'm vibing with it though. Chaos is aesthetic.",
+      "choices": [
+        {
+          "text": "Do you know what's happening?",
+          "leads_to": "hacker_knowledge"
+        },
+        {
+          "text": "Can you help fix things?",
+          "leads_to": "fake_skills"
+        },
+        {
+          "text": "Are you breaking the WiFi?",
+          "leads_to": "wifi_defense"
+        }
+      ]
+    },
+    "hacker_knowledge": {
+      "text": "*adjusts VR goggles knowingly* Bruh, I've been deep in the mainframe. The hotel's running on deprecated reality protocols. Someone triggered a cascade event. Could've been anyone. Definitely wasn't me. I mean, I COULD have done it, with my skills, but I didn't. Probably.",
+      "choices": [
+        {
+          "text": "What skills exactly?",
+          "leads_to": "skills_challenged"
+        },
+        {
+          "text": "Did you see who caused it?",
+          "leads_to": "witness_info"
+        }
+      ]
+    },
+    "fake_skills": {
+      "text": "*finger guns* Oh snap, you want the cyber-wizard? I gotchu, fam. I can hack ANYTHING. I once crashed the school server by... uh... typing really fast? I could totally fix this hotel. Just need access to the... dimensional... firewall? *sweating* Yeah, that's definitely a thing that exists.",
+      "choices": [
+        {
+          "text": "You have no idea, do you?",
+          "leads_to": "exposed"
+        },
+        {
+          "text": "Maybe just stay out of the way.",
+          "leads_to": "deflated"
+        }
+      ]
+    },
+    "wifi_defense": {
+      "text": "*waves hands defensively* Whoa whoa whoa! That was ONE time! Okay, seven times. But in my defense, the hotel WiFi password was literally 'password123'. I was doing them a FAVOR by testing their security! How was I supposed to know the router was load-bearing for reality?",
+      "choices": [
+        {
+          "text": "The router was what?!",
+          "leads_to": "router_revelation"
+        },
+        {
+          "text": "Just... don't touch anything.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "skills_challenged": {
+      "text": "*defensive* Yo, I'm LEGIT! I modded my VR goggles to see through walls! Well, one wall. Okay, it was cardboard. BUT the principle is solid! I'm learning, okay? YouTube tutorials are fire. I'm like, three videos away from being a real hacker.",
+      "choices": [
+        {
+          "text": "That's... adorable.",
+          "leads_to": "patronized"
+        },
+        {
+          "text": "Maybe focus on learning, not breaking things.",
+          "leads_to": "life_lesson"
+        }
+      ]
+    },
+    "witness_info": {
+      "text": "*leans in conspiratorially* Okay okay, between you and me? I saw that sketchy hacker - Zero - messing with terminals before everything went sideways. But also the Manager was being weird. And the ghost was crying about WiFi. And honestly? The hotel itself feels... aware? Like it's watching. Very sus.",
+      "choices": [
+        {
+          "text": "That's actually helpful. Thanks.",
+          "leads_to": "validation"
+        },
+        {
+          "text": "The hotel is watching us?",
+          "leads_to": "paranoid_hotel"
+        }
+      ]
+    },
+    "exposed": {
+      "text": "*slumps* Fiiiine. I'm not a hacker yet. I'm a hacker-in-training. A hacker aspirant. I can barely hack my own lunch. My parents keep telling me to 'apply myself' and 'stop breaking the toaster.' But I WILL be elite someday! The toaster thing was a learning experience!",
+      "choices": [
+        {
+          "text": "Keep practicing. Safely.",
+          "leads_to": "encouragement"
+        },
+        {
+          "text": "What happened to the toaster?",
+          "leads_to": "toaster_incident"
+        }
+      ]
+    },
+    "deflated": {
+      "text": "*sighs dramatically* Yeah, yeah. Stay in my lane. Don't touch the pretty dimensional controls. I get it. I'll just be over here, not being cool, not saving reality. Living that normie life. This is what my guidance counselor warned me about.",
+      "choices": [
+        {
+          "text": "You can help by not making things worse.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "router_revelation": {
+      "text": "*nervously* Yeah so apparently the hotel's WiFi router is ALSO the dimensional stabilizer? Which seems like terrible IT infrastructure? They're running reality on 2.4GHz! That's not even 5G! No wonder everything's glitching. This hotel needs a serious tech upgrade.",
+      "choices": [
+        {
+          "text": "Did you break the stabilizer?!",
+          "leads_to": "maybe_guilty"
+        },
+        {
+          "text": "Where is this router?",
+          "leads_to": "router_location"
+        }
+      ]
+    },
+    "patronized": {
+      "text": "*indignant* I'm not adorable! I'm dangerous! I'm a cyber-threat! I'm... okay fine, my mom still packs my lunch. But that doesn't make me any less legit! Hackers can have supportive families! It's not a contradiction!",
+      "choices": [
+        {
+          "text": "You're right. Sorry.",
+          "leads_to": "apology_accepted"
+        }
+      ]
+    },
+    "life_lesson": {
+      "text": "*reluctantly thoughtful* That's... actually solid advice. Maybe I should finish the tutorial series before trying to hack dimensional barriers. Baby steps. First the hotel WiFi, THEN reality itself. Got it. Thanks for the wisdom, boomer. *respectful nod*",
+      "choices": [
+        {
+          "text": "I'm not a boomer!",
+          "leads_to": "boomer_debate"
+        },
+        {
+          "text": "Good luck with your studies.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "validation": {
+      "text": "*lights up* Wait, REALLY? I helped? That's lit! I'm helping! I'm useful! I'm gonna tell my parents I contributed to saving reality! They'll still be disappointed but SLIGHTLY less! This is the best day of my dimensional crisis!",
+      "choices": [
+        {
+          "text": "Don't let it go to your head.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "paranoid_hotel": {
+      "text": "*whispers* Dude, the walls have algorithms. The carpets have protocols. I swear the elevator judged me for my music taste. This whole place is one big networked consciousness running on spite and breakfast buffets. It's either brilliant or terrifying. Probably both.",
+      "choices": [
+        {
+          "text": "That's deeply unsettling.",
+          "leads_to": "welcome_to_hotel"
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*straightens up* You know what? You're right. I'll practice. I'll learn. I'll become the hacker I'm meant to be. And THEN I'll save hotels from dimensional collapse! After I finish high school. And maybe college. And get my parents off my back. But EVENTUALLY!",
+      "choices": [
+        {
+          "text": "That's the spirit!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "toaster_incident": {
+      "text": "*defensive* I was trying to make it connect to the smart home system! How was I supposed to know it would achieve sentience and declare war on the coffee maker? They're still not speaking. There's tension in the kitchen. It's awkward.",
+      "choices": [
+        {
+          "text": "...I have so many questions.",
+          "leads_to": "no_time_for_questions"
+        }
+      ]
+    },
+    "maybe_guilty": {
+      "text": "*very nervous* Define 'break.' If by 'break' you mean 'temporarily reconfigure in an unauthorized manner that may have cascaded into dimensional instability'... then maybe? But also no. But also I plead the fifth. Do dimensions have a fifth? I plead it anyway!",
+      "choices": [
+        {
+          "text": "We'll discuss this later.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "router_location": {
+      "text": "The server room! Down in the basement, behind the boiler. It's got warning signs in six languages and several that aren't from this dimension. If you're going there, be careful. Last time I tried, the cables tried to cable-manage ME.",
+      "choices": [
+        {
+          "text": "Thanks for the warning.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "apology_accepted": {
+      "text": "*mollified* It's cool, it's cool. I get it. I'm young, I'm learning. But I'm also the FUTURE, ya know? Today's WiFi-breaking teen is tomorrow's reality-saving hacker. Character development arc incoming.",
+      "choices": [
+        {
+          "text": "I believe in you.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "boomer_debate": {
+      "text": "Boomer is a mindset, not an age! But fine, you're more like... gen-dimensional? Reality-fluid? Temporally ambiguous? The point is, your advice was mid but I'll take it. Respect.",
+      "choices": [
+        {
+          "text": "...Thanks?",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "welcome_to_hotel": {
+      "text": "Welcome to the Grand Paradox! Where the infrastructure is haunted, the WiFi is sentient, and nothing makes sense! But hey, at least the breakfast buffet is fire. Literally. It's on fire sometimes. Dimensional fire. Different.",
+      "choices": [
+        {
+          "text": "I need to go now.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "no_time_for_questions": {
+      "text": "And I have no time for answers! The hotel's collapsing, my toaster's a war criminal, and my parents want me home by dinner! This is peak chaos and I'm HERE for it! Catch you on the flip side!",
+      "choices": [
+        {
+          "text": "Goodbye, Neon.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*back to holographic display* Aight, stay crispy out there. If you need any... moral support? ...I'm your hacker! Well, future hacker. Hacker-adjacent. I'm trying, okay?! Peace!",
+      "choices": []
+    }
+  }
 }

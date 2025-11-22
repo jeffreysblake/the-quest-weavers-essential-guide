@@ -1,7 +1,7 @@
 {
   "id": "shopkeeper-marv",
   "name": "Marv the Shopkeeper",
-  "description": "A cheerful con artist running the gift shop. Wears a vest covered in badges saying things like 'Ask me about our prices!' and 'I \u2764\ufe0f Dimensions!' Has a sales pitch for everything. Could sell ice to a robot. Probably selling you something right now without you realizing.",
+  "description": "A cheerful con artist running the gift shop. Wears a vest covered in badges saying things like 'Ask me about our prices!' and 'I love Dimensions!' Has a sales pitch for everything. Could sell ice to a robot. Probably selling you something right now without you realizing.",
   "position": {
     "x": -10,
     "y": 10,
@@ -12,5 +12,118 @@
   "level": 3,
   "type": "npc",
   "dialogueTreeId": "shopkeeper-marv",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*beaming smile* Welcome, welcome to the Interdimensional Gift Shop! Your one-stop shop for souvenirs, sundries, and slightly suspicious tchotchkes from across the multiverse! Can I interest you in an 'I Survived the Reality Collapse' t-shirt? Only $29.99! Or perhaps a snowglobe containing a miniature impossible geometry? Very popular with the tourists!",
+      "choices": [
+        {
+          "text": "Everything's so expensive!",
+          "leads_to": "prices"
+        },
+        {
+          "text": "Do you have anything useful?",
+          "leads_to": "useful_items"
+        },
+        {
+          "text": "How can you sell souvenirs during a crisis?",
+          "leads_to": "capitalism"
+        }
+      ]
+    },
+    "prices": {
+      "text": "*strokes mustache proudly* Expensive? My friend, these are COMPETITIVE prices! You're paying for quality, authenticity, and the ambiance of shopping in a gift shop that exists in seventeen dimensions simultaneously! Plus, I've got overhead. Do you know how much dimensional insurance costs these days?",
+      "choices": [
+        {
+          "text": "That's not reassuring.",
+          "leads_to": "business"
+        },
+        {
+          "text": "Fine, what do you recommend?",
+          "leads_to": "recommendations"
+        }
+      ]
+    },
+    "useful_items": {
+      "text": "*gestures enthusiastically* Useful? USEFUL?! Everything here is useful! Take these Dimension-Viewing Goggles—let you see into parallel timelines! Or this Collectible Spoon—historically significant! Well, it will be. Eventually. In some timeline. Trust me, I'm a professional!",
+      "choices": [
+        {
+          "text": "I'll just browse.",
+          "leads_to": "browsing"
+        },
+        {
+          "text": "Thanks for the help.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "capitalism": {
+      "text": "*looks genuinely confused* Crisis? What crisis? This is the BEST business I've had in years! Everyone wants souvenirs when reality's collapsing! It's basic economics: supply, demand, and existential dread. Besides, retail therapy is scientifically proven to help with dimensional anxiety. Probably. I haven't checked.",
+      "choices": [
+        {
+          "text": "That's... actually clever.",
+          "leads_to": "business_savvy"
+        },
+        {
+          "text": "You're unbelievable.",
+          "leads_to": "compliment_taken"
+        }
+      ]
+    },
+    "business": {
+      "text": "Look, I'm a simple man. I see an opportunity, I seize it. Dimensional catastrophe? That's just another market segment! I've already ordered 'I Glitched Through Time and All I Got Was This T-Shirt' shirts. They're gonna be HOT.",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "recommendations": {
+      "text": "Ah, a smart shopper! I recommend the Novelty Mustache—great for disguises! Or perhaps a Collectible Spoon? Every hotel gift shop has spoons. It's tradition! Plus, this one was touched by a time traveler. Maybe. Can't prove it, but can't DISprove it either!",
+      "choices": [
+        {
+          "text": "I'll think about it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "browsing": {
+      "text": "*nods approvingly* Browsers are future buyers! Take your time! Everything's clearly labeled and reasonably priced. Well, labeled at least. Prices are... flexible. Negotiable. Completely made up on the spot. But FAIR! Always fair!",
+      "choices": [
+        {
+          "text": "Thanks, Marv.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "business_savvy": {
+      "text": "*taps nose knowingly* That's why I'm the shopkeeper and not cleaning toilets in the basement. No offense to Joe—great guy, terrible business sense. Now, can I put you down for a purchase? First one's free! *whispers* Just kidding, nothing's free.",
+      "choices": [
+        {
+          "text": "I'll pass.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "compliment_taken": {
+      "text": "*beams* I'll take that as a compliment! Remember, when reality's falling apart, you can always count on capitalism! It's the one constant in the multiverse! Well, that and overpriced gift shop tchotchkes!",
+      "choices": [
+        {
+          "text": "Bye, Marv.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*waves cheerfully* Come back anytime! Remember: 'The Grand Paradox Hotel Gift Shop—Where Your Money Disappears Faster Than Reality!' That's our slogan. I made it up just now. Catchy, right?",
+      "choices": []
+    }
+  }
 }

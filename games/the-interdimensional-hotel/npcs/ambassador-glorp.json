@@ -12,5 +12,209 @@
   "level": 3,
   "type": "npc",
   "dialogueTreeId": "ambassador-glorp",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*bubbles enthusiastically* *BLORP BLORP!* Oh! A human! *wobbles excitedly, leaving a green trail* I am Ambassador Glorp from the Slime Nebula! Please excuse the mess - I've been meaning to ask housekeeping for special floor protection, but communication is... *more bubbles* ...challenging!",
+      "choices": [
+        {
+          "text": "Can you understand me?",
+          "leads_to": "translation"
+        },
+        {
+          "text": "What brings you to this hotel?",
+          "leads_to": "diplomatic_mission"
+        },
+        {
+          "text": "You're leaving slime everywhere.",
+          "leads_to": "apologetic"
+        }
+      ]
+    },
+    "translation": {
+      "text": "*happy bubbling sounds* Yes! Universal translator implant! *points to a bubble inside their gelatinous form* Cost me three moon cycles of diplomatic salary, but worth it! Though sometimes I accidentally say things in Bubble Language. Very embarrassing at formal events. Once told a dignitary their shoes were 'deliciously squishy' instead of 'nicely polished.'",
+      "choices": [
+        {
+          "text": "That sounds awkward.",
+          "leads_to": "diplomatic_incidents"
+        },
+        {
+          "text": "What's the Slime Nebula like?",
+          "leads_to": "home_world"
+        }
+      ]
+    },
+    "diplomatic_mission": {
+      "text": "*wobbles thoughtfully* I came for the Interdimensional Diplomatic Conference! Seventeen species, one hotel, many misunderstandings! But then... *gestures at the dimensional chaos* ...everything went very non-Euclidean. My briefing materials didn't cover 'reality collapse.' I may need to file an incident report. Several incident reports.",
+      "choices": [
+        {
+          "text": "Have you seen anything useful?",
+          "leads_to": "observations"
+        },
+        {
+          "text": "Are the other ambassadors okay?",
+          "leads_to": "other_diplomats"
+        }
+      ]
+    },
+    "apologetic": {
+      "text": "*deflates sadly, leaving a bigger puddle* I know! I'm so sorry! My species naturally secretes bio-lubricant. Essential for our survival, terrible for carpets. I've been leaving apology tips for housekeeping. Also fruit baskets. Also notes explaining that the slime is non-toxic and pH neutral. They still won't talk to me.",
+      "choices": [
+        {
+          "text": "I'm sure they understand.",
+          "leads_to": "hopeful"
+        },
+        {
+          "text": "Maybe try bigger tips?",
+          "leads_to": "financial_solution"
+        }
+      ]
+    },
+    "diplomatic_incidents": {
+      "text": "*burbles with embarrassment* Oh, I have seventeen volumes of diplomatic incidents! There was the time I accidentally absorbed the Prime Minister's ceremonial hat. Or when I tried to shake hands but my hand... dispersed. Or the incident we call 'The Treaty of the Sticky Floor.' I'm very good at my job, I promise. Just... organically challenged.",
+      "choices": [
+        {
+          "text": "You absorbed a hat?!",
+          "leads_to": "absorption_accident"
+        },
+        {
+          "text": "Sounds like you're doing your best.",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "home_world": {
+      "text": "*bubbles excitedly* Beautiful! Imagine an entire nebula of sentient slime! We don't have buildings - we ARE the buildings! No need for furniture when you can reshape yourself! Though I miss it here. Earth has such nice rigid structures. And corners! Corners are fascinating! You have so many!",
+      "choices": [
+        {
+          "text": "Sounds very different from here.",
+          "leads_to": "culture_shock"
+        },
+        {
+          "text": "Do you want to go home?",
+          "leads_to": "homesick"
+        }
+      ]
+    },
+    "observations": {
+      "text": "*quivers thoughtfully* I've noticed the dimensional rifts seem worse near the casino and the basement. Very destabilizing. Also, Ambassador Zyx has been acting strange - more crystalline than usual. And that robot in the corner has been drinking motor oil for six hours. I'd file a wellness report, but I'm not sure who's in charge anymore.",
+      "choices": [
+        {
+          "text": "Thanks for the intel.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "other_diplomats": {
+      "text": "*wobbles sadly* Ambassador Zyx is very stressed - their light patterns are all jittery. The delegates from Proxima are hiding in their room. And the Quantum Collective representative achieved superposition and now there are three of them. The conference is officially a disaster. My performance review will be... unflattering.",
+      "choices": [
+        {
+          "text": "I'm working on fixing things.",
+          "leads_to": "relief"
+        }
+      ]
+    },
+    "hopeful": {
+      "text": "*brightens slightly* You think so? *leaves another puddle* I try so hard to be respectful! Cultural sensitivity is core to diplomacy! Though it's hard when your culture is 'sentient gelatin that oozes.' I've been thinking of commissioning special shoes. Or a containment field. Or a very absorbent cape.",
+      "choices": [
+        {
+          "text": "The cape might work.",
+          "leads_to": "fashion_advice"
+        }
+      ]
+    },
+    "financial_solution": {
+      "text": "*bubbles thoughtfully* Bigger tips! Yes! Though I spent most of my expense account on dry cleaning bills. Did you know slime stains are considered 'exotic damage'? It's very expensive. I may need to request additional funds from the Nebula Council. They'll ask questions. So many questions.",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "absorption_accident": {
+      "text": "*jiggles with embarrassment* It was ceremonial! Irreplaceable! From the 12th century! I panicked and tried to regurgitate it, but slime biology doesn't work that way! We had to wait three days for my digestive cycle to complete. The hat came out... changed. We don't talk about The Hat Incident at formal functions.",
+      "choices": [
+        {
+          "text": "That's horrifying.",
+          "leads_to": "diplomatic_trauma"
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*wobbles gratefully* Thank you! That means a lot! Most species just see the slime trail and make assumptions. But I work hard! I study! I care about intergalactic relations! Even if I occasionally dissolve important documents by accident!",
+      "choices": [
+        {
+          "text": "Keep it up, Glorp.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "culture_shock": {
+      "text": "*bubbles in agreement* Very different! You have 'up' and 'down'! We just have 'blob' and 'bigger blob'! And your social customs! So complex! I've been reading '1000 Ways to Not Offend Humans' but it's 900 pages and I'm only on chapter three: 'Appropriate Handshake Viscosity.'",
+      "choices": [
+        {
+          "text": "There's a book about that?",
+          "leads_to": "etiquette_guide"
+        }
+      ]
+    },
+    "homesick": {
+      "text": "*deflates a little* Sometimes. But duty calls! The Nebula needs representation in this dimension! Even if that representation is currently stuck in a collapsing hotel, leaving slime trails, and questioning life choices. Still! Better than the Trade Conference on Rigel VII. That one had actual shooting.",
+      "choices": [
+        {
+          "text": "Stay safe, Glorp.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "relief": {
+      "text": "*bubbles hopefully* Really?! Oh thank goodness! *wobbles with relief* If you restore reality, I'll write such a glowing report about human problem-solving skills! And maybe reality will stop making me accidentally slide through walls! It's very undignified for an ambassador!",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fashion_advice": {
+      "text": "*considers this* A cape! Dignified AND absorbent! I could get one in official Nebula colors - translucent green with bioluminescent trim! Though finding a tailor who works with gelatinous clients might be challenging. Most just scream and ask me to leave.",
+      "choices": [
+        {
+          "text": "Worth a try!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "diplomatic_trauma": {
+      "text": "*quivers sadly* Three ambassadors resigned over it. Two species threatened trade sanctions. One delegation just pointed and laughed for twenty minutes. I learned a valuable lesson: never get too close to ceremonial anything. Maintain a three-foot bubble of space. Literally.",
+      "choices": [
+        {
+          "text": "Learn and move forward.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "etiquette_guide": {
+      "text": "*bubbles excitedly* Oh yes! Very comprehensive! Covers handshakes, eye contact, personal space, and why humans don't appreciate being absorbed into gelatinous mass! Very helpful! Though the author clearly never met a slime being - suggested handshake pressure is... impossible for my species.",
+      "choices": [
+        {
+          "text": "Do your best!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*bubbles cheerfully* Thank you for talking with me! Most beings just slide around my trails and avoid eye contact! If you need diplomatic assistance - or slime-based reconnaissance - I'm happy to help! I can squeeze through very small spaces! *leaves a friendly puddle*",
+      "choices": []
+    }
+  }
 }

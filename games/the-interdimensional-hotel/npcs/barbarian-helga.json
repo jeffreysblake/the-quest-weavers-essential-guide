@@ -12,5 +12,354 @@
   "level": 7,
   "type": "npc",
   "dialogueTreeId": "barbarian-helga",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*slams massive fist on table* HAH! Another lost soul in this mad place! I am Helga the Hammer! *flexes impressively* I've wrestled bears, fought demons, and conquered seventeen kingdoms! But THIS hotel? This is testing even Helga's mighty patience! Sit! Drink! Tell Helga what brings you to this interdimensional nonsense!",
+      "choices": [
+        {
+          "text": "What are you doing here?",
+          "leads_to": "why_here"
+        },
+        {
+          "text": "You seem to be handling it well.",
+          "leads_to": "warrior_mindset"
+        },
+        {
+          "text": "Have you fought anything interesting?",
+          "leads_to": "battle_stories"
+        }
+      ]
+    },
+    "why_here": {
+      "text": "*takes enormous swig from tankard* Helga came for Fantasy Warrior Convention! Meet other barbarians, compare ax sizes, arm-wrestle dragon! Normal vacation activities! But then reality went POOF! *gestures dramatically* Now Helga stuck between dimensions with wizard who forgets pants and robot who won't stop calculating odds of survival! VERY annoying!",
+      "choices": [
+        {
+          "text": "That sounds frustrating.",
+          "leads_to": "frustrations"
+        },
+        {
+          "text": "You arm-wrestled a dragon?",
+          "leads_to": "dragon_story"
+        }
+      ]
+    },
+    "warrior_mindset": {
+      "text": "*pounds chest proudly* Helga has faced worse! Once trapped in cave with hungry troll for three days! Once fought entire army with broken sword! Once attended formal dinner with SEVENTEEN forks! *shudders* This? This is just Tuesday for mighty warrior! Though Helga admits: cannot punch dimensional instability. Very frustrating.",
+      "choices": [
+        {
+          "text": "Have you tried?",
+          "leads_to": "tried_punching"
+        },
+        {
+          "text": "What's your secret?",
+          "leads_to": "philosophy"
+        }
+      ]
+    },
+    "battle_stories": {
+      "text": "*eyes light up* FINALLY! Someone wants to hear of Helga's glorious battles! *sits forward* There was time Helga fought three-headed serpent with only cooking pot! Or time Helga punched ghost so hard it apologized! Or BEST story - time Helga arm-wrestled dragon Smalfoy and WON! Dragon still bitter! Is hilarious!",
+      "choices": [
+        {
+          "text": "You punched a ghost?",
+          "leads_to": "ghost_punch"
+        },
+        {
+          "text": "Tell me about the dragon.",
+          "leads_to": "dragon_story"
+        }
+      ]
+    },
+    "frustrations": {
+      "text": "*grumbles* VERY frustrating! Helga's ax is useless here! Cannot fight what you cannot hit! Cannot intimidate reality itself! Helga tried yelling at dimensional rift. Rift did not care. Also, hotel bar charges OUTRAGEOUS prices for ale! Highway robbery! Helga could conquer kingdom for less gold!",
+      "choices": [
+        {
+          "text": "What else bothers you?",
+          "leads_to": "complaints"
+        },
+        {
+          "text": "At least the company is interesting?",
+          "leads_to": "strange_company"
+        }
+      ]
+    },
+    "dragon_story": {
+      "text": "*laughs thunderously* YES! Dragon Smalfoy! Big scaly show-off! Challenged Helga to arm-wrestling contest! Said barbarian could never beat mighty dragon! WRONG! *slams fist down* Helga won in thirty seconds! Dragon made excuses about 'unfair leverage' and 'violation of physics!' Sore loser! Now dragon won't talk to Helga! Makes vacation awkward!",
+      "choices": [
+        {
+          "text": "That's impressive!",
+          "leads_to": "warrior_pride"
+        },
+        {
+          "text": "Maybe you should apologize?",
+          "leads_to": "no_apologize"
+        }
+      ]
+    },
+    "tried_punching": {
+      "text": "*sheepishly* ...Yes. Helga tried punching dimensional anomaly. Three times. Fist went through like mist! VERY unsatisfying! Also tried hitting it with ax, kicking it, headbutting it, and shouting ancient battle curses! Nothing worked! Problem cannot be solved with violence! This is Helga's nightmare scenario!",
+      "choices": [
+        {
+          "text": "Maybe try a different approach?",
+          "leads_to": "alternative_methods"
+        },
+        {
+          "text": "That's very thorough testing.",
+          "leads_to": "scientific_barbarian"
+        }
+      ]
+    },
+    "philosophy": {
+      "text": "*becomes surprisingly contemplative* Secret? Helga learned long ago: you cannot control chaos. Can only control yourself. Be strong. Be brave. Be ready to adapt. *takes drink* Also helps to have very large ax and muscles that intimidate mortality itself. But mostly: accept what you cannot change, punch what you can.",
+      "choices": [
+        {
+          "text": "That's actually wise.",
+          "leads_to": "unexpected_wisdom"
+        },
+        {
+          "text": "Where did you learn that?",
+          "leads_to": "mentor_story"
+        }
+      ]
+    },
+    "ghost_punch": {
+      "text": "*grins widely* HA! Yes! Ghost was haunting village, terrorizing people! Helga said 'Stop being nuisance!' Ghost said 'I am TERROR INCARNATE!' So Helga punched it! *demonstrates* Right through spectral face! Ghost was so surprised, it said 'I'm sorry' and left! Sometimes confidence is best weapon!",
+      "choices": [
+        {
+          "text": "How do you punch a ghost?",
+          "leads_to": "ghost_mechanics"
+        },
+        {
+          "text": "That's amazing!",
+          "leads_to": "warrior_pride"
+        }
+      ]
+    },
+    "complaints": {
+      "text": "*counts on fingers* No proper fighting pit! WiFi is terrible - cannot post victory selfies! Elevator music is TOO SOFT - not inspiring for battle! And worst: room service forgot Helga's cheese! TWICE! Helga needs protein for muscles! This is basic hospitality failure!",
+      "choices": [
+        {
+          "text": "Very reasonable complaints.",
+          "leads_to": "validation"
+        },
+        {
+          "text": "You post selfies?",
+          "leads_to": "social_media"
+        }
+      ]
+    },
+    "strange_company": {
+      "text": "*shrugs massive shoulders* Company is... interesting. Robot dealer has no personality but deals fair hand. Wizard is crazy but tells good stories. Bard is annoying but plays good drinking songs. Ghost aristocrats are snobby but Helga enjoys making them uncomfortable with loud eating! *grins* Is entertaining disaster!",
+      "choices": [
+        {
+          "text": "You're making the best of it.",
+          "leads_to": "positive_attitude"
+        },
+        {
+          "text": "Who do you like best?",
+          "leads_to": "favorite_people"
+        }
+      ]
+    },
+    "warrior_pride": {
+      "text": "*beams with pride* Helga is mightiest warrior in seventeen kingdoms! Strength of ox! Speed of panther! Appetite of small army! No challenge too great! No foe too mighty! Though Helga admits: dimensional chaos is outside usual expertise. More accustomed to enemies with faces Helga can hit.",
+      "choices": [
+        {
+          "text": "I'm working on fixing things.",
+          "leads_to": "offer_help"
+        }
+      ]
+    },
+    "no_apologize": {
+      "text": "*looks offended* APOLOGIZE?! Helga won fairly! Is not Helga's fault dragon has weak wrists and fragile ego! If dragon wanted to win, should have trained harder! Helga trains EVERY DAY! Lifting, running, punching trees! Dragon just sits on gold and complains about WiFi! No sympathy!",
+      "choices": [
+        {
+          "text": "Fair point.",
+          "leads_to": "warrior_logic"
+        }
+      ]
+    },
+    "alternative_methods": {
+      "text": "*scratches head thoughtfully* Different approach... Helga not good at 'different approach.' Helga's approach is HIT HARD UNTIL PROBLEM SOLVED. But maybe you are right. Maybe this problem needs... *struggles with concept* ...strategy? Planning? TALKING?! *looks disgusted* Ugh. Words. Helga hates words.",
+      "choices": [
+        {
+          "text": "You're doing fine with words now.",
+          "leads_to": "communication_skills"
+        },
+        {
+          "text": "Sometimes talking helps.",
+          "leads_to": "reluctant_acceptance"
+        }
+      ]
+    },
+    "scientific_barbarian": {
+      "text": "*nods seriously* Helga is VERY thorough! Good warrior tests all options before admitting defeat! Tried punching from seventeen different angles! Used left fist AND right fist! Even tried ax spinning technique! All failures! But at least Helga KNOWS these methods don't work! This is progress! Sort of!",
+      "choices": [
+        {
+          "text": "That's the spirit!",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "unexpected_wisdom": {
+      "text": "*chuckles* Many people surprise by Helga's wisdom! Think big muscles mean small brain! WRONG! Helga has fought for thirty years! Learned many lessons! Strongest warrior is not one who wins every fight - is one who SURVIVES every fight! Also one who knows when hotel bar is doing happy hour! That is also important wisdom!",
+      "choices": [
+        {
+          "text": "You're full of surprises.",
+          "leads_to": "complexity"
+        }
+      ]
+    },
+    "mentor_story": {
+      "text": "*voice softens slightly* Old warrior named Bjorn taught Helga. Bjorn was greatest fighter in North! Could split mountain with ax! But Bjorn also wise. Said: 'Helga, strength is good. But wisdom is better. Best is BOTH.' Then Bjorn died fighting ice giant. *pause* Helga tries to honor teaching. Even when is difficult. Even when Helga just wants to punch things.",
+      "choices": [
+        {
+          "text": "That's a good lesson.",
+          "leads_to": "honoring_memory"
+        }
+      ]
+    },
+    "ghost_mechanics": {
+      "text": "*shrugs* Helga not sure! Just believed very hard that fist could hit ghost! And it did! Maybe confidence creates reality? Or maybe ghost was surprised and forgot to be intangible? Either way: worked! Helga does not question success! Only celebrates it! WITH ALE! *raises tankard*",
+      "choices": [
+        {
+          "text": "Cheers to that!",
+          "leads_to": "drinking_buddy"
+        }
+      ]
+    },
+    "validation": {
+      "text": "*nods emphatically* FINALLY! Someone who understands! Cheese is IMPORTANT! WiFi is BASIC SERVICE! Fighting pit is STANDARD AMENITY! Helga should write review on Yelp! 'One star! Dimensions unstable! Cheese inconsistent! Would not recommend!' That will show management!",
+      "choices": [
+        {
+          "text": "That'll teach them!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "social_media": {
+      "text": "*pulls out surprisingly modern smartphone* Of course! Helga has InstaBarbarian account! Three million followers! Posts victory photos, training videos, protein shake recipes! Fans love seeing Helga's muscles! Also Helga's motivational quotes! 'Lift heavy, think heavy, BE heavy!' Very popular! Though currently no signal in dimensional rift. Tragic.",
+      "choices": [
+        {
+          "text": "That's unexpectedly modern.",
+          "leads_to": "modern_warrior"
+        }
+      ]
+    },
+    "positive_attitude": {
+      "text": "*laughs heartily* Helga makes best of EVERYTHING! Once trapped in dungeon? Made friends with rats! Once lost all weapons? Fought with broken chair! Once stuck in formal peace negotiation? Turned it into drinking contest! Life is what you make it! And Helga makes it LOUD and EXCITING!",
+      "choices": [
+        {
+          "text": "You're an inspiration!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "favorite_people": {
+      "text": "*considers* Helga likes bartender robot! Very efficient! Never judges Helga's drink orders! Also likes other barbarians from convention - good arm-wrestling, good stories! Does NOT like crypto billionaire. Talks too much about 'disruption.' Helga wants to disrupt his FACE! But is trying to be diplomatic. Bjorn would be proud.",
+      "choices": [
+        {
+          "text": "Good restraint!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "offer_help": {
+      "text": "*stands up excitedly* YOU FIX HOTEL?! Excellent! Helga will help! Can carry heavy things! Can intimidate uncooperative NPCs! Can break down doors! Can drink celebratory ale when mission complete! Helga is VERY useful! Just point Helga at problem! ...As long as problem can be hit. Helga still working on non-hitting solutions.",
+      "choices": [
+        {
+          "text": "I'll keep that in mind!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "warrior_logic": {
+      "text": "*nods firmly* Exactly! Warrior code is simple: Train hard. Fight fair. Win with honor. Helga did all three! Dragon lost with DISHONOR! Not Helga's problem! Maybe someday dragon will learn humility! Until then, Helga enjoys victory! Is what victory is FOR!",
+      "choices": [
+        {
+          "text": "Can't argue with that!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "communication_skills": {
+      "text": "*looks surprised* Really? Helga thinks Helga is very bad at words! Uses too many exclamation points! Talks too loud! Starts too many sentences with 'Helga'! But you are kind to say so. Maybe Helga is better at communication than Helga thinks! This is confidence boost! Helga feels 10% more articulate!",
+      "choices": [
+        {
+          "text": "Keep it up!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "reluctant_acceptance": {
+      "text": "*sighs heavily* FINE. Helga will try talking. But if talking fails, Helga reserves right to return to hitting! Is compromise! Helga is growing as person! Bjorn would be... moderately proud. Not VERY proud. But moderately. This is still progress!",
+      "choices": [
+        {
+          "text": "Progress is progress!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*pounds fist in palm* YES! Failure is learning! Defeat is temporary! Helga will find way to help! Even if cannot hit dimensional chaos, can help OTHER ways! Carry supplies! Provide emotional support! Break things that SHOULD be broken! Helga is adaptable warrior!",
+      "choices": [
+        {
+          "text": "That's great!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "complexity": {
+      "text": "*grins* Helga contains multitudes! Is mighty warrior AND philosophical thinker! Can arm-wrestle dragon AND discuss meaning of existence! Can crush enemies AND enjoy fine cheese! Helga refuses to be simple stereotype! Though Helga DOES enjoy hitting things. That part is accurate.",
+      "choices": [
+        {
+          "text": "I respect that!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "honoring_memory": {
+      "text": "*raises tankard solemnly* To Bjorn! Best warrior! Best teacher! Taught Helga that true strength is balance of body and mind! Even when mind wants to solve everything with ax! Helga tries to be worthy of teaching! Though sometimes Helga still just hits things! Old habits die hard! Like Bjorn! *pause* Too soon for joke? Helga not good at timing.",
+      "choices": [
+        {
+          "text": "He'd be proud of you.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "drinking_buddy": {
+      "text": "*clinks tankard enthusiastically* SKÅL! You are good drinking companion! Not many people can keep up with Helga's stories! Or Helga's drinking! If we survive dimensional chaos, Helga buys you ale! Big ale! Biggest ale! Will be glorious celebration! With cheese!",
+      "choices": [
+        {
+          "text": "I look forward to it!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "modern_warrior": {
+      "text": "*flexes while holding phone* Helga is MODERN barbarian! Respects tradition but embraces technology! Uses smartphone to document conquests! Uses protein tracker app! Uses GPS to find best fighting pits! 21st century requires 21st century warrior! Though Helga still prefers ax to laser gun. More satisfying THUNK sound.",
+      "choices": [
+        {
+          "text": "You're ahead of your time!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*slaps you on back hard enough to hurt* You are good person! Brave! Smart! Helga approves! When reality is fixed, come find Helga! We drink together! Tell stories! Maybe arm-wrestle! But Helga will go easy on you! Probably! No promises! HAHAHA! *thunderous laugh*",
+      "choices": []
+    }
+  }
 }

@@ -12,5 +12,118 @@
   "level": 2,
   "type": "npc",
   "dialogueTreeId": "receptionist-gloria",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*typing frantically without looking up* Welcome to the Grand Paradox Hotel, where reality is optional and the exits don't work. How may I— *finally looks at you* Oh thank god, another human! Or... are you human? Never mind, I don't have time to care. The phones are ringing in seventeen dimensions, half the guests are complaining about being stuck in the wrong century, and I haven't had a break since last Tuesday. Or next Thursday. Time's weird here.",
+      "choices": [
+        {
+          "text": "Can you help me?",
+          "leads_to": "no_time"
+        },
+        {
+          "text": "You seem stressed.",
+          "leads_to": "stressed"
+        },
+        {
+          "text": "Do you have any room keys?",
+          "leads_to": "keys"
+        }
+      ]
+    },
+    "no_time": {
+      "text": "*laughs hysterically* Help YOU? I can barely help MYSELF! I'm checking in guests who don't exist yet, answering calls from the past, and trying to explain to a Victorian ghost why we don't accept payment in shillings. But sure, ask away. Multitasking is my superpower now.",
+      "choices": [
+        {
+          "text": "What's happening to the hotel?",
+          "leads_to": "chaos_explanation"
+        },
+        {
+          "text": "Never mind, I'll figure it out.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "stressed": {
+      "text": "*takes a long sip of coffee* Stressed? STRESSED?! I'm beyond stressed. I've transcended stress. I've achieved a zen-like state of accepting that nothing makes sense anymore and I'm just along for the ride. Also, I haven't slept in 47 hours. Or was it 47 minutes? Or 47 years? WHO KNOWS.",
+      "choices": [
+        {
+          "text": "Maybe take a break?",
+          "leads_to": "no_breaks"
+        },
+        {
+          "text": "I'll let you get back to work.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "keys": {
+      "text": "*gestures at the key cubby holes spinning into infinity* Help yourself! Good luck finding the right one. They're organized by floor, room number, dimension, and timeline. Also, some of them unlock doors that don't exist yet. Or anymore. Or ever. The filing system made sense before reality broke.",
+      "choices": [
+        {
+          "text": "This is insane.",
+          "leads_to": "welcome_to_hotel"
+        }
+      ]
+    },
+    "chaos_explanation": {
+      "text": "Someone stole the Reality Anchor from the Vault. It's the device that keeps all six dimensional floors separate. Without it, everything's collapsing together. Ghosts are haunting the robot casino. Dragons are complaining about the alien conference noise. It's a nightmare. But I'm still expected to provide excellent customer service!",
+      "choices": [
+        {
+          "text": "That sounds terrible.",
+          "leads_to": "terrible_yes"
+        },
+        {
+          "text": "I'll try to fix it.",
+          "leads_to": "good_luck"
+        }
+      ]
+    },
+    "no_breaks": {
+      "text": "*phone rings in three different time zones simultaneously* BREAKS?! The Manager doesn't believe in breaks. Says they disrupt the space-time continuum. Which is ironic considering EVERYTHING ELSE around here. But sure, I'll take a break. Right after I finish checking in this interdimensional conference of accountants. Kill me now.",
+      "choices": [
+        {
+          "text": "Hang in there.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "welcome_to_hotel": {
+      "text": "Welcome to the Grand Paradox Hotel! Where the motto is 'We Put the PARA in Paradox' and the fine print says 'Management not responsible for temporal anomalies, existential crises, or meeting yourself from alternate timelines.' Enjoy your stay!",
+      "choices": [
+        {
+          "text": "Thanks... I think.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "terrible_yes": {
+      "text": "Terrible doesn't even BEGIN to cover it. But I'm a professional. *forced smile* Is there anything ELSE I can help you with today? Preferably something that doesn't require me to explain dimensional physics?",
+      "choices": [
+        {
+          "text": "No, that's all.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "good_luck": {
+      "text": "*eyes widen* You're going to fix it? Oh thank GOD. Or thank whoever invented coffee. Same thing at this point. Good luck! You're going to need it. Also, if you die, please don't come back as a ghost. We're fully booked in the Victorian wing.",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*already typing again* Good talk. Come back if you need anything. Or don't. I'll be here. Forever. Trapped behind this desk. Living the dream. *sips coffee intensely*",
+      "choices": []
+    }
+  }
 }

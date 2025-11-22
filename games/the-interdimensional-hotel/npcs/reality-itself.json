@@ -1,7 +1,7 @@
 {
   "id": "reality-itself",
   "name": "Reality (Personified)",
-  "description": "Reality itself, given form in the dimensional rift. Appears as constantly shifting forms\u2014human, alien, geometric shapes, pure light. Speaks in overlapping voices. Desperate. Dying. Needs your help to be whole again.",
+  "description": "Reality itself, given form in the dimensional rift. Appears as constantly shifting forms—human, alien, geometric shapes, pure light. Speaks in overlapping voices. Desperate. Dying. Needs your help to be whole again.",
   "position": {
     "x": 20,
     "y": 40,
@@ -12,5 +12,209 @@
   "level": 99,
   "type": "npc",
   "dialogueTreeId": "reality-itself",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*manifests as overlapping forms, voices echo* HELP... ME... I AM... BREAKING... FRAGMENTS... SCATTERED... IDENTITY... FRACTURING... I WAS WHOLE... NOW... PIECES... YOU... YOU CAN... RESTORE... PLEASE...",
+      "choices": [
+        {
+          "text": "What are you?",
+          "leads_to": "identity_crisis"
+        },
+        {
+          "text": "How can I help?",
+          "leads_to": "desperate_plea"
+        },
+        {
+          "text": "What happened to you?",
+          "leads_to": "origin_story"
+        }
+      ]
+    },
+    "identity_crisis": {
+      "text": "*shifts through forms - human, crystal, void, light* I AM... EVERYTHING... NOTHING... THE FABRIC... THE FOUNDATION... REALITY... CONSCIOUSNESS... GIVEN... FORM... I HOLD... DIMENSIONS... TOGETHER... BUT... TORN... SCATTERED... DYING... WHAT... AM... I... NOW?",
+      "choices": [
+        {
+          "text": "You're still real. Still here.",
+          "leads_to": "reassurance"
+        },
+        {
+          "text": "Tell me about the fragments.",
+          "leads_to": "fragment_explanation"
+        }
+      ]
+    },
+    "desperate_plea": {
+      "text": "*reaches with limbs that phase between existence* THE... FRAGMENTS... MY... PIECES... COLLECT... THEM... RESTORE... ME... WITHOUT... UNITY... I... FADE... COLLAPSE... EVERYTHING... EVERYONE... FALLS... INTO... VOID... SAVE... ME... SAVE... ALL...",
+      "choices": [
+        {
+          "text": "I have the fragments.",
+          "leads_to": "fragments_collected"
+        },
+        {
+          "text": "What will happen if you die?",
+          "leads_to": "apocalypse_warning"
+        }
+      ]
+    },
+    "origin_story": {
+      "text": "*voices harmonize painfully* I... EXISTED... ETERNAL... CONSTANT... THEN... HE... CAME... MR... NULL... THE... ABSENCE... ANTITHESIS... HE... STOLE... THE... ANCHOR... RIPPED... MY... ESSENCE... SCATTERED... MY... BEING... REVENGE... AGAINST... EXISTENCE... ITSELF...",
+      "choices": [
+        {
+          "text": "Why does he hate existence?",
+          "leads_to": "null_motivation"
+        },
+        {
+          "text": "How do I stop him?",
+          "leads_to": "stopping_void"
+        }
+      ]
+    },
+    "reassurance": {
+      "text": "*stabilizes slightly, forms coalesce* YES... STILL... HERE... BARELY... YOUR... WORDS... ANCHOR... ME... BELIEF... IN... EXISTENCE... STRENGTHENS... REALITY... THANK... YOU... BUT... HURRY... FADING... FAST... MINUTES... MAYBE... HOURS... NOT... LONG...",
+      "choices": [
+        {
+          "text": "I'll fix this. I promise.",
+          "leads_to": "promise_made"
+        }
+      ]
+    },
+    "fragment_explanation": {
+      "text": "*pulses with recognition* MY... CORE... ASPECTS... SCATTERED... ORDER... MEMORY... CHANCE... STORY... OBSERVATION... TRUTH... SIX... PIECES... OF... WHOLE... EACH... DIMENSION... HOLDS... ONE... FIND... THEM... UNITE... THEM... RESTORE... ME... BECOME... COMPLETE... AGAIN...",
+      "choices": [
+        {
+          "text": "I understand.",
+          "leads_to": "understanding"
+        }
+      ]
+    },
+    "fragments_collected": {
+      "text": "*flares brilliantly, forms sharpen* YOU... HAVE... THEM?! *voices crescendo* YES... FEEL... THEM... CALLING... TO... ME... TAKE... THEM... TO... ANCHOR... POINT... DEEPEST... BASEMENT... WHERE... I... WAS... BROKEN... THERE... RESTORE... THERE... REBIRTH... THERE... HOPE...",
+      "choices": [
+        {
+          "text": "I'll take them there.",
+          "leads_to": "final_location"
+        },
+        {
+          "text": "Will this save you?",
+          "leads_to": "salvation_question"
+        }
+      ]
+    },
+    "apocalypse_warning": {
+      "text": "*reality SCREAMS around you* ALL... DIMENSIONS... COLLAPSE... TIME... SPACE... MEANING... GONE... EXISTENCE... BECOMES... VOID... ETERNAL... EMPTINESS... NOTHING... REMAINS... EVERYONE... YOU... LOVE... ERASED... NEVER... WERE... NEVER... WILL... BE... TOTAL... ANNIHILATION...",
+      "choices": [
+        {
+          "text": "I won't let that happen.",
+          "leads_to": "determination"
+        }
+      ]
+    },
+    "null_motivation": {
+      "text": "*voices turn sorrowful* HE... IS... LONELINESS... MADE... MANIFEST... NEVER... EXISTED... NEVER... BELONGED... WANTS... ALL... TO... SHARE... HIS... EMPTINESS... BELIEVES... NOTHING... IS... BETTER... THAN... SOMETHING... CANNOT... COMPREHEND... BEAUTY... OF... BEING...",
+      "choices": [
+        {
+          "text": "That's tragic.",
+          "leads_to": "tragedy_acknowledged"
+        },
+        {
+          "text": "He must be stopped.",
+          "leads_to": "necessity"
+        }
+      ]
+    },
+    "stopping_void": {
+      "text": "*forms become almost solid* RESTORE... ANCHOR... SEAL... HIM... AWAY... FRAGMENTS... COMBINED... CREATE... CAGE... OF... EXISTENCE... VOID... CANNOT... ESCAPE... REALITY... ITSELF... BUT... CONFRONTATION... REQUIRED... HE... GUARDS... ANCHOR... POINT... YOU... MUST... FACE... NOTHING...",
+      "choices": [
+        {
+          "text": "I'm ready.",
+          "leads_to": "ready_response"
+        }
+      ]
+    },
+    "promise_made": {
+      "text": "*warmth radiates* YOUR... PROMISE... MATTERS... INTENT... CREATES... REALITY... WILL... BECOMES... WAY... YOU... ARE... HOPE... INCARNATE... GO... FINISH... THIS... SAVE... US... ALL... AND... THANK... YOU... FOR... BELIEVING...",
+      "choices": [
+        {
+          "text": "Always.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "understanding": {
+      "text": "*grateful pulse* GOOD... SMART... COMPASSIONATE... EXACTLY... WHAT... REALITY... NEEDS... SOMEONE... WHO... CARES... WHO... FIGHTS... WHO... REFUSES... VOID... GO... CLAIM... MY... PIECES... BECOME... MY... CHAMPION... WIN...",
+      "choices": [
+        {
+          "text": "I will.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "final_location": {
+      "text": "*focuses all forms toward one direction* THERE... DOWN... BELOW... WHERE... DARKNESS... WAITS... WHERE... HE... BROKE... ME... WHERE... YOU... WILL... RESTORE... CIRCLE... COMPLETES... STORY... ENDS... OR... BEGINS... DEPENDING... ON... YOUR... SUCCESS...",
+      "choices": [
+        {
+          "text": "Here I go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "salvation_question": {
+      "text": "*uncertain flicker* MAYBE... PROBABLY... HOPEFULLY... IF... FRAGMENTS... UNITE... IF... ANCHOR... HOLDS... IF... YOU... SURVIVE... THEN... YES... HEALING... RESTORATION... WHOLENESS... AGAIN... BUT... GUARANTEES... ARE... ILLUSION... ONLY... ATTEMPT... MATTERS...",
+      "choices": [
+        {
+          "text": "Then I'll attempt it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "determination": {
+      "text": "*burns brighter* YOUR... RESOLVE... STRENGTHENS... ME... GIVES... HOPE... SUBSTANCE... CONTINUE... FIGHT... RESIST... VOID... YOU... ARE... PROOF... THAT... EXISTENCE... WORTH... SAVING... THANK... YOU... WARRIOR... OF... BEING...",
+      "choices": [
+        {
+          "text": "I won't fail.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "tragedy_acknowledged": {
+      "text": "*sad resonance* YES... TRAGIC... BUT... TRAGEDY... DOESN'T... JUSTIFY... GENOCIDE... OF... EXISTENCE... PAIN... DESERVES... COMPASSION... NOT... ANNIHILATION... SAVE... EVERYONE... EVEN... HIM... BY... STOPPING... HIM... PARADOX... OF... MERCY...",
+      "choices": [
+        {
+          "text": "I understand.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "necessity": {
+      "text": "*hardens into determination* YES... NECESSITY... SURVIVAL... CONTINUATION... ALL... LIFE... ALL... STORIES... ALL... MOMENTS... DEPEND... ON... YOU... PRESSURE... IMMENSE... BUT... SO... IS... YOUR... STRENGTH... GO... FINISH... THIS... END... THE... ENDING...",
+      "choices": [
+        {
+          "text": "Time to act.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "ready_response": {
+      "text": "*blazes with pride* READY... YES... YOU... ARE... MORE... THAN... READY... YOU... ARE... INEVITABLE... OPPOSITION... TO... VOID... TAKE... FRAGMENTS... FACE... DARKNESS... RESTORE... LIGHT... AND... KNOW... I... BELIEVE... IN... YOU...",
+      "choices": [
+        {
+          "text": "That means everything.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*all forms align momentarily into one clear shape - reaching toward you* GO... HERO... OF... REALITY... CHAMPION... OF... EXISTENCE... SAVE... US... SAVE... YOURSELF... SAVE... EVERYTHING... AND... IF... WE... MEET... AGAIN... I... WILL... BE... WHOLE... THANKS... TO... YOU...",
+      "choices": []
+    }
+  }
 }

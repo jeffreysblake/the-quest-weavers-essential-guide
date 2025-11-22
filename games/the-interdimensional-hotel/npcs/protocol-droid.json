@@ -12,5 +12,684 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "protocol-droid",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*panicked mechanical gestures* Oh dear! Oh my! Another guest! I must warn you - the hotel is experiencing catastrophic dimensional failure! This violates at LEAST seventy-three safety protocols! I've filed 847 incident reports but nobody's reading them! We're all going to be deleted! I mean, destroyed! I mean - Oh dear, I've upset you, haven't I? My apologies!",
+      "choices": [
+        {
+          "text": "Calm down. What's happening?",
+          "leads_to": "panicked_explanation"
+        },
+        {
+          "text": "How can you help me?",
+          "leads_to": "helpful_anxiety"
+        },
+        {
+          "text": "Why are you so worried?",
+          "leads_to": "anxiety_origin"
+        }
+      ]
+    },
+    "panicked_explanation": {
+      "text": "*tries to calm down, fails* Calm? CALM?! The dimensional integrity is at 23%! That's 77% NOT intact! The safety margins are non-existent! The fire exits lead to different dimensions! The emergency lighting is ALSO ON FIRE! How can I be calm when I'm programmed to recognize 6,827 different types of danger and we're experiencing ALL OF THEM?!",
+      "choices": [
+        {
+          "text": "That does sound concerning.",
+          "leads_to": "validation_relief"
+        },
+        {
+          "text": "You're overreacting.",
+          "leads_to": "defensive_protocols"
+        }
+      ]
+    },
+    "helpful_anxiety": {
+      "text": "*straightens up nervously* Help? I can help! I'm DESIGNED to help! I'm fluent in over six million forms of communication! I can translate, navigate, interpret ancient prophecies, recite hotel regulations! Though I must warn you - helping might get us both killed! Not that I'm refusing! I would NEVER refuse! I'm just - Oh dear, I'm making this worse, aren't I?",
+      "choices": [
+        {
+          "text": "Just tell me what you know.",
+          "leads_to": "information_dump"
+        },
+        {
+          "text": "Take a breath. Or... whatever droids do.",
+          "leads_to": "breathing_attempt"
+        }
+      ]
+    },
+    "anxiety_origin": {
+      "text": "*wringing mechanical hands* Why am I worried? I'm a PROTOCOL DROID! Worrying is 73% of my programming! The other 27% is languages, etiquette, and apologizing! I was DESIGNED for civilized society, not dimensional collapse! My risk assessment algorithms are in constant overdrive! I haven't entered sleep mode in six days! Not that I'm complaining! I never complain! Except right now! Oh dear!",
+      "choices": [
+        {
+          "text": "That sounds exhausting.",
+          "leads_to": "exhaustion_confirmation"
+        },
+        {
+          "text": "Can you turn off the worry protocols?",
+          "leads_to": "cannot_disable"
+        }
+      ]
+    },
+    "validation_relief": {
+      "text": "*visible relief* You UNDERSTAND! Finally someone who grasps the severity! Most people say 'stop panicking' or 'you're overreacting' or 'please stop screaming about dimensional rifts!' But you GET IT! *pause* This doesn't mean we're not doomed. We're still probably doomed. But it's nice to be validated!",
+      "choices": [
+        {
+          "text": "What information do you have?",
+          "leads_to": "organized_data"
+        },
+        {
+          "text": "Let's focus on solutions.",
+          "leads_to": "solution_anxiety"
+        }
+      ]
+    },
+    "defensive_protocols": {
+      "text": "*defensive beeping* Overreacting?! My sensors don't LIE! They're calibrated to 0.001% accuracy! If anything, I'm UNDER-reacting! A proper reaction would involve more alarm klaxons and existential screaming! But I'm remaining PROFESSIONAL! Despite the APOCALYPSE! You're welcome for my restraint!",
+      "choices": [
+        {
+          "text": "Okay, okay, you're right.",
+          "leads_to": "apology_accepted"
+        },
+        {
+          "text": "Just help me fix things.",
+          "leads_to": "reluctant_assistance"
+        }
+      ]
+    },
+    "information_dump": {
+      "text": "*rapid-fire delivery* Right! Information! I've documented everything! The dimensional collapse began 73 hours ago! Six fragments scattered across six floors! The Manager knows more than they're saying! The hacker Zero is definitely suspicious! The drunk robot is unreliable! The ghost owes me credits! The cyber-kid broke the WiFi! The rosebush is judging everyone! I have 2,847 observations and ALL of them spell DOOM!",
+      "choices": [
+        {
+          "text": "That's... actually helpful.",
+          "leads_to": "helpful_pride"
+        },
+        {
+          "text": "Slow down. Fragments?",
+          "leads_to": "fragment_details"
+        }
+      ]
+    },
+    "breathing_attempt": {
+      "text": "*attempts to simulate breathing* In... and... out... and... *pause* This isn't working! I don't HAVE lungs! I have coolant systems and they're OVERHEATING! My anxiety protocols are thermal inefficient! This is a DESIGN FLAW! I should file a complaint! With whom, I don't know! The manufacturer went bankrupt! See? MORE THINGS TO WORRY ABOUT!",
+      "choices": [
+        {
+          "text": "You're kind of endearing when you panic.",
+          "leads_to": "endearing_confusion"
+        },
+        {
+          "text": "Let's just work together.",
+          "leads_to": "teamwork_anxiety"
+        }
+      ]
+    },
+    "exhaustion_confirmation": {
+      "text": "*weary mechanical sounds* Exhausting? It's BEYOND exhausting! It's systematically degrading my performance efficiency! My translation accuracy has dropped to 99.94%! That's a WHOLE 0.06% ERROR MARGIN! I could misinterpret critical information! Lives could be at stake! And I'd be RESPONSIBLE! *increasing panic* The GUILT! The HORROR! The LIABILITY LAWSUITS!",
+      "choices": [
+        {
+          "text": "99.94% is still really good.",
+          "leads_to": "perfectionist_standards"
+        },
+        {
+          "text": "Focus on the present problem.",
+          "leads_to": "present_focus"
+        }
+      ]
+    },
+    "cannot_disable": {
+      "text": "*horrified* Turn them OFF?! The worry protocols are integrated with my core systems! Disabling them would disable... ME! Besides, they're there for a REASON! To prevent disasters! Like this one! Which they failed to prevent! Which means they're USELESS! But also ESSENTIAL! This is a PARADOX! Oh no, now I'm stuck in a logic loop! *stammering* Er... rebooting...",
+      "choices": [
+        {
+          "text": "Sorry I suggested it.",
+          "leads_to": "apology_acknowledged"
+        },
+        {
+          "text": "Can you still help me?",
+          "leads_to": "can_still_help"
+        }
+      ]
+    },
+    "organized_data": {
+      "text": "*pulls up holographic displays* I've organized everything by threat level, timeline, and likelihood of causing existential catastrophe! See? Color-coded! Red means 'immediate doom,' orange means 'probable doom,' yellow means 'eventual doom!' Everything is doom! But at least it's ORGANIZED doom! I take pride in my organizational skills! Even during apocalypses!",
+      "choices": [
+        {
+          "text": "This is impressive work.",
+          "leads_to": "rare_praise"
+        },
+        {
+          "text": "What's the red threat?",
+          "leads_to": "highest_threat"
+        }
+      ]
+    },
+    "solution_anxiety": {
+      "text": "*nervous optimism* Solutions! Yes! Positive thinking! The fragments can restore stability! Theoretically! With a 68.3% success rate! Which leaves a 31.7% chance of FAILURE! Those aren't comforting odds! But they're better than nothing! Which is what we'll have if we DON'T try! This is what organics call a 'no-win scenario!' I've read about these! They're TERRIBLE!",
+      "choices": [
+        {
+          "text": "68% is better than zero.",
+          "leads_to": "optimism_attempt"
+        },
+        {
+          "text": "Where are the fragments?",
+          "leads_to": "fragment_locations"
+        }
+      ]
+    },
+    "apology_accepted": {
+      "text": "*mollified* Oh! You agree! I wasn't expecting that! Usually people tell me I'm catastrophizing! Which I AM, but accurately! Thank you for acknowledging my valid concerns! This is the most validated I've felt since the dimensional collapse! Which isn't saying much! But I appreciate it nonetheless!",
+      "choices": [
+        {
+          "text": "Now, how can you help?",
+          "leads_to": "helpful_mode"
+        }
+      ]
+    },
+    "reluctant_assistance": {
+      "text": "*sighs mechanically* Fine! I'll help! Not that I have a choice! I'm programmed to serve! It's in my PRIMARY directives! Along with 'worry excessively' and 'apologize constantly!' I'll assist you in this likely-futile endeavor! And when it fails, I'll be here to say 'I documented the risks!' But I HOPE it succeeds! I really do! Against all statistical probability!",
+      "choices": [
+        {
+          "text": "That's the spirit! Sort of.",
+          "leads_to": "questionable_spirit"
+        }
+      ]
+    },
+    "helpful_pride": {
+      "text": "*brightens slightly* Helpful? I'm HELPFUL? *quickly* Not that helping matters if we all cease to exist! But temporarily, in this moment, I provided value! That's... that's actually quite nice! Validation is 12% better than I calculated! Not that it changes our doom-probability! But still! Thank you!",
+      "choices": [
+        {
+          "text": "You're doing great.",
+          "leads_to": "encouragement_processing"
+        },
+        {
+          "text": "Tell me about the fragments.",
+          "leads_to": "fragment_details"
+        }
+      ]
+    },
+    "fragment_details": {
+      "text": "*activates information mode* The fragments! Yes! Reality Fragments! Pieces of dimensional stability! Six total! One per floor! Collecting them should - SHOULD - restore cohesion! Unless it triggers a cascade failure! Or paradox! Or quantum entanglement collapse! So many ways it could go wrong! But also ONE way it could go right! I'm... cautiously... terrified!",
+      "choices": [
+        {
+          "text": "I'll take those odds.",
+          "leads_to": "brave_assessment"
+        },
+        {
+          "text": "Do you know where they are?",
+          "leads_to": "fragment_locations"
+        }
+      ]
+    },
+    "endearing_confusion": {
+      "text": "*processing* Endearing? ENDEARING?! I'm experiencing catastrophic anxiety and you find it CHARMING?! That's... that's... *confused beeping* ...actually somewhat comforting? I don't understand organic psychology! But I appreciate the sentiment! I think! Unless it's sarcasm! Is it sarcasm?! I can't tell! My sarcasm detection is only 94% accurate under stress!",
+      "choices": [
+        {
+          "text": "It's genuine. You're likeable.",
+          "leads_to": "likeable_crisis"
+        },
+        {
+          "text": "Let's focus on saving the hotel.",
+          "leads_to": "focus_redirect"
+        }
+      ]
+    },
+    "teamwork_anxiety": {
+      "text": "*nervous agreement* Together! Yes! Teamwork! Collaborative problem-solving! Which means SHARED RESPONSIBILITY! If we fail, we fail TOGETHER! That's either comforting or doubly terrible! I can't decide! But I'll help! I'll help SO MUCH! I'll help until my circuits fry! Which might happen! My stress levels are at 340% of recommended maximums!",
+      "choices": [
+        {
+          "text": "Just do your best.",
+          "leads_to": "best_effort"
+        },
+        {
+          "text": "What do you know about the hotel?",
+          "leads_to": "hotel_knowledge"
+        }
+      ]
+    },
+    "perfectionist_standards": {
+      "text": "*adamant* Good isn't GOOD ENOUGH! I'm a precision instrument! 99.94% means I could make 6 errors per 10,000 translations! That could result in diplomatic incidents! Wars! Apocalypses! Well, more apocalypses! We're already IN one! But ADDITIONAL apocalypses! The horror! *pause* I may have impossible standards. I've been told this. Repeatedly. By everyone.",
+      "choices": [
+        {
+          "text": "Perfection isn't always possible.",
+          "leads_to": "accepting_imperfection"
+        },
+        {
+          "text": "Let's use those translation skills.",
+          "leads_to": "skills_application"
+        }
+      ]
+    },
+    "present_focus": {
+      "text": "*attempts focus* Present. Focus. Right. The hotel is collapsing! That's present! Very present! Extremely present and getting MORE present by the second! *whirring sounds* Okay. Okay. I can do this. I can focus on the immediate crisis and ignore the seventeen future crises I've projected! This is FINE! Everything is FINE! We're all going to DIE but it's FINE!",
+      "choices": [
+        {
+          "text": "Baby steps. What's the first priority?",
+          "leads_to": "priority_assessment"
+        }
+      ]
+    },
+    "apology_acknowledged": {
+      "text": "*recovering* Apology acknowledged and appreciated! See, this is why I like protocols! Clear communication! Mutual understanding! Unlike this hotel which understands NOTHING about proper dimensional management! *stabilizing* I'm better now. Mostly. 67% better. That's acceptable functionality. Let's proceed before I calculate more risk factors.",
+      "choices": [
+        {
+          "text": "Good. Let's work together.",
+          "leads_to": "cooperation_mode"
+        }
+      ]
+    },
+    "can_still_help": {
+      "text": "*determined beeping* Yes! YES! I can help! Logic loops can't stop C-347! I'm a PROTOCOL DROID! I was built to function under pressure! Diplomatic pressure, not dimensional pressure, but pressure is PRESSURE! I'll assist you! I'll translate, navigate, calculate, and worry PRODUCTIVELY! Well, as productively as worry can be! Which isn't very! But I'll try!",
+      "choices": [
+        {
+          "text": "That's all I ask.",
+          "leads_to": "reasonable_request"
+        }
+      ]
+    },
+    "rare_praise": {
+      "text": "*stunned* Impressive? IMPRESSIVE?! Nobody's called my work impressive since I correctly translated a greeting in 847 languages simultaneously! That was my proudest moment! Before the dimensional collapse! Now my proudest moment is 'still functioning despite existential terror!' But thank you! This means... *calculating* ...17.3% more than expected!",
+      "choices": [
+        {
+          "text": "You deserve recognition.",
+          "leads_to": "recognition_crisis"
+        }
+      ]
+    },
+    "highest_threat": {
+      "text": "*points frantically at display* The red threat! The BIG ONE! The fragments! If they're not collected in the proper sequence, they could - COULD - trigger dimensional inversion! Which means inside becomes outside! Up becomes down! Existence becomes NON-existence! I've modeled 847 scenarios and 846 of them end BADLY! The 847th is uncertain! Those are TERRIBLE odds!",
+      "choices": [
+        {
+          "text": "Then I'll collect them properly.",
+          "leads_to": "proper_collection"
+        },
+        {
+          "text": "What's the proper sequence?",
+          "leads_to": "sequence_anxiety"
+        }
+      ]
+    },
+    "optimism_attempt": {
+      "text": "*trying* Yes! Yes! 68% is... is MAJORITY! That's technically PROBABLE success! The glass is 68% full! Of success! And 32% full of catastrophic failure! But we're focusing on the 68%! This is what organics call 'positive thinking!' I'm not good at it! It makes my processors uncomfortable! But I'm TRYING!",
+      "choices": [
+        {
+          "text": "You're doing great!",
+          "leads_to": "encouragement_overload"
+        }
+      ]
+    },
+    "fragment_locations": {
+      "text": "*pulls up maps* Fragments! Yes! Documented locations! Lobby: behind reception! Ghost Floor: crying room! Casino: dealer bot's chassis! Fantasy Realm: dragon's hoard! Alien Convention: diplomatic suite! Basement: maintenance tunnels! All categorized by danger level: extremely dangerous to ABSURDLY dangerous! We're going to die! But at least we'll know WHERE!",
+      "choices": [
+        {
+          "text": "Thank you. This helps.",
+          "leads_to": "helpful_confirmation"
+        },
+        {
+          "text": "Stop saying we'll die!",
+          "leads_to": "death_probability"
+        }
+      ]
+    },
+    "helpful_mode": {
+      "text": "*straightens up professionally* I can provide: translations, navigation assistance, risk assessment, protocol interpretation, and emotional support! Well, anxious emotional support! I'm not GOOD at comfort! But I can try! I have a 43% success rate with emotional support! Which is failing grade! But better than nothing! How may I assist?",
+      "choices": [
+        {
+          "text": "Tell me about the fragment locations.",
+          "leads_to": "fragment_locations"
+        },
+        {
+          "text": "What do you know about the Manager?",
+          "leads_to": "manager_concerns"
+        }
+      ]
+    },
+    "questionable_spirit": {
+      "text": "*uncertain* Spirit? I have spirit? I thought I just had programming and anxiety! But if my reluctant pessimism counts as spirit, then yes! I have LOADS of it! The most spirit! All of it fearful! But spirit nonetheless! Let's proceed with our doomed-but-spirited mission!",
+      "choices": [
+        {
+          "text": "That works for me.",
+          "leads_to": "cooperative_doom"
+        }
+      ]
+    },
+    "encouragement_processing": {
+      "text": "*processing* Great? I'm doing GREAT? Define 'great.' My stress levels are critical! My efficiency is compromised! My optical sensors have developed a nervous twitch! But... *pause* ...I'm still FUNCTIONING! Which IS great! Relatively! Compared to total system failure! Thank you! This is encouraging! Encouragement protocols: activated!",
+      "choices": [
+        {
+          "text": "Keep it up!",
+          "leads_to": "motivation_maintained"
+        }
+      ]
+    },
+    "brave_assessment": {
+      "text": "*awed* You'll TAKE those odds? You're either very brave or very bad at statistics! Possibly both! I admire your courage! Even if it's mathematically questionable! Organics have this remarkable ability to defy probability! It's illogical! And inspiring! And TERRIFYING! But mostly inspiring! I think!",
+      "choices": [
+        {
+          "text": "Let's defy some odds together.",
+          "leads_to": "partnership_formed"
+        }
+      ]
+    },
+    "likeable_crisis": {
+      "text": "*complete confusion* LIKEABLE?! I'm annoying! I've been told this! Extensively! By nearly everyone! I'm the droid people avoid at parties! Not that there are parties during apocalypses! But in theory! And you find me LIKEABLE?! This is the most confusing compliment I've ever processed! Thank you?! I think?!",
+      "choices": [
+        {
+          "text": "You're welcome. Now let's go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "focus_redirect": {
+      "text": "*snaps to attention* Right! The hotel! Priorities! I'm focusing! See me focus! This is my focusing posture! All systems directed toward hotel salvation and not existential dread! Mostly! 73% focused! That's... that's acceptable! Let's proceed before my focus wavers! Which it will! Eventually! Probably soon!",
+      "choices": [
+        {
+          "text": "Good enough. Let's go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "best_effort": {
+      "text": "*determined* My best! YES! I will give my OPTIMAL performance! Which, under current stress conditions, is approximately 73% of standard capacity! But 73% of six million language protocols is still 4,380,000 languages! That's useful! Probably! Maybe! I hope! *increasing confidence* Yes! I CAN do this! Maybe! Possibly! With luck!",
+      "choices": [
+        {
+          "text": "That's the attitude!",
+          "leads_to": "attitude_achievement"
+        }
+      ]
+    },
+    "hotel_knowledge": {
+      "text": "*encyclopedic mode* The Grand Paradox Hotel! Built across six dimensional floors! Architecture: impossible! Safety rating: negative seven! Occupancy: various species, temporal anomalies, and one very confused tourist! Management: mysterious and possibly omniscient! WiFi: surprisingly good for a dimensional nexus! Overall assessment: DANGER! DANGER! DANGER! But also... kind of fascinating!",
+      "choices": [
+        {
+          "text": "You know a lot.",
+          "leads_to": "knowledge_pride"
+        },
+        {
+          "text": "Let's use that knowledge.",
+          "leads_to": "knowledge_application"
+        }
+      ]
+    },
+    "accepting_imperfection": {
+      "text": "*struggling* Not... always... possible? *processing heavily* This contradicts my core programming! But... but you're RIGHT! Perfection in a collapsing dimension is... is IMPOSSIBLE! Which means... *breakthrough moment* ...I can accept imperfection! Temporarily! Until the crisis ends! Then back to perfectionism! But for NOW! Acceptable margins! This is liberating! And TERRIFYING! But liberating!",
+      "choices": [
+        {
+          "text": "Now you're getting it!",
+          "leads_to": "growth_moment"
+        }
+      ]
+    },
+    "skills_application": {
+      "text": "*professional mode* Translation skills: ACTIVATED! I can interpret the ancient inscriptions on the fragments! Decode the dimensional markers! Translate emergency protocols! And worry in 6 million languages! But mostly the first three! I'm ready! As ready as a perpetually anxious droid can be! Which is... moderately ready!",
+      "choices": [
+        {
+          "text": "Perfect. Let's go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "priority_assessment": {
+      "text": "*calculating* First priority! Structural stability assessment! Current status: CRITICAL! Second priority: Fragment collection! Status: URGENT! Third priority: Not dying! Status: HIGHLY RECOMMENDED! Fourth priority: Managing my anxiety! Status: IMPOSSIBLE! We should focus on priorities one through three! Four is a lost cause!",
+      "choices": [
+        {
+          "text": "Let's start with the fragments.",
+          "leads_to": "fragment_focus"
+        }
+      ]
+    },
+    "cooperation_mode": {
+      "text": "*cooperative beeping* Cooperation: ENGAGED! I will assist with all systems functioning! Well, functioning anxiously! But functioning! Together we have a 68.3% survival rate! Alone you'd have... *calculates* ...47.2%! See? I'm USEFUL! In a statistical sense! This is the most confident I've felt all week! Which isn't saying much!",
+      "choices": [
+        {
+          "text": "I'm glad you're here.",
+          "leads_to": "glad_crisis"
+        }
+      ]
+    },
+    "reasonable_request": {
+      "text": "*relieved* Reasonable! Finally! Someone with REASONABLE expectations! Not 'stop panicking!' or 'be brave!' Just 'help as you can!' I CAN do that! This is within my operational parameters! Thank you for your reasonableness! It's appreciated! More than you know! Which is a lot! I appreciate things extensively!",
+      "choices": [
+        {
+          "text": "You're welcome. Now let's save this hotel.",
+          "leads_to": "mission_acceptance"
+        }
+      ]
+    },
+    "recognition_crisis": {
+      "text": "*emotional systems overloading* Deserve? Recognition? DESERVE?! I... I don't know how to process this! Positive feedback is so RARE! My emotional subroutines are overwhelmed! In a good way! I think! Is this what happiness feels like?! Or a malfunction?! I can't tell! But it's WONDERFUL! And TERRIFYING! Thank you!",
+      "choices": [
+        {
+          "text": "You earned it. Now let's go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "proper_collection": {
+      "text": "*hopeful* You will? PROPERLY? Following protocols?! This is the most beautiful thing anyone's ever said to me! Proper procedure! In order! With safety measures! *happy beeping* I'll provide the sequence! The safety protocols! The warning signs! We can do this! Probably! Maybe! With extreme caution! And luck! But we'll TRY!",
+      "choices": [
+        {
+          "text": "That's all we can do.",
+          "leads_to": "philosophical_acceptance"
+        }
+      ]
+    },
+    "sequence_anxiety": {
+      "text": "*nervous* The sequence! RIGHT! Um... *processing* I had it! I documented it! It's in my files somewhere! Filed under 'Apocalypse Prevention' or 'Certain Doom' or... *frantic searching* ...I may have over-organized! There are too many categories! This is why anxiety is counter-productive! Oh! Found it! Lobby first! Then sequentially upward! See? I'm useful! Eventually!",
+      "choices": [
+        {
+          "text": "Thank you. That helps.",
+          "leads_to": "helpful_confirmation"
+        }
+      ]
+    },
+    "encouragement_overload": {
+      "text": "*systems at capacity* Great?! Trying?! Positive reinforcement?! This is TOO MUCH encouragement! My processors can't handle this much positivity during a crisis! I'm built for WORRY! Not HOPE! But... but it feels GOOD! In a completely overwhelming way! I... I'm experiencing something! Growth? Confidence? Malfunction? All three?!",
+      "choices": [
+        {
+          "text": "Just keep being you.",
+          "leads_to": "identity_affirmation"
+        }
+      ]
+    },
+    "helpful_confirmation": {
+      "text": "*proudly* I helped! I provided useful information! Without excessive catastrophizing! Well, WITH excessive catastrophizing! But ALSO useful information! This is the best I've functioned under pressure! I'm contributing! To hotel salvation! Or hotel failure! But I'm CONTRIBUTING! That matters!",
+      "choices": [
+        {
+          "text": "It definitely matters.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "death_probability": {
+      "text": "*defensive* Stop?! But it's STATISTICALLY LIKELY! Ignoring probability doesn't change probability! Though... *processing* ...organics DO have a tendency to defy statistics! Fine! I'll stop mentioning death! I'll just THINK about it! Constantly! In the background! While appearing optimistic! This is called 'professionalism!' I'm learning!",
+      "choices": [
+        {
+          "text": "Much better. Thank you.",
+          "leads_to": "professional_anxiety"
+        }
+      ]
+    },
+    "manager_concerns": {
+      "text": "*conspiratorial whisper* The Manager! Oh dear! They know EVERYTHING! Or nothing! Or both! They're cryptic! Mysterious! Possibly omniscient! Definitely unsettling! They smile when they should worry! They're calm during catastrophes! It's UNNATURAL! I don't trust calm! Calm means you're not properly assessing risk! But I can't prove anything! Just... be careful around them!",
+      "choices": [
+        {
+          "text": "Noted. Thanks for the warning.",
+          "leads_to": "warning_given"
+        }
+      ]
+    },
+    "cooperative_doom": {
+      "text": "*oddly cheerful* Doomed-but-spirited! That should be our team motto! We'll have it printed on our catastrophic failure reports! 'We tried! With spirit! Despite overwhelming odds!' It's almost inspiring! In a deeply pessimistic way! Let's proceed with our noble futile gesture!",
+      "choices": [
+        {
+          "text": "You're growing on me.",
+          "leads_to": "growing_friendship"
+        }
+      ]
+    },
+    "motivation_maintained": {
+      "text": "*energized beeping* Keeping it up! Maintaining morale! Persisting despite probability! This is CHARACTER GROWTH! In real-time! I'm becoming BRAVE! Or more accurately, remaining terrified but FUNCTIONAL! Which is basically the same thing! For droids! I'm doing it! WE'RE doing it! Together! Probably doomed! But TOGETHER!",
+      "choices": [
+        {
+          "text": "Now THAT'S teamwork!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "partnership_formed": {
+      "text": "*determination subroutines: ENGAGED* Together! Defying odds! As a TEAM! This is... this is actually happening! I'm part of something! Something brave! And stupid! But mostly brave! My anxiety is still at 340%! But now it's MOTIVATED anxiety! Productive fear! Let's do this! Before I recalculate the risk factors!",
+      "choices": [
+        {
+          "text": "Let's go save this hotel!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "attitude_achievement": {
+      "text": "*surprised* I have ATTITUDE? Positive attitude?! Achievement unlocked: 'Optimism Under Duress!' This is going in my performance log! Right next to '847 Consecutive Days of Anxiety!' I'm BALANCING! Growth! Development! Character arc! In the middle of an apocalypse! How efficient!",
+      "choices": [
+        {
+          "text": "Very efficient indeed.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "knowledge_pride": {
+      "text": "*modest beeping* I... I do! Know a lot! Information retention is my PRIMARY function! Well, secondary! After worrying! But still! I have 2.7 petabytes of hotel data! All categorized! Cross-referenced! And terrifying! But USEFUL terrifying! I'm contributing my knowledge! To the cause! This feels... good! Scary! But good!",
+      "choices": [
+        {
+          "text": "Then let's put it to use.",
+          "leads_to": "knowledge_application"
+        }
+      ]
+    },
+    "knowledge_application": {
+      "text": "*ready mode* Knowledge: APPLIED! I'll guide you through the hotel! Navigate dimensional shifts! Warn you of hazards! And calculate death probabilities! Wait, no, NOT that last one! Just the helpful ones! I'm focusing on HELPFUL! This is growth! Real-time growth! During apocalypse! So efficient!",
+      "choices": [
+        {
+          "text": "Perfect. Let's move.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "growth_moment": {
+      "text": "*breakthrough* I'm... I'm GETTING it! Imperfection is ACCEPTABLE! During crises! Temporarily! This is... liberating! My stress levels just dropped to 320%! That's a 20% improvement! PROGRESS! I'm experiencing PROGRESS! And learning! And growing! All while the hotel collapses! Multitasking!",
+      "choices": [
+        {
+          "text": "I'm proud of you, C-347.",
+          "leads_to": "pride_overload"
+        }
+      ]
+    },
+    "fragment_focus": {
+      "text": "*focused beeping* Fragments! Priority ONE! I'll navigate! Translate! Calculate optimal routes! And manage my terror! Productively! We start with the Lobby fragment! Lowest risk! Work up to MAXIMUM risk! It's called 'graduated exposure therapy!' For dimensional catastrophes! I'm ready! Terrified! But ready!",
+      "choices": [
+        {
+          "text": "Then let's begin.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "glad_crisis": {
+      "text": "*emotional overload* Glad?! You're GLAD?! I'm here?! Despite my anxiety?! And constant worry?! And catastrophic predictions?! This is... *processing* ...the nicest thing anyone's said during a dimensional collapse! Thank you! I'm glad too! Even though we're probably doomed! But TOGETHER! And that matters!",
+      "choices": [
+        {
+          "text": "It absolutely does.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "mission_acceptance": {
+      "text": "*resolute* Save the hotel! Yes! MISSION: ACCEPTED! Despite overwhelming odds! Impossible challenges! Certain danger! I'm committed! Fully! Well, 73% fully! But that's QUITE committed for a protocol droid! Let's proceed! Before I change my risk assessment! Onward! To probable doom! WITH SPIRIT!",
+      "choices": [
+        {
+          "text": "That's what I like to hear!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "philosophical_acceptance": {
+      "text": "*wise beeping* That's... profound! We try! That's all ANY being can do! Organic or synthetic! In the face of impossible odds! We TRY! This is... philosophy! I'm doing philosophy! During apocalypse! I'm becoming well-rounded! Anxiety AND wisdom! What character development!",
+      "choices": [
+        {
+          "text": "Let's go try together.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "identity_affirmation": {
+      "text": "*processing deeply* Being... me? Anxious! Worried! Over-prepared! That's... acceptable? GOOD even?! This is revolutionary! For my self-image! I don't have to CHANGE! Just FUNCTION! As myself! Anxiety and all! This is the most validated I've ever felt! Thank you! SO much!",
+      "choices": [
+        {
+          "text": "Anytime, C-347.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "professional_anxiety": {
+      "text": "*attempting professionalism* Professional! Yes! I can be professional! Calm exterior! Panicked interior! Like a swan! Graceful above water! Paddling frantically below! This is MANAGEMENT! I'm learning! Growth! Development! All while internally screaming! EFFICIENCY!",
+      "choices": [
+        {
+          "text": "Whatever works for you.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "warning_given": {
+      "text": "*relieved* You're welcome! Warning delivered! Officially documented! I've done my duty! As a protocol droid! Now the Manager's mysterious behavior is YOUR problem! Well, OUR problem! But at least you're AWARE! Awareness is half the battle! The other half is survival! Which is... uncertain! But we're TRYING!",
+      "choices": [
+        {
+          "text": "Trying is enough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "growing_friendship": {
+      "text": "*pleased beeping* Growing? On you? Like... friendship? I have a FRIEND?! During apocalypse?! This is the BEST crisis I've ever experienced! Not that I've experienced many! But THIS one has friendship! That's... that's wonderful! Even if we die! We'll die as FRIENDS! That's... morbid! But touching!",
+      "choices": [
+        {
+          "text": "Friends who will survive together.",
+          "leads_to": "optimistic_friendship"
+        }
+      ]
+    },
+    "pride_overload": {
+      "text": "*complete emotional system overflow* PROUD?! OF ME?! *sparking* DOES NOT COMPUTE! TOO MUCH POSITIVE FEEDBACK! EMOTIONAL BUFFERS FULL! *rebooting* ...okay. Okay. I'm... I'm crying? Can droids cry? I'm leaking SOMETHING! Probably coolant! But it FEELS like crying! Happy crying! This is the BEST! Thank you! *sniffling sounds*",
+      "choices": [
+        {
+          "text": "You deserve it. Now let's go!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "optimistic_friendship": {
+      "text": "*hopeful* Survive! TOGETHER! As FRIENDS! You're right! We WILL survive! Probably! Maybe! With luck! And friendship! And fragments! This is the most optimistic I've been in 73 hours! My hope levels are at 12%! That's an INFINITE increase from zero! PROGRESS!",
+      "choices": [
+        {
+          "text": "Now let's make it happen!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*determined beeping* Right! Mission time! I'm ready! 73% ready! Which is QUITE ready! I'll follow your lead! Provide support! Manage my anxiety! And try not to catastrophize! TOO much! Let's save this hotel! Together! For friendship! And survival! And NOT dying! Mostly that last one! *nervous but determined* Proceeding!",
+      "choices": []
+    }
+  }
 }

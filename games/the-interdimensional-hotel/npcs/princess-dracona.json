@@ -12,5 +12,172 @@
   "level": 7,
   "type": "npc",
   "dialogueTreeId": "princess-dracona",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*examines manicured claws with glowing eyes* You must be the new maintenance person. Father mentioned you between complaints. I'm Princess Dracona. Yes, ACTUAL princess. No, I don't need rescuing. Yes, I CAN breathe fire. Hotel policy says I shouldn't. Hotel policy is... flexible.",
+      "choices": [
+        {
+          "text": "Nice to meet you, Princess.",
+          "leads_to": "formal_greeting"
+        },
+        {
+          "text": "Your father seems upset about WiFi.",
+          "leads_to": "father_topic"
+        },
+        {
+          "text": "Know anything about the chaos?",
+          "leads_to": "chaos_knowledge"
+        }
+      ]
+    },
+    "formal_greeting": {
+      "text": "*small smile, smoke curls from nostrils* How refreshingly polite. Most hotel staff just stare at my scales. 'Is that a skin condition?' they ask. It's DRAGON HERITAGE, Janet from housekeeping. DRAGON. HERITAGE. Some people have no cultural awareness.",
+      "choices": [
+        {
+          "text": "People can be insensitive.",
+          "leads_to": "sympathy"
+        },
+        {
+          "text": "Why vacation here?",
+          "leads_to": "vacation_choice"
+        }
+      ]
+    },
+    "father_topic": {
+      "text": "*rolls eyes dramatically* Father is ALWAYS upset about something. Last century it was knights. This century it's technology. He's adapting to modernity but LOUDLY. At least he stopped eating the IT department. HR made him sign a waiver.",
+      "choices": [
+        {
+          "text": "He ate the IT department?!",
+          "leads_to": "eating_story"
+        },
+        {
+          "text": "Dragons and modern life, interesting mix.",
+          "leads_to": "modern_dragons"
+        }
+      ]
+    },
+    "chaos_knowledge": {
+      "text": "*amber eyes flash* I FELT when it happened. Reality twisted. Like someone ripped the fabric of existence and didn't even apologize. Very rude. I was in the spa getting my scales polished and suddenly I was ALSO in the gym AND the void. Ruined my appointment.",
+      "choices": [
+        {
+          "text": "Did you see anything suspicious?",
+          "leads_to": "suspicious_events"
+        },
+        {
+          "text": "That must have been jarring.",
+          "leads_to": "trauma_response"
+        }
+      ]
+    },
+    "sympathy": {
+      "text": "Thank you. Honestly, being a dragon princess in the modern world is exhausting. Everyone expects me to be either terrifying or in need of rescue. I'm just trying to enjoy a vacation and maybe set a FEW things on fire. Recreationally.",
+      "choices": [
+        {
+          "text": "Recreational arson?",
+          "leads_to": "fire_hobby"
+        }
+      ]
+    },
+    "vacation_choice": {
+      "text": "The Grand Paradox Hotel advertised 'experiences beyond imagination.' They weren't lying! Though I was hoping for luxury, not existential horror. The brochure was misleading. I'm definitely leaving a negative review. One star. Maybe fire-related imagery.",
+      "choices": [
+        {
+          "text": "Fair enough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "eating_story": {
+      "text": "*laughs, small flames escape* Oh, he didn't eat ALL of them. Just Gary from networking. And Gary respawned three days later anyway. Temporal loop situation. Gary was fine. Traumatized, but fine. We sent fruit baskets.",
+      "choices": [
+        {
+          "text": "This hotel is wild.",
+          "leads_to": "hotel_opinion"
+        }
+      ]
+    },
+    "modern_dragons": {
+      "text": "We're adapting! I have a social media presence. 'Influencer Princess' they call me. 47,000 followers across multiple dimensions. I post fire-breathing tutorials and hoard organization tips. It's surprisingly lucrative.",
+      "choices": [
+        {
+          "text": "Impressive. Any hotel insights?",
+          "leads_to": "insights"
+        }
+      ]
+    },
+    "suspicious_events": {
+      "text": "*taps claws thoughtfully* There was this... absence. Like a hole in reality walking around in a suit. It HURT to look at. Made my dragon senses scream. Whatever that thing was, it doesn't belong in ANY dimension. Stay away from it if you value existing.",
+      "choices": [
+        {
+          "text": "Thanks for the warning.",
+          "leads_to": "warning_accepted"
+        }
+      ]
+    },
+    "trauma_response": {
+      "text": "Jarring? I was simultaneously relaxed AND terrified AND non-existent. My therapist is going to have a FIELD DAY with this. Do you know how much dragon therapy costs? It's expensive. Fire insurance for the office alone...",
+      "choices": [
+        {
+          "text": "I'm trying to fix things.",
+          "leads_to": "fixing_attempt"
+        }
+      ]
+    },
+    "fire_hobby": {
+      "text": "It's stress relief! Very cathartic. The hotel has designated 'acceptable burning zones.' Mostly the fireplace. Sometimes the curtains. That second one was an accident. Probably. The insurance claim is still pending.",
+      "choices": [
+        {
+          "text": "I should go investigate the crisis.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hotel_opinion": {
+      "text": "Wild doesn't cover it. This place is INSANE. But honestly? Kind of fun. In a 'might die horribly' way. If we survive, I'm definitely coming back. The drama is EXCELLENT content for my followers.",
+      "choices": [
+        {
+          "text": "Glad you're making the best of it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "insights": {
+      "text": "The Manager knows more than they're saying. And there's something in the Basement that feels... wrong. Even for this place. Trust your instincts. And maybe bring fire protection. Just in case things get HEATED. *winks, smoke puffs*",
+      "choices": [
+        {
+          "text": "Good advice. Thanks.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "warning_accepted": {
+      "text": "*nods seriously* Good. You seem competent. I'd hate to see you erased from existence. Plus, you're the only staff member who hasn't asked if I need 'rescuing.' Very refreshing. Don't die, okay?",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fixing_attempt": {
+      "text": "Excellent. Fix reality, restore the hotel, and preferably do something about the WiFi before Father incinerates the router. He's threatened to twice already. I'm running out of fire extinguishers.",
+      "choices": [
+        {
+          "text": "On it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*elegant wave* Good luck out there. If you need backup, I breathe fire in five colors. Very versatile. Just... give me advance notice. My insurance requires 24-hour warning for 'heroic activities.'",
+      "choices": []
+    }
+  }
 }

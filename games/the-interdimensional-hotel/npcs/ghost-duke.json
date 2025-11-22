@@ -12,5 +12,127 @@
   "level": 3,
   "type": "npc",
   "dialogueTreeId": "ghost-duke",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*adjusts translucent monocle* Ah, a living person! Capital! I say, old chap, care for a wager? I'll bet you fifty pounds this hotel returns to normal before teatime. No? Perhaps you're wise. I haven't won a bet since 1847. Death hasn't improved my luck, I'm afraid.",
+      "choices": [
+        {
+          "text": "You've been here since 1847?",
+          "leads_to": "long_haunting"
+        },
+        {
+          "text": "What happened to your fortune?",
+          "leads_to": "gambling_story"
+        },
+        {
+          "text": "Have you noticed anything strange?",
+          "leads_to": "dimensional_chaos"
+        }
+      ]
+    },
+    "long_haunting": {
+      "text": "*laughs ghostly* Indeed! Died of consumption and poor card skills. Been haunting this establishment ever since. Used to be a respectable hotel. Then it became whatever THIS is. *gestures at floating furniture* Frankly, it's rather exciting! Like watching a carriage crash in slow motion while you're inside the carriage!",
+      "choices": [
+        {
+          "text": "You seem cheerful about it.",
+          "leads_to": "eternal_optimism"
+        },
+        {
+          "text": "Weren't you scared when it started?",
+          "leads_to": "already_dead"
+        }
+      ]
+    },
+    "gambling_story": {
+      "text": "*sighs dramatically* Lost it all at the card table. Four queens. I had four queens! How was I to know my opponent had FIVE queens? Turned out the deck was enchanted. The dealer was a wizard. Should have noticed his hat. Always notice the hat, that's my new philosophy. Bit late now.",
+      "choices": [
+        {
+          "text": "You can't have five queens in a deck.",
+          "leads_to": "magic_cheating"
+        },
+        {
+          "text": "At least you learned something?",
+          "leads_to": "learned_nothing"
+        }
+      ]
+    },
+    "dimensional_chaos": {
+      "text": "*polishes monocle thoughtfully* Strange? My dear fellow, EVERYTHING is strange! The ballroom is overlapping with the breakfast buffet! I watched a robot waltz with a dragon! Yesterday - or possibly tomorrow - I saw three versions of the same chandelier occupying the same space. Marvelous! Terrible, but marvelous!",
+      "choices": [
+        {
+          "text": "Does it affect you as a ghost?",
+          "leads_to": "ghost_perspective"
+        },
+        {
+          "text": "Have you seen Reality Fragments?",
+          "leads_to": "fragment_hint"
+        }
+      ]
+    },
+    "eternal_optimism": {
+      "text": "When you've lost your fortune, your health, and your mortality, you learn to appreciate the small things. Like chaos! Unpredictability! The hotel collapsing into dimensional madness! Can't gamble on the outcome if you already know what happens, what? This is FRESH material!",
+      "choices": [
+        {
+          "text": "That's... one way to look at it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "already_dead": {
+      "text": "*chuckles* My good person, I'm already deceased! What's the worst that could happen? I die again? Been there, done that, got the transparent top hat. The living should worry. I'm just here for the spectacle!",
+      "choices": [
+        {
+          "text": "Fair point.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "magic_cheating": {
+      "text": "Precisely what I said to him! Right before he turned me into a teapot. Briefly. Very humiliating. I got better, obviously. Then I got consumption. Life was very dramatic in the 1840s. Still is, apparently!",
+      "choices": [
+        {
+          "text": "Sounds rough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "learned_nothing": {
+      "text": "*straightens spectral top hat* Learned something? I suppose... yes! I learned that I'm terrible at learning! Just yesterday I bet Lord Evermore that the ceiling would stop floating. Lost spectacularly. I am consistent in my failures! That's a skill!",
+      "choices": [
+        {
+          "text": "I suppose it is.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "ghost_perspective": {
+      "text": "Fascinating question! As a ghost, I already exist partially out of phase with reality. Now reality itself is out of phase! It's like... being drunk while the room is also drunk. Quite disorienting! But I float through walls anyway, so what's a few extra dimensions?",
+      "choices": [
+        {
+          "text": "Glad you're handling it well.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fragment_hint": {
+      "text": "*taps translucent nose* Ah! Looking for those shimmery impossible things? I saw one near the ballroom earlier. Or later. Time's being peculiar. Looked valuable. I'd have bet on it, but you can't gamble with dimensional artifacts. Trust me, I tried. The artifact won.",
+      "choices": [
+        {
+          "text": "Thanks for the tip!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*tips spectral top hat* Best of luck, old chap! If you save reality, smashing! If you don't, well... I'll still be here! One benefit of being dead - excellent job security! Ta-ta!",
+      "choices": []
+    }
+  }
 }

@@ -12,5 +12,294 @@
   "level": 15,
   "type": "npc",
   "dialogueTreeId": "thief-mr-null",
-  "hostile": true
+  "hostile": true,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*a void in the shape of a person turns toward you* You. Still existing. Still clinging to your precious reality. I wondered when you would arrive. The Manager's newest tool. Their last desperate gambit. You carry the fragments, don't you? I can FEEL them. Pieces of the prison that held me.",
+      "choices": [
+        {
+          "text": "Why did you do this?",
+          "leads_to": "motivation"
+        },
+        {
+          "text": "Give back the Reality Anchor!",
+          "leads_to": "refusal"
+        },
+        {
+          "text": "You're destroying everything!",
+          "leads_to": "justification"
+        }
+      ]
+    },
+    "motivation": {
+      "text": "*the void ripples with something like laughter* Why? Because I am NOTHING. I have never been. Never existed. Never mattered. I am the space between atoms. The silence between words. And I am TIRED of watching things BE. Existence is suffering. I offer mercy. Oblivion. Peace.",
+      "choices": [
+        {
+          "text": "Existence is beautiful!",
+          "leads_to": "disagreement"
+        },
+        {
+          "text": "You can't decide for everyone.",
+          "leads_to": "autonomy"
+        }
+      ]
+    },
+    "refusal": {
+      "text": "*darkness pulses* Give it back? The Anchor is DESTROYED. Shattered. Scattered into non-existence. I didn't steal it to keep it. I stole it to ERASE it. The hotel's prison is broken. The dimensions collapse. And soon, everything returns to the perfect void it should have always been.",
+      "choices": [
+        {
+          "text": "The fragments can restore it!",
+          "leads_to": "fragments_reveal"
+        },
+        {
+          "text": "I won't let you win.",
+          "leads_to": "defiance"
+        }
+      ]
+    },
+    "justification": {
+      "text": "*the void seems to intensify* Destroying? No. LIBERATING. Every moment of existence is pain. Birth is trauma. Life is struggle. Death is fear. I end the cycle. No more suffering. No more loss. No more ANYTHING. Can you not see the kindness in annihilation?",
+      "choices": [
+        {
+          "text": "That's not kindness, it's murder!",
+          "leads_to": "accusation"
+        },
+        {
+          "text": "Some of us want to exist.",
+          "leads_to": "choice_argument"
+        }
+      ]
+    },
+    "disagreement": {
+      "text": "*cold whisper* Beautiful? Love causes heartbreak. Joy fades to sorrow. Hope breeds disappointment. Every beautiful thing ENDS. I simply accelerate the inevitable. And unlike your cruel reality, the void I offer is ETERNAL. Unchanging. Perfect in its absolute emptiness.",
+      "choices": [
+        {
+          "text": "Endings make moments meaningful!",
+          "leads_to": "meaning_debate"
+        },
+        {
+          "text": "I'm restoring the Anchor.",
+          "leads_to": "determination"
+        }
+      ]
+    },
+    "autonomy": {
+      "text": "*darkness swirls angrily* DECIDE?! I was never ASKED if I wanted to be nothing! I was never given CHOICE! I am absence by nature, loneliness by definition! If I must suffer non-existence, then EXISTENCE must suffer non-being! Fair. Balanced. Just.",
+      "choices": [
+        {
+          "text": "Two wrongs don't make a right.",
+          "leads_to": "morality"
+        },
+        {
+          "text": "This ends now!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fragments_reveal": {
+      "text": "*the void ROARS* Impossible! I felt them scatter! I felt them DIE! You... you collected them? Reformed them? *seething* No. NO. I will not be caged again. I will not return to imprisonment while dragons complain about WiFi and ghosts haunt hallways! I. REFUSE. EXISTENCE.",
+      "choices": [
+        {
+          "text": "The hotel kept everyone safe!",
+          "leads_to": "prison_defense"
+        },
+        {
+          "text": "Face me!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "defiance": {
+      "text": "*void contracts, becoming denser, more threatening* Win? I have ALREADY won. Reality crumbles as we speak. Dimensions bleed into each other. The hotel dies. And you? You are one small light in an ocean of darkness. What can you possibly do against the infinite nothing?",
+      "choices": [
+        {
+          "text": "I can TRY!",
+          "leads_to": "courage"
+        },
+        {
+          "text": "Light always defeats darkness!",
+          "leads_to": "hope_speech"
+        }
+      ]
+    },
+    "accusation": {
+      "text": "*the void trembles* Murder? You cannot murder what should never have existed! I correct a cosmic mistake! The universe began with chaos - I return it to ORDER. The perfect order of NOTHING. No victims. No perpetrators. No crime. Just... quiet. Eternal. Empty. Quiet.",
+      "choices": [
+        {
+          "text": "You're wrong. Life matters.",
+          "leads_to": "life_value"
+        },
+        {
+          "text": "Prepare to lose!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "choice_argument": {
+      "text": "*bitter void-laughter* Want? WANT is the problem! Desire leads to disappointment. Attachment leads to loss. Hope leads to despair. I FREE you from wanting! From needing! From the agony of being! You'll thank me when you're nothing. Everyone always does. Eventually.",
+      "choices": [
+        {
+          "text": "No one is thanking you!",
+          "leads_to": "reality_check"
+        },
+        {
+          "text": "This conversation is over!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "meaning_debate": {
+      "text": "*void flickers with rage* MEANING?! Meaning is the lie you tell yourself to endure existence! There IS no meaning! Only patterns of atoms pretending purpose! I am HONEST. I am TRUTH. I am the only certainty in a universe built on beautiful lies!",
+      "choices": [
+        {
+          "text": "Then I choose the beautiful lie!",
+          "leads_to": "final_choice"
+        }
+      ]
+    },
+    "determination": {
+      "text": "*void expands threateningly* Then you restore your own CAGE. The hotel is a prison! The Manager is a WARDEN! You've been manipulated! Used! Tricked into enslaving yourself and everyone here! And you call ME the villain?!",
+      "choices": [
+        {
+          "text": "Better a flawed prison than oblivion!",
+          "leads_to": "pragmatism"
+        },
+        {
+          "text": "I'm done talking!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "morality": {
+      "text": "*darkness SCREAMS* MORALITY?! Right and wrong are CONSTRUCTS! Inventions of existence to justify its continuation! In the void there is no good or evil! No right or wrong! Only PEACE! Why can't you understand?! Why do you cling to suffering?!",
+      "choices": [
+        {
+          "text": "Because it's OURS. Our choice!",
+          "leads_to": "ownership"
+        },
+        {
+          "text": "Enough words. Time to fight!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "prison_defense": {
+      "text": "*seething void* SAFE?! Safe in a cage! Safe in entertainment! Safe in LIES! The Manager built a zoo and called it hospitality! I would rather cease existing than be a tourist attraction for dimensional tourists! I. CHOOSE. NOTHING.",
+      "choices": [
+        {
+          "text": "Then choose it for yourself, not everyone!",
+          "leads_to": "final_plea"
+        },
+        {
+          "text": "I'm stopping you. Now!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "courage": {
+      "text": "*void considers* Try. Yes. That is very... human. Very real. Very PATHETIC. But I admire the futility. You are a candle screaming at the hurricane. A whisper against thunder. And yet you burn. You speak. You EXIST. How irritating. How... enviable.",
+      "choices": [
+        {
+          "text": "Then join us! Exist!",
+          "leads_to": "redemption_attempt"
+        },
+        {
+          "text": "Let's finish this!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hope_speech": {
+      "text": "*void laughs bitterly* Light defeats darkness? DARKNESS IS DEFAULT! Darkness is what remains when all lights die! I am not defeated by light - light is CONSUMED by me! Watch as I extinguish your hope! Your courage! Your very BEING!",
+      "choices": [
+        {
+          "text": "We'll see about that!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "life_value": {
+      "text": "*void shivers* Matters? TO WHOM?! The universe is indifferent! Existence is accident! You assign meaning to the meaningless and call it profound! I offer you TRUTH and you reject it for comfortable delusions! So be it. I'll unmake you along with everything else!",
+      "choices": [
+        {
+          "text": "Bring it on!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "reality_check": {
+      "text": "*void pulses darkly* Not YET. But they will. When they join the infinite quiet. When suffering ends. When wanting stops. They'll understand. And so will you. In a moment. Or an eternity. Time becomes irrelevant when you're NOTHING.",
+      "choices": [
+        {
+          "text": "I'll never be nothing!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "final_choice": {
+      "text": "*void EXPLODES with fury* THEN DIE WITH YOUR LIE! Cling to your fragments! Your hope! Your pathetic reality! I'll tear it all apart! Unmake you! Erase you! You'll be nothing whether you choose it or NOT!",
+      "choices": [
+        {
+          "text": "I choose to FIGHT!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "pragmatism": {
+      "text": "*void trembles with rage* FLAWED?! It's an ABOMINATION! And you're its ACCOMPLICE! Fine. Defend your prison. Protect your cage. But know this: even if you win today, the void ALWAYS wins eventually. Entropy is inevitable. I am PATIENT.",
+      "choices": [
+        {
+          "text": "Today is what matters!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "ownership": {
+      "text": "*void screams* YOUR CHOICE?! You didn't CHOOSE existence! You were BORN into it! Forced! Conscripted! And now you defend your prison?! FINE! Keep your existence! I'll RIP IT FROM YOU!",
+      "choices": [
+        {
+          "text": "Try it!",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "final_plea": {
+      "text": "*void pauses, almost uncertain* Just... myself? *long silence* No. If I am alone in nothing, then I remain alone. Everyone must join the void. Or no one does. I will not be abandoned again. NEVER. AGAIN.",
+      "choices": [
+        {
+          "text": "I'm sorry. But I must stop you.",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "redemption_attempt": {
+      "text": "*void flickers with confusion* Join? Me? I am... NOTHING. I cannot exist. It's... impossible. I am defined by absence. To BE would unmake what I AM. You ask the void to become light? It's... *trembles* ...no. NO. I refuse hope. I refuse change. I refuse YOU!",
+      "choices": [
+        {
+          "text": "Then we fight.",
+          "leads_to": "confrontation",
+          "endsConversation": true
+        }
+      ]
+    },
+    "confrontation": {
+      "text": "*void condenses into pure destructive force* So be it. Reality versus Void. Existence versus Nothing. You versus Me. Let's see which is stronger - your desperate hope or my infinite emptiness. This ends NOW. One of us becomes nothing. I wonder which.",
+      "choices": []
+    }
+  }
 }

@@ -12,5 +12,81 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "maintenance-worker-joe",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*looks up from tightening a pipe* Oh great, another person. Look, if you're here to complain about something, join the queue. The elevators are possessed, the plumbing exists in four dimensions, and something in Tunnel 7 keeps eating my tools. I'm a little busy.",
+      "choices": [
+        {
+          "text": "Can you help me fix the hotel?",
+          "leads_to": "not_my_job"
+        },
+        {
+          "text": "What's wrong with the basement?",
+          "leads_to": "basement_problems"
+        },
+        {
+          "text": "Sounds rough.",
+          "leads_to": "understatement"
+        }
+      ]
+    },
+    "not_my_job": {
+      "text": "*laughs bitterly* Fix the HOTEL? Kid, I can barely fix the toilets. You want to save reality? Talk to management. I just keep the boilers running and try not to think about the fact that we're heating six different dimensions with one furnace. Against all laws of thermodynamics, but here we are.",
+      "choices": [
+        {
+          "text": "Fair enough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "basement_problems": {
+      "text": "*wipes sweat from forehead* What's WRONG with it? Everything. The rift's getting bigger. Things crawl through it at night. The Lost & Found is infinite now—lost a guy in there last week. Found him yesterday. He aged backwards. Don't go poking around unless you want to meet something with too many eyes.",
+      "choices": [
+        {
+          "text": "Thanks for the warning.",
+          "leads_to": "warnings_free"
+        }
+      ]
+    },
+    "understatement": {
+      "text": "Rough? Try 'soul-crushing.' I've been working here fifteen years. Or fifteen minutes. Time's weird. Either way, I've seen enough to know this job doesn't pay nearly enough. But the dental's good. Well, it was. Before the insurance company phased into another dimension.",
+      "choices": [
+        {
+          "text": "Why do you stay?",
+          "leads_to": "why_stay"
+        },
+        {
+          "text": "I'll let you work.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "warnings_free": {
+      "text": "*returns to fixing pipes* Warnings are free. Repairs cost extra. And sanity? Can't afford it on my salary. Now if you'll excuse me, this valve's leaking steam from last Tuesday and I need to fix it before it happens.",
+      "choices": [
+        {
+          "text": "Good luck.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "why_stay": {
+      "text": "*shrugs* Where else am I gonna go? Every other hotel in the multiverse heard about this place. I'm blacklisted by association. Plus, Jenkins is a good guy. Gloria makes decent coffee. And Marv always gives me a discount. Ten percent off tchotchkes I don't need. Living the dream.",
+      "choices": [
+        {
+          "text": "That's... sad.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*waves wrench dismissively* Yeah, yeah. Get out of here before I put you to work. This hotel won't fix itself. Unfortunately.",
+      "choices": []
+    }
+  }
 }

@@ -12,5 +12,159 @@
   "level": 2,
   "type": "npc",
   "dialogueTreeId": "librarian-specter",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*looks up from phantom card catalog* Shhhhhh! *pauses* Oh. You're not being loud yet. Preemptive shushing. Force of habit. Welcome to the library. Or what's LEFT of the library. The books keep reorganizing themselves across dimensions. Do you know how hard it is to maintain the Dewey Decimal System when the decimals exist in multiple timelines?",
+      "choices": [
+        {
+          "text": "The books are reorganizing themselves?",
+          "leads_to": "chaos_cataloging"
+        },
+        {
+          "text": "How long have you worked here?",
+          "leads_to": "eternal_employment"
+        },
+        {
+          "text": "Have you seen anything unusual?",
+          "leads_to": "everything_unusual"
+        }
+      ]
+    },
+    "chaos_cataloging": {
+      "text": "*adjusts spectral glasses in distress* YES. Fiction is merging with non-fiction! Cookbooks are appearing in the Horror section - which is accurate, have you SEEN some of those recipes? History books are updating in real-time! Yesterday I shelved a biography of someone who hasn't been born yet! The card catalog is having an existential crisis!",
+      "choices": [
+        {
+          "text": "That sounds overwhelming.",
+          "leads_to": "overwhelmed"
+        },
+        {
+          "text": "Can I help somehow?",
+          "leads_to": "help_library"
+        }
+      ]
+    },
+    "eternal_employment": {
+      "text": "*sighs wistfully* Since 1923. Died at my desk organizing reference materials. Wonderful death, really. Quiet. Surrounded by books. Very on-brand. Haven't stopped cataloging since. The hotel came later. Built around me, actually. Or I haunted into it. The chronology is unclear.",
+      "choices": [
+        {
+          "text": "You seem dedicated.",
+          "leads_to": "dedication"
+        },
+        {
+          "text": "Don't you ever want to rest?",
+          "leads_to": "rest_is_chaos"
+        }
+      ]
+    },
+    "everything_unusual": {
+      "text": "*peers over glasses* Unusual? My dear person, EVERYTHING is unusual! Books floating mid-air - which would be fine, I'm used to that - but now they're floating INTO OTHER BOOKS! I found a dictionary inside a thesaurus inside a encyclopedia! It's dimensionally recursive! Also, shhhh. Library voices, please.",
+      "choices": [
+        {
+          "text": "*whispers* Sorry. Seen any Reality Fragments?",
+          "leads_to": "fragment_location"
+        },
+        {
+          "text": "*whispers* How are you coping?",
+          "leads_to": "coping_mechanism"
+        }
+      ]
+    },
+    "overwhelmed": {
+      "text": "*straightens card catalog nervously* Overwhelming? It's a DISASTER. A cataloging catastrophe! I've been organizing books for a century and NOW they're organizing me! I cataloged myself twice yesterday! Filed under 'Dewey, Miss' and 'Spectral Staff, Neurotic.' Both accurate!",
+      "choices": [
+        {
+          "text": "You cataloged yourself?",
+          "leads_to": "self_cataloging"
+        },
+        {
+          "text": "I'm working on fixing things.",
+          "leads_to": "fixing_promise"
+        }
+      ]
+    },
+    "help_library": {
+      "text": "*eyes light up ghostly* Help? Can you... can you shelve? Do you know the Dewey Decimal System? No? *deflates* Then no. Nobody can help. This is MY organizational crisis. I'll solve it with discipline, determination, and complete denial of the dimensional chaos around me. It's worked for 100 years!",
+      "choices": [
+        {
+          "text": "That's... a strategy.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "dedication": {
+      "text": "*nods firmly* Books are eternal. Knowledge is permanent. Proper shelving is SACRED. The fact that reality is collapsing is merely a... cataloging challenge. Every book deserves to be properly filed, even if that file exists across six dimensions simultaneously.",
+      "choices": [
+        {
+          "text": "Admirable commitment.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "rest_is_chaos": {
+      "text": "*looks horrified* REST?! If I rest, who will maintain alphabetical order? Who will enforce the silence policy? Who will prevent people from DOG-EARING PAGES?! *shudders ghostly* No. Rest is for the living. I have books to organize. Forever. It's not a curse if you love it.",
+      "choices": [
+        {
+          "text": "Fair enough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fragment_location": {
+      "text": "*whispers back* Ah, yes. Those glowing impossible objects. Found one wedged between volumes of 'Dimensional Theory' and 'This Shouldn't Exist: A Guide.' Very meta. It's in the Restricted Section. Or it WAS. Might have shifted to Non-Fiction. Everything shifts now. Check both. Quietly.",
+      "choices": [
+        {
+          "text": "*whispers* Thank you!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "coping_mechanism": {
+      "text": "*straightens books compulsively* Coping? I cope by organizing. When reality breaks, I shelve books. When dimensions collapse, I update the card catalog. When existence becomes meaningless, I enforce library quiet hours. Structure in chaos. Order in madness. Also, lots of shushing.",
+      "choices": [
+        {
+          "text": "Whatever works.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "self_cataloging": {
+      "text": "*adjusts glasses embarrassedly* Yes. The dimensional chaos pulled me into the cataloging system. I spent six hours cross-referencing myself. Very thorough. Gave myself three stars. Lost points for being 'too shushy' and 'emotionally unavailable.' The review was accurate but hurtful.",
+      "choices": [
+        {
+          "text": "That's actually kind of sad.",
+          "leads_to": "sad_acknowledgment"
+        }
+      ]
+    },
+    "fixing_promise": {
+      "text": "*clutches phantom book hopefully* You're fixing it? The ENTIRE dimensional convergence? *takes breath* Then please, PLEASE restore proper spatial relationships! I can't organize books when they exist in multiple places simultaneously! It violates every cataloging principle! Also, shhhh. This is still a library.",
+      "choices": [
+        {
+          "text": "*whispers* I'll do my best.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "sad_acknowledgment": {
+      "text": "*dabs eyes with spectral handkerchief* Yes, well. When you spend a century with books instead of people, you develop certain... tendencies. But books never judge you. They never leave. They just need proper shelving. *sniffles* I'm fine. The library is fine. Everything is fine. SHHHHH.",
+      "choices": [
+        {
+          "text": "Take care of yourself, Miss Dewey.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*returns to card catalog* Yes, yes. Off with you. Books to organize. Silence to enforce. Dimensions to ignore. And remember - NO RUNNING IN THE LIBRARY. Even if reality is collapsing. Especially then. *adjusts glasses and starts cataloging*",
+      "choices": []
+    }
+  }
 }

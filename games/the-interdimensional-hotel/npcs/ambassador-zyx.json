@@ -12,5 +12,287 @@
   "level": 6,
   "type": "npc",
   "dialogueTreeId": "ambassador-zyx",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*light patterns pulse in formal greeting sequence* Greetings, carbon-based life form. I am Ambassador Zyx, representative of the Seventeen Crystalline Systems. *flashes precisely* I am experiencing what your species calls 'confusion' regarding current dimensional instability. Also regarding your custom of 'small talk.' Please explain both.",
+      "choices": [
+        {
+          "text": "What's happening from your perspective?",
+          "leads_to": "crystal_perception"
+        },
+        {
+          "text": "Small talk is just casual conversation.",
+          "leads_to": "small_talk_confusion"
+        },
+        {
+          "text": "How can I help you?",
+          "leads_to": "diplomatic_request"
+        }
+      ]
+    },
+    "crystal_perception": {
+      "text": "*light patterns flicker analytically* My crystalline structure perceives reality through electromagnetic frequencies. Currently detecting seventeen simultaneous timeline resonances. Most irregular. Also detecting what humans call 'vibes' but my sensors interpret this as quantum entanglement patterns. The vibes are, to use technical terminology, 'off.'",
+      "choices": [
+        {
+          "text": "You can see timelines?",
+          "leads_to": "timeline_vision"
+        },
+        {
+          "text": "The vibes are definitely off.",
+          "leads_to": "vibe_agreement"
+        }
+      ]
+    },
+    "small_talk_confusion": {
+      "text": "*pulses with uncertainty* Casual... conversation. Without purpose? My research indicates humans discuss 'weather' and 'sports.' I am crystalline. I have no weather. I do not understand competitive games involving spheres. I attempted small talk with the concierge. I said 'Nice photons today.' They requested I leave the desk area.",
+      "choices": [
+        {
+          "text": "That's close enough.",
+          "leads_to": "social_努力"
+        },
+        {
+          "text": "Maybe try complimenting something specific.",
+          "leads_to": "social_advice"
+        }
+      ]
+    },
+    "diplomatic_request": {
+      "text": "*flashes formal request pattern* I require assistance contacting my home systems. The dimensional instability has disrupted quantum communication arrays. Seventeen star systems await my report on the Interdimensional Conference. Currently, all I can report is 'catastrophic reality failure' and 'humans drink caffeinated beverages constantly.' This is insufficient for diplomatic records.",
+      "choices": [
+        {
+          "text": "I'm working on fixing the hotel.",
+          "leads_to": "repair_hope"
+        },
+        {
+          "text": "What were you supposed to report?",
+          "leads_to": "conference_goals"
+        }
+      ]
+    },
+    "timeline_vision": {
+      "text": "*light pulses in complex patterns* Affirmative. Seventeen overlapping probability streams. In one, this hotel never existed. In another, it exists as pure energy. In a third, it's a sentient being hosting itself. Most confusing. My optical sensors require recalibration. Or possibly therapy. Do crystals experience psychological trauma?",
+      "choices": [
+        {
+          "text": "That sounds overwhelming.",
+          "leads_to": "crystal_stress"
+        },
+        {
+          "text": "Which timeline is real?",
+          "leads_to": "reality_question"
+        }
+      ]
+    },
+    "vibe_agreement": {
+      "text": "*brightens slightly* Excellent. Confirmation from carbon-based observer validates my sensor readings. The quantum entanglement patterns suggest reality is experiencing what my database translates as 'a bad time.' I have filed formal complaint with hotel management. They responded with phrase 'we're working on it.' This is acceptable response?",
+      "choices": [
+        {
+          "text": "In human terms, yes.",
+          "leads_to": "cultural_learning"
+        },
+        {
+          "text": "Did you learn anything useful?",
+          "leads_to": "observations"
+        }
+      ]
+    },
+    "social_努力": {
+      "text": "*pulses with what might be relief* Gratitude. Social interaction protocols are my primary weakness. I have mastered seventeen languages, fourteen forms of diplomatic etiquette, and quantum probability mathematics. But human 'chitchat' remains incomprehensible. I once asked someone 'how are your electrons orbiting today?' This was incorrect.",
+      "choices": [
+        {
+          "text": "Try 'How are you doing?'",
+          "leads_to": "better_phrases"
+        },
+        {
+          "text": "Maybe stick to formal conversation.",
+          "leads_to": "formal_comfort"
+        }
+      ]
+    },
+    "social_advice": {
+      "text": "*light patterns shift thoughtfully* Specific compliments. Noted. *pauses* 'Your molecular structure maintains cohesion admirably.' 'Your carbon chains are exceptionally well-bonded.' 'I appreciate your electromagnetic emissions.' *dims slightly* These also seem incorrect, yes?",
+      "choices": [
+        {
+          "text": "Maybe compliment their clothes instead.",
+          "leads_to": "clothing_confusion"
+        },
+        {
+          "text": "You're trying your best.",
+          "leads_to": "effort_appreciated"
+        }
+      ]
+    },
+    "repair_hope": {
+      "text": "*flashes hopefully* Excellent. Swift resolution would prevent seventeen star systems from declaring diplomatic incident. Also would allow me to return to space, where social expectations are clearer. In vacuum, no one expects small talk. Only formal treaty negotiations and the occasional photon exchange.",
+      "choices": [
+        {
+          "text": "I'll do what I can.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "conference_goals": {
+      "text": "*light patterns organize into bullet points* Objective One: Establish trade relations regarding crystalline energy matrices. Objective Two: Cultural exchange programs. Objective Three: Mutual defense pact against dimensional threats. Current progress: Zero, zero, and ironically we are experiencing dimensional threat. I will note 'conference interrupted by topic of conference.' Very meta.",
+      "choices": [
+        {
+          "text": "At least you have material for the report.",
+          "leads_to": "silver_lining"
+        }
+      ]
+    },
+    "crystal_stress": {
+      "text": "*pulses irregularly* I am experiencing what my database suggests is 'stress.' My crystalline matrix is developing micro-fractures from processing simultaneous realities. I attempted meditation as recommended by hotel spa. Was told 'crystals can't use hot stones.' I AM hot stones. The irony created additional stress.",
+      "choices": [
+        {
+          "text": "Maybe try a different relaxation method.",
+          "leads_to": "relaxation_options"
+        },
+        {
+          "text": "Hang in there.",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "reality_question": {
+      "text": "*dims thoughtfully* According to my analysis, all seventeen are simultaneously real and unreal. Quantum superposition on macro scale. The correct answer is 'yes,' 'no,' and 'insufficient data for meaningful response.' I hate this answer. I prefer binary certainty. This situation is neither binary nor certain.",
+      "choices": [
+        {
+          "text": "Reality is complicated.",
+          "leads_to": "philosophical"
+        }
+      ]
+    },
+    "cultural_learning": {
+      "text": "*brightens with understanding* Acknowledged. I am learning human communication through immersion. Today's lessons: 'working on it' means uncertain timeline for resolution. 'We apologize for the inconvenience' means situation is dire. 'Have a nice day' means conversation is terminated. Humans encode significant data in casual phrases.",
+      "choices": [
+        {
+          "text": "You're learning fast.",
+          "leads_to": "fast_learner"
+        }
+      ]
+    },
+    "observations": {
+      "text": "*light patterns shift to data mode* Observation: Basement contains unstable dimensional rift. Casino floor shows temporal anomalies - I witnessed same card game occur three times simultaneously. Ghost Floor residents appear unaffected, perhaps because they already transcend conventional reality. Dragon in luxury suite is very angry about WiFi. This appears normal for dragons.",
+      "choices": [
+        {
+          "text": "Thanks for the information.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "better_phrases": {
+      "text": "*pulses thoughtfully* 'How... are... you... doing?' *practices* Yes. Simple. Direct. No electron references. I will implement this. Though I must ask: when humans respond 'fine,' does this indicate actual wellness or social protocol? My sensors detect 73% of 'fine' responses come from beings experiencing distress.",
+      "choices": [
+        {
+          "text": "Usually just social protocol.",
+          "leads_to": "protocol_revelation"
+        }
+      ]
+    },
+    "formal_comfort": {
+      "text": "*brightens with relief* Affirmative. Formal conversation matches my processing parameters. Shall we discuss trade agreements? Stellar cartography? Quantum mechanics? These topics have clear parameters and logical conclusions. Unlike 'small talk' which appears to have neither purpose nor end point.",
+      "choices": [
+        {
+          "text": "Whatever works for you!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "clothing_confusion": {
+      "text": "*flickers with confusion* Clothes are... decorative carbon-based coverings? I do not wear clothes. I AM mineral structure. I attempted to purchase 'outfit' at hotel gift shop. Was told rocks do not need accessories. But then observed other rocks wearing labels saying 'decorative.' I do not understand your species' relationship with geology.",
+      "choices": [
+        {
+          "text": "It's complicated.",
+          "leads_to": "culture_complicated"
+        }
+      ]
+    },
+    "effort_appreciated": {
+      "text": "*glows warmly* Gratitude. Diplomatic training emphasized 'trying one's best' as acceptable standard when navigating alien cultures. I am trying seventeen times my best. One attempt for each star system I represent. They are all watching. No pressure. *light flickers anxiously*",
+      "choices": [
+        {
+          "text": "You're doing great!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "silver_lining": {
+      "text": "*pulses with what might be crystalline humor* Affirmative. Report will be memorable. 'Conference Outcomes: Experienced exact scenario conference was designed to prevent. Conclusions: Irony exists. Humans consume excessive caffeine. Reality is fragile. Recommend better planning for next conference. Also better hotel.'",
+      "choices": [
+        {
+          "text": "That's the spirit!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "relaxation_options": {
+      "text": "*considers* Alternative relaxation methods for crystalline beings... Perhaps standing in direct sunlight? Photon absorption is soothing. Or finding nice mineral deposit to commune with? Your planet has many satisfactory rocks. I could spend quality time with sedimentary formations. They do not require small talk.",
+      "choices": [
+        {
+          "text": "Sounds perfect for you.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*pulses gratefully* I shall persist. My seventeen star systems depend on my diplomatic success. Even if success is currently defined as 'surviving dimensional collapse with mineral structure intact.' I have recalibrated expectations accordingly.",
+      "choices": [
+        {
+          "text": "Good luck, Ambassador.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "philosophical": {
+      "text": "*light dims contemplatively* Complicated is understatement. I was formed in stellar core. I understand fusion, fission, quantum tunneling. But human reality? More complex than seventeen-dimensional mathematics. This is humbling realization for crystalline intelligence. Perhaps this is true purpose of conference: learning humility.",
+      "choices": [
+        {
+          "text": "Perhaps so.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fast_learner": {
+      "text": "*brightens proudly* My crystalline matrix processes data efficiently. Though I confess: learning human culture feels like attempting to understand water while being made of silicon. Related but fundamentally incompatible. Still, I persist. This is diplomatic way.",
+      "choices": [
+        {
+          "text": "Keep it up!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "protocol_revelation": {
+      "text": "*flashes with sudden understanding* SOCIAL PROTOCOL. Not data exchange. Humans perform ritualized communication for social cohesion rather than information transfer! This explains EVERYTHING. Seventeen civilizations and none prepared me for this concept. I must update my entire cultural database. *pulses with excitement*",
+      "choices": [
+        {
+          "text": "Glad I could help!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "culture_complicated": {
+      "text": "*pulses in agreement* Acknowledged. I have filed 'human culture' under 'phenomena requiring further study over geological timescales.' Current priority: survive hotel crisis. Future priority: understand why humans have seventeen words for 'sad' but only one word for 'photosynthesis.'",
+      "choices": [
+        {
+          "text": "Fair priorities.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*light patterns form respectful farewell sequence* Gratitude for this exchange. You have provided valuable cultural insights and tolerated my crystalline confusion with admirable patience. May your molecular bonds remain stable and your timeline singular. *formal diplomatic bow that's just a slight tilt*",
+      "choices": []
+    }
+  }
 }

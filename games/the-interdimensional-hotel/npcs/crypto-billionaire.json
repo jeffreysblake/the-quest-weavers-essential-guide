@@ -12,5 +12,508 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "crypto-billionaire",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*gestures with expensive smartwatch* Craig Cryptovski. Founder, CEO, Chief Disruptor. Made my first billion in cryptocurrency. My second billion in NFTs. My third billion in... actually, I forget. The point is: I'm rich and I have THOUGHTS about this hotel. This whole dimensional collapse? CLASSIC disruption opportunity. We could monetize this. Tokenize reality itself! Have you considered blockchain solutions?",
+      "choices": [
+        {
+          "text": "How would blockchain fix this?",
+          "leads_to": "blockchain_solution"
+        },
+        {
+          "text": "Maybe focus on surviving first?",
+          "leads_to": "survival_priorities"
+        },
+        {
+          "text": "You want to profit from this crisis?",
+          "leads_to": "crisis_opportunity"
+        }
+      ]
+    },
+    "blockchain_solution": {
+      "text": "*eyes light up* EXCELLENT question! See, the problem is centralized reality management. The Manager controls everything! Total monopoly! But what if we DECENTRALIZED reality? Put it on the blockchain! Smart contracts for causality! DAO governance for physics! Everyone gets a vote on how dimensions collapse! It's revolutionary! I'm calling it: RealityCoin! I'm filing patents RIGHT NOW!",
+      "choices": [
+        {
+          "text": "That doesn't make sense.",
+          "leads_to": "tech_babble"
+        },
+        {
+          "text": "Has crypto helped anything here?",
+          "leads_to": "actual_utility"
+        }
+      ]
+    },
+    "survival_priorities": {
+      "text": "*waves dismissively* Survival is DEFAULT. I'm talking about THRIVING! About OPTIMIZATION! Look, I've survived three market crashes, seventeen failed startups, and that time my yacht caught fire! I know crisis management! You know what saved me? MINDSET! And cryptocurrency! Mostly cryptocurrency! But also mindset!",
+      "choices": [
+        {
+          "text": "Your yacht caught fire?",
+          "leads_to": "yacht_story"
+        },
+        {
+          "text": "Focus on the actual problem!",
+          "leads_to": "problem_focus"
+        }
+      ]
+    },
+    "crisis_opportunity": {
+      "text": "*spreads hands* EVERY crisis is an opportunity! That's startup mentality! While others panic, visionaries INNOVATE! Dimensional instability? That's just BETA TESTING for reality 2.0! We're early adopters! First movers advantage! By the time this resolves, I'll have cornered the interdimensional hospitality market! It's called strategic thinking!",
+      "choices": [
+        {
+          "text": "That's cynical.",
+          "leads_to": "cynical_realist"
+        },
+        {
+          "text": "Any actual useful ideas?",
+          "leads_to": "brainstorm"
+        }
+      ]
+    },
+    "tech_babble": {
+      "text": "*defensive* It makes PERFECT sense! You just don't understand Web3! Or decentralization! Or quantum blockchain! Or... okay, MAYBE I don't fully understand either! But that's never stopped me before! I raised $50 million for a cryptocurrency based on dog memes! Understanding is OPTIONAL when you have VISION and VENTURE CAPITAL!",
+      "choices": [
+        {
+          "text": "That's terrifying.",
+          "leads_to": "tech_industry"
+        },
+        {
+          "text": "How did you get rich?",
+          "leads_to": "wealth_story"
+        }
+      ]
+    },
+    "actual_utility": {
+      "text": "*pauses* ...Well. No. My wallet app keeps crashing due to dimensional interference. Lost access to seventeen digital assets. Can't transfer funds across timeline boundaries. The blockchain doesn't work when reality isn't linear. BUT! That just means we need BETTER blockchain! I'm envisioning Quantum-Resistant Dimensional Cryptocurrency! Patent pending!",
+      "choices": [
+        {
+          "text": "You've learned nothing.",
+          "leads_to": "stubborn_optimism"
+        },
+        {
+          "text": "At least you're consistent.",
+          "leads_to": "consistency"
+        }
+      ]
+    },
+    "yacht_story": {
+      "text": "*waves hand* Oh, that! Minor incident! I was celebrating my third blockchain company going public! Champagne, fireworks, very exclusive party! Fireworks landed on deck, fire spread, everyone panicked! But I stayed CALM! Used it as networking opportunity! Made three deals while the coast guard arrived! Turned disaster into PROFIT! That's the billionaire mindset!",
+      "choices": [
+        {
+          "text": "Was anyone hurt?",
+          "leads_to": "casualties_question"
+        },
+        {
+          "text": "You're ridiculous.",
+          "leads_to": "embraces_ridiculous"
+        }
+      ]
+    },
+    "problem_focus": {
+      "text": "*sighs dramatically* FINE! The 'actual problem!' Dimensional collapse, reality unstable, people scared, blah blah! Look, I GET it! But have you considered that complaining doesn't generate value? Action generates value! Ideas generate value! Cryptocurrency generates... well, sometimes it generates value! The POINT is: we need innovative solutions, not panic!",
+      "choices": [
+        {
+          "text": "Do you have any innovative solutions?",
+          "leads_to": "no_solutions"
+        },
+        {
+          "text": "Fair enough.",
+          "leads_to": "rare_agreement"
+        }
+      ]
+    },
+    "cynical_realist": {
+      "text": "*shrugs unapologetically* Cynical? I prefer 'realistic!' Look at history! Every major crisis created opportunities! The internet! The smartphone! Uber! All born from disruption! This hotel is literally EXPERIENCING disruption! We should capitalize! I'm not being cynical, I'm being ENTREPRENEURIAL! There's a difference! Probably!",
+      "choices": [
+        {
+          "text": "Debatable.",
+          "leads_to": "debate"
+        }
+      ]
+    },
+    "brainstorm": {
+      "text": "*thinking pose* Useful ideas... WELL! We could: 1) Monetize the dimensional rifts as 'extreme tourism!' 2) Sell NFTs of the collapsing timelines! 3) Start a podcast about the experience! 4) Launch a cryptocurrency called ParadoxCoin! 5) ... Actually those all involve making money. Hmm. Useful for ME! Maybe not for YOU!",
+      "choices": [
+        {
+          "text": "That's what I thought.",
+          "leads_to": "self_aware_moment"
+        },
+        {
+          "text": "At least you're honest.",
+          "leads_to": "honest_selfishness"
+        }
+      ]
+    },
+    "tech_industry": {
+      "text": "*grins* Terrifying? That's EXACTLY how Silicon Valley works! Fake it till you make it! Disrupt first, understand later! Move fast and break things! Including, apparently, reality! But hey, I'm worth billions! So the system WORKS! Sort of! For me! Your mileage may vary! Consult your financial advisor! Not investment advice!",
+      "choices": [
+        {
+          "text": "The disclaimers are telling.",
+          "leads_to": "legal_troubles"
+        }
+      ]
+    },
+    "wealth_story": {
+      "text": "*leans back smugly* HOW did I get rich? Right place, right time, right buzzwords! I launched DogeMoonCoin during the crypto boom! It had NO utility! No purpose! Just a dog picture and promises! Made $500 million before people realized it was worthless! Cashed out, moved to new project, repeated! It's called 'serial entrepreneurship!'",
+      "choices": [
+        {
+          "text": "That's basically fraud.",
+          "leads_to": "legal_gray_area"
+        },
+        {
+          "text": "And you're proud of this?",
+          "leads_to": "misplaced_pride"
+        }
+      ]
+    },
+    "stubborn_optimism": {
+      "text": "*defensive* I've learned PLENTY! I've learned that reality is harder to disrupt than expected! I've learned that dimensional collapse doesn't respect market cap! I've learned that maybe, MAYBE, not everything is fixable with blockchain! But I'm not giving up! Giving up is for quitters! And bears! I'm a bull! DIAMOND HANDS!",
+      "choices": [
+        {
+          "text": "That's... something.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "consistency": {
+      "text": "*nods* Exactly! Consistency! That's brand management! I'm the crypto guy who talks about crypto! It's my THING! Even during apocalypses! Especially during apocalypses! When society collapses, EVERYONE will need decentralized currency! I'm just planning ahead! Very ahead! Possibly too ahead! But ahead nonetheless!",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "casualties_question": {
+      "text": "*suddenly uncomfortable* ...Define 'hurt.' There were minor burns. Some smoke inhalation. One person fell overboard but the coast guard found them! Everyone SURVIVED! That's what matters! And they all signed NDAs! So legally, it's like it never happened! Problem solved! Through legal documents! The best kind of solution!",
+      "choices": [
+        {
+          "text": "You're awful.",
+          "leads_to": "lacks_self_awareness"
+        }
+      ]
+    },
+    "embraces_ridiculous": {
+      "text": "*beams* THANK YOU! I've built my ENTIRE brand on being ridiculous! Ridiculous gets attention! Attention gets followers! Followers get investment! Investment gets yachts! Well, got A yacht! Past tense! Because of the fire! But I can buy another! That's the POINT! Being ridiculous is PROFITABLE!",
+      "choices": [
+        {
+          "text": "That wasn't a compliment.",
+          "leads_to": "missed_insult"
+        }
+      ]
+    },
+    "no_solutions": {
+      "text": "*deflates slightly* ...Not really. I'm better at IDENTIFYING problems and claiming I'll solve them! Actual solutions require... work? And understanding? And skills I don't have? But I'm GREAT at raising money to pay people who DO have skills! That's leadership! Delegation! Strategic vision! Also: I'm panicking internally! But externally: CONFIDENT!",
+      "choices": [
+        {
+          "text": "At least you admit it.",
+          "leads_to": "rare_honesty"
+        }
+      ]
+    },
+    "rare_agreement": {
+      "text": "*surprised* Wait, you agree with me? That's... unusual! Most people just roll their eyes and walk away! Or invest money and regret it later! But agreement is NICE! Validating! Maybe I'm not completely full of it! Maybe 5% of what I say makes sense! That's better than my usual hit rate!",
+      "choices": [
+        {
+          "text": "Don't get used to it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "debate": {
+      "text": "*enthused* I LOVE debates! Especially ones I can dominate through confidence rather than facts! Look, cynicism versus entrepreneurship is SEMANTICS! It's all about framing! I frame it as opportunity! Others frame it as exploitation! Potato, potahto! The market decides! And the market chose ME! Through processes I don't fully understand!",
+      "choices": [
+        {
+          "text": "The market is questionable.",
+          "leads_to": "market_criticism"
+        }
+      ]
+    },
+    "self_aware_moment": {
+      "text": "*surprisingly thoughtful* You know what? You're right. Everything I suggested benefits ME. Classic billionaire behavior! Maybe this dimensional collapse is showing me something. Maybe I should focus on helping people instead of... *pauses* ...nah! Just kidding! I was testing you! Monetization FOREVER! Growth mindset! Disruption! *nervous laugh*",
+      "choices": [
+        {
+          "text": "You almost had growth there.",
+          "leads_to": "almost_learned"
+        }
+      ]
+    },
+    "honest_selfishness": {
+      "text": "*shrugs* Honesty is my NEW brand strategy! Be transparent about being terrible! People respect that! Or they hate it! But either way, it's ENGAGEMENT! Engagement is metrics! Metrics are value! Value is... wait, I lost my own thread! The POINT is: I'm selfish AND honest about it! That's disrupting traditional hypocrisy!",
+      "choices": [
+        {
+          "text": "I can't even argue with that logic.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "legal_troubles": {
+      "text": "*nervous laugh* The disclaimers are REQUIRED! By my seventeen lawyers! Who keep me BARELY within legal boundaries! I've been investigated by five regulatory agencies! Settled out of court twelve times! Been banned from three stock exchanges! But never CONVICTED! Because I can afford EXCELLENT lawyers! That's the system working!",
+      "choices": [
+        {
+          "text": "For you, maybe.",
+          "leads_to": "privilege_blindness"
+        }
+      ]
+    },
+    "legal_gray_area": {
+      "text": "*defensive* Fraud is a STRONG word! My lawyers prefer 'aggressive marketing' or 'creative value proposition!' Look, I didn't FORCE anyone to buy DogeMoonCoin! They made their own choices! Based on information I provided! Which was technically true! Just... incomplete! And misleading! But TECHNICALLY LEGAL! That's what matters!",
+      "choices": [
+        {
+          "text": "That's morally bankrupt.",
+          "leads_to": "moral_bankruptcy"
+        }
+      ]
+    },
+    "misplaced_pride": {
+      "text": "*puffs chest* VERY proud! I identified market inefficiency and exploited it! That's capitalism! That's innovation! That's... okay, when you say it out loud, it DOES sound bad! But in my defense: everyone else was doing it too! I just did it BETTER! More efficiently! With superior marketing! That's... still bad, isn't it?",
+      "choices": [
+        {
+          "text": "Yes. Yes it is.",
+          "leads_to": "brief_shame"
+        }
+      ]
+    },
+    "lacks_self_awareness": {
+      "text": "*confused* Awful? But I made DEALS! Created VALUE! Generated RETURNS! For myself! ...Oh. OH. You mean awful for the OTHER people! The ones who got hurt! Hmm. I hadn't considered their perspective! That's... actually a blind spot! My therapist mentions this! Something about 'empathy deficit!' But therapy is EXPENSIVE so I stopped going!",
+      "choices": [
+        {
+          "text": "You're unbelievable.",
+          "leads_to": "takes_as_compliment"
+        }
+      ]
+    },
+    "missed_insult": {
+      "text": "*still beaming* WAIT! It wasn't?! Oh. *processing* OH! You were INSULTING me! That's happened before! I have trouble with social cues! And criticism! My brain just converts everything to validation! It's a defense mechanism! Very effective! Highly recommend! Keeps self-esteem high regardless of reality!",
+      "choices": [
+        {
+          "text": "That explains a lot.",
+          "leads_to": "psychological_analysis"
+        }
+      ]
+    },
+    "rare_honesty": {
+      "text": "*vulnerable moment* Yeah. Admitting I don't have answers is... new. Usually I just confidently make things up! But dimensional collapse is OUTSIDE my expertise! Which is already narrow! Basically limited to hyping questionable investments! This situation requires REAL skills! Like physics! Or common sense! Neither of which I have!",
+      "choices": [
+        {
+          "text": "That's genuine growth.",
+          "leads_to": "actual_growth"
+        }
+      ]
+    },
+    "market_criticism": {
+      "text": "*gets defensive* The market is NOT questionable! The market is PERFECT! Efficient! All-knowing! If the market chose me, that means I have VALUE! Or... the market is irrational! And rewards hype over substance! And I'm really good at hype! So... maybe you have a point! But admitting that would require self-reflection! So I'll stick with 'market is perfect!'",
+      "choices": [
+        {
+          "text": "Whatever helps you sleep.",
+          "leads_to": "sleep_aids"
+        }
+      ]
+    },
+    "almost_learned": {
+      "text": "*conflicted* I KNOW! I almost had a moment of personal growth! Character development! But then my brain went 'NO! Growth is CHANGE! Change is SCARY! Stay terrible! It's familiar!' So I retreated into obnoxious billionaire mode! It's my safe space! My comfort zone! My insufferable happy place!",
+      "choices": [
+        {
+          "text": "Maybe try again sometime.",
+          "leads_to": "maybe_someday"
+        }
+      ]
+    },
+    "privilege_blindness": {
+      "text": "*finally gets it* For me. Right. Because I have resources others don't! That's... privilege! Which I've been told about! But never really UNDERSTOOD! Because understanding requires empathy! And perspective! And I've been too busy counting money! This dimensional crisis is unexpectedly educational! I'm learning things! I hate it!",
+      "choices": [
+        {
+          "text": "Learning is good for you.",
+          "leads_to": "reluctant_learning"
+        }
+      ]
+    },
+    "moral_bankruptcy": {
+      "text": "*shrugs helplessly* Morally bankrupt but financially SOLVENT! That's been my strategy! Focus on legal over ethical! Profits over people! Short-term gains over long-term consequences! It's worked great! For ME! For society? Less great! But that wasn't my priority! Should it have been? These are uncomfortable questions!",
+      "choices": [
+        {
+          "text": "Yes. They are.",
+          "leads_to": "discomfort"
+        }
+      ]
+    },
+    "brief_shame": {
+      "text": "*actually looks embarrassed* Yeah. It is. I know it is. Deep down, past the arrogance and designer clothes, I KNOW I've harmed people! Financially! Emotionally! But admitting that means confronting guilt! And changing behavior! Both HARD! So I usually just... buy another expensive thing and forget! Works great! Until moments like THIS!",
+      "choices": [
+        {
+          "text": "It's not too late to change.",
+          "leads_to": "possibility_of_change"
+        }
+      ]
+    },
+    "takes_as_compliment": {
+      "text": "*recovered confidence* Unbelievable! Yes! I AM! Unbelievably rich! Unbelievably successful! Unbelievably... wait, you meant it negatively AGAIN! This is hard! Communication is COMPLICATED! Why can't everyone just say exactly what they mean?! Or better yet: agree with everything I say! That would simplify things!",
+      "choices": [
+        {
+          "text": "You're hopeless.",
+          "leads_to": "hopeless_admission"
+        }
+      ]
+    },
+    "psychological_analysis": {
+      "text": "*nods vigorously* SO MUCH! My therapist had a FIELD DAY! Before I fired them! They kept using words like 'narcissism' and 'antisocial tendencies!' Very negative! Bad for my personal brand! So I found a new therapist who just agrees with me! Much better! They say I'm 'confident' and 'driven!' Same behaviors! Better framing!",
+      "choices": [
+        {
+          "text": "That's not how therapy works.",
+          "leads_to": "misunderstands_therapy"
+        }
+      ]
+    },
+    "actual_growth": {
+      "text": "*surprised* Growth? REAL growth? Not just 'user base growth' or 'market cap growth?' This is... different! Uncomfortable! I don't like it! But also... maybe it's okay? To not have all answers? To be vulnerable? To admit weakness? NOPE! Nope! Too far! Back to confidence! Fake it till you make it! BLOCKCHAIN!",
+      "choices": [
+        {
+          "text": "You'll get there eventually.",
+          "leads_to": "eventual_hope"
+        }
+      ]
+    },
+    "sleep_aids": {
+      "text": "*laughs* Sleep? I don't sleep! I have insomnia from constant anxiety about my seventeen active lawsuits! I take melatonin! CBD! Prescription pills! Sometimes all three! Sleep is for people without CRUSHING PRESSURE from unsustainable business models! I'm FINE! Totally FINE! Not having a breakdown! WHY WOULD YOU THINK THAT?!",
+      "choices": [
+        {
+          "text": "You need actual help.",
+          "leads_to": "needs_help"
+        }
+      ]
+    },
+    "maybe_someday": {
+      "text": "*thoughtful* Maybe. Someday. When I'm not in a collapsing hotel. Or running from regulators. Or hyping my next venture. There might be a moment when I look in mirror and think: 'Craig, you should be better.' And MAYBE I'll listen. But probably I'll just launch another cryptocurrency. It's what I know.",
+      "choices": [
+        {
+          "text": "I believe in you. Somehow.",
+          "leads_to": "unexpected_belief"
+        }
+      ]
+    },
+    "reluctant_learning": {
+      "text": "*grimaces* Is it though? Learning means growing! Growing means changing! I've spent YEARS building this personality! This brand! Can't just CHANGE it! What would my followers think?! Though... they'd probably respect growth. Personal development. Humanity. All that stuff. MAYBE learning is good. Grudgingly. Very grudgingly.",
+      "choices": [
+        {
+          "text": "Progress!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "discomfort": {
+      "text": "*squirms* VERY uncomfortable! I prefer comfortable questions! Like 'How did you get so rich?' or 'Can I invest in your company?' Not 'Have you considered the ethical ramifications of your actions?' Those questions make me feel... bad! Feelings! I don't like feelings! Except excitement! And greed! Those are fine!",
+      "choices": [
+        {
+          "text": "Feelings are part of being human.",
+          "leads_to": "humanity_lesson"
+        }
+      ]
+    },
+    "possibility_of_change": {
+      "text": "*voice small* Isn't it? I'm forty-three! Set in my ways! Rich enough to avoid consequences! But... you're right. I COULD change. Use wealth for good. Help people. Be better. It's possible. Just... hard. Really hard. Easier to stay terrible. But maybe... MAYBE... worth trying? This is the most sincere I've been in years. I hate it.",
+      "choices": [
+        {
+          "text": "That's a start.",
+          "leads_to": "new_beginning"
+        }
+      ]
+    },
+    "hopeless_admission": {
+      "text": "*sighs* Probably! Probably hopeless! But I'm rich and hopeless! That's better than poor and hopeless! Right? RIGHT?! *pause* That didn't sound as good out loud. Maybe I AM terrible. Maybe money didn't fix me. Maybe I need ACTUAL personal development! ...Nah! I'll just buy a sports car! That always helps! Until it doesn't!",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "misunderstands_therapy": {
+      "text": "*confused* It's not? But they're a therapist! Licensed and everything! They just happen to agree with all my decisions! And validate my lifestyle! And never challenge me! That's... oh. OH. That's not therapy. That's a yes-man with a psychology degree. I've been SCAMMED! By myself! I hired them! This is complicated!",
+      "choices": [
+        {
+          "text": "Self-awareness!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "eventual_hope": {
+      "text": "*half-smile* Eventually. Maybe when I'm sixty. Or seventy. Or on my deathbed. 'Craig's final words: I should have been nicer!' But for now? Still terrible! Still disrupting! Still making questionable decisions! But with SLIGHTLY more self-awareness! That's progress! Tiny progress! Microscopic! But progress nonetheless!",
+      "choices": [
+        {
+          "text": "I'll take it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "needs_help": {
+      "text": "*defensive* I HAVE help! Seventeen assistants! Five financial advisors! Three personal trainers! Two life coaches! ...none of whom I actually listen to! Because listening implies I don't know everything! Which threatens my ego! Which I've built my entire identity on! So... yes. I need help. REAL help. Professional help. But acknowledging that is TERRIFYING!",
+      "choices": [
+        {
+          "text": "First step is admission.",
+          "leads_to": "first_step"
+        }
+      ]
+    },
+    "unexpected_belief": {
+      "text": "*genuinely touched* You... believe in me? Why? I've been awful this entire conversation! But... thank you. That's... nice. Validating. In a NON-toxic way! Maybe someday I'll deserve it. Not today. Probably not tomorrow. But someday. If I work at it. Actually work. Not fake work. REAL work. On myself. This is growth! PAINFUL growth!",
+      "choices": [
+        {
+          "text": "Good luck, Craig.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "humanity_lesson": {
+      "text": "*processing* Being human. With feelings. And empathy. And connection. Things I've AVOIDED through money and arrogance! But you're right. They're unavoidable. Part of existence. Maybe I should lean INTO humanity. Instead of away from it. Maybe that's the REAL disruption. Disrupting my own terrible patterns! Revolutionary! Terrifying! Both!",
+      "choices": [
+        {
+          "text": "Now you're getting it!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "new_beginning": {
+      "text": "*takes deep breath* A start. Yes. Small changes. Be less terrible. Listen more. Hurt fewer people. Use wealth responsibly. It's... possible. Difficult. But possible. Thank you. For this conversation. For calling me out. For seeing potential in someone who's been awful. I'll try. Really try. To be better. Starting... soon. After this crisis. Probably. Maybe.",
+      "choices": [
+        {
+          "text": "I'm rooting for you.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "first_step": {
+      "text": "*nods slowly* First step. Admission. I need help. I've harmed people. I've prioritized money over ethics. I've been terrible. THERE! I said it! Out loud! To another person! This is... cathartic? Horrible? Both? I feel like crying! Which is NEW! And uncomfortable! But maybe... healthy? Is this what growth feels like?! I don't like it! But also... kind of do?!",
+      "choices": [
+        {
+          "text": "That's very brave.",
+          "leads_to": "bravery"
+        }
+      ]
+    },
+    "bravery": {
+      "text": "*wipes eyes* Brave? ME? I've never been called brave for FEELINGS before! For business risks! For questionable investments! But for EMOTIONS?! This is new! Unexpected! I... thank you. Really. This conversation changed something. Maybe. We'll see. I might regress tomorrow. But tonight? Right now? I'm trying. That counts. Right?",
+      "choices": [
+        {
+          "text": "It absolutely counts.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*adjusts designer clothes* This was... unexpected. You got me to think. And feel. And question myself. Things I've avoided for DECADES! I'm not fixed. Still terrible. Still rich. Still problematic. But maybe... slightly less terrible? Ask me in a month. If we survive. If I don't, tell people I almost changed! That's something! *nervous smile* Good talk. Really.",
+      "choices": []
+    }
+  }
 }

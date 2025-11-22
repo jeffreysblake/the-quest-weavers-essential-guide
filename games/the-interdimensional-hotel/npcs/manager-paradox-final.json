@@ -12,5 +12,225 @@
   "level": 10,
   "type": "npc",
   "dialogueTreeId": "manager-paradox-final",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*sitting behind desk, no smile this time* You made it. Collected all the fragments. Survived the impossible. Impressive. Most employees quit by now. Or cease existing. The turnover rate is ASTRONOMICAL. But you... you're different. Ready for the truth?",
+      "choices": [
+        {
+          "text": "What's really going on here?",
+          "leads_to": "truth_revealed"
+        },
+        {
+          "text": "Did you cause this?",
+          "leads_to": "responsibility"
+        },
+        {
+          "text": "Who are you really?",
+          "leads_to": "identity"
+        }
+      ]
+    },
+    "truth_revealed": {
+      "text": "*leans forward, eyes ancient* The hotel is a prison. Has been for eons. We don't host guests - we contain them. Entities too dangerous for any single reality. Dragons, ghosts, aliens, walking voids. We keep them HERE. Entertained. Distracted. Safe. Until someone stole the Reality Anchor.",
+      "choices": [
+        {
+          "text": "Mr. Null stole it.",
+          "leads_to": "null_confirmation"
+        },
+        {
+          "text": "Why imprison them?",
+          "leads_to": "containment_reason"
+        }
+      ]
+    },
+    "responsibility": {
+      "text": "*cold laugh* Cause it? I've been PREVENTING it for centuries. Every day. Every shift. Holding reality together with paperwork and customer service. But I got tired. Made one mistake. Hired the wrong person. Mr. Null was never supposed to get past HR.",
+      "choices": [
+        {
+          "text": "How did he get hired?",
+          "leads_to": "hiring_mistake"
+        },
+        {
+          "text": "Can we fix this?",
+          "leads_to": "fixing_possibility"
+        }
+      ]
+    },
+    "identity": {
+      "text": "*removes tie slowly* I'm not human. Never was. I'm a Temporal Constant. A fixed point in reality. The hotel EXISTS because I exist. I am the foundation. The framework. The first employee and the last. I am the Grand Paradox Hotel given consciousness.",
+      "choices": [
+        {
+          "text": "You're... the hotel itself?",
+          "leads_to": "hotel_entity"
+        },
+        {
+          "text": "That's impossible.",
+          "leads_to": "impossibility"
+        }
+      ]
+    },
+    "null_confirmation": {
+      "text": "Yes. The void made flesh. He doesn't want to escape reality - he wants to END it. Return everything to nothing. The Anchor was the only thing keeping him contained. Now he's free. And reality is collapsing. You have the fragments. You can stop him. But there's a cost.",
+      "choices": [
+        {
+          "text": "What cost?",
+          "leads_to": "cost_explanation"
+        },
+        {
+          "text": "I'll do whatever it takes.",
+          "leads_to": "determination"
+        }
+      ]
+    },
+    "containment_reason": {
+      "text": "Because they're BEAUTIFUL. And dangerous. The dragon would burn dimensions for gold. The void would erase existence. The ghosts would haunt all of time. Here, they're safe. Controlled. Almost happy. The hotel is kindness disguised as imprisonment. Or vice versa. I forget which.",
+      "choices": [
+        {
+          "text": "That's... morally complex.",
+          "leads_to": "morality"
+        }
+      ]
+    },
+    "hiring_mistake": {
+      "text": "*bitter* He had perfect references. Stellar resume. I didn't see the truth until too late. He's NOT a person - he's an absence. A hole in reality applying for a job. How do you interview nothing? I failed. And now everything pays the price.",
+      "choices": [
+        {
+          "text": "We can still stop him.",
+          "leads_to": "hope"
+        }
+      ]
+    },
+    "fixing_possibility": {
+      "text": "Maybe. The fragments can restore the Anchor. Seal Mr. Null back in non-existence. But someone has to confront him. Someone has to risk becoming void themselves. I can't do it. I'm anchored here. The hotel won't let me leave. But you... you're still mortal. Still real. Still ENOUGH.",
+      "choices": [
+        {
+          "text": "I'll face him.",
+          "leads_to": "brave_choice"
+        },
+        {
+          "text": "How do I win?",
+          "leads_to": "strategy"
+        }
+      ]
+    },
+    "hotel_entity": {
+      "text": "In a sense. I'm what the hotel NEEDS to be. Manager. Guardian. Warden. Host. All roles. All masks. When the hotel hurts, I hurt. When it fails, I fail. Your success is my survival. That's why I hired you. You're the last hope. No pressure.",
+      "choices": [
+        {
+          "text": "That's a lot of pressure.",
+          "leads_to": "pressure_response"
+        }
+      ]
+    },
+    "impossibility": {
+      "text": "*gestures around* You've seen impossible things all week. Why stop believing now? I am what I am. The hotel needs a face. A voice. A manager. So I became one. Or I was always one. Temporal mechanics make personal history VERY complicated.",
+      "choices": [
+        {
+          "text": "Fair point. What now?",
+          "leads_to": "next_steps"
+        }
+      ]
+    },
+    "cost_explanation": {
+      "text": "To restore the Anchor, you'll need to give something up. A memory. A possibility. A piece of yourself. The fragments DEMAND exchange. Reality isn't free. It costs what you're willing to pay. And sometimes more.",
+      "choices": [
+        {
+          "text": "I accept.",
+          "leads_to": "acceptance"
+        }
+      ]
+    },
+    "determination": {
+      "text": "*long look* You remind me of the first guests. Before everything. When the hotel was hope, not imprisonment. You have courage. Use it. Mr. Null is in the deepest Basement. Waiting. He WANTS you to come. Make him regret that.",
+      "choices": [
+        {
+          "text": "I will.",
+          "leads_to": "final_encouragement"
+        }
+      ]
+    },
+    "morality": {
+      "text": "All hospitality is. We cage people for their own good. Call it service. Protection. Employment. But it's still control. I've made peace with it. Or I haven't. I have eons to decide. You have minutes. Use them wisely.",
+      "choices": [
+        {
+          "text": "I'll stop Mr. Null.",
+          "leads_to": "final_encouragement"
+        }
+      ]
+    },
+    "hope": {
+      "text": "*faint smile* Hope. That's what you represent. The possibility of fixing mistakes. Redemption through competence. Very human. Very beautiful. Very fragile. Don't let him extinguish it. The hotel needs hope. I need hope. Even voids fear the light.",
+      "choices": [
+        {
+          "text": "I won't let you down.",
+          "leads_to": "final_encouragement"
+        }
+      ]
+    },
+    "brave_choice": {
+      "text": "Good. Take the fragments. They'll resonate when you're close to the Anchor's location. Follow their pull. Find Mr. Null. And remember: he is NOTHING. You are SOMETHING. That gives you power. Use it.",
+      "choices": [
+        {
+          "text": "Time to end this.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "strategy": {
+      "text": "You don't fight a void with force. You fight it with EXISTENCE. Assert yourself. Your reality. Your presence. Every memory, every choice, every moment that proves you're REAL. Make him remember what it's like to matter. Then seal him away. Forever.",
+      "choices": [
+        {
+          "text": "I understand.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "pressure_response": {
+      "text": "Welcome to management. Now go. Save the hotel. Save reality. Save yourself. And if you succeed... your employee discount becomes permanent. 20% off gift shop purchases. Across all dimensions. Eternally.",
+      "choices": [
+        {
+          "text": "Best benefit package ever.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "next_steps": {
+      "text": "Now you descend. The deepest Basement. Where Mr. Null waits. Where the Anchor was stolen. Where everything ends. Or begins again. The fragments will guide you. Trust them. Trust yourself. Trust that reality WANTS to exist.",
+      "choices": [
+        {
+          "text": "Here I go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "acceptance": {
+      "text": "Brave. Foolish. Necessary. The hotel will remember you. I will remember you. Even if you forget yourself. Now go. The Basement awaits. Mr. Null awaits. Your destiny awaits. And I'll be here. Always. Managing the impossible.",
+      "choices": [
+        {
+          "text": "Wish me luck.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "final_encouragement": {
+      "text": "You have everything you need. Fragments. Determination. Existence itself on your side. Mr. Null has only absence. Only void. Only the desperate need to unmake. Show him that BEING is stronger than NOTHING. Win this. Please.",
+      "choices": [
+        {
+          "text": "I will. I promise.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*stands, extends hand* Good luck. You're the best employee this hotel has ever had. And if this is the end... thank you for trying. Thank you for caring. Thank you for proving that even impossible jobs deserve impossible workers.",
+      "choices": []
+    }
+  }
 }
