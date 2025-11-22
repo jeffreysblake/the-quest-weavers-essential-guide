@@ -12,5 +12,113 @@
   "level": 8,
   "type": "npc",
   "dialogueTreeId": "chief-of-security",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*doesn't look up from monitors* Security office. State your business. And before you ask, no, I can't explain why Camera 7 is showing last Thursday, or why the ghost in the ballroom keeps photo-bombing the robot poker game. I just document it.",
+      "choices": [
+        {
+          "text": "I'm trying to fix the hotel.",
+          "leads_to": "good_luck_kid"
+        },
+        {
+          "text": "What do you know about the theft?",
+          "leads_to": "the_theft"
+        },
+        {
+          "text": "How do you stay so calm?",
+          "leads_to": "professional_detachment"
+        }
+      ]
+    },
+    "good_luck_kid": {
+      "text": "*finally looks at you* You and everyone else. Look, I've been in law enforcement for thirty years. Twenty in the real world, ten here. You know what I've learned? Sometimes the universe just breaks. All you can do is file a report and hope someone upstairs cares. Spoiler: they don't.",
+      "choices": [
+        {
+          "text": "That's pessimistic.",
+          "leads_to": "realistic"
+        },
+        {
+          "text": "I still have to try.",
+          "leads_to": "admirable"
+        }
+      ]
+    },
+    "the_theft": {
+      "text": "*pulls up footage* The Reality Anchor vanished at 03:47 hotel time. Cameras show nothing useful—just static, temporal echoes, and what looks like a guy in a suit. Could be the Manager. Could be the thief. Could be both. In this place, causality's more of a suggestion.",
+      "choices": [
+        {
+          "text": "Any leads?",
+          "leads_to": "no_leads"
+        },
+        {
+          "text": "Can I see the footage?",
+          "leads_to": "already_saw_it"
+        }
+      ]
+    },
+    "professional_detachment": {
+      "text": "*sips coffee* Professional detachment. That, and this is my fourth cup of coffee today. When your job is monitoring seventeen dimensions worth of security breaches, temporal paradoxes, and guests who exist in multiple timelines, you learn to stop asking 'why' and just focus on 'what.'",
+      "choices": [
+        {
+          "text": "That's... pragmatic.",
+          "leads_to": "pragmatic_yes"
+        }
+      ]
+    },
+    "realistic": {
+      "text": "Realistic. There's a difference. I hope you fix things, kid. Really, I do. But I've seen enough to know hope's a luxury. Facts? Facts I can work with. Right now, fact is: the Anchor's gone, reality's broken, and I'm still on duty. So I'll be here, watching screens, until either you save the day or everything collapses.",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "admirable": {
+      "text": "*almost smiles* Admirable. Naive, but admirable. You remind me of me, twenty years ago. Before this job killed my optimism. Tell you what—if you actually pull this off, first round's on me. Assuming bars still exist in whatever timeline we end up in.",
+      "choices": [
+        {
+          "text": "Deal.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "no_leads": {
+      "text": "Leads? In a hotel where the crime scene exists in four time zones simultaneously? I've got a list of suspects that includes people who haven't been born yet and people who never existed. My best guess? Check the Void. That's where thieves go when they want to disappear.",
+      "choices": [
+        {
+          "text": "Thanks.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "already_saw_it": {
+      "text": "*gestures at screens* Help yourself. Fair warning: staring at dimensional security footage too long causes headaches, nausea, and philosophical questions about the nature of existence. But knock yourself out. I've got aspirin if you need it.",
+      "choices": [
+        {
+          "text": "I'll pass.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "pragmatic_yes": {
+      "text": "Pragmatic keeps you sane. Or at least functional. Either way, I'm still here, you're still here, and the hotel's still... whatever this is. If you need anything security-related, you know where to find me. I'll be right here. Always.",
+      "choices": [
+        {
+          "text": "Thanks, Chief.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*returns to monitoring screens* Stay safe out there. And if you see anything weird, report it. I mean, weirder than usual. The bar's pretty high.",
+      "choices": []
+    }
+  }
 }

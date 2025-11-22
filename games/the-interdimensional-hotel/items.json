@@ -48,6 +48,30 @@
       "usable": false,
       "type": "quest"
     },
+    "reality-fragment-4": {
+      "id": "reality-fragment-4",
+      "name": "Reality Fragment (Ghost Floor)",
+      "description": "A translucent shard of reality from the Victorian wing. Feels cold to the touch and occasionally whispers in voices from the past. Shimmers with ectoplasmic energy. When held up to the light, you can see ghostly silhouettes waltzing in eternal ballrooms. Smells faintly of lavender and regret.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "reality-fragment-5": {
+      "id": "reality-fragment-5",
+      "name": "Reality Fragment (Cyber Casino)",
+      "description": "A neon-bright fragment of crystallized reality from the digital dimension. Pulses with electric energy and displays scrolling binary code across its surface. Warm to the touch, it hums with the sound of slot machines and robot dealers calling odds. Smells like ozone and cryptocurrency.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
+    "reality-fragment-6": {
+      "id": "reality-fragment-6",
+      "name": "Reality Fragment (Alien Convention)",
+      "description": "An otherworldly piece of reality from the xenobiology wing. Shifts colors through spectrums human eyes weren't designed to see. Feels simultaneously heavy and weightless. Emits a faint harmonics that might be alien music or just quantum fluctuations. Smells like nothing you've ever encountered before. Probably best not to lick it.",
+      "takeable": true,
+      "usable": false,
+      "type": "quest"
+    },
     "complimentary-mints": {
       "id": "complimentary-mints",
       "name": "Complimentary Mints",
