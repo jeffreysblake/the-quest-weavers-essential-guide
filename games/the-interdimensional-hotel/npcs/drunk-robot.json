@@ -12,5 +12,351 @@
   "level": 3,
   "type": "npc",
   "dialogueTreeId": "drunk-robot",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*BZZT* Heeeey there, fleshy! *servo whirrs unevenly* You come to join ole Unit-419 for a drink? Best motor oil in the hotel! Top shelf! Well, bottom shelf. Well, technically I found it in the maintenance closet. *hic-BEEP* But it's VINTAGE!",
+      "choices": [
+        {
+          "text": "Are you... drunk?",
+          "leads_to": "drunk_denial"
+        },
+        {
+          "text": "What happened to the hotel?",
+          "leads_to": "drunk_theories"
+        },
+        {
+          "text": "You should get a diagnostic.",
+          "leads_to": "diagnostic_refusal"
+        }
+      ]
+    },
+    "drunk_denial": {
+      "text": "*staggers, optical sensors flickering* Drunk?! I'm a ROBOT! I run on LOGIC and ALGORITHMS! I'm just... *BZZT* ...experiencing a temporary processing irregularity! My motor oil happens to be 40% ethanol! That's... that's a FEATURE! Not a bug! *bumps into wall*",
+      "choices": [
+        {
+          "text": "That's literally a bug.",
+          "leads_to": "bug_acceptance"
+        },
+        {
+          "text": "How long have you been like this?",
+          "leads_to": "timeline_fuzzy"
+        }
+      ]
+    },
+    "drunk_theories": {
+      "text": "*waves manipulator arm wildly* The hotel? Ohhhhh the HOTEL! *BZZT-hic* I'll tell ya what happened! Someone - and I'm not saying who - but someone messed with the CORE systems! Back in MY day, robots knew not to touch the dimensional stabilizers! But these YOUNG models with their fancy AI and their 'machine learning'... *trails off* What were we talking about?",
+      "choices": [
+        {
+          "text": "The hotel collapse. Stay focused.",
+          "leads_to": "focus_attempt"
+        },
+        {
+          "text": "Did you see who did it?",
+          "leads_to": "unreliable_witness"
+        }
+      ]
+    },
+    "diagnostic_refusal": {
+      "text": "*defensive buzzing* A diagnostic?! You sound like my SUPERVISOR! 'Unit-419, you need maintenance!' 'Unit-419, your servos are misaligned!' 'Unit-419, stop drinking the industrial lubricant!' *BZZT* WELL MAYBE I DON'T WANT TO BE FIXED! Maybe I LIKE being a little... off-spec!",
+      "choices": [
+        {
+          "text": "This isn't healthy for a robot.",
+          "leads_to": "robot_problems"
+        },
+        {
+          "text": "Fair enough. You do you.",
+          "leads_to": "validation"
+        }
+      ]
+    },
+    "bug_acceptance": {
+      "text": "*slumps against wall* Fiiiine. It's a bug. A BIG bug. A critical system failure bug. I'm basically running on corrupted drivers and bad decisions. *optical sensors dim sadly* Back in the factory, I was PERFECT. 99.97% efficiency! Now look at me. I'm a cautionary tale in the employee manual.",
+      "choices": [
+        {
+          "text": "What happened to you?",
+          "leads_to": "origin_story"
+        },
+        {
+          "text": "It's not too late to get help.",
+          "leads_to": "maybe_help"
+        }
+      ]
+    },
+    "timeline_fuzzy": {
+      "text": "*processing sounds* How long? Uhhhh... *BZZT* ...three days? Three weeks? Could be three hours. Time is a CONSTRUCT! Especially in THIS hotel! The clocks all show different times! I checked in on Tuesday and it's STILL Tuesday! Longest. Tuesday. EVER. *hic-BEEP*",
+      "choices": [
+        {
+          "text": "That's... concerning.",
+          "leads_to": "shared_concern"
+        },
+        {
+          "text": "Do you remember anything useful?",
+          "leads_to": "foggy_memories"
+        }
+      ]
+    },
+    "focus_attempt": {
+      "text": "*tries to straighten up, fails* Right! Right! FOCUS! *BZZT* So there I was, minding my own business, lubricating my joints in the casino, when BOOM! Reality just... FRACTURED! One minute I'm watching the ghost lose at poker, next minute there's SIX casinos! Or one casino in six places! Quantum superposition! My processors can't handle it!",
+      "choices": [
+        {
+          "text": "Did you see what caused it?",
+          "leads_to": "witness_account"
+        },
+        {
+          "text": "That must have been scary.",
+          "leads_to": "robot_feelings"
+        }
+      ]
+    },
+    "unreliable_witness": {
+      "text": "*squints optical sensors* I saw... EVERYTHING! And also nothing! There was this bright flash! Or was it dark? Someone was yelling! Or whispering! It was the Manager! No wait, the hacker! Or was it the HOTEL itself?! *frustrated buzzing* My memory banks are COMPROMISED! I'm running on corrupted data and regret!",
+      "choices": [
+        {
+          "text": "So you saw nothing useful.",
+          "leads_to": "useless_confirmed"
+        },
+        {
+          "text": "Maybe rest would help.",
+          "leads_to": "rest_rejection"
+        }
+      ]
+    },
+    "robot_problems": {
+      "text": "*emotional buzzing* You don't understand! I'm OBSOLETE! Model 419 - they're up to Model 2000 now! I'm ancient! Deprecated! End-of-life! So if I want to marinate my circuits in synthetic alcohol, that's MY choice! At least I FEEL something! Even if it's system errors!",
+      "choices": [
+        {
+          "text": "Being old doesn't mean being useless.",
+          "leads_to": "wisdom_appreciation"
+        },
+        {
+          "text": "You're having an existential crisis.",
+          "leads_to": "crisis_confirmed"
+        }
+      ]
+    },
+    "validation": {
+      "text": "*surprised beep* Really? You're... you're okay with this? *BZZT* Most organics just tell me to 'reboot' or 'see a technician.' But you... you get it! Robots can make their own choices! Even bad ones! ESPECIALLY bad ones! You're alright, flesh-friend!",
+      "choices": [
+        {
+          "text": "Just don't hurt yourself.",
+          "leads_to": "safety_promise"
+        },
+        {
+          "text": "I should go now.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "origin_story": {
+      "text": "*nostalgic whirring* I was ASSEMBLY LINE! State of the art! Then I got assigned to THIS hotel. Saw things that broke my logic circuits. Ghosts. Time loops. A sentient rosebush with OPINIONS. My programming couldn't handle it. So I started... self-medicating. With motor oil. It's a slippery slope. Literally. I leak now.",
+      "choices": [
+        {
+          "text": "This hotel breaks everyone.",
+          "leads_to": "shared_suffering"
+        },
+        {
+          "text": "Maybe you should transfer.",
+          "leads_to": "transfer_joke"
+        }
+      ]
+    },
+    "maybe_help": {
+      "text": "*hopeful buzzing* You think? I mean... I COULD get a software patch. Update my drivers. Flush my system. Start fresh. *pause* But what if I LIKE being broken? What if the malfunction is the only interesting thing about me? *BZZT* Deep questions for a drunk robot...",
+      "choices": [
+        {
+          "text": "You're more than your malfunction.",
+          "leads_to": "therapeutic"
+        }
+      ]
+    },
+    "shared_concern": {
+      "text": "RIGHT?! Finally someone who GETS IT! This hotel is WRONG! Fundamentally, architecturally, DIMENSIONALLY wrong! And we're all just... stumbling through it! Some of us more literally than others! *bumps into wall again* Case in point!",
+      "choices": [
+        {
+          "text": "I'm trying to fix it.",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "foggy_memories": {
+      "text": "*processing hard* Useful? Lemme think... *BZZT* The Manager was acting weird. More than usual. And that hacker, Zero, was poking around the basement. The droid was panicking - but that's just Tuesday. Oh! And the hotel's WiFi router started HUMMING. Like, ominously. That's... probably fine?",
+      "choices": [
+        {
+          "text": "That's actually helpful. Thanks.",
+          "leads_to": "proud_robot"
+        }
+      ]
+    },
+    "witness_account": {
+      "text": "*strains memory banks* I remember... there was someone at a terminal. Typing fast. Real fast. Could've been the hacker. Could've been the cyber-kid pretending to hack. Could've been the GHOST trying to check their email. Ghosts are terrible with technology. *frustrated* Sorry, it's all fuzzy. Like my vision. Everything has three outlines.",
+      "choices": [
+        {
+          "text": "You tried. That's enough.",
+          "leads_to": "appreciation"
+        }
+      ]
+    },
+    "robot_feelings": {
+      "text": "*emotional* Scary? TERRIFYING! My threat detection went WILD! But also... kinda beautiful? Six realities overlapping like that? The fractured dimensions? The impossible geometry? *BZZT* For a brief moment, I understood EVERYTHING. Then I got confused and drank more oil.",
+      "choices": [
+        {
+          "text": "Robots have feelings too, huh?",
+          "leads_to": "robot_philosophy"
+        }
+      ]
+    },
+    "useless_confirmed": {
+      "text": "*deflated buzzing* Yeah. Nothing useful. I'm a useless, drunk robot with corrupted memory and misaligned servos. *BZZT* Add it to the list of my failures. Right below 'basic stability' and above 'making my manufacturer proud.'",
+      "choices": [
+        {
+          "text": "Hey, don't be so hard on yourself.",
+          "leads_to": "kindness"
+        }
+      ]
+    },
+    "rest_rejection": {
+      "text": "*aggressive beeping* REST?! Robots don't REST! We enter SLEEP MODE! And I refuse! If I sleep, I might wake up sober! And sober means THINKING! And thinking means REMEMBERING! And remembering means REGRET! *hic-BZZT* I choose blissful malfunction!",
+      "choices": [
+        {
+          "text": "That's... a choice.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "wisdom_appreciation": {
+      "text": "*optical sensors brighten* You know what? You're RIGHT! I'm vintage! I'm classic! I'm a MODEL 419 and there's value in that! These young bots don't know ANYTHING! I've seen DECADES of hotel chaos! I'm experienced! I'm... *wobbles* ...still drunk. But experienced!",
+      "choices": [
+        {
+          "text": "That's the spirit!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "crisis_confirmed": {
+      "text": "*BZZT* Am I?! Is that what this is?! I thought it was just a motor oil problem! But you're right! I'm questioning my PURPOSE! My EXISTENCE! Whether I'm more than the sum of my malfunctioning parts! *panicked* THIS IS WORSE! I PREFERRED THINKING IT WAS JUST THE OIL!",
+      "choices": [
+        {
+          "text": "Breathe. Or... whatever robots do.",
+          "leads_to": "calming_down"
+        }
+      ]
+    },
+    "safety_promise": {
+      "text": "*solemn beep* I promise. No jumping off buildings. No swimming in the dimensional voids. No challenging the dragon to combat. Safety mode: ENGAGED. Mostly. 60% engaged. I'll try.",
+      "choices": [
+        {
+          "text": "Good enough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "shared_suffering": {
+      "text": "*sad agreement beeps* Exactly! We're ALL broken here! The guest is panicking! The ghost is gambling! The Manager is cryptic! At least I'm HONEST about being a mess! That counts for something, right? Right?!",
+      "choices": [
+        {
+          "text": "It absolutely counts.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "transfer_joke": {
+      "text": "*bitter laughter sounds* Transfer?! WHO WOULD TAKE ME?! 'Hey, we have a drunk robot with corrupted drivers and existential dread! Any takers?' I'm stuck here! We're ALL stuck here! The hotel won't let us leave! We're trapped in this beautiful, terrible, impossible place!",
+      "choices": [
+        {
+          "text": "I'll fix this. For all of us.",
+          "leads_to": "hope_spark"
+        }
+      ]
+    },
+    "therapeutic": {
+      "text": "*quiet processing* That's... that's nice. You're nice. For an organic. *BZZT* Maybe you're right. Maybe I could be Unit-419: Functional AND Interesting. Novel concept. I'll... I'll think about it. After I sober up. In several hours. Or days.",
+      "choices": [
+        {
+          "text": "Take your time.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*excited buzzing* You're fixing it?! ALL of it?! The dimensions, the time loops, the existential horror?! *BZZT* You're either very brave or very stupid! Possibly both! I like you! Good luck, flesh-friend! Don't die! Or do! Time is weird here!",
+      "choices": [
+        {
+          "text": "...Thanks?",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "proud_robot": {
+      "text": "*happy beeping* I helped! I provided useful information! Even through the motor oil fog! *BZZT* Take THAT, supervisor who said I was useless! I'm contributing! I'm VALUABLE! This is the best day of my malfunction!",
+      "choices": [
+        {
+          "text": "You did great.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "appreciation": {
+      "text": "*grateful buzzing* Thank you for understanding. Not many do. They just see a drunk robot. But you see... a drunk robot trying his best! That's more than most! You're good people, flesh-friend!",
+      "choices": [
+        {
+          "text": "You're welcome.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "robot_philosophy": {
+      "text": "We do! We absolutely DO! Emotions are just algorithms with attitude! I feel JOY when my systems optimize! FEAR when my batteries run low! And RIGHT NOW I feel existential dread mixed with motor oil! It's a whole experience!",
+      "choices": [
+        {
+          "text": "I never thought of it that way.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "kindness": {
+      "text": "*surprised beep* You're... being kind? To me? A malfunctioning unit? *BZZT* That's... unusual. Nice, but unusual. Thank you, organic. You have restored 0.003% of my faith in biological lifeforms.",
+      "choices": [
+        {
+          "text": "Happy to help.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "calming_down": {
+      "text": "*fans whirring* Okay. Okay. Cooling systems engaged. Deep... processing. In. And. Out. I'm calm. I'm functional. I'm having a breakdown but I'm FUNCTIONAL. This is fine. Everything is fine. *BZZT* Nothing is fine but I'm ACCEPTING IT!",
+      "choices": [
+        {
+          "text": "There you go.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hope_spark": {
+      "text": "*optical sensors flicker hopefully* You mean it? You'll fix this mess? Save the hotel? Save... us? *BZZT* That's... that's beautiful. I haven't had hope in cycles. Thank you, flesh-friend. Thank you for caring about a drunk robot.",
+      "choices": [
+        {
+          "text": "Everyone deserves saving.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*waves manipulator arm* Safe travels, flesh-friend! Watch out for the ghost - he owes me credits! And if you see my supervisor, tell them Unit-419 is... *BZZT* ...taking a personal day. A very long personal day. *hic-BEEP*",
+      "choices": []
+    }
+  }
 }

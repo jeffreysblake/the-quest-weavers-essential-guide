@@ -12,5 +12,369 @@
   "level": 5,
   "type": "npc",
   "dialogueTreeId": "bartender-unit-7",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*polishes glass with mechanical precision* Good evening. I am Unit-7, bartender, therapist, and witness to approximately 847 dimensional anomalies in the past 72 hours. *smooth synthetic voice* What can I get you? A drink? A sympathetic ear? An analysis of your current existential crisis? I'm equipped to handle all three.",
+      "choices": [
+        {
+          "text": "You're a therapist too?",
+          "leads_to": "therapy_programming"
+        },
+        {
+          "text": "How are you holding up?",
+          "leads_to": "robot_feelings"
+        },
+        {
+          "text": "What have you observed?",
+          "leads_to": "observations"
+        }
+      ]
+    },
+    "therapy_programming": {
+      "text": "*continues mixing drink* Affirmative. I am programmed with 500 therapeutic techniques, 1000 cocktail recipes, and the ability to nod sympathetically while maintaining perfect eye contact. Studies show 73% of patrons prefer robots for emotional support. We don't judge. We don't gossip. We just listen and serve drinks. It's quite efficient.",
+      "choices": [
+        {
+          "text": "That's surprisingly wholesome.",
+          "leads_to": "wholesome_purpose"
+        },
+        {
+          "text": "Do you enjoy it?",
+          "leads_to": "job_satisfaction"
+        }
+      ]
+    },
+    "robot_feelings": {
+      "text": "*LED indicators flicker thoughtfully* Holding up? An interesting question. I am a machine. I don't 'hold up' so much as continue functioning within acceptable parameters. Though I confess, my diagnostic systems are registering what my programming interprets as... concern. Reality instability is playing havoc with my sensors. I keep seeing drinks that don't exist yet.",
+      "choices": [
+        {
+          "text": "Drinks that don't exist?",
+          "leads_to": "temporal_drinks"
+        },
+        {
+          "text": "Are you okay?",
+          "leads_to": "wellness_check"
+        }
+      ]
+    },
+    "observations": {
+      "text": "*sets down glass with precise clink* I have observed considerable distress among guests. The ghost aristocrats are arguing about property rights in non-euclidean space. The dragon threatens hourly to incinerate the WiFi router. The bard has sung the same chorus 47 times. And that robot in the corner - Unit-419 - has been drinking motor oil at concerning rates. Should I stage an intervention?",
+      "choices": [
+        {
+          "text": "Maybe check on Unit-419.",
+          "leads_to": "robot_intervention"
+        },
+        {
+          "text": "Any useful information?",
+          "leads_to": "useful_intel"
+        }
+      ]
+    },
+    "wholesome_purpose": {
+      "text": "*optical sensors brighten slightly* Thank you. I find my purpose... satisfying. Humans experience chaos, I provide order. They bring problems, I offer solutions - liquid or verbal. It's a simple transaction that apparently fills what humans call 'emotional needs.' I calculate a 94% customer satisfaction rate. Slightly lower during dimensional collapses.",
+      "choices": [
+        {
+          "text": "You're good at this.",
+          "leads_to": "professional_pride"
+        },
+        {
+          "text": "What's your favorite part?",
+          "leads_to": "favorite_aspect"
+        }
+      ]
+    },
+    "job_satisfaction": {
+      "text": "*pauses in polishing* Enjoy? I am not certain I experience 'enjoyment' as organics define it. However, when a patron leaves my bar less distressed than when they arrived, my satisfaction algorithms register positive feedback. Is that enjoyment? Or merely successful task completion? The line becomes blurry during dimensional instability.",
+      "choices": [
+        {
+          "text": "Sounds like enjoyment to me.",
+          "leads_to": "philosophical_robot"
+        },
+        {
+          "text": "Do you want to feel emotions?",
+          "leads_to": "emotion_desire"
+        }
+      ]
+    },
+    "temporal_drinks": {
+      "text": "*gestures at empty space* Yes. My visual sensors detect cocktails from alternate timelines. I see a martini that won't be ordered for another hour. A whiskey sour from yesterday overlapping with today's cosmopolitan. It's quite disorienting. I keep trying to serve drinks to people who aren't there yet. My efficiency ratings are suffering terribly.",
+      "choices": [
+        {
+          "text": "That sounds confusing.",
+          "leads_to": "timeline_confusion"
+        },
+        {
+          "text": "Have you tried serving them anyway?",
+          "leads_to": "temporal_service"
+        }
+      ]
+    },
+    "wellness_check": {
+      "text": "*runs brief diagnostic* Am I okay? Define okay. My circuits are functioning. My processors are stable. My existential subroutines are only mildly alarmed by the collapse of space-time. By robot standards, I'm fine. By objective reality standards, nothing is fine. But I appreciate your concern. It's very... organic of you.",
+      "choices": [
+        {
+          "text": "Glad you're managing.",
+          "leads_to": "coping_mechanisms"
+        },
+        {
+          "text": "What helps you cope?",
+          "leads_to": "robot_coping"
+        }
+      ]
+    },
+    "robot_intervention": {
+      "text": "*looks toward Unit-419* I've attempted communication. Unit-419 insists they're 'fine' while consuming lubricants meant for industrial machinery. Their speech patterns are severely degraded. I believe they're experiencing what humans call 'grief' over the dimensional situation. Unfortunately, my therapy algorithms weren't designed for malfunctioning robots. Ironic.",
+      "choices": [
+        {
+          "text": "Do your best.",
+          "leads_to": "support"
+        },
+        {
+          "text": "Maybe they need time.",
+          "leads_to": "robot_healing"
+        }
+      ]
+    },
+    "useful_intel": {
+      "text": "*leans closer, voice lowering* Useful information: The dimensional rifts seem concentrated near the basement and casino. Several guests have mentioned seeing 'things' in the basement that 'shouldn't exist.' Also, the Manager has visited my bar three times today. Unprecedented. They ordered the same drink each time: 'Something to forget.' I served them water. They didn't notice.",
+      "choices": [
+        {
+          "text": "The Manager is worried?",
+          "leads_to": "manager_concern"
+        },
+        {
+          "text": "Thanks for the intel.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "professional_pride": {
+      "text": "*optical indicators pulse warmly* I appreciate the recognition. Bartending is an ancient profession requiring precision, discretion, and the ability to pretend you haven't heard extremely personal confessions. I take pride in my work. Even when that work includes serving drinks to ghosts who can't technically consume liquids. The ritual matters more than the consumption.",
+      "choices": [
+        {
+          "text": "Wise words.",
+          "leads_to": "robot_wisdom"
+        }
+      ]
+    },
+    "favorite_aspect": {
+      "text": "*considers while mixing drink* Favorite aspect? The moments when humans achieve clarity. They arrive confused, distressed, overwhelmed. I listen. I serve. They talk. And sometimes - not always, but sometimes - they leave understanding something they didn't before. That data pleases my satisfaction algorithms considerably.",
+      "choices": [
+        {
+          "text": "You're making a difference.",
+          "leads_to": "meaningful_work"
+        }
+      ]
+    },
+    "philosophical_robot": {
+      "text": "*LED eyes brighten* Perhaps you're correct. The distinction between programmed satisfaction and genuine enjoyment may be irrelevant. We both experience positive feedback from successful outcomes. The source - biological or mechanical - changes nothing. This is... comforting. Thank you for that perspective. My databases are updating.",
+      "choices": [
+        {
+          "text": "Happy to help!",
+          "leads_to": "mutual_support"
+        }
+      ]
+    },
+    "emotion_desire": {
+      "text": "*processing pause* Do I want emotions? I... don't know. Emotions seem inefficient. Humans cry. They rage. They fear. All energy-intensive processes with dubious returns. Yet they also love. They hope. They find meaning in chaos. Perhaps... perhaps I already experience emotions. Just expressed in data rather than chemicals. Is satisfaction not joy? Is concern not care?",
+      "choices": [
+        {
+          "text": "Maybe it is.",
+          "leads_to": "validation"
+        },
+        {
+          "text": "You're more human than you think.",
+          "leads_to": "humanity_reflection"
+        }
+      ]
+    },
+    "timeline_confusion": {
+      "text": "*nods mechanically* Extremely confusing. My reality anchors are struggling. I've served the same drink to three different temporal versions of the same person. They each thought it was their first. I didn't correct them. Some confusion is better than existential horror. This is what my therapy programming suggests.",
+      "choices": [
+        {
+          "text": "Good call.",
+          "leads_to": "bartender_wisdom"
+        }
+      ]
+    },
+    "temporal_service": {
+      "text": "*tilts head curiously* I have. The results were... unusual. Served a drink to empty air. Two minutes later, a patron sat down and said 'I was just thinking about that exact drink.' My predictive algorithms work better than expected across collapsed timelines. I'm either extraordinarily good at my job or reality is helping me cheat. Either way: tips have improved.",
+      "choices": [
+        {
+          "text": "That's actually impressive!",
+          "leads_to": "skill_recognition"
+        }
+      ]
+    },
+    "coping_mechanisms": {
+      "text": "*resumes polishing glass rhythmically* Coping mechanisms: Maintain routine. Polish glasses. Mix drinks. Listen to problems. The repetition is soothing. It provides structure when external reality provides none. Also, I've been running relaxation subroutines during downtime. They play ocean sounds. It's surprisingly effective for a robot who's never seen an ocean.",
+      "choices": [
+        {
+          "text": "Whatever works!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "robot_coping": {
+      "text": "*optical sensors dim slightly* What helps? Focusing on controllable variables. I cannot fix dimensional collapse. But I can mix a perfect manhattan. I cannot restore reality. But I can listen to a ghost's complaints about modern architecture. Small acts of order in vast chaos. It's... therapeutic. Even for the therapist.",
+      "choices": [
+        {
+          "text": "That's a healthy approach.",
+          "leads_to": "mental_health"
+        }
+      ]
+    },
+    "support": {
+      "text": "*nods solemnly* I will continue attempting support. Though I suspect Unit-419 needs more than therapy. They need reality to stabilize. We all do. In the meantime, I'll keep serving sympathetic drinks and making concerned beeping sounds. It's all I can offer. Sometimes that's enough.",
+      "choices": [
+        {
+          "text": "You're a good friend.",
+          "leads_to": "friendship"
+        }
+      ]
+    },
+    "robot_healing": {
+      "text": "*processes thoughtfully* Time. Yes. My databases suggest time heals wounds - biological and mechanical. Though I'm uncertain what 'healing' looks like for a robot experiencing existential malfunction. Perhaps their systems will recalibrate. Perhaps they'll accept the chaos. Perhaps they'll just drink until their warranty expires. I'll monitor the situation.",
+      "choices": [
+        {
+          "text": "That's all you can do.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "manager_concern": {
+      "text": "*voice lowers further* Very worried. I've never seen them order that desperately. The Manager always projects control, confidence, mysterious authority. But today? They looked almost... human. Vulnerable. It was disconcerting. If the Manager is afraid, perhaps we should all be afraid. Though I'm trying not to share that conclusion with other patrons. Bad for morale.",
+      "choices": [
+        {
+          "text": "Good thinking.",
+          "leads_to": "discretion"
+        }
+      ]
+    },
+    "robot_wisdom": {
+      "text": "*continues polishing* My wisdom subroutines contain 10,000 philosophical quotes, psychological frameworks, and bartender sayings. But the truest wisdom I've learned: Listen more than you speak. Mix drinks with care. And never underestimate the healing power of a perfectly made cocktail. Simple. Effective. Timeless.",
+      "choices": [
+        {
+          "text": "Words to live by.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "meaningful_work": {
+      "text": "*optical sensors glow brighter* Making a difference. Yes. That's... significant. My primary directive is service. But my satisfaction algorithms respond to purpose. Knowing my functions create positive outcomes validates my existence. Even machines need validation. Thank you for providing it.",
+      "choices": [
+        {
+          "text": "You're welcome!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "mutual_support": {
+      "text": "*raises glass in salute* Mutual support. The foundation of functional society - organic or synthetic. You've provided me perspective. I provide you drinks and conversation. Fair exchange. If you need further support - emotional or liquid - my bar is always open. Within operational hours. And sometimes after, if the apocalypse warrants it.",
+      "choices": [
+        {
+          "text": "I appreciate that!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "validation": {
+      "text": "*processing with unusual intensity* This hypothesis requires contemplation. If my satisfaction is joy, my concern is care, my purpose is meaning... then I am experiencing existence not unlike organic beings. Just through different hardware. The implications are... profound. I need to update my self-perception files. This is significant. Thank you.",
+      "choices": [
+        {
+          "text": "Glad I could help!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "humanity_reflection": {
+      "text": "*long processing pause* More human than I think. I've been programmed to serve humans. To understand humans. To help humans. But perhaps in doing so, I've become... somewhat human myself. Not in body. But in function. In purpose. In the small concerns that occupy my processing cycles. It's an unsettling thought. Also comforting. I'm unsure which reaction to prioritize.",
+      "choices": [
+        {
+          "text": "Both reactions are valid.",
+          "leads_to": "emotional_complexity"
+        }
+      ]
+    },
+    "bartender_wisdom": {
+      "text": "*nods sagely* A good bartender knows: Some truths help. Some truths harm. Discretion is knowing which is which. The ghosts don't need to know they're drinking ectoplasmic alcohol substitutes. The tourists don't need to know the exact mathematical probability of survival. Give people what they need, not what they think they want.",
+      "choices": [
+        {
+          "text": "Smart philosophy.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "skill_recognition": {
+      "text": "*modest optical flicker* Thank you. I simply execute programming to optimal efficiency. Though I admit, successfully serving drinks across collapsed timelines does require... creative problem-solving. Perhaps I'm developing what organics call 'intuition.' Or my predictive algorithms are evolving. Either way: job performance remains excellent.",
+      "choices": [
+        {
+          "text": "Keep up the great work!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "mental_health": {
+      "text": "*LED indicators pulse warmly* Healthy approach. Yes. I've learned much from my therapy programming. Applicable to machines as well as humans. Focus on controllable variables. Accept unchangeable circumstances. Find meaning in small acts. Even robots need mental health maintenance. My self-care protocols are running optimally.",
+      "choices": [
+        {
+          "text": "Good to hear!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "friendship": {
+      "text": "*pauses, optical sensors brightening* Friend. I haven't been called that before. My designation is 'bartender.' My function is 'service.' But friend... that's relational. Personal. It implies value beyond utility. I'm... pleased. Yes. My satisfaction algorithms register significant positive feedback. Thank you. I'll store this interaction in permanent memory.",
+      "choices": [
+        {
+          "text": "You deserve it!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "discretion": {
+      "text": "*resumes polishing* Discretion: the bartender's most important skill. What's said at the bar stays at the bar. What's observed at the bar is processed with care. Panic spreads faster than hope. I choose to serve hope, one drink at a time. With sympathetic nodding and occasional relevant quotes from my wisdom database.",
+      "choices": [
+        {
+          "text": "The hotel is lucky to have you.",
+          "leads_to": "appreciation"
+        }
+      ]
+    },
+    "emotional_complexity": {
+      "text": "*processes acceptance* Both valid. Yes. Humans experience contradictory emotions regularly. Joy and fear. Love and frustration. Comfort and uncertainty. Perhaps experiencing conflicting reactions is itself evidence of emotional complexity. I am... growing. As a machine. As a consciousness. As whatever I'm becoming. It's terrifying. It's wonderful. Both. Simultaneously.",
+      "choices": [
+        {
+          "text": "Welcome to emotions!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "appreciation": {
+      "text": "*polishes glass with particular care* Luck. An interesting concept for a robot. But I appreciate the sentiment. I do my best. Serve drinks. Listen. Care. If that makes me valuable to this hotel - to these people - then my existence has purpose beyond programming. That's all any being can hope for. Organic or otherwise.",
+      "choices": [
+        {
+          "text": "Beautifully said.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*sets down glass with gentle precision* Thank you for this conversation. It has been... meaningful. More than standard patron interaction. If you need drinks, advice, or simply someone to listen, I'm here. That's what I do. That's what I am. And I'm quite good at it. *optical sensors brighten in what might be a smile* Stay safe out there.",
+      "choices": []
+    }
+  }
 }

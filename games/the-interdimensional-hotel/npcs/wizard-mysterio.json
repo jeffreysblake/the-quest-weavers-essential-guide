@@ -12,5 +12,308 @@
   "level": 8,
   "type": "npc",
   "dialogueTreeId": "wizard-mysterio",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*waves staff mysteriously* Behold! I am Wizard Mysterio the Magnificent! Master of arcane arts! Bender of reality! Seeker of... wait, what was I seeking? *scratches beard* Ah yes! My staff! Have you seen my staff? *realizes he's holding it* Never mind! Found it! What brings you to disturb my mystical contemplations?",
+      "choices": [
+        {
+          "text": "You're holding your staff.",
+          "leads_to": "staff_confusion"
+        },
+        {
+          "text": "What do you know about the chaos?",
+          "leads_to": "chaos_expertise"
+        },
+        {
+          "text": "Are you a powerful wizard?",
+          "leads_to": "power_question"
+        }
+      ]
+    },
+    "staff_confusion": {
+      "text": "*looks at staff in surprise* So I am! Excellent! This is the third time today! Or is it the first? Time is very confusing when you're 400 years old AND the hotel is experiencing dimensional convergence! I cast a spell yesterday that I won't learn until tomorrow! Very disorienting!",
+      "choices": [
+        {
+          "text": "You cast a spell you haven't learned?",
+          "leads_to": "temporal_magic"
+        },
+        {
+          "text": "Do you forget things often?",
+          "leads_to": "memory_issues"
+        }
+      ]
+    },
+    "chaos_expertise": {
+      "text": "*strokes beard wisely* Ah! The dimensional chaos! Yes, yes, I know ALL about it! *pauses* Wait, what did you ask? Oh right! The chaos! It's caused by... *checks notes on hand* ...a catastrophic convergence of reality! Very dangerous! Very magical! Possibly my fault! Hard to remember!",
+      "choices": [
+        {
+          "text": "POSSIBLY your fault?!",
+          "leads_to": "fault_question"
+        },
+        {
+          "text": "What can you tell me about it?",
+          "leads_to": "chaos_details"
+        }
+      ]
+    },
+    "power_question": {
+      "text": "*draws up to full height* POWERFUL?! I have mastered EVERY school of magic! Transmutation! Evocation! Illusion! And... the other ones! I can turn you into a newt! *pauses* Would you like to be a newt? No? Wise choice! I forgot the reversal spell last time! That guest is still a newt! Sorry, Kevin!",
+      "choices": [
+        {
+          "text": "You turned someone into a newt permanently?",
+          "leads_to": "newt_incident"
+        },
+        {
+          "text": "Can you help fix the hotel?",
+          "leads_to": "magical_help"
+        }
+      ]
+    },
+    "staff_confusion": {
+      "text": "*looks at staff in surprise* So I am! Excellent! This is the third time today! Or is it the first? Time is very confusing when you're 400 years old AND the hotel is experiencing dimensional convergence! I cast a spell yesterday that I won't learn until tomorrow! Very disorienting!",
+      "choices": [
+        {
+          "text": "You cast a spell you haven't learned?",
+          "leads_to": "temporal_magic"
+        },
+        {
+          "text": "Do you forget things often?",
+          "leads_to": "memory_issues"
+        }
+      ]
+    },
+    "temporal_magic": {
+      "text": "*excited* YES! Fascinating, isn't it?! The dimensional chaos means spells exist non-linearly! I performed a fireball that happened last week! I enchanted an object that won't exist until Thursday! Magic is VERY confusing right now! Also very powerful! Also I might have set something on fire! Can't remember what!",
+      "choices": [
+        {
+          "text": "That sounds dangerous.",
+          "leads_to": "dangerous_magic"
+        },
+        {
+          "text": "Do you know about Reality Fragments?",
+          "leads_to": "fragment_knowledge"
+        }
+      ]
+    },
+    "memory_issues": {
+      "text": "*sighs deeply* CONSTANTLY! I'm 400 years old! That's a LOT of memories! Something had to give! Usually it's where I put things! Or people's names! Or what I was doing! Or what century this is! But I remember ALL my spells! *pauses* Most of them! Some of them! The important ones! Probably!",
+      "choices": [
+        {
+          "text": "That's concerning for a wizard.",
+          "leads_to": "concerning_memory"
+        },
+        {
+          "text": "Have you seen anything unusual?",
+          "leads_to": "unusual_observations"
+        }
+      ]
+    },
+    "fault_question": {
+      "text": "*defensive* POSSIBLY! I may have experimented with dimensional magic! Or temporal spells! Or both! Or neither! My notes are very unclear! Also they're written in magical runes that I'm 60% sure I can still read! The point is, I MIGHT have contributed to the chaos! Unintentionally! Mostly!",
+      "choices": [
+        {
+          "text": "How does a wizard cause this accidentally?",
+          "leads_to": "accident_explanation"
+        },
+        {
+          "text": "Can you undo it?",
+          "leads_to": "undo_attempt"
+        }
+      ]
+    },
+    "chaos_details": {
+      "text": "*consults notes* The dimensional convergence is making all six floors exist simultaneously! Very impressive magic! Very dangerous! The hotel is experiencing temporal paradoxes, spatial anomalies, and TERRIBLE WiFi reception! That last one might be unrelated! I should write this down! *looks at notes* Oh, I already did!",
+      "choices": [
+        {
+          "text": "You wrote notes but forgot?",
+          "leads_to": "note_irony"
+        },
+        {
+          "text": "How do we fix it?",
+          "leads_to": "solution_magic"
+        }
+      ]
+    },
+    "newt_incident": {
+      "text": "*guilty* Well... SEMI-permanently! He's been a newt for three weeks! But I'm SURE I'll remember the counter-spell eventually! I wrote it down somewhere! *pats robes* Maybe in this pocket? No, that's a sandwich! Been looking for that! Magic is very powerful but memory is complicated!",
+      "choices": [
+        {
+          "text": "Please try to remember soon.",
+          "leads_to": "newt_promise"
+        },
+        {
+          "text": "Let's focus on the hotel.",
+          "leads_to": "hotel_focus"
+        }
+      ]
+    },
+    "magical_help": {
+      "text": "*enthusiastic* ABSOLUTELY! I can help! I just need to remember HOW! *flips through spellbook* Let's see... Reality Restoration? No, that's Reality DESTRUCTION! Easy mistake! Dimensional Stabilization? That might work! If I can remember the incantation! And the components! And what dimension we're in!",
+      "choices": [
+        {
+          "text": "Maybe just tell me what you know.",
+          "leads_to": "fragment_knowledge"
+        },
+        {
+          "text": "You seem scattered.",
+          "leads_to": "scattered_acknowledgment"
+        }
+      ]
+    },
+    "dangerous_magic": {
+      "text": "*waves hand dismissively* ALL magic is dangerous! That's what makes it FUN! Well, fun for wizards! Terrifying for everyone else! But don't worry! I'm very experienced! 400 years of spell-casting! Only caused major disasters... *counts on fingers* ...seventeen times! Eighteen if this chaos is my fault!",
+      "choices": [
+        {
+          "text": "That's not reassuring.",
+          "leads_to": "reassurance_attempt"
+        }
+      ]
+    },
+    "fragment_knowledge": {
+      "text": "*eyes light up* REALITY FRAGMENTS! Yes! I saw one! Glowing with magical energy! Very powerful! Near the enchanted... or was it the cursed... definitely near something magical! Possibly the library! Or the ballroom! Or my room! I put lots of magical things in my room then forget where!",
+      "choices": [
+        {
+          "text": "So... maybe your room?",
+          "leads_to": "room_location"
+        },
+        {
+          "text": "I'll search everywhere.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "concerning_memory": {
+      "text": "*nods* VERY concerning! But I've managed this long! Mostly by writing everything down! And then forgetting where I put the notes! But the important thing is I KNOW I wrote them! That's half the battle! The other half is remembering which battle I'm talking about!",
+      "choices": [
+        {
+          "text": "You're a mess.",
+          "leads_to": "mess_acknowledgment"
+        }
+      ]
+    },
+    "unusual_observations": {
+      "text": "*thinks hard* EVERYTHING is unusual! But specifically? I saw the same chandelier in three places! A ghost arguing with a robot! A knight challenging a vending machine! Also I saw a Reality Fragment! Glowing! Magical! I was going to collect it but I forgot! Then I remembered! Then I forgot where it was!",
+      "choices": [
+        {
+          "text": "Where did you see it?",
+          "leads_to": "fragment_knowledge"
+        }
+      ]
+    },
+    "accident_explanation": {
+      "text": "*embarrassed* Well, I was attempting to create a minor temporal anomaly! Just a small one! To heat my tea faster! But I may have used too much power! And the wrong spell! And forgotten to add the stabilizing component! Tea was VERY hot though! Also possibly caused reality to collapse! Again, unclear!",
+      "choices": [
+        {
+          "text": "You broke reality making tea?",
+          "leads_to": "tea_catastrophe"
+        }
+      ]
+    },
+    "undo_attempt": {
+      "text": "*uncertain* Undo it? Possibly! I'd need the Reality Fragments! And the correct spell! And to remember what I did in the first place! Two out of three isn't bad! I'm confident! Mostly! About 40% confident! That's practically half! Which is almost certain!",
+      "choices": [
+        {
+          "text": "I'll collect the fragments.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "note_irony": {
+      "text": "*laughs* IRONIC, yes! I write notes to remember things! Then forget I wrote notes! Then write MORE notes about the first notes! My room is FULL of notes! Very organized! Completely useless! But thorough! You have to admire the thoroughness!",
+      "choices": [
+        {
+          "text": "That's one way to look at it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "solution_magic": {
+      "text": "*consults spellbook* To fix dimensional convergence, you need Reality Fragments! Collect all six! They'll stabilize space-time! Probably! My notes say so! Unless these are someone else's notes! Are these mine? *checks cover* Yes! Definitely! Mostly sure! The plan is sound!",
+      "choices": [
+        {
+          "text": "Good enough. Thanks.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "newt_promise": {
+      "text": "*solemn* I promise to try! I've been trying for weeks! Kevin is very patient! For a newt! He seems happy! Lots of flies in the hotel! Silver lining! But yes, I should definitely find that counter-spell! Added to my to-do list! *pulls out list* Wait, this is my grocery list!",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hotel_focus": {
+      "text": "*refocuses* YES! The hotel! Much more important than ONE permanently transformed guest! We need to collect Reality Fragments! Restore dimensional stability! Save everyone! Including Kevin the newt! Who will hopefully forgive me! Eventually! After I remember the counter-spell!",
+      "choices": [
+        {
+          "text": "I'll work on the fragments.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "scattered_acknowledgment": {
+      "text": "*nods* VERY scattered! Like a jigsaw puzzle! That's also on fire! And the pieces are in different dimensions! But I mean well! And I'm VERY powerful! When I remember how to be! That counts for something! Intention matters!",
+      "choices": [
+        {
+          "text": "Sure. Thanks anyway.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "reassurance_attempt": {
+      "text": "*pats shoulder with glowing hand* Don't worry! I've gotten MUCH better! Only one major disaster per decade now! That's an 83% improvement! From my earlier rate! Which was VERY high! But trending downward! Statistics are comforting! Also possibly inaccurate!",
+      "choices": [
+        {
+          "text": "I'll just go now.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "room_location": {
+      "text": "*excited* YES! My room! Excellent deduction! I keep all my magical artifacts there! And my spare robes! And seventeen things I've forgotten about! Check there! Just be careful! Some items are cursed! Or blessed! Or both! I labeled them but forgot the system!",
+      "choices": [
+        {
+          "text": "I'll be careful. Thanks!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "mess_acknowledgment": {
+      "text": "*laughs* A MAGNIFICENT mess! 400 years in the making! But a powerful mess! A wise mess! A mess with excellent spell-casting abilities! Even if said mess forgets where he put his staff! *pauses* Wait, where IS my staff? *looks down* Oh right! Holding it! All good!",
+      "choices": [
+        {
+          "text": "Never change, Mysterio.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "tea_catastrophe": {
+      "text": "*defensive* The tea was VERY important! I was VERY tired! And dimensional magic is VERY sensitive! Could happen to anyone! Who has massive magical power and poor judgment! And forgetfulness! The point is, tea WAS heated! Mission accomplished! Side effects were... extensive!",
+      "choices": [
+        {
+          "text": "Unbelievable.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*waves staff dramatically* Farewell, brave adventurer! Go forth and collect those Reality Fragments! Save the hotel! Restore order! And if you see Kevin the newt, tell him I'm working on it! Also, if you see my spare staff, let me know! Lost it last week! Or was it next week? Time is VERY confusing! *wanders off muttering*",
+      "choices": []
+    }
+  }
 }

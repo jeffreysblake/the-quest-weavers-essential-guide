@@ -12,5 +12,341 @@
   "level": 3,
   "type": "npc",
   "dialogueTreeId": "bard-finnegan",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*strums lute with flourish* Greetings, weary traveler! I am Finnegan the Magnificent, Master of Song, Teller of Tales, and Purveyor of PREMIUM Entertainment! *dramatic bow* Though I must say, this hotel's dimensional collapse is KILLING my audience engagement! Hard to finish a ballad when reality keeps interrupting! Care to hear a song? Only five gold! Ten for requests!",
+      "choices": [
+        {
+          "text": "Why were you banned from three kingdoms?",
+          "leads_to": "banned_story"
+        },
+        {
+          "text": "Can you sing about the hotel?",
+          "leads_to": "hotel_ballad"
+        },
+        {
+          "text": "Maybe later. How are you handling this?",
+          "leads_to": "coping_mechanism"
+        }
+      ]
+    },
+    "banned_story": {
+      "text": "*laughs nervously* Ah, THAT! Well, you see... *counts on fingers* Kingdom One banned me for singing ballad about the king's unfortunate toupee. Kingdom Two banned me for improvising lyrics about the princess's regrettable dating choices. Kingdom Three... *winces* ...I may have accidentally started a revolution with a very catchy protest song. My bad!",
+      "choices": [
+        {
+          "text": "You started a REVOLUTION?",
+          "leads_to": "revolution_details"
+        },
+        {
+          "text": "That's impressive in a terrible way.",
+          "leads_to": "artistic_license"
+        }
+      ]
+    },
+    "hotel_ballad": {
+      "text": "*eyes light up* OH! Excellent idea! *clears throat and strums* 'THE BALLAD OF THE INTERDIMENSIONAL HOTEL!' *sings dramatically* 'There once was a hotel so grand and so tall, where physics gave up and reality took a fall! The ghosts played poker with robots so bright, while wizards and dragons got in a fight! The dimensions collapsed, the timelines went mad, and the WiFi signal was REALLY quite bad!' *takes bow* Still working on verse three!",
+      "choices": [
+        {
+          "text": "That was... something.",
+          "leads_to": "artistic_pride"
+        },
+        {
+          "text": "The WiFi complaint is accurate.",
+          "leads_to": "relatable_content"
+        }
+      ]
+    },
+    "coping_mechanism": {
+      "text": "*strums melancholy tune* Honestly? Terrified! But when Finnegan is scared, Finnegan SINGS! Music makes everything better! Even dimensional collapse! Though I must admit, it's hard to rhyme 'catastrophic reality breakdown.' I've tried 'reality throwdown,' 'dimensional meltdown,' 'cosmic shakedown'... None quite capture the existential dread!",
+      "choices": [
+        {
+          "text": "Keep trying!",
+          "leads_to": "persistence"
+        },
+        {
+          "text": "Have you seen anything interesting?",
+          "leads_to": "observations"
+        }
+      ]
+    },
+    "revolution_details": {
+      "text": "*defensive* In my defense, I didn't MEAN to! I just wrote a catchy tune about workers' rights and fair taxation! How was I supposed to know the peasants would take it seriously?! One minute I'm performing in the tavern, next minute there's PITCHFORKS and DEMANDS for democratic reform! The king was NOT amused. I had to escape in a hay cart!",
+      "choices": [
+        {
+          "text": "That's actually kind of heroic.",
+          "leads_to": "accidental_hero"
+        },
+        {
+          "text": "Maybe be more careful with your lyrics.",
+          "leads_to": "lesson_learned"
+        }
+      ]
+    },
+    "artistic_license": {
+      "text": "*grins proudly* I prefer to think of it as 'fearless artistic expression!' A bard must speak truth to power! Even if power responds by banning you from the realm and confiscating your favorite lute! *sad strum* I miss that lute. It had excellent resonance. This one's a rental. You can tell by the mediocre tone quality.",
+      "choices": [
+        {
+          "text": "Sounds rough.",
+          "leads_to": "musician_struggles"
+        },
+        {
+          "text": "What was the toupee song like?",
+          "leads_to": "toupee_ballad"
+        }
+      ]
+    },
+    "artistic_pride": {
+      "text": "*beams* Thank you! I composed it this morning while watching a dragon argue with a cryptocurrency expert about blockchain! Very inspiring! The muse strikes in mysterious ways! Though I may add a verse about the confused tourist who keeps checking their phone for signal. Very relatable character arc!",
+      "choices": [
+        {
+          "text": "Keep working on it!",
+          "leads_to": "creative_process"
+        },
+        {
+          "text": "What else have you written here?",
+          "leads_to": "hotel_compositions"
+        }
+      ]
+    },
+    "relatable_content": {
+      "text": "*nods vigorously* EXACTLY! A good ballad needs truth! And the truth is: WiFi is TERRIBLE! How am I supposed to upload my performances to BardsOfInstagram?! My followers need content! I haven't posted in HOURS! They probably think I'm dead! Or worse - they've unfollowed!",
+      "choices": [
+        {
+          "text": "You have an Instagram?",
+          "leads_to": "social_media_bard"
+        },
+        {
+          "text": "I'm sure they'll understand.",
+          "leads_to": "follower_loyalty"
+        }
+      ]
+    },
+    "persistence": {
+      "text": "*strums determinedly* A bard never gives up! We face rejection, bad reviews, rotten vegetables thrown at performances! This is just another challenge! If I survive this dimensional chaos, I'll have the BEST material for my next album! 'LIVE FROM THE COLLAPSING HOTEL!' It'll be platinum! Or I'll die trying! Hopefully not die!",
+      "choices": [
+        {
+          "text": "That's the spirit!",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "observations": {
+      "text": "*leans in conspiratorially* Oh, I've seen EVERYTHING! The ghost aristocrats arguing about proper haunting etiquette! The robot bartender serving drinks to itself! The wizard who keeps forgetting where he put his staff! And the barbarian - Helga - she arm-wrestled a DRAGON! I wrote twelve verses about it! Dragon threatened to eat me if I performed them! Very temperamental, dragons!",
+      "choices": [
+        {
+          "text": "That's good material!",
+          "leads_to": "material_abundance"
+        },
+        {
+          "text": "Maybe don't anger the dragon.",
+          "leads_to": "survival_instinct"
+        }
+      ]
+    },
+    "accidental_hero": {
+      "text": "*surprised* You think so? Huh! Most people call it 'reckless endangerment' or 'seditious balladry!' But yes, I suppose accidentally improving working conditions through catchy music IS kind of heroic! Maybe I should add it to my resume! 'Finnegan the Magnificent: Bard, Revolutionary, Accidental Social Reformer!' Has a nice ring to it!",
+      "choices": [
+        {
+          "text": "Use that!",
+          "leads_to": "branding"
+        }
+      ]
+    },
+    "lesson_learned": {
+      "text": "*sighs* You're probably right. But it's HARD! How am I supposed to write compelling content without occasionally offending royalty?! They make it so EASY! The material writes itself! 'The Duke's Mustache: A Tragedy in Three Acts!' 'Ode to the Queen's Questionable Fashion Choices!' GOLD! But also: exile.",
+      "choices": [
+        {
+          "text": "Maybe tone it down slightly.",
+          "leads_to": "compromise"
+        }
+      ]
+    },
+    "musician_struggles": {
+      "text": "*dramatic sigh* The life of a traveling bard is full of hardship! Hostile crowds, terrible accommodations, instruments lost to vengeful monarchs! And don't even get me started on the competitive nature of the industry! Do you know how many bards are vying for the same tavern gigs?! HUNDREDS! All with better lutes! It's brutal!",
+      "choices": [
+        {
+          "text": "You seem to be doing okay.",
+          "leads_to": "success_story"
+        }
+      ]
+    },
+    "toupee_ballad": {
+      "text": "*grins mischievously* Oh, it was a MASTERPIECE! *sings* 'The king upon his throne sits high, but what is that upon his head? A creature small? A bird? Oh my! No, just hair that's slightly dead!' *laughs* The court was in TEARS! The king was FURIOUS! I was BANNED! Worth it! Totally worth it!",
+      "choices": [
+        {
+          "text": "I can see why he was mad.",
+          "leads_to": "worth_it"
+        }
+      ]
+    },
+    "creative_process": {
+      "text": "*strums thoughtfully* My creative process is simple: experience something weird, immediately write song about it! Works EVERY time! Though I admit, this hotel is providing TOO MUCH material! I can't write fast enough! Dimensional rifts! Time loops! Existential dread! It's overwhelming! In a good way! In a terrifying way!",
+      "choices": [
+        {
+          "text": "That's dedication!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hotel_compositions": {
+      "text": "*pulls out scroll* Let's see... 'The Ballad of the Bewildered Tourist!' 'Ode to the Overpriced Mini-Bar!' 'The Epic of the Elevator That Goes Nowhere!' And my personal favorite: 'The Robot Bartender Blues!' It's a jazz fusion piece about artificial intelligence seeking meaning through cocktail mixing! Very avant-garde!",
+      "choices": [
+        {
+          "text": "You've been productive!",
+          "leads_to": "productivity"
+        }
+      ]
+    },
+    "social_media_bard": {
+      "text": "*pulls out phone proudly* Of course! Modern bard needs modern platform! I have 50,000 followers! I post daily performances, behind-the-scenes content, lute maintenance tutorials! The engagement is FANTASTIC! Though right now my analytics are suffering due to, you know, *gestures at dimensional chaos*, ALL THIS!",
+      "choices": [
+        {
+          "text": "Very 21st century of you.",
+          "leads_to": "modern_tradition"
+        }
+      ]
+    },
+    "follower_loyalty": {
+      "text": "*hopeful* You think so? *checks phone desperately* Still no signal! I can't even see if they're commenting! What if they're worried?! What if someone else fills the Tragic Ballad niche while I'm gone?! The competition is FIERCE! I need to post something! Anything! Even just a selfie with caption 'Still alive, barely!'",
+      "choices": [
+        {
+          "text": "They'll wait for you.",
+          "leads_to": "reassurance"
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*plays triumphant chord* YES! Finnegan the Magnificent does not quit! Will sing through apocalypse if necessary! Will perform until last reality fragment collapses! Or until my voice gives out! Whichever comes first! Probably voice! I've been singing for six hours straight! Throat is RAW!",
+      "choices": [
+        {
+          "text": "Maybe take a break.",
+          "leads_to": "rest_suggestion"
+        }
+      ]
+    },
+    "material_abundance": {
+      "text": "*eyes gleaming* The BEST material! This hotel is a goldmine of bizarre content! I'm writing my magnum opus: 'THE GRAND PARADOX: A MUSICAL!' It'll have everything! Romance! Action! Dimensional horror! A show-stopping number about the breakfast buffet! I'll be FAMOUS! If we survive!",
+      "choices": [
+        {
+          "text": "I'd watch that!",
+          "leads_to": "audience_support"
+        }
+      ]
+    },
+    "survival_instinct": {
+      "text": "*gulps* Yes, good point. Dragon can roast me like a marshmallow. Probably should avoid angering it. Though the ballad is SO GOOD! Maybe I'll perform it after we escape? When dragon can't reach me? That's responsible artistry, right? Knowing when to share your work and when to RUN?",
+      "choices": [
+        {
+          "text": "That's probably wise.",
+          "leads_to": "wisdom"
+        }
+      ]
+    },
+    "branding": {
+      "text": "*scribbles notes* YES! Excellent branding! I'll get new business cards! Maybe a banner! 'Finnegan: Your Revolutionary Bard for All Occasions!' I can market myself to protest movements AND weddings! Diversify my client base! This is brilliant! You should be my manager!",
+      "choices": [
+        {
+          "text": "I'll pass, but good luck!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "compromise": {
+      "text": "*ponders* Tone it down... Yes, I suppose I could write satire that's SLIGHTLY less pointed. Maybe mock the nobility in ways that aren't immediately obvious? Subtle social commentary wrapped in catchy melodies? *gasps* I could be SOPHISTICATED! Though that's less fun than direct insults set to music.",
+      "choices": [
+        {
+          "text": "Evolution!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "success_story": {
+      "text": "*shrugs modestly* I mean, I'm alive! Still performing! Haven't been executed! That's success in the bard business! Sure, I'm banned from multiple kingdoms and my best lute was confiscated, but I've got my health, my voice, and enough material for seventeen albums! Can't complain! Well, I CAN complain, but I shouldn't!",
+      "choices": [
+        {
+          "text": "Good attitude!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "worth_it": {
+      "text": "*absolutely gleeful* SO worth it! The look on his face! The shock! The OUTRAGE! That's what art is FOR! Making people feel things! Anger, joy, embarrassment about hair loss! I regret NOTHING! Except maybe the exile part. That was inconvenient. But artistically? NO REGRETS!",
+      "choices": [
+        {
+          "text": "Stay bold!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "productivity": {
+      "text": "*proudly* When inspiration strikes, you WRITE! Or you lose it forever! I've filled three journals since arriving! My quill hand is CRAMPING! But it's worth it! These songs will define my career! Or get me banned from MORE kingdoms! Either way: memorable!",
+      "choices": [
+        {
+          "text": "Keep creating!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "modern_tradition": {
+      "text": "*nods enthusiastically* Bards have ALWAYS adapted to new technology! Oral tradition became written! Written became printed! Printed became digital! Now we stream our performances and monetize through Patreon! It's evolution! Though I admit, explaining cryptocurrency to medieval peasants is HARD. They just want to hear about dragons.",
+      "choices": [
+        {
+          "text": "Fair enough!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "reassurance": {
+      "text": "*takes deep breath* You're right. You're right. My followers are loyal! They've stuck with me through worse! Remember the Great Lute Malfunction of Last Tuesday! They understood! They'll understand this! Dimensional collapse is a valid excuse for delayed content! Probably even good for engagement when I FINALLY post about it!",
+      "choices": [
+        {
+          "text": "Absolutely!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "rest_suggestion": {
+      "text": "*horrified* BREAK?! A bard NEVER takes breaks! We perform until we DROP! It's in the code! Though... *touches throat gingerly* ...maybe just a SMALL break. Five minutes. Ten tops. Just enough to drink some honey tea and rest my vocal cords. For purely professional reasons. Not because I'm exhausted. Definitely not that.",
+      "choices": [
+        {
+          "text": "Take care of yourself!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "audience_support": {
+      "text": "*beams* REALLY?! You'd watch it?! That's one ticket sold! Only need several thousand more to break even! But it's a START! I'll put you on the VIP list! Front row seats! Opening night! Assuming we survive and I can actually produce this show! Which is a BIG assumption! But I appreciate the support!",
+      "choices": [
+        {
+          "text": "Looking forward to it!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "wisdom": {
+      "text": "*sagely nods* The wise bard knows when to perform and when to FLEE! Self-preservation is an underrated artistic quality! Can't create masterpieces if you're charcoal! I shall keep my dragon ballad safely stored until circumstances permit! This is GROWTH! Finnegan is learning!",
+      "choices": [
+        {
+          "text": "Good plan!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*strums final flourish* Thank you for listening, friend! Not many people appreciate a good bard these days! They're all 'stop singing at 2 AM' and 'please leave the funeral!' No respect for the arts! But YOU get it! If you need entertainment - or a theme song for your quest - you know where to find me! *dramatic bow*",
+      "choices": []
+    }
+  }
 }

@@ -12,5 +12,172 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "lady-phantomworth",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*looks down nose disdainfully* Oh. A living person. How... pedestrian. I suppose the hotel is hiring anyone with a pulse these days. Or in my case, without one. Tell me, creature of flesh and limited lifespan, what brings you to interrupt my eternal disapproval?",
+      "choices": [
+        {
+          "text": "I'm trying to fix the hotel.",
+          "leads_to": "fix_hotel"
+        },
+        {
+          "text": "No need to be rude.",
+          "leads_to": "rudeness_defense"
+        },
+        {
+          "text": "Have you always been this unpleasant?",
+          "leads_to": "always_unpleasant"
+        }
+      ]
+    },
+    "fix_hotel": {
+      "text": "*raises translucent parasol* Fix it? FIX it? My dear unsophisticated mortal, the hotel was perfectly dreadful BEFORE this dimensional catastrophe. Now it's simply being honest about its chaos. At least the confusion is egalitarian - everyone is suffering equally. Most democratic thing I've witnessed in 200 years.",
+      "choices": [
+        {
+          "text": "You don't want it fixed?",
+          "leads_to": "prefer_chaos"
+        },
+        {
+          "text": "What was wrong with it before?",
+          "leads_to": "hotel_complaints"
+        }
+      ]
+    },
+    "rudeness_defense": {
+      "text": "*sniffs imperiously* Rude? I am the EPITOME of Victorian decorum! You should have seen rudeness in my day. Why, Lady Ashworth once cut someone at a ball so severely, they had to move to America! I'm merely being... observant. It's not MY fault the living are so aggressively mortal and undignified.",
+      "choices": [
+        {
+          "text": "We can't all be dead aristocrats.",
+          "leads_to": "aristocracy_response"
+        },
+        {
+          "text": "Let's talk about the hotel.",
+          "leads_to": "fix_hotel"
+        }
+      ]
+    },
+    "always_unpleasant": {
+      "text": "*adjusts spectral ballgown* Unpleasant? I'll have you know I was the JEWEL of London society! Admired! Envied! Mostly envied. Possibly feared. The point is, I maintained STANDARDS. And those standards included looking down on people who asked impertinent questions. So yes. Always.",
+      "choices": [
+        {
+          "text": "At least you're consistent.",
+          "leads_to": "consistency"
+        },
+        {
+          "text": "What do you know about the chaos?",
+          "leads_to": "chaos_knowledge"
+        }
+      ]
+    },
+    "prefer_chaos": {
+      "text": "*waves parasol dramatically* Fixing implies improvement. This hotel housed Lord Evermore's dreadful parties, the Duke's pathetic gambling, and that AWFUL orchestra conductor who cannot keep proper tempo. At least now everyone is equally confused and miserable. It's... refreshing. Like rain on a dreary London afternoon.",
+      "choices": [
+        {
+          "text": "You're enjoying this?",
+          "leads_to": "schadenfreude"
+        },
+        {
+          "text": "I still need to fix it.",
+          "leads_to": "begrudging_help"
+        }
+      ]
+    },
+    "hotel_complaints": {
+      "text": "*begins lengthy tirade* Where do I BEGIN? The wallpaper is from three different centuries. The guests are uncouth. That robot bartender uses SLANG. The elevator music is from the future AND the past simultaneously. And don't get me started on the breakfast buffet - serving food from dimensions that shouldn't exist! Gauche!",
+      "choices": [
+        {
+          "text": "Sounds like you hate everything.",
+          "leads_to": "hate_everything"
+        },
+        {
+          "text": "Any useful observations?",
+          "leads_to": "useful_info"
+        }
+      ]
+    },
+    "aristocracy_response": {
+      "text": "*smirks translucently* Well, obviously not. That requires breeding, education, and a tragic yet dignified death. You living people just... continue existing. How vulgar. Although, I suppose if you're trying to save reality, that's marginally respectable. Marginally.",
+      "choices": [
+        {
+          "text": "I'll take marginal respect.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "consistency": {
+      "text": "*nods regally* Indeed. In an inconsistent hotel experiencing dimensional collapse, I remain steadfastly superior and judgmental. One must maintain standards, even when space-time doesn't. It's what separates us from the barbarous lower floors.",
+      "choices": [
+        {
+          "text": "Right. I'll be going now.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "chaos_knowledge": {
+      "text": "*examines ghostly fingernails* I know that someone triggered a catastrophic dimensional convergence, and I know it wasn't ME. I was too busy judging people's fashion choices across multiple timelines. However, I DID notice a strange shimmer near the old parlor. Looked unstable. Terribly uncouth, dimensional instability.",
+      "choices": [
+        {
+          "text": "That's actually helpful. Thank you.",
+          "leads_to": "reluctant_thanks"
+        }
+      ]
+    },
+    "schadenfreude": {
+      "text": "*barely suppresses ghost smile* Enjoyment is such a common word. I prefer 'deriving sophisticated satisfaction from the universal inconvenience of others.' Much more refined. Yes, watching everyone flounder through dimensional chaos is... educational. Character-building, even.",
+      "choices": [
+        {
+          "text": "You're something else.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "begrudging_help": {
+      "text": "*sighs dramatically* Oh, very well. If you MUST restore order, look for the Reality Fragments. There's likely one on this floor somewhere. Probably near something important and dignified. Unlike that dreadful gift shop. Honestly, the merchandising here is appalling.",
+      "choices": [
+        {
+          "text": "Thanks for the tip.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hate_everything": {
+      "text": "*considers* Hate is such a passionate word. I prefer 'maintain critical standards about everything.' It's not hatred if you're objectively correct about everyone's flaws. That's just superior observation skills. Death has given me plenty of time to perfect them.",
+      "choices": [
+        {
+          "text": "I see.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "useful_info": {
+      "text": "*reluctantly* Fine. I suppose even someone of your... LIMITED breeding deserves facts. The dimensional tears started near the center of this floor. I also noticed several Reality Fragments - vulgar glowing things, impossible to miss. Collect them if you must. Just don't ask me to help carry them.",
+      "choices": [
+        {
+          "text": "Wouldn't dream of it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "reluctant_thanks": {
+      "text": "*looks uncomfortable* You're... welcome? How peculiar. I'm not accustomed to being useful. Only ornamental and judgemental. This is most unusual. Don't let it go to your head. I'm still superior to you in every way.",
+      "choices": [
+        {
+          "text": "Of course you are.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*floats away regally* Do try not to die fixing things. Death is only dignified when it happens to the right people. And you seem... adequately competent. For a mortal. Now leave me to my eternal disapproval in peace.",
+      "choices": []
+    }
+  }
 }

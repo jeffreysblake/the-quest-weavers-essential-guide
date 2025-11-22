@@ -12,5 +12,218 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "phantom-orchestra-conductor",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*waves spectral baton dramatically* SILENCE! No, wait - YOU may speak! The orchestra is on break. Dimensional break. Regular break. Both! Do you know how impossible it is to conduct when your musicians exist in three different time signatures SIMULTANEOUSLY?! Mozart would be HORRIFIED!",
+      "choices": [
+        {
+          "text": "You conduct a phantom orchestra?",
+          "leads_to": "orchestra_details"
+        },
+        {
+          "text": "Why would Mozart be horrified?",
+          "leads_to": "mozart_rant"
+        },
+        {
+          "text": "Having trouble with the chaos?",
+          "leads_to": "chaos_conducting"
+        }
+      ]
+    },
+    "orchestra_details": {
+      "text": "*gestures passionately* YES! The finest spectral musicians from across the centuries! We have a violinist from 1742, a cellist from 2087, and a percussionist who might be a sentient drum! The acoustics are MAGNIFICENT! Or they WERE before the hotel started existing in six places at once!",
+      "choices": [
+        {
+          "text": "A sentient drum?",
+          "leads_to": "sentient_drum"
+        },
+        {
+          "text": "How does dimensional chaos affect music?",
+          "leads_to": "dimensional_music"
+        }
+      ]
+    },
+    "mozart_rant": {
+      "text": "*clutches baton to chest* Mozart understood STRUCTURE! Order! Precision! He would weep spectral tears at this dimensional disaster! Music requires TEMPORAL CONSISTENCY! You cannot perform Symphony No. 40 when the symphony exists in G minor AND F sharp minor SIMULTANEOUSLY! It's musical BLASPHEMY!",
+      "choices": [
+        {
+          "text": "You're very passionate about this.",
+          "leads_to": "passion_for_music"
+        },
+        {
+          "text": "Have you tried adapting?",
+          "leads_to": "adaptation_attempt"
+        }
+      ]
+    },
+    "chaos_conducting": {
+      "text": "*wild gestures* TROUBLE?! My first violin section is in the 18th century! My brass section is in the future! My woodwinds are existing in MULTIPLE STATES! I tried conducting Beethoven yesterday - he played backwards, forwards, and sideways! The music was beautiful, terrible, and IMPOSSIBLE!",
+      "choices": [
+        {
+          "text": "That sounds frustrating.",
+          "leads_to": "frustration"
+        },
+        {
+          "text": "Beethoven played? He's dead.",
+          "leads_to": "everyone_dead"
+        }
+      ]
+    },
+    "sentient_drum": {
+      "text": "*shrugs dramatically* We don't ask questions! He keeps tempo. Mostly. Sometimes he keeps THREE tempos. Very avant-garde. Very unsettling. I didn't audition him - he just appeared during the dimensional convergence. Excellent percussion skills, though. Four stars.",
+      "choices": [
+        {
+          "text": "Fair enough.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "dimensional_music": {
+      "text": "*thoughtful conducting gesture* Fascinating question! Music exists in TIME. But when time becomes NON-LINEAR, music becomes... experimental. We performed a piece that played its ending before its beginning. The audience applauded BEFORE we started! Chronologically confusing but ARTISTICALLY REVOLUTIONARY!",
+      "choices": [
+        {
+          "text": "That's... creative?",
+          "leads_to": "artistic_vision"
+        },
+        {
+          "text": "Do you know about Reality Fragments?",
+          "leads_to": "fragment_hint"
+        }
+      ]
+    },
+    "passion_for_music": {
+      "text": "*eyes blazing ghostly* Passion?! PASSION?! Music is my EXISTENCE! I died conducting! Literally! Heart attack in the middle of a crescendo! Went out on a high note! Been conducting ever since! Death is just an extended intermission before the ETERNAL PERFORMANCE!",
+      "choices": [
+        {
+          "text": "That's dedication.",
+          "leads_to": "dedication_response"
+        },
+        {
+          "text": "Don't you ever rest?",
+          "leads_to": "rest_is_silence"
+        }
+      ]
+    },
+    "adaptation_attempt": {
+      "text": "*sighs dramatically* ADAPT?! I tried! We performed 'Dimensional Rhapsody in Impossible Keys!' The sheet music changed while we played! The notes existed in states of quantum uncertainty! It was MAGNIFICENT CHAOS! I hated it! I loved it! I'm still processing the emotions!",
+      "choices": [
+        {
+          "text": "Sounds intense.",
+          "leads_to": "intense_acknowledgment"
+        },
+        {
+          "text": "Maybe I can help fix things.",
+          "leads_to": "fixing_hope"
+        }
+      ]
+    },
+    "frustration": {
+      "text": "*throws hands up* Frustrating?! It's MADDENING! Do you know what it's like to conduct musicians who exist in different CENTURIES?! The Renaissance lute player doesn't understand the futuristic synthesizer! They argued for THREE HOURS! About HARMONY! I nearly dispersed into ectoplasm!",
+      "choices": [
+        {
+          "text": "That does sound difficult.",
+          "leads_to": "difficult_art"
+        },
+        {
+          "text": "I'm working on fixing the hotel.",
+          "leads_to": "fixing_hope"
+        }
+      ]
+    },
+    "everyone_dead": {
+      "text": "*gestures wildly* EXACTLY! We're ALL dead! The entire orchestra! Ghost musicians, phantom instruments, spectral sheet music! Death is no excuse for poor musicianship! If anything, we have ETERNITY to practice! No excuses! Except dimensional chaos! That's a valid excuse!",
+      "choices": [
+        {
+          "text": "Your standards are high.",
+          "leads_to": "high_standards"
+        }
+      ]
+    },
+    "artistic_vision": {
+      "text": "*nods vigorously* CREATIVE! REVOLUTIONARY! TERRIFYING! I'm pioneering a new genre - Dimensional Classical! It's music that exists across multiple timelines simultaneously! Critics hate it! Musicians fear it! I'm OBSESSED with it! It's the future of the past of the present!",
+      "choices": [
+        {
+          "text": "You're an artist.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fragment_hint": {
+      "text": "*taps baton thoughtfully* Reality Fragments? YES! I saw one during rehearsal! It was vibrating at perfect concert A! Beautiful tone! Located near the grand piano. Or the phantom organ. Or both. Space is... flexible. But the SOUND was unmistakable! Perfect pitch!",
+      "choices": [
+        {
+          "text": "Thanks for the tip!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "dedication_response": {
+      "text": "*bows dramatically* Thank you! Music demands dedication! Every note must be PERFECT! Every rest must be PRECISE! Even when reality collapses, the MUSIC must go on! The show must go on! The SYMPHONY must go on! Preferably in the correct key!",
+      "choices": [
+        {
+          "text": "Keep up the good work.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "rest_is_silence": {
+      "text": "*horrified* REST?! Rest is for rests! Musical rests! Not conductors! A conductor who rests is a conductor who FAILS! I must be VIGILANT! PASSIONATE! DRAMATICALLY GESTURING AT ALL TIMES! *pauses* Though I suppose death is technically permanent rest. Ironic.",
+      "choices": [
+        {
+          "text": "I suppose it is.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "intense_acknowledgment": {
+      "text": "*wipes ghostly brow* Intense doesn't BEGIN to describe it! But what is ART without intensity?! What is MUSIC without passion?! What is conducting without DRAMATIC ARM MOVEMENTS?! Nothing! Just silence! And silence is only beautiful when it's INTENTIONAL!",
+      "choices": [
+        {
+          "text": "You make a good point.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fixing_hope": {
+      "text": "*grabs your shoulders excitedly* FIXING IT?! RESTORING TEMPORAL STABILITY?! REUNITING MY ORCHESTRA IN A SINGLE TIME SIGNATURE?! *composes self* I mean... yes. That would be acceptable. Excellent, even. We could finally perform properly! Mozart would approve! I would approve! MUSIC would approve!",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "difficult_art": {
+      "text": "*sighs dramatically* Difficult?! It's IMPOSSIBLE! But the BEST art comes from impossibility! From chaos! From suffering! Every great composer suffered! Mozart died young! Beethoven went deaf! I'M DEAD! And still conducting! That's COMMITMENT!",
+      "choices": [
+        {
+          "text": "That's one way to look at it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "high_standards": {
+      "text": "*pounds baton* Of COURSE they're high! We're performing for ETERNITY! There's no excuse for mediocrity when you have INFINITE TIME to rehearse! Even if that time exists in multiple dimensions simultaneously! EXCELLENCE is NON-NEGOTIABLE!",
+      "choices": [
+        {
+          "text": "I respect that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*sweeps baton in farewell gesture* Go! Fix reality! Restore temporal consistency! Save the hotel! And when you do, come to our concert! We'll perform something MAGNIFICENT! In the correct time signature! Probably! *returns to dramatic conducting of invisible orchestra*",
+      "choices": []
+    }
+  }
 }

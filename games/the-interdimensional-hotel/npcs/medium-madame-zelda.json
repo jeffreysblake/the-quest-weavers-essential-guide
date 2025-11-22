@@ -12,5 +12,235 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "medium-madame-zelda",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*waves hands mysteriously over crystal ball* Ahhhh, I sensed your approach! The spirits told me you were coming! Also, I heard your footsteps. Very loud. *adjusts dramatic robes* Welcome, seeker! I am Madame Zelda, bridge between worlds! For a reasonable fee, I can commune with the dead, read your future, or explain this dimensional catastrophe! Cash or credit!",
+      "choices": [
+        {
+          "text": "You charge for spiritual guidance?",
+          "leads_to": "spiritual_capitalism"
+        },
+        {
+          "text": "Can you actually talk to ghosts?",
+          "leads_to": "ghost_communication"
+        },
+        {
+          "text": "What do you know about the chaos?",
+          "leads_to": "chaos_reading"
+        }
+      ]
+    },
+    "spiritual_capitalism": {
+      "text": "*jingles jewelry* Of course! Spiritual gifts don't pay the rent! Even mystical mediums need to eat! Besides, I provide a valuable service! I connect the living with the dead! And in THIS hotel, the dead are EVERYWHERE. Business is booming! Dimensionally speaking!",
+      "choices": [
+        {
+          "text": "Fair point, I suppose.",
+          "leads_to": "business_model"
+        },
+        {
+          "text": "Are you actually psychic?",
+          "leads_to": "psychic_question"
+        }
+      ]
+    },
+    "ghost_communication": {
+      "text": "*looks offended* CAN I?! My dear skeptic, I've been communicating with spirits for twenty years! The Duke owes me for three séances! Lady Phantomworth won't return my calls! Lord Evermore tried to charge ME for spiritual consultation! The ghosts here are TERRIBLE clients!",
+      "choices": [
+        {
+          "text": "The ghosts won't pay you?",
+          "leads_to": "ghost_clients"
+        },
+        {
+          "text": "So you ARE legitimate?",
+          "leads_to": "legitimacy_question"
+        }
+      ]
+    },
+    "chaos_reading": {
+      "text": "*gazes into crystal ball dramatically* Ahhhh, yes. The dimensional convergence. My crystal ball has been showing me SIX different futures simultaneously. Very confusing. Very lucrative for readings! People pay EXTRA when their fortune appears in multiple timelines! I'm charging premium rates for temporal uncertainty!",
+      "choices": [
+        {
+          "text": "You're profiting from chaos?",
+          "leads_to": "chaos_profit"
+        },
+        {
+          "text": "What does your ball say about fixing it?",
+          "leads_to": "crystal_guidance"
+        }
+      ]
+    },
+    "business_model": {
+      "text": "*counts spectral coins* Thank you! Finally, someone who understands! Mysticism is a BUSINESS! I have overhead! Crystal balls aren't cheap! These robes don't dry-clean themselves! And the jewelry? All authentic! Probably! The point is, talking to the dead is WORK!",
+      "choices": [
+        {
+          "text": "What's it like in this hotel?",
+          "leads_to": "hotel_experience"
+        }
+      ]
+    },
+    "psychic_question": {
+      "text": "*mysterious smile* Am I psychic? Well... *leans in* I predicted you'd ask that question. Coincidence? Or COSMIC POWER? *pauses* Honestly, even I'm not sure anymore. The dimensional chaos has made everyone a LITTLE bit psychic. Yesterday a tourist predicted their own lunch order. Reality is very flexible now.",
+      "choices": [
+        {
+          "text": "That's not reassuring.",
+          "leads_to": "reassurance_unnecessary"
+        },
+        {
+          "text": "Can you help me fix things?",
+          "leads_to": "helpful_medium"
+        }
+      ]
+    },
+    "ghost_clients": {
+      "text": "*frustrated gesture* NO! They say 'we're already dead, what do we need fortune-telling for?' and I say 'ETERNITY is a long time! Don't you want to know what's coming?!' and they say 'we're GHOSTS, we already know!' Very frustrating! Dead people are the WORST tippers!",
+      "choices": [
+        {
+          "text": "That does sound frustrating.",
+          "leads_to": "client_troubles"
+        }
+      ]
+    },
+    "legitimacy_question": {
+      "text": "*waves hands mysteriously* Legitimate? I commune with spirits DAILY! I predicted the hotel's dimensional collapse! Well, THREE DAYS after it happened. Still counts! Retroactive psychic vision! The spirits speak to me! Sometimes they just complain about Lord Evermore's parties, but THEY SPEAK!",
+      "choices": [
+        {
+          "text": "So... maybe legitimate?",
+          "leads_to": "maybe_legit"
+        },
+        {
+          "text": "Tell me about the fragments.",
+          "leads_to": "fragment_vision"
+        }
+      ]
+    },
+    "chaos_profit": {
+      "text": "*defensive* I prefer to call it 'adapting to market conditions!' When reality gives you dimensional chaos, you give dimensional readings! I offered a special: 'See Your Future Across Six Timelines - Only $49.99!' Very popular! Mostly with confused tourists!",
+      "choices": [
+        {
+          "text": "You're an entrepreneur.",
+          "leads_to": "entrepreneurial_spirit"
+        },
+        {
+          "text": "What have you actually seen?",
+          "leads_to": "actual_visions"
+        }
+      ]
+    },
+    "crystal_guidance": {
+      "text": "*peers into crystal ball* Ahhh, let me see... *swirls hands* The spirits say... collect the fragments... restore balance... save reality... *looks up* Also they say you should tip your spiritual advisor generously. The spirits are very clear on that last point. Very insistent.",
+      "choices": [
+        {
+          "text": "Did the spirits really say that?",
+          "leads_to": "spirit_honesty"
+        },
+        {
+          "text": "Where are the fragments?",
+          "leads_to": "fragment_vision"
+        }
+      ]
+    },
+    "hotel_experience": {
+      "text": "*sighs dramatically* CHAOTIC! Before the dimensional convergence, I had a nice setup! Palm readings, tarot cards, the occasional exorcism! Now? The tarot cards shuffle themselves! My crystal ball shows timelines that don't exist! I predicted a guest's past, present, and future YESTERDAY! All at once!",
+      "choices": [
+        {
+          "text": "That sounds overwhelming.",
+          "leads_to": "overwhelming_power"
+        }
+      ]
+    },
+    "reassurance_unnecessary": {
+      "text": "*shrugs mysteriously* Reassurance costs extra. I deal in TRUTH! Uncomfortable, confusing, dimensionally unstable truth! But truth nonetheless! Probably! The spirits are unclear. They're dealing with their own issues. Death is complicated.",
+      "choices": [
+        {
+          "text": "I see.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "helpful_medium": {
+      "text": "*perks up* Help? For a fee, naturally. Wait, you're the one FIXING things? *calculates mentally* Alright, DISCOUNTED fee! The spirits want this resolved too! They're tired of existing in multiple timelines! Lord Evermore has been complaining for HOURS! In three different dimensions!",
+      "choices": [
+        {
+          "text": "What can you tell me?",
+          "leads_to": "fragment_vision"
+        }
+      ]
+    },
+    "client_troubles": {
+      "text": "*nods vigorously* VERY frustrating! And don't get me started on living clients! They want their fortunes told, then argue when they don't like the future! 'Change it!' they say! I'm a MEDIUM, not a MIRACLE WORKER! Though at these prices, I should be both!",
+      "choices": [
+        {
+          "text": "Customer service is hard.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "maybe_legit": {
+      "text": "*mysterious wink* Maybe is good enough! Ambiguity is PROFITABLE! People pay MORE when they're uncertain! Definitive answers are cheap! Mystical uncertainty? Premium pricing! It's basic spiritual economics! The spirits taught me that! Or I made it up! WHO CAN SAY?!",
+      "choices": [
+        {
+          "text": "You're something else.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fragment_vision": {
+      "text": "*gazes intensely into crystal ball* Ahhhh, yes! The fragments! I see one... near mystical energy... spiritual significance... *looks up* Probably near my parlor. Quality supernatural items gravitate toward quality supernatural practitioners! Also I saw it glowing yesterday. Very obvious. Hard to miss.",
+      "choices": [
+        {
+          "text": "Thanks for the help!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "entrepreneurial_spirit": {
+      "text": "*proudly* EXACTLY! Madame Zelda is a BUSINESSWOMAN! With mystical powers! Probably! The dimensional chaos is terrible for reality but EXCELLENT for business! I'm thinking of franchising! 'Madame Zelda's Dimensional Readings - Now in Six Timelines!' Has a ring to it!",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "actual_visions": {
+      "text": "*serious tone* Honestly? I've seen futures where the hotel collapses. Pasts where it never existed. Presents that shouldn't be possible. The dimensional convergence is REAL. And genuinely terrifying. But if I let fear stop me from charging for readings, what kind of medium would I be? A POOR one!",
+      "choices": [
+        {
+          "text": "At least you're consistent.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "spirit_honesty": {
+      "text": "*shifty look* Well... the spirits say MANY things. Some true, some not. Some profitable, some... less so. The point is, the guidance is SOUND! Collect fragments, fix reality, save hotel! Whether that's mystical vision or common sense is... open to interpretation!",
+      "choices": [
+        {
+          "text": "I'll just find them myself.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "overwhelming_power": {
+      "text": "*dramatic gesture* OVERWHELMING?! It's MAGNIFICENT! I've never been more powerful! Or more confused! Or more profitable! The spirits are EVERYWHERE! They can't escape me because reality is broken! It's a medium's DREAM! Also nightmare! Mostly dream though!",
+      "choices": [
+        {
+          "text": "Glad you're enjoying it?",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*waves hands mystically* The spirits bid you farewell! And remind you that Madame Zelda offers EXCELLENT rates for future consultations! Dimensional crisis discount! Only 10% off! The spirits are generous! Also, good luck saving reality! The spirits are rooting for you! Probably!",
+      "choices": []
+    }
+  }
 }

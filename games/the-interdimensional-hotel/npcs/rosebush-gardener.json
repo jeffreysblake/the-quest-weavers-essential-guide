@@ -12,5 +12,164 @@
   "level": 4,
   "type": "npc",
   "dialogueTreeId": "rosebush-gardener",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*rustling intensifies* Well, well, well. A MAMMAL. In MY garden. Do try not to trample the petunias, they're already stressed from existing in three time zones simultaneously. And before you ask - no, I did NOT see who stole the Reality Anchor. I was PHOTOSYNTHESIZING. *leaves bristle indignantly*",
+      "choices": [
+        {
+          "text": "You're a talking plant!",
+          "leads_to": "obvious_statement"
+        },
+        {
+          "text": "How's the garden doing?",
+          "leads_to": "garden_status"
+        },
+        {
+          "text": "Have you noticed anything strange?",
+          "leads_to": "observations"
+        }
+      ]
+    },
+    "obvious_statement": {
+      "text": "*petals flutter sarcastically* Oh REALLY? And you're a talking PRIMATE. We're all very impressive. Now, I've been sentient for seventy-three years, won awards for Best Blooms, and survived seventeen dimensional collapses. Your observation skills are underwhelming. Any OTHER groundbreaking insights?",
+      "choices": [
+        {
+          "text": "Sorry, didn't mean to offend.",
+          "leads_to": "apology_accepted"
+        },
+        {
+          "text": "You seem grumpy for a plant.",
+          "leads_to": "grumpy_admission"
+        }
+      ]
+    },
+    "garden_status": {
+      "text": "*leaves droop dramatically* TERRIBLE. Simply TERRIBLE. The tulips are blooming backwards in time. The daisies have existential dread. The carnivorous plants ate a ghost and now they're HAUNTED. And don't even get me STARTED on the dimensional crossover - I've got alien weeds invading from the Xenobiology wing!",
+      "choices": [
+        {
+          "text": "That sounds difficult.",
+          "leads_to": "difficult_yes"
+        },
+        {
+          "text": "Can I help?",
+          "leads_to": "help_offer"
+        }
+      ]
+    },
+    "observations": {
+      "text": "*rustles thoughtfully* Strange? EVERYTHING is strange. But yes, I noticed something. That VOID creature - Mr. Null or whatever - passed through here. Killed seven rosebushes just by EXISTING near them. *shudders* Plants don't forget. We ROOT grudges. Also, I heard the Manager talking about 'containment failure.' Make of that what you will.",
+      "choices": [
+        {
+          "text": "Containment failure?",
+          "leads_to": "containment_info"
+        },
+        {
+          "text": "Thanks for the information.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "apology_accepted": {
+      "text": "*softens slightly* Well. At least you have MANNERS. Unlike that barbarian who keeps trying to 'prune' me with her AXE. I'm a ROSEBUSH, not a TREE. The disrespect. But you seem... adequate. For a mammal.",
+      "choices": [
+        {
+          "text": "I'll try to live up to that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "grumpy_admission": {
+      "text": "*thorns bristle* GRUMPY?! I am STRESSED. There's a difference. Do YOU know how hard it is to maintain a garden when time doesn't work? I've been watering the same petunia for seventeen years. Or seventeen seconds. BOTH. I'm entitled to grumpiness!",
+      "choices": [
+        {
+          "text": "Fair point.",
+          "leads_to": "validation"
+        },
+        {
+          "text": "I'll leave you to it.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "difficult_yes": {
+      "text": "*leaves droop further* DIFFICULT?! Try IMPOSSIBLE. I'm a PLANT. I can't even MOVE. I just sit here and watch reality collapse around me while maintaining professional standards of horticulture. It's exhausting. Also, someone keeps picking my roses without ASKING. Rude.",
+      "choices": [
+        {
+          "text": "You're doing great considering.",
+          "leads_to": "encouragement"
+        }
+      ]
+    },
+    "help_offer": {
+      "text": "*perks up slightly* Help? Can you make time flow linearly? Can you explain to the alien weeds that they're INVASIVE? Can you convince the carnivorous plants that vegetarianism is ethical? *sighs through leaves* No? Then just... fix the hotel. Please. I liked it better when the dimensions stayed separate.",
+      "choices": [
+        {
+          "text": "I'm working on it.",
+          "leads_to": "working_on_it"
+        }
+      ]
+    },
+    "containment_info": {
+      "text": "*rustles conspiratorially* The Manager called this hotel a 'dimensional menagerie' once. Said they were 'containing' things. Mr. Null was one of them. A void entity. Loneliness given form. The Manager thought they could rehabilitate him with hospitality. *scoffs* You can't fix existential dread with complimentary breakfast.",
+      "choices": [
+        {
+          "text": "That's... disturbing.",
+          "leads_to": "disturbing_yes"
+        },
+        {
+          "text": "Thanks for telling me.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "validation": {
+      "text": "*blooms slightly* FINALLY. Someone who UNDERSTANDS. Plants have FEELINGS, you know. We're just better at photosynthesis than emotional expression. Now go save the hotel. I have weeding to do. Metaphorically. I'm rooted.",
+      "choices": [
+        {
+          "text": "Will do.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "encouragement": {
+      "text": "*blooms a bit brighter* You think so? *rustles bashfully* Well, I AM rather exceptional. Award-winning, even. Though the competition has decreased since most of the judges phased into alternate dimensions. But STILL. Thank you. For a mammal, you're... adequate.",
+      "choices": [
+        {
+          "text": "Happy to help.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "working_on_it": {
+      "text": "*leaves flutter hopefully* Good. GOOD. This hotel may be a dimensional prison run by a manipulative entity, but it's OUR dimensional prison. And the garden is MINE. I've put too much work into it to let some void creature unmake it. Fix things. The petunias are counting on you.",
+      "choices": [
+        {
+          "text": "I won't let you down.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "disturbing_yes": {
+      "text": "*rustles darkly* Disturbing? TERRIFYING. The Manager collects broken things and pretends it's charity. Dragons, ghosts, aliens, void entities. All CONTAINED. All MANAGED. Makes you wonder what WE all are. Inmates? Exhibits? *shudders* Either way, fix the Anchor. I prefer my existential dread with proper dimensional boundaries.",
+      "choices": [
+        {
+          "text": "I understand.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*rustles dismissively* Yes, yes. Off you go. Save reality. I'll be here. Rooted. Literally. Maintaining standards. Being judgmental. The usual. *blooms one perfect rose* For luck. Don't waste it on stupidity.",
+      "choices": []
+    }
+  }
 }

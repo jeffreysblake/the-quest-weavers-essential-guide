@@ -12,5 +12,154 @@
   "level": 10,
   "type": "npc",
   "dialogueTreeId": "dragon-smalfoy",
-  "hostile": true
+  "hostile": true,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*exhales smoke irritably* ANOTHER hotel employee. I've been here for THREE CENTURIES and the WiFi STILL doesn't reach my hoard chamber! Do you know how humiliating it is to have only two bars of signal? I'm a DRAGON. I deserve full connectivity!",
+      "choices": [
+        {
+          "text": "I can look into the WiFi issue...",
+          "leads_to": "wifi_complaint"
+        },
+        {
+          "text": "Why are you staying here?",
+          "leads_to": "why_hotel"
+        },
+        {
+          "text": "Have you seen anything strange?",
+          "leads_to": "strange_things"
+        }
+      ]
+    },
+    "wifi_complaint": {
+      "text": "*tail swishes dangerously* LOOK INTO IT?! I've submitted 847 complaint forms! The router is apparently 'optimized for human bandwidth.' I'm not human! I'm a magnificent reptilian being with very specific streaming needs! How am I supposed to watch my cryptocurrency tutorials?!",
+      "choices": [
+        {
+          "text": "Dragons invest in crypto?",
+          "leads_to": "modern_dragon"
+        },
+        {
+          "text": "Maybe focus on the dimensional crisis?",
+          "leads_to": "priorities"
+        }
+      ]
+    },
+    "why_hotel": {
+      "text": "*huffs indignantly* Tax purposes. Did you know dragon hoards are subject to wealth taxation across seventeen dimensions? By staying in a hotel, I claim 'temporary residence' status. Plus the room service brings me livestock. Convenient AND delicious.",
+      "choices": [
+        {
+          "text": "That's... actually clever.",
+          "leads_to": "clever_dragon"
+        },
+        {
+          "text": "What about the dimensional chaos?",
+          "leads_to": "chaos_opinion"
+        }
+      ]
+    },
+    "strange_things": {
+      "text": "*snorts flame* Strange? The entire hotel is collapsing into itself! My suite now overlaps with the ice machine AND a ghost's bedroom! Do you know how awkward it is sharing space with a Victorian specter? They complain about EVERYTHING. Ironic, considering that's my whole personality.",
+      "choices": [
+        {
+          "text": "Have you tried talking to them?",
+          "leads_to": "ghost_neighbor"
+        },
+        {
+          "text": "Did you see who caused this?",
+          "leads_to": "culprit_info"
+        }
+      ]
+    },
+    "modern_dragon": {
+      "text": "Of COURSE we do! You think we just sit on gold piles all day? That's PASSIVE wealth! I've diversified into NFTs, blockchain, and interdimensional commodities trading. My hoard is MODERN. Unlike this hotel's infrastructure.",
+      "choices": [
+        {
+          "text": "Impressive. Any hotel insights?",
+          "leads_to": "hotel_insights"
+        }
+      ]
+    },
+    "priorities": {
+      "text": "*eyes narrow dangerously* Listen, mortal. I've survived the Age of Heroes, the Great Dragon Hunts, and the collapse of the Gold Standard. I'll survive this. But I will NOT survive without stable internet. Fix. The. WiFi. THEN save reality.",
+      "choices": [
+        {
+          "text": "I'll... see what I can do.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "clever_dragon": {
+      "text": "*preens slightly* I didn't accumulate this much wealth by being stupid. Dragons are EXCELLENT at finding loopholes. Legal ones. Mostly legal. The fire-breathing helps with negotiations.",
+      "choices": [
+        {
+          "text": "Smart. Know anything about the crisis?",
+          "leads_to": "crisis_knowledge"
+        }
+      ]
+    },
+    "chaos_opinion": {
+      "text": "It's TERRIBLE for property values! My suite was worth 50,000 gold coins yesterday. Today? Who knows! The real estate market can't handle non-Euclidean geometry! This is an INVESTMENT DISASTER!",
+      "choices": [
+        {
+          "text": "I'm working on fixing it.",
+          "leads_to": "fixing_response"
+        }
+      ]
+    },
+    "ghost_neighbor": {
+      "text": "I tried! They said my snoring 'disturbs the eternal rest.' I said their EXISTING disturbs MY sleep! We reached a stalemate. Now we just passive-aggressively phase through each other's belongings.",
+      "choices": [
+        {
+          "text": "Sounds difficult.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "culprit_info": {
+      "text": "*thoughtful rumble* I saw a strange figure near the Basement. Like a walking void. Made my scales itch. Reality seemed to... flinch... around them. Gave me the creeps. And I'm a DRAGON. Not much creeps me out.",
+      "choices": [
+        {
+          "text": "Thanks. That's helpful.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hotel_insights": {
+      "text": "The Manager is hiding something. I've lived long enough to recognize deception. They smile too much. Real hospitality professionals are dead inside. The Manager? Still has HOPE. That's suspicious.",
+      "choices": [
+        {
+          "text": "Noted. Thanks.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "crisis_knowledge": {
+      "text": "Someone stole something important. I can feel it. My hoard-sense tingles when valuable items are moved. Something VERY valuable was taken from this hotel. And now everything's falling apart. Coincidence? I think NOT.",
+      "choices": [
+        {
+          "text": "I'll investigate.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fixing_response": {
+      "text": "Good! Do it QUICKLY. And while you're at it, file a complaint with IT about the WiFi. Tell them Smalfoy the Magnificent is VERY disappointed. Use my full title. They fear it.",
+      "choices": [
+        {
+          "text": "Will do.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*settles back onto gold pile* Now leave me. I have angry emails to compose. Three centuries of customer service failures don't document themselves. And FIX. THAT. WIFI.",
+      "choices": []
+    }
+  }
 }

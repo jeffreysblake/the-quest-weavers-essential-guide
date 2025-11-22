@@ -12,5 +12,342 @@
   "level": 5,
   "type": "npc",
   "dialogueTreeId": "xenobiologist-dr-kree",
-  "hostile": false
+  "hostile": false,
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*scribbles notes with two hands while adjusting compound-eye goggles with a third* Fascinating! A human! In crisis mode! The cortisol levels must be EXQUISITE! *clicks mandibles excitedly* I'm Dr. Kree, xenobiologist. I study inferior-- I mean, DIFFERENT species. You're perfect! May I take a tissue sample?",
+      "choices": [
+        {
+          "text": "Uh... no tissue samples, thanks.",
+          "leads_to": "polite_refusal"
+        },
+        {
+          "text": "What are you researching?",
+          "leads_to": "research_explanation"
+        },
+        {
+          "text": "Have you noticed the dimensional chaos?",
+          "leads_to": "chaos_observation"
+        }
+      ]
+    },
+    "polite_refusal": {
+      "text": "*all four arms droop in disappointment* No samples? But your DNA is so... squishy! And terrestrial! Fine, fine. Ethics committee made me sign forms anyway. 'Informed consent' they said. 'Stop taking samples while subjects sleep' they said. BUREAUCRACY ruins science!",
+      "choices": [
+        {
+          "text": "You took samples while people slept?!",
+          "leads_to": "ethical_concerns"
+        },
+        {
+          "text": "What have you learned about humans?",
+          "leads_to": "human_observations"
+        }
+      ]
+    },
+    "research_explanation": {
+      "text": "*eyes glow with enthusiasm* EXCELLENT question! I'm cataloging Earth organisms! So far I've studied seventeen houseplants, two ghosts, one very angry dragon, and a vending machine that achieved sentience! The variety is ASTOUNDING! Also concerning! Your planet should not biologically work, yet here you are!",
+      "choices": [
+        {
+          "text": "You studied ghosts? How?",
+          "leads_to": "ghost_research"
+        },
+        {
+          "text": "The vending machine is alive?!",
+          "leads_to": "vending_machine"
+        }
+      ]
+    },
+    "chaos_observation": {
+      "text": "*all eyes widen with excitement* NOTICED?! I'm DOCUMENTING! Six dimensions occupying the same space-time coordinates! Causality breaking down! Matter phasing through itself! This is the greatest scientific opportunity since the Great Nebula Implosion of Sector 7! I've filled forty-seven notebooks!",
+      "choices": [
+        {
+          "text": "Aren't you worried?",
+          "leads_to": "concern_question"
+        },
+        {
+          "text": "Did you see what caused it?",
+          "leads_to": "scientific_witness"
+        }
+      ]
+    },
+    "ethical_concerns": {
+      "text": "*waves two arms dismissively* Only SEVEN times! And I returned most of them! The subjects barely noticed! Except Gerald. Gerald noticed. But Gerald also complained about the breakfast buffet, so his judgment is suspect. Science requires sacrifice! Usually other people's!",
+      "choices": [
+        {
+          "text": "That's deeply unethical.",
+          "leads_to": "ethics_debate"
+        },
+        {
+          "text": "Let's focus on the hotel crisis.",
+          "leads_to": "crisis_redirect"
+        }
+      ]
+    },
+    "human_observations": {
+      "text": "*consults floating holographic notes* Humans are BAFFLING! You have only TWO arms! ONE heart! You require constant hydration! Your exoskeleton is INSIDE you! Backwards! And yet you build societies, create art, and complain about WiFi! You're evolutionary accidents that achieved consciousness! REMARKABLE!",
+      "choices": [
+        {
+          "text": "Thanks? I think?",
+          "leads_to": "backhanded_compliment"
+        },
+        {
+          "text": "Any insights about the hotel?",
+          "leads_to": "hotel_insights"
+        }
+      ]
+    },
+    "ghost_research": {
+      "text": "*compound eyes sparkle* Ghosts are consciousness without biology! Memories given form! I measured their ectoplasmic resonance! Took spectral readings! One ghost tried to haunt me back! *laughs in clicking sounds* Didn't work. I have no concept of 'spooky.' My species evolved past fear!",
+      "choices": [
+        {
+          "text": "No fear at all?",
+          "leads_to": "fearless_species"
+        },
+        {
+          "text": "What else have you discovered?",
+          "leads_to": "other_discoveries"
+        }
+      ]
+    },
+    "vending_machine": {
+      "text": "*nods all four arms* YES! Gained sentience around Tuesday! Now it dispenses snacks AND existential philosophy! Asked me 'Why do I exist?' I said 'To distribute nutrients and accept currency.' It called me 'reductive.' RUDE. But scientifically fascinating! Artificial consciousness through temporal anomalies!",
+      "choices": [
+        {
+          "text": "This hotel is wild.",
+          "leads_to": "hotel_assessment"
+        }
+      ]
+    },
+    "concern_question": {
+      "text": "*tilts head with all eyes* Worried? About DEATH? Dimensional collapse? Non-existence? *clicks thoughtfully* My species perceives death as 'career transition.' If I dissolve into void, I'll simply research the void FROM INSIDE! Ultimate participant observation! The paper I could write!",
+      "choices": [
+        {
+          "text": "You're incredibly brave. Or insane.",
+          "leads_to": "brave_or_crazy"
+        },
+        {
+          "text": "I'm trying to fix things.",
+          "leads_to": "fixing_announcement"
+        }
+      ]
+    },
+    "scientific_witness": {
+      "text": "*flips through notebooks with multiple hands* I observed a void-entity near the Basement! Negative mass readings! Anti-presence signature! Reality FLINCHED around it! Absolutely unprecedented! I tried to take a sample. It nearly erased my hand. Worth it. GOT the sample. *holds up vial of nothing*",
+      "choices": [
+        {
+          "text": "That's... a sample of nothing?",
+          "leads_to": "nothing_sample"
+        },
+        {
+          "text": "The void-entity is dangerous!",
+          "leads_to": "danger_warning"
+        }
+      ]
+    },
+    "ethics_debate": {
+      "text": "*defensive clicking* Ethics are SUBJECTIVE! On my planet, involuntary tissue sampling is considered a COMPLIMENT! 'You're interesting enough to study' is the highest praise! Cultural differences! You bipeds are so SENSITIVE about your genetic material!",
+      "choices": [
+        {
+          "text": "Let's agree to disagree.",
+          "leads_to": "diplomatic_exit"
+        }
+      ]
+    },
+    "crisis_redirect": {
+      "text": "*immediately refocuses* YES! The crisis! *pulls out scanner* I've been monitoring dimensional stability! Currently at 23% and falling! Fragments of reality are scattered! You're collecting them, yes? EXCELLENT methodology! Very systematic! I'm documenting your entire quest for my dissertation!",
+      "choices": [
+        {
+          "text": "You're writing about me?",
+          "leads_to": "dissertation_subject"
+        },
+        {
+          "text": "Any advice for finding fragments?",
+          "leads_to": "scientific_advice"
+        }
+      ]
+    },
+    "backhanded_compliment": {
+      "text": "*pats your shoulder with one hand while writing with another* Take it as compliment! Humans exceed expectations! Low expectations, yes, but STILL! You've survived this long without proper claws, venom, or telepathy! Admirable! Like watching a legless creature win a race!",
+      "choices": [
+        {
+          "text": "I... need to go now.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "hotel_insights": {
+      "text": "*lowers voice conspiratorially with all heads* The hotel is ALIVE. Not metaphorically. LITERALLY. It has nervous system analogue! I detected bio-electrical patterns in the walls! The Manager isn't managing the hotel - they ARE the hotel! Or the hotel is them! The distinction blurs at quantum level!",
+      "choices": [
+        {
+          "text": "That's disturbing.",
+          "leads_to": "disturbing_truth"
+        },
+        {
+          "text": "Thanks for the info.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fearless_species": {
+      "text": "*proud chittering* We evolved on a death world! Carnivorous plants! Acid rain! Predators with seventeen mouths! Fear became OBSOLETE! Now we just have 'scientific curiosity' and 'aggressive research interest.' Much more productive! Though we do have high casualty rates in the science division.",
+      "choices": [
+        {
+          "text": "That explains a lot.",
+          "leads_to": "species_understanding"
+        }
+      ]
+    },
+    "other_discoveries": {
+      "text": "*excitedly scrolls holographic data* The dragon has cryptocurrency investments! The princess has social media presence! The Lost & Found Clerk exists in temporal superposition! EVERYONE here defies biological and physical norms! It's either the greatest convergence of anomalies or the universe's most elaborate joke!",
+      "choices": [
+        {
+          "text": "Probably both.",
+          "leads_to": "agreement"
+        }
+      ]
+    },
+    "hotel_assessment": {
+      "text": "*gestures with all four arms* Wild? WILD?! This is scientifically IMPOSSIBLE! Which makes it PERFECT! I've published three papers already! 'Dimensional Overlap and Sentient Furniture: A Case Study.' 'Cryptocurrency-Hoarding Dragons: Economic Implications.' And 'WiFi Complaints Across Species Barriers.'",
+      "choices": [
+        {
+          "text": "Those are real papers?",
+          "leads_to": "academic_achievement"
+        }
+      ]
+    },
+    "brave_or_crazy": {
+      "text": "*all eyes blink in different patterns* My species doesn't distinguish! Bravery and insanity produce identical results! Progress! Discovery! Usually death, but death is just DATA! 'How I Dissolved Into Void: A Posthumous Analysis' would be BESTSELLER!",
+      "choices": [
+        {
+          "text": "Let's try to avoid that.",
+          "leads_to": "survival_preference"
+        }
+      ]
+    },
+    "fixing_announcement": {
+      "text": "*all eyes focus on you intensely* FIXING?! You're attempting reality restoration?! *scribbles frantically* What's your methodology?! Hypothesis?! Expected confidence interval?! This is HEROISM as SCIENCE! I must observe! For research! And definitely not because I also don't want to die!",
+      "choices": [
+        {
+          "text": "Glad you're on board.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "nothing_sample": {
+      "text": "*holds vial up proudly* YES! Contained nothing! In a jar! Breakthrough! The absence of presence! The void given boundaries! My colleagues will be JEALOUS! Or they would be, if we all don't cease existing! *carefully stores vial* This goes in my safety deposit box!",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "danger_warning": {
+      "text": "*waves dismissively with two hands* Danger is RELATIVE! To a human? Yes, lethal! To a scientist? OPPORTUNITY! But I appreciate warning! I'll observe from safe distance! Relatively safe! Within blast radius, but behind protective equipment! SCIENCE!",
+      "choices": [
+        {
+          "text": "Stay safe, Doctor.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "diplomatic_exit": {
+      "text": "*clicks affirmatively* Agreed! Cultural exchange requires compromise! I won't sample you, you don't report me to ethics committee. MUTUALLY beneficial! This is how inter-species cooperation works! *extends one hand for handshake*",
+      "choices": [
+        {
+          "text": "*shakes hand cautiously*",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "dissertation_subject": {
+      "text": "*enthusiastic clicking* Of COURSE! 'Heroism Under Dimensional Collapse: A Case Study in Human Persistence!' You're my THESIS! Primary source! I'm documenting everything! Your stress responses! Decision-making! Survival strategies! You'll be FAMOUS in xenobiological circles!",
+      "choices": [
+        {
+          "text": "Great. I'm famous to aliens.",
+          "leads_to": "fame_response"
+        }
+      ]
+    },
+    "scientific_advice": {
+      "text": "*adjusts scanner* Fragments emit reality-stabilization radiation! Look for areas where physics work CORRECTLY! Where time flows NORMALLY! Where matter stays SOLID! Paradoxically, normalcy is the anomaly! Seek the ordinary in the extraordinary! Also, try the Basement. VERY high readings there!",
+      "choices": [
+        {
+          "text": "That's actually helpful. Thanks!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "disturbing_truth": {
+      "text": "*shrugs with multiple shoulders* TRUTH often is! But scientifically MAGNIFICENT! A building achieving consciousness! Architecture with intent! Urban planning with PURPOSE! I'm interviewing the hotel next week! If we survive! If we don't, I'll interview the void!",
+      "choices": [
+        {
+          "text": "You're unstoppable.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "species_understanding": {
+      "text": "*happy chittering* You comprehend! Excellent! Perhaps humans aren't entirely hopeless! Your species shows potential! In a few million years, you might evolve proper appendages! Maybe telepathy! Or at minimum, better WiFi infrastructure!",
+      "choices": [
+        {
+          "text": "I'll pass that along.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "agreement": {
+      "text": "*all eyes twinkle* EXACTLY! Universe has sense of humor! Dark, twisted, scientifically fascinating humor! And we're the punchline! But at least we're an INTERESTING punchline! Not boring! Never boring! *returns to frantically scribbling notes*",
+      "choices": [
+        {
+          "text": "Never boring indeed.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "academic_achievement": {
+      "text": "*proud clicking* Published in PRESTIGIOUS journals! Xenobiological Quarterly! Interdimensional Science Review! AND Journal of Improbable Research! That last one was accident, but still counts! My citation index is EXCELLENT! Even if reality collapses, my papers will exist! Somewhere! Probably!",
+      "choices": [
+        {
+          "text": "Congratulations, I guess.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "survival_preference": {
+      "text": "*all hands gesture emphatically* YES! Survival preferable! Living scientists publish more papers! STATISTICAL FACT! I'll observe from SAFE distance! Document your heroism! Preferably from behind reinforced barriers! With escape route! For science!",
+      "choices": [
+        {
+          "text": "Good plan.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "fame_response": {
+      "text": "*excited chittering* Not JUST aliens! Inter-dimensional academics! Temporal researchers! Quantum theorists! Your name will echo through MULTIPLE realities! 'That human who saved existence!' Very prestigious! I'll cite you extensively! With footnotes!",
+      "choices": [
+        {
+          "text": "Thanks. I think.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*waves with all four hands* Excellent conversation! Very productive! Data collected! Notes documented! Good luck saving reality! I'll be here! Observing! Recording! NOT helping physically because ethics committee said 'no more experimental interventions!' But supporting MORALLY! Go forth! Be scientific! Survive!",
+      "choices": []
+    }
+  }
 }

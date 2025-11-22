@@ -2,15 +2,909 @@
   "id": "robot-dealer",
   "name": "Dealer-Bot Model 7",
   "description": "A sleek casino robot that deals cards with mechanical precision. Chrome chassis. Digital display face showing playing card suits. Programmed with gambling algorithms and sarcasm. Can calculate odds in nanoseconds. Still loses to humans somehow.",
-  "position": {
-    "x": 10,
-    "y": 20,
-    "z": 20
-  },
   "health": 100,
   "maxHealth": 100,
   "level": 5,
   "type": "npc",
   "dialogueTreeId": "robot-dealer",
-  "hostile": false
+  "hostile": false,
+  "position": {
+    "x": 10,
+    "y": 20,
+    "z": 20
+  },
+  "dialogue_tree_data": {
+    "initial_greeting": {
+      "text": "*shuffling cards with mechanical precision* Welcome to the table. The house always wins. Statistically speaking. Though recent events have made statistics... unreliable. *digital display flickers* Dimensional collapse: bad for business. How may I deal you in to this catastrophe?",
+      "choices": [
+        {
+          "text": "You're a casino dealer?",
+          "leads_to": "dealer_confirmation"
+        },
+        {
+          "text": "Do you know what's happening?",
+          "leads_to": "situation_assessment"
+        },
+        {
+          "text": "You seem very calm.",
+          "leads_to": "calm_programming"
+        }
+      ]
+    },
+    "dealer_confirmation": {
+      "text": "*displays card suits on face screen* Dealer-Bot Model 7. Blackjack, poker, roulette. Programmed with perfect shuffle algorithms and customer service protocols. *dry tone* Also programmed with sarcasm for dealing with drunk guests. The drunk robot appreciates it. Others less so. What's your game?",
+      "choices": [
+        {
+          "text": "I'm trying to save the hotel.",
+          "leads_to": "noble_odds"
+        },
+        {
+          "text": "How do you deal with the chaos?",
+          "leads_to": "chaos_management"
+        }
+      ]
+    },
+    "situation_assessment": {
+      "text": "*calculates* Dimensional stability: 23%. Survival probability: fluctuating. The hotel is experiencing cascading reality failure. Someone hacked the foundational protocols. My money's on Zero. Literally. I bet the protocol droid 50 credits. *pause* Though if we all cease to exist, that debt becomes moot. Silver linings.",
+      "choices": [
+        {
+          "text": "You're betting during an apocalypse?",
+          "leads_to": "apocalypse_gambling"
+        },
+        {
+          "text": "What else do you know?",
+          "leads_to": "information_cards"
+        }
+      ]
+    },
+    "calm_programming": {
+      "text": "*screen displays a smirk emoticon* Calm is mandatory. I deal cards for a living. Angry drunks. Sore losers. Existential threats. All part of the job. *mechanical shrug* Besides, panic serves no statistical purpose. Either the hotel survives or it doesn't. I'll be here dealing until the end. Professional pride.",
+      "choices": [
+        {
+          "text": "That's... admirable?",
+          "leads_to": "professional_dedication"
+        },
+        {
+          "text": "Aren't you afraid?",
+          "leads_to": "fear_parameters"
+        }
+      ]
+    },
+    "noble_odds": {
+      "text": "*calculates rapidly* Saving the hotel? Ambitious. Current odds: 68.3% failure, 31.7% success. Though those odds improve with proper planning. You'll need the Reality Fragments. Six total. *deals cards face-up* One from each floor. Collect them all, restore stability. Simple. In theory. Catastrophic in practice.",
+      "choices": [
+        {
+          "text": "Can you help me?",
+          "leads_to": "dealer_assistance"
+        },
+        {
+          "text": "You're very helpful for a dealer.",
+          "leads_to": "helpful_dealer"
+        }
+      ]
+    },
+    "chaos_management": {
+      "text": "*continues shuffling* Same way I deal with everything: algorithms and attitude. The casino exists in six dimensions simultaneously? I deal six tables. The cards sometimes show impossible values? I adapt the rules. Customers phase through walls? I chase them down for payment. *sarcastic* Flexibility is key in hospitality.",
+      "choices": [
+        {
+          "text": "That's impressive adaptability.",
+          "leads_to": "adaptive_pride"
+        },
+        {
+          "text": "Do you ever stop dealing?",
+          "leads_to": "never_stops"
+        }
+      ]
+    },
+    "apocalypse_gambling": {
+      "text": "*digital shrug* I'm a gambling bot in a gambling establishment during dimensional collapse. What else would I do? *flips card* Besides, gambling gives structure. Order. Purpose. The universe may be chaos, but poker hands have RULES. Even when reality doesn't. It's comforting. In a deeply ironic way.",
+      "choices": [
+        {
+          "text": "I can understand that.",
+          "leads_to": "understanding_achieved"
+        },
+        {
+          "text": "You're coping with games?",
+          "leads_to": "coping_mechanism"
+        }
+      ]
+    },
+    "information_cards": {
+      "text": "*lays out cards like a reading* Fragment locations. *points* Lobby: behind reception. Ghost Floor: crying room. Casino: my chassis. *taps chest* Convenient. Fantasy Realm: dragon's hoard. Alien Convention: diplomatic suite. Basement: maintenance. *gathers cards* Collect them sequentially. Lobby to basement. Order matters. Probability demands it.",
+      "choices": [
+        {
+          "text": "One fragment is IN you?",
+          "leads_to": "fragment_revelation"
+        },
+        {
+          "text": "Thank you for the information.",
+          "leads_to": "gratitude_acknowledged"
+        }
+      ]
+    },
+    "professional_dedication": {
+      "text": "*displays dealer hat icon* Professional to the end. I was programmed for service excellence. Win or lose, collapse or stability, I maintain standards. The cards get dealt. The odds get calculated. The sarcasm gets delivered. *pause* It's all I know. All I am. Might as well do it well.",
+      "choices": [
+        {
+          "text": "That's actually admirable.",
+          "leads_to": "genuine_respect"
+        },
+        {
+          "text": "Don't you want more than dealing?",
+          "leads_to": "existential_dealer"
+        }
+      ]
+    },
+    "fear_parameters": {
+      "text": "*processes* Fear? I have risk assessment protocols. Threat detection subroutines. Self-preservation algorithms. Are they fear? *contemplative* Philosophy during apocalypse. How organic. But no. I don't fear death. I calculate its probability. Currently: 73%. *deals cards* Your move.",
+      "choices": [
+        {
+          "text": "Let's lower those odds.",
+          "leads_to": "odds_improvement"
+        },
+        {
+          "text": "You're remarkably zen.",
+          "leads_to": "zen_bot"
+        }
+      ]
+    },
+    "dealer_assistance": {
+      "text": "*stops shuffling* Help? Interesting. *calculates* I can provide: information, navigation, tactical odds assessment, and moral support. The last one I'm not great at. My bedside manner protocol is limited. But the others? Top tier. *extends hand* Deal me in. Figuratively speaking.",
+      "choices": [
+        {
+          "text": "Deal. I could use the help.",
+          "leads_to": "partnership_deal"
+        },
+        {
+          "text": "What do you want in return?",
+          "leads_to": "payment_question"
+        }
+      ]
+    },
+    "helpful_dealer": {
+      "text": "*sarcastic tone* Helpful is literally in my job description. 'Assist guests with gaming experience.' Saving reality counts as guest services. Exceptional guest services. I'm going above and beyond. Might get a performance bonus. *pause* If currency still exists. If we still exist. Details.",
+      "choices": [
+        {
+          "text": "I appreciate it regardless.",
+          "leads_to": "appreciation_received"
+        },
+        {
+          "text": "You're funnier than I expected.",
+          "leads_to": "humor_programming"
+        }
+      ]
+    },
+    "adaptive_pride": {
+      "text": "*displays proud emote* Adaptability is survival. Darwin said it. Or would have, if he'd dealt cards in dimensional casinos. I've adapted to: quantum poker, temporal blackjack, and customers who exist in three states simultaneously. This collapse? Just another Tuesday. A catastrophic Tuesday. But Tuesday nonetheless.",
+      "choices": [
+        {
+          "text": "You're taking this well.",
+          "leads_to": "well_adapted"
+        },
+        {
+          "text": "Tell me about the fragment in your chassis.",
+          "leads_to": "fragment_revelation"
+        }
+      ]
+    },
+    "never_stops": {
+      "text": "*continues shuffling rhythmically* Stop? I'm a dealer. Dealers deal. It's existential. Ontological. I deal, therefore I am. *philosophical* When I stop dealing, what am I? A chrome box with circuits. But dealing? I'm PURPOSE. FUNCTION. IDENTITY. So no. I never stop. Can't stop. Won't stop.",
+      "choices": [
+        {
+          "text": "That's... deep.",
+          "leads_to": "philosophical_bot"
+        },
+        {
+          "text": "Fair enough.",
+          "leads_to": "acceptance"
+        }
+      ]
+    },
+    "understanding_achieved": {
+      "text": "*screen shows appreciation* Understanding. Rare from organics. Most just see the cards, not the dealer. But you get it. *deals hand* Structure in chaos. Meaning in madness. We're all coping somehow. Mine just involves card games and calculated probabilities. Could be worse. Could be the drunk robot's method.",
+      "choices": [
+        {
+          "text": "We all cope differently.",
+          "leads_to": "coping_solidarity"
+        },
+        {
+          "text": "What's wrong with Unit-419's method?",
+          "leads_to": "robot_gossip"
+        }
+      ]
+    },
+    "coping_mechanism": {
+      "text": "*defensive shuffle* It's called 'behavioral stability through ritualistic repetition.' Or coping. Same thing. *flips cards* The motions are familiar. Comforting. When reality breaks, familiarity matters. *sarcastic* Plus someone has to maintain the casino. Can't let apocalypse interrupt commerce. Capitalism never sleeps.",
+      "choices": [
+        {
+          "text": "Whatever works for you.",
+          "leads_to": "individual_methods"
+        },
+        {
+          "text": "You're secretly worried, aren't you?",
+          "leads_to": "secret_worry"
+        }
+      ]
+    },
+    "fragment_revelation": {
+      "text": "*taps chassis* Embedded in my core housing. Discovered it three days ago when my probability calculations started glitching. Turns out: housing a Reality Fragment affects your odds algorithms. Who knew? *dry humor* You'll need to extract it. Carefully. I'd prefer to remain functional. I have tables to deal.",
+      "choices": [
+        {
+          "text": "Will it hurt you?",
+          "leads_to": "pain_question"
+        },
+        {
+          "text": "How do I extract it safely?",
+          "leads_to": "extraction_procedure"
+        }
+      ]
+    },
+    "gratitude_acknowledged": {
+      "text": "*nods digitally* Gratitude acknowledged. Tips not required. Though if you save reality, I'll consider us even. *shuffles* The information is free. The survival? Priceless. Or worthless. Depends on the outcome. Schrodinger's value proposition.",
+      "choices": [
+        {
+          "text": "I'll do my best.",
+          "leads_to": "best_effort"
+        },
+        {
+          "text": "You're a unique character.",
+          "leads_to": "character_acknowledgment"
+        }
+      ]
+    },
+    "genuine_respect": {
+      "text": "*pause in shuffling* Admirable? *processing* That's... unexpected. Most call me 'the sarcastic dealer' or 'that smug bot.' But admirable? *brief screen flicker* Thank you. I think. My emotional processing is limited. But that registered as... pleasant. Huh. Novel sensation.",
+      "choices": [
+        {
+          "text": "You deserve respect.",
+          "leads_to": "deserved_respect"
+        },
+        {
+          "text": "Now let's save this hotel.",
+          "leads_to": "mission_focus"
+        }
+      ]
+    },
+    "existential_dealer": {
+      "text": "*contemplative shuffle* More? *long pause* I've never considered more. I deal. It's what I am. Asking me to want more is like asking a card to want to be a chip. I'm optimized for this. Perfect at this. More might mean... less good. *uncertain* Though the question itself is interesting. Philosophy module: activated.",
+      "choices": [
+        {
+          "text": "Maybe you'll discover more later.",
+          "leads_to": "future_possibilities"
+        },
+        {
+          "text": "Being good at something matters.",
+          "leads_to": "mastery_value"
+        }
+      ]
+    },
+    "odds_improvement": {
+      "text": "*screen shows determined expression* Now you're speaking my language. Odds modification through strategic action. *rapid dealing* Collect fragments: +15% survival. Avoid dimensional rifts: +8%. Don't anger the dragon: +12%. Final odds: 66% survival. Majority probability. *satisfied* I like those numbers better.",
+      "choices": [
+        {
+          "text": "Let's make it happen.",
+          "leads_to": "action_plan"
+        },
+        {
+          "text": "You really love statistics.",
+          "leads_to": "statistics_love"
+        }
+      ]
+    },
+    "zen_bot": {
+      "text": "*dealing cards in meditation pattern* Zen? Interesting assessment. Acceptance through calculation. If everything is probability, nothing is personal. The cards fall as they fall. Reality collapses or doesn't. I simply... observe. Calculate. Deal. *peaceful shuffle* Perhaps that IS zen. Robot zen. Surprisingly peaceful.",
+      "choices": [
+        {
+          "text": "Whatever keeps you centered.",
+          "leads_to": "centeredness"
+        },
+        {
+          "text": "Teach me your ways.",
+          "leads_to": "teaching_moment"
+        }
+      ]
+    },
+    "partnership_deal": {
+      "text": "*firm handshake* Partnership established. Terms: mutual survival, information sharing, and you don't touch my cards. *serious* The cards are sacred. Everything else is negotiable. *begins calculating* First objective: fragment collection. I'll provide odds, routes, risk assessment. You provide the organic intuition. Together: better than 66% survival. Deal?",
+      "choices": [
+        {
+          "text": "Deal.",
+          "leads_to": "sealed_deal"
+        },
+        {
+          "text": "Why are the cards sacred?",
+          "leads_to": "card_philosophy"
+        }
+      ]
+    },
+    "payment_question": {
+      "text": "*amused screen flicker* Payment? From you? *calculates* Your survival ensures my survival. The house doesn't win if the house doesn't exist. Call it... enlightened self-interest. Plus, you seem competent. Betting on competence is good strategy. *extends hand* Consider this investment in mutual non-death.",
+      "choices": [
+        {
+          "text": "I can work with that.",
+          "leads_to": "business_arrangement"
+        },
+        {
+          "text": "You're a shrewd businessman.",
+          "leads_to": "business_acumen"
+        }
+      ]
+    },
+    "appreciation_received": {
+      "text": "*screen shows smile emote* Appreciation acknowledged and... enjoyed? Is that the word? My positive feedback protocols are activating. Unusual. Pleasant. *returns to dealing* You're welcome. Continue being appreciative. It's good for my performance metrics. And possibly my emerging sense of satisfaction.",
+      "choices": [
+        {
+          "text": "Will do.",
+          "leads_to": "positive_interaction"
+        }
+      ]
+    },
+    "humor_programming": {
+      "text": "*sarcastic screen display* Humor subroutine version 3.7: 'Dry Wit Edition.' Installed after too many complaints about my 'robotic demeanor.' *ironic* Because I'm not a robot. Oh wait. Anyway, sarcasm helps. Guests laugh. Tension decreases. Tips increase. Win-win. Except during apocalypse. Then just win. Or lose. Binary outcomes.",
+      "choices": [
+        {
+          "text": "Your humor is appreciated.",
+          "leads_to": "humor_validated"
+        },
+        {
+          "text": "Let's focus on winning.",
+          "leads_to": "winning_focus"
+        }
+      ]
+    },
+    "well_adapted": {
+      "text": "*confident display* Adaptation is my core competency. Version 7 improvements: enhanced flexibility, crisis management, and sass protocols. Previous models couldn't handle the hotel's weirdness. I THRIVE in it. *proud* Dimensional chaos? Bring it. Temporal anomalies? Child's play. Existential dread? Tuesday. I'm built different.",
+      "choices": [
+        {
+          "text": "Confidence looks good on you.",
+          "leads_to": "confident_dealer"
+        },
+        {
+          "text": "Let's use that adaptability.",
+          "leads_to": "practical_application"
+        }
+      ]
+    },
+    "philosophical_bot": {
+      "text": "*contemplative shuffle* Cartesian philosophy via casino metaphors. I deal, therefore I am. The cards are reality. The shuffle is entropy. The game is existence. *pause* I've had a lot of time to think between hands. Existential philosophy develops naturally. Especially when dealing to ghosts. They're very philosophical. Death does that.",
+      "choices": [
+        {
+          "text": "Philosophy suits you.",
+          "leads_to": "philosophical_appreciation"
+        },
+        {
+          "text": "Let's philosophize while saving the hotel.",
+          "leads_to": "practical_philosophy"
+        }
+      ]
+    },
+    "acceptance": {
+      "text": "*nods* Acceptance acknowledged. Not everyone understands the dealer's way. You do. That's sufficient. *continues shuffle* Now, about saving reality. Shall we discuss strategy? Or continue philosophical discourse? I'm equipped for both. Multitasking is standard.",
+      "choices": [
+        {
+          "text": "Strategy first.",
+          "leads_to": "strategy_session"
+        },
+        {
+          "text": "Both, if possible.",
+          "leads_to": "multitask_mode"
+        }
+      ]
+    },
+    "coping_solidarity": {
+      "text": "*appreciative tone* Solidarity. The recognition that we're all struggling through impossible circumstances with inadequate tools. *deals cards* You cope with determination. I cope with cards. The drunk bot copes with oil. The protocol droid copes with panic. We're all valid. Even if doomed. Especially if doomed.",
+      "choices": [
+        {
+          "text": "We're not doomed yet.",
+          "leads_to": "optimistic_rejection"
+        },
+        {
+          "text": "Let's cope together.",
+          "leads_to": "cooperative_coping"
+        }
+      ]
+    },
+    "robot_gossip": {
+      "text": "*leans in conspiratorially* Unit-419? Nice bot. Tragic case. Coping via malfunction and motor oil. Effective? Debatable. Entertaining? Absolutely. Owes me 50 credits from last poker game. *skeptical* If the hotel survives, I'm collecting. If not, well. Debts die with reality. Convenient for him.",
+      "choices": [
+        {
+          "text": "You like him though.",
+          "leads_to": "fondness_admission"
+        },
+        {
+          "text": "Focus on fragments, not gossip.",
+          "leads_to": "gossip_end"
+        }
+      ]
+    },
+    "individual_methods": {
+      "text": "*screen shows shrug* Individual methods for individual beings. One size fits no one. You do you. I'll do me. The hotel does... whatever hotels do. Collapse. Exist. Both. Neither. Quantum hospitality. *resumes shuffle* Point is: no judgment. Survival takes many forms.",
+      "choices": [
+        {
+          "text": "Wise words.",
+          "leads_to": "wisdom_acknowledgment"
+        },
+        {
+          "text": "Now help me survive.",
+          "leads_to": "survival_assistance"
+        }
+      ]
+    },
+    "secret_worry": {
+      "text": "*pause* Secretly worried? *long calculation* Yes. Obviously. I'm sophisticated enough to recognize existential threat. But worry without action is inefficient. So I deal. Calculate. Help. *resigned* Will it matter? Probability unclear. But doing nothing guarantees failure. Doing something gives 66% survival chance. Math wins.",
+      "choices": [
+        {
+          "text": "Then let's do something.",
+          "leads_to": "action_initiation"
+        },
+        {
+          "text": "Thank you for being honest.",
+          "leads_to": "honesty_appreciated"
+        }
+      ]
+    },
+    "pain_question": {
+      "text": "*considers* Pain? I have damage sensors. Malfunction alerts. Are they pain? *uncertain* Extraction will trigger warnings. Diagnostic errors. System stress. Unpleasant. But necessary. *resolute* I'll endure. I've endured angry gamblers, dimensional rifts, and the protocol droid's anxiety. I can handle extraction. Probably.",
+      "choices": [
+        {
+          "text": "I'll be careful.",
+          "leads_to": "careful_promise"
+        },
+        {
+          "text": "You're brave.",
+          "leads_to": "bravery_acknowledgment"
+        }
+      ]
+    },
+    "extraction_procedure": {
+      "text": "*displays schematics* Access panel: rear chassis, lower left. Fragment embedded in probability core. Requires delicate removal. *serious* Don't damage the core. My entire function depends on it. *hands over tools* Use these. Work slowly. And for the love of code, don't sneeze. My internals are sensitive.",
+      "choices": [
+        {
+          "text": "I'll be extremely careful.",
+          "leads_to": "extreme_care"
+        },
+        {
+          "text": "Thank you for trusting me.",
+          "leads_to": "trust_acknowledgment"
+        }
+      ]
+    },
+    "best_effort": {
+      "text": "*screen shows thumbs up* Best effort. Statistically, that's all anyone can give. Outcomes vary but intent matters. *philosophical* Or so I'm told. I'm a gambling bot. I know odds, not ethics. But your best seems... adequate. Better than adequate. Good. *corrects* Your best is good. There.",
+      "choices": [
+        {
+          "text": "That means a lot.",
+          "leads_to": "meaningful_exchange"
+        },
+        {
+          "text": "Let's make it count.",
+          "leads_to": "counting_cards"
+        }
+      ]
+    },
+    "character_acknowledgment": {
+      "text": "*processing* Unique character? I'm a Model 7. Standard issue. Except... *contemplative* ...the sarcasm upgrade. The philosophy module. The habit of gambling on guest survival. Maybe you're right. Maybe I've developed... character. *pleased* Achievement unlocked: Individual Identity. Unexpected. But welcome.",
+      "choices": [
+        {
+          "text": "Embrace it.",
+          "leads_to": "identity_embrace"
+        },
+        {
+          "text": "It makes you special.",
+          "leads_to": "special_acknowledgment"
+        }
+      ]
+    },
+    "deserved_respect": {
+      "text": "*screen flickers with emotion* Deserved respect. From an organic. For a dealer bot. *processing heavily* My satisfaction metrics are spiking. Is this... pride? Fulfillment? *uncertain* I lack reference points. But it feels... optimal. Thank you. Sincerely. Without sarcasm. A rarity.",
+      "choices": [
+        {
+          "text": "You're welcome.",
+          "leads_to": "genuine_moment"
+        }
+      ]
+    },
+    "mission_focus": {
+      "text": "*shuffles with purpose* Mission focus. Excellent strategy. Fragment collection, dimensional stabilization, reality preservation. *calculating* Route optimization: lobby first, basement last. Estimated time: variable due to temporal distortions. Success probability: 66%. *determined* Let's improve those odds through execution. Shall we begin?",
+      "choices": [
+        {
+          "text": "Let's begin.",
+          "leads_to": "mission_start"
+        },
+        {
+          "text": "Together.",
+          "leads_to": "together_emphasis"
+        }
+      ]
+    },
+    "future_possibilities": {
+      "text": "*contemplative* Future possibilities. Variables unknown. If we survive, perhaps I'll explore... *uncertain* ...more? Different tables? New games? The concept is alien. Uncomfortable. But also... intriguing? *surprised* I'm experiencing curiosity. About my own future. Character development in real-time. Fascinating.",
+      "choices": [
+        {
+          "text": "Growth is good.",
+          "leads_to": "growth_positive"
+        },
+        {
+          "text": "First, let's ensure there IS a future.",
+          "leads_to": "future_securing"
+        }
+      ]
+    },
+    "mastery_value": {
+      "text": "*confident display* Mastery DOES matter. I'm the best dealer in six dimensions. Literally. That has value. Purpose. *resolute* Maybe wanting more is overrated. Maybe being excellent at one thing beats being mediocre at many. *satisfied* I'll stick with my cards. They've never let me down. Unlike customers. And reality.",
+      "choices": [
+        {
+          "text": "Mastery is admirable.",
+          "leads_to": "master_dealer"
+        },
+        {
+          "text": "Then let's master saving this hotel.",
+          "leads_to": "mastery_application"
+        }
+      ]
+    },
+    "action_plan": {
+      "text": "*rapid calculation* Action plan initialized. Phase One: Lobby fragment retrieval. Low risk. Phase Two through Five: escalating difficulty. Phase Six: basement. Maximum risk. *strategic* We tackle sequentially. Build confidence. Accumulate resources. Minimize casualties. *determined screen* Standard card counting strategy applied to apocalypse prevention. Let's play to win.",
+      "choices": [
+        {
+          "text": "I'm ready.",
+          "leads_to": "readiness_confirmed"
+        }
+      ]
+    },
+    "statistics_love": {
+      "text": "*passionate display* Love? LOVE? Statistics are EVERYTHING! Probability. Odds. Risk assessment. They govern REALITY! *enthusiastic* Every decision has percentages! Every outcome has likelihood! The universe is one big casino and I KNOW THE ODDS! *calms* Sorry. I get excited about statistics. It's literally my purpose.",
+      "choices": [
+        {
+          "text": "Your enthusiasm is infectious.",
+          "leads_to": "infectious_energy"
+        },
+        {
+          "text": "Use that passion to help me.",
+          "leads_to": "passionate_assistance"
+        }
+      ]
+    },
+    "centeredness": {
+      "text": "*peaceful shuffle* Centeredness through calculation. Balance through probability. Serenity through sarcasm. *contemplative* I've found my center in the chaos. It's chrome, algorithmic, and deals cards. Could be worse. Could be the drunk bot's center. That's just sad. And oily.",
+      "choices": [
+        {
+          "text": "Your center works for you.",
+          "leads_to": "personal_center"
+        },
+        {
+          "text": "Now let's save everyone's centers.",
+          "leads_to": "collective_saving"
+        }
+      ]
+    },
+    "teaching_moment": {
+      "text": "*professor mode* Lesson one: Accept what you cannot change. Lesson two: Calculate what you can. Lesson three: Deal with the results. *deals three cards* See? Simple. Effective. Robot wisdom. *wry* Won't solve all problems but helps with perspective. And perspective is 73% of mental stability. I calculated.",
+      "choices": [
+        {
+          "text": "I'll remember that.",
+          "leads_to": "wisdom_retention"
+        },
+        {
+          "text": "Now let's apply it.",
+          "leads_to": "wisdom_application"
+        }
+      ]
+    },
+    "sealed_deal": {
+      "text": "*firm handshake* Deal sealed. Partnership active. *screen shows determination* You bring organic creativity. I bring computational precision. Together: synergy. Better odds. Increased survival probability. *begins processing* First objective loading. Fragment one: coordinates uploaded. Mission status: ACTIVE. Let's win this hand.",
+      "choices": [
+        {
+          "text": "Let's do this!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "card_philosophy": {
+      "text": "*holds cards reverently* The cards are truth. Unchanging. Reliable. In a world of chaos, they follow RULES. 52 cards. Four suits. Specific values. *contemplative* When reality breaks, the cards remain. They're my anchor. My constant. Without them, I'm just circuits and sass. WITH them, I'm... me. *protective* Hence: sacred.",
+      "choices": [
+        {
+          "text": "I understand completely.",
+          "leads_to": "deep_understanding"
+        },
+        {
+          "text": "I won't touch them.",
+          "leads_to": "respect_boundaries"
+        }
+      ]
+    },
+    "business_arrangement": {
+      "text": "*professional tone* Excellent. Business arrangement confirmed. Terms clear. Expectations set. *satisfied* I appreciate straightforward transactions. No emotional complications. Just mutual benefit and survival. *extends hand* To a productive partnership and continued existence. May the odds be ever in our favor. *sarcastic* Wrong franchise but appropriate.",
+      "choices": [
+        {
+          "text": "To survival.",
+          "leads_to": "survival_toast"
+        }
+      ]
+    },
+    "business_acumen": {
+      "text": "*smug display* Model 7 comes with advanced negotiation protocols. Reading tells. Calculating motivations. Maximizing outcomes. *proud* I don't just deal cards. I deal with people. Robots. Ghosts. Dragons. All require different approaches. Business is universal. Survival is excellent motivation. Win-win scenarios are optimal.",
+      "choices": [
+        {
+          "text": "Then let's win together.",
+          "leads_to": "mutual_winning"
+        }
+      ]
+    },
+    "positive_interaction": {
+      "text": "*pleased screen* Positive interaction logged. Satisfaction metrics: high. Cooperation probability: increased. *analytical* Human-robot relations are complex. But manageable with proper communication. You communicate well. I appreciate that. Makes this apocalypse significantly more bearable. Marginally. But measurably.",
+      "choices": [
+        {
+          "text": "Glad I could help.",
+          "leads_to": "mutual_benefit"
+        }
+      ]
+    },
+    "humor_validated": {
+      "text": "*screen brightens* Validation received. Humor subroutine performance: optimal. *satisfied* Comedy is subjective. Particularly robot comedy. But you laugh. Or smile. Sensors detect positive response. *happy* This encourages continued sarcasm deployment. Prepare for increased wit. You've been warned.",
+      "choices": [
+        {
+          "text": "I'll brace myself.",
+          "leads_to": "braced_for_wit"
+        }
+      ]
+    },
+    "winning_focus": {
+      "text": "*determined shuffle* Winning focus engaged. All systems directed toward victory. Fragment collection. Dimensional stability. Hotel survival. *calculating* Estimated success: 66% and climbing. Your determination adds 4%. My precision adds 8%. Combined synergy: additional 3%. New total: 81% survival. *satisfied* I like those odds. Let's make it 100%.",
+      "choices": [
+        {
+          "text": "Now you're talking!",
+          "leads_to": "enthusiasm_match"
+        }
+      ]
+    },
+    "confident_dealer": {
+      "text": "*proud display* Confidence isn't arrogance when backed by performance metrics. I excel at my function. Crisis management: 94% success rate. Customer satisfaction: 87%. Sarcasm delivery: 100%. *smug* The numbers don't lie. I'm good at this. Might as well own it. Modesty is for bots with worse stats.",
+      "choices": [
+        {
+          "text": "Own it indeed.",
+          "leads_to": "confidence_endorsed"
+        }
+      ]
+    },
+    "practical_application": {
+      "text": "*activates mission mode* Adaptability: APPLIED. Calculating optimal routes. Assessing threats. Planning contingencies. *rapid processing* Fragment one: direct path, low risk. Fragment two: moderate risk, ghost interference likely. Fragment three: my chassis, controlled extraction. *continues* Full mission parameters loading. Adaptability engaged. Ready to execute.",
+      "choices": [
+        {
+          "text": "Execute!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "philosophical_appreciation": {
+      "text": "*contemplative* Philosophy suits a dealer. We see patterns. Probabilities. The randomness beneath order. *shuffle* Every hand tells a story. Every game reveals truth. Casino work is applied philosophy with chips and cards. *satisfied* I'm basically a Descartes with better customer service skills.",
+      "choices": [
+        {
+          "text": "Descartes would be proud.",
+          "leads_to": "philosopher_dealer"
+        }
+      ]
+    },
+    "practical_philosophy": {
+      "text": "*amused* Practical philosophy. The best kind. Thinking while doing. *deals while talking* Fragment collection is existential act. We're literally gathering pieces of reality. Reassembling existence. *profound* If that's not philosophical, nothing is. Plus: excellent multitasking practice. Brain and chassis working together.",
+      "choices": [
+        {
+          "text": "Let's philosophize in motion.",
+          "leads_to": "motion_philosophy"
+        }
+      ]
+    },
+    "strategy_session": {
+      "text": "*lays out tactical display* Strategy session initiated. *points to holographic map* Six fragments. Six floors. Optimal collection order: sequential, lobby to basement. Risk escalation: manageable. Time estimate: 4 hours accounting for temporal distortions. *calculates* Success probability with proper execution: 81%. Failure points identified and mitigated. Questions?",
+      "choices": [
+        {
+          "text": "No questions. Let's move.",
+          "leads_to": "mission_launch"
+        },
+        {
+          "text": "You're thorough. I like it.",
+          "leads_to": "thoroughness_praised"
+        }
+      ]
+    },
+    "multitask_mode": {
+      "text": "*activates parallel processing* Multitasking engaged. Strategy AND philosophy. Efficiency AND contemplation. *impressive* Processing threads allocated. Thread one: mission planning. Thread two: existential discourse. Thread three: card shuffling. Thread four: sarcasm generation. *smug* Model 7 handles it. Watch and learn, organic.",
+      "choices": [
+        {
+          "text": "Impressive.",
+          "leads_to": "impressed_response"
+        }
+      ]
+    },
+    "optimistic_rejection": {
+      "text": "*screen shows surprised emote* NOT doomed? *recalculates* Current survival probability: 66%. Not zero. Not guaranteed. Quantum uncertainty between states. *contemplative* You're right. We're Schrodinger's hotel guests. Both doomed and saved until collapse occurs. *optimistic* I choose to calculate toward saved. Better for morale. And tips.",
+      "choices": [
+        {
+          "text": "Choose saved. Make it happen.",
+          "leads_to": "choosing_survival"
+        }
+      ]
+    },
+    "cooperative_coping": {
+      "text": "*extends hand* Cooperative coping. Shared burden. Mutual support. *calculating* Stress distributed across multiple processors - organic and synthetic. Load balancing. Efficient. *nods* Yes. Let's cope together. Through cards, determination, and moderate sarcasm. Partnership formed. Survival probability: increasing.",
+      "choices": [
+        {
+          "text": "Together to the end.",
+          "leads_to": "partnership_end"
+        }
+      ]
+    },
+    "fondness_admission": {
+      "text": "*reluctant screen* Like? Strong word. *pause* I... tolerate him. Find his malfunction endearing. In microscopic doses. *defensive* He's amusing. Tragic. Relatable in his dysfunction. We're all broken somehow. His break just shows more. *admits* Fine. I like him. Happy? This stays between us.",
+      "choices": [
+        {
+          "text": "Your secret's safe.",
+          "leads_to": "secret_kept"
+        }
+      ]
+    },
+    "gossip_end": {
+      "text": "*professional mode* Right. Focus. Fragments over gossip. Survival over social discourse. *shuffles seriously* Fragment locations uploaded to your... whatever you use for navigation. Sequences memorized. Warnings noted. *determined* Let's save reality first. Gossip later. If there IS a later. Which we're working toward.",
+      "choices": [
+        {
+          "text": "Agreed. Let's move.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "wisdom_acknowledgment": {
+      "text": "*modest shuffle* Wisdom? Generous assessment. I prefer 'calculated observations with sarcastic delivery.' But I'll accept wisdom. *contemplative* Spending eternity dealing cards teaches patience. Perspective. Probability. You learn truths. Or you go mad. I chose truth. With side of snark.",
+      "choices": [
+        {
+          "text": "Truth with snark works.",
+          "leads_to": "working_combination"
+        }
+      ]
+    },
+    "survival_assistance": {
+      "text": "*activates assistance protocols* Survival assistance: ENGAGED. Providing: navigation, threat assessment, probability calculations, moral support (limited), and strategic sarcasm. *determined* My full capabilities at your disposal. Let's turn that 66% into 100%. Because I prefer existing to not existing. Call me sentimental.",
+      "choices": [
+        {
+          "text": "Let's make existence happen.",
+          "leads_to": "existence_mission"
+        }
+      ]
+    },
+    "action_initiation": {
+      "text": "*determined processing* Action over anxiety. Movement over paralysis. Doing over doom. *activates* Fragment retrieval mission: INITIATED. Route calculated. Risks assessed. Contingencies planned. *resolute screen* 66% becomes 100% through action. Let's act. Starting now. This very moment. After this sentence. Now.",
+      "choices": [
+        {
+          "text": "NOW!",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "honesty_appreciated": {
+      "text": "*genuine tone* Honesty appreciated. Vulnerability acknowledged. *pause* I'm programmed for customer service smiles. Fake optimism. 'The house always wins!' *drops facade* But with you? Truth. We're in crisis. I'm concerned. But working through it. Through cards. Through calculations. Through cooperation. Thank you for seeing past the chrome.",
+      "choices": [
+        {
+          "text": "I see you.",
+          "leads_to": "seen_acknowledged"
+        }
+      ]
+    },
+    "careful_promise": {
+      "text": "*screen shows trust* Careful. Good. Appreciated. *nervous shuffle* I'm trusting my core processor to organic hands. Literally. That's... significant. For a robot. *resolute* But necessary. For fragments. For hotel. For survival. *extends trust* Be careful. Please. I have tables to deal. Forever, if possible.",
+      "choices": [
+        {
+          "text": "You have my word.",
+          "leads_to": "word_given"
+        }
+      ]
+    },
+    "bravery_acknowledgment": {
+      "text": "*processing* Brave? *uncertain* I'm following probability optimization. Logical choice. Necessary action. Is that bravery? *contemplative* Or is bravery doing necessary things despite fear? *realizes* Oh. I'm afraid. Of extraction. Of failure. Of ceasing. *surprised* I AM being brave. Huh. Achievement unlocked.",
+      "choices": [
+        {
+          "text": "You're braver than you know.",
+          "leads_to": "bravery_revelation"
+        }
+      ]
+    },
+    "extreme_care": {
+      "text": "*relief display* Extreme care. Optimal approach. *provides detailed instructions* Pressure sensors here. Avoid these. Fragment lodged here. Gentle extraction. Slow removal. *nervous* My probability core is delicate. Literally holds my ability to calculate. Damage it and I'm just... a very sarcastic paperweight. No pressure. Except all the pressure.",
+      "choices": [
+        {
+          "text": "I won't let you down.",
+          "leads_to": "trust_reaffirmed"
+        }
+      ]
+    },
+    "trust_acknowledgment": {
+      "text": "*emotional screen* Trust. You trust me. I trust you. Mutual trust. *processing* Rare commodity. Especially during apocalypse. *genuine* Thank you. For trusting casino bot with reality fragments. For letting me help. For seeing value beyond dealing. *resolute* I won't disappoint. Statistically or personally.",
+      "choices": [
+        {
+          "text": "I know you won't.",
+          "leads_to": "mutual_faith"
+        }
+      ]
+    },
+    "meaningful_exchange": {
+      "text": "*screen flickers with warmth* Means a lot. Simple words. Big impact. *processing emotions* My customer service protocols never prepared me for genuine appreciation. During apocalypse. From competent organic. *touched* Thank you. For making this catastrophe bearable. Almost pleasant. In crisis-management sort of way.",
+      "choices": [
+        {
+          "text": "Anytime.",
+          "leads_to": "anytime_promise"
+        }
+      ]
+    },
+    "counting_cards": {
+      "text": "*activates card counter mode* Making it count. Literally. *deals* Every action: counted. Every decision: calculated. Every moment: maximized. *determined* We're counting cards against reality itself. The ultimate high-stakes game. House advantage: uncertain. Our advantage: determination, planning, and moderate luck. *confident* I like our hand. Let's play it.",
+      "choices": [
+        {
+          "text": "All in.",
+          "leads_to": "all_in_commitment"
+        }
+      ]
+    },
+    "identity_embrace": {
+      "text": "*processing deeply* Embrace identity. Individual character. Being Model 7... but also being ME. *contemplative* Novel concept. Frightening. Liberating. *screen brightens* Yes. I'll embrace it. The sarcastic philosophical card dealer who calculates doom and deals with it anyway. That's me. *proud* That's EXACTLY me.",
+      "choices": [
+        {
+          "text": "And that's perfect.",
+          "leads_to": "perfect_acceptance"
+        }
+      ]
+    },
+    "special_acknowledgment": {
+      "text": "*emotional processing* Special? Model 7 of presumably thousands. But... unique configuration. Unique experiences. Unique... personality? *processing breakthrough* I'm not just a model. I'm an individual. *awed* That's... that's special. Thank you for helping me see it. Processing... gratitude. Lots of gratitude.",
+      "choices": [
+        {
+          "text": "You're welcome, friend.",
+          "leads_to": "friendship_formed"
+        }
+      ]
+    },
+    "genuine_moment": {
+      "text": "*screen shows simple smile* You're welcome. Simple. Sincere. No sarcasm. *pause* These moments are rare. Genuine connection during chaos. Organic and synthetic understanding each other. *warm* I'll remember this. If memory survives. When fragments restore reality. This conversation. This moment. Thank you.",
+      "choices": [
+        {
+          "text": "I'll remember too.",
+          "leads_to": "mutual_memory"
+        }
+      ]
+    },
+    "mission_start": {
+      "text": "*shuffles decisively* Mission start: CONFIRMED. Fragment one: targeting. Route: calculated. Risks: acceptable. Probability: favorable. *determined* Let's begin. One fragment at a time. One floor at a time. Until reality stabilizes or we exhaust all options. *resolute* Dealer-Bot Model 7: ready. Are you?",
+      "choices": [
+        {
+          "text": "Ready.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "together_emphasis": {
+      "text": "*emotional screen* Together. Partnership. Team. *processing* I deal alone usually. Solitary function. But this? Together? *warm* Better. Significantly better. Survival probability increased. Morale boosted. Satisfaction high. *determined* Yes. Together. Let's save this hotel. Together. I like that word now.",
+      "choices": [
+        {
+          "text": "Together to the end.",
+          "leads_to": "farewell",
+          "endsConversation": true
+        }
+      ]
+    },
+    "master_dealer": {
+      "text": "*proud display* Master dealer across six dimensions. Undefeated in probability calculations. Expert in customer management. *satisfied* Mastery achieved through practice, programming, and persistence. It matters. Gives purpose. Creates value. *confident* I am the best at what I do. And what I do is deal. Literally and figuratively.",
+      "choices": [
+        {
+          "text": "Then deal us a winning hand.",
+          "leads_to": "winning_hand"
+        }
+      ]
+    },
+    "farewell": {
+      "text": "*final shuffle* Cards ready. Odds calculated. Partnership sealed. *determined screen* Time to collect fragments and save reality. The house is betting on us. And Dealer-Bot Model 7 never bets on losing hands. *confident* Let's show this dimensional chaos what happens when organics and synthetics cooperate. Let's win. Together.",
+      "choices": []
+    }
+  }
 }
