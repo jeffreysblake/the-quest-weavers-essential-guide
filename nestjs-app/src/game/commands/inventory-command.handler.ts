@@ -26,6 +26,16 @@ export class InventoryCommandHandler {
       .map((itemId) => this.objectService.getObject(itemId))
       .filter(Boolean);
 
+    // Check if all items were filtered out (invalid IDs)
+    if (inventoryObjects.length === 0) {
+      return {
+        success: true,
+        type: 'inventory',
+        message: 'You are not carrying anything.',
+        items: [],
+      };
+    }
+
     // Format inventory list
     const itemList = inventoryObjects
       .map((item) => `- ${item.name}`)

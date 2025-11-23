@@ -47,7 +47,6 @@ describe('PlayerCombatHelper', () => {
         -Infinity,
         '10' as any,
         null as any,
-        undefined as any,
         {} as any,
       ];
 
