@@ -201,14 +201,24 @@ export class ObjectService {
     const object = this.getObject(id);
     if (!object) return false;
 
+    // Merge updates with existing object
+    const updatedObject = {
+      ...object,
+      ...updates,
+      id: object.id, // Preserve ID
+      type: 'object' as const, // Preserve type
+    };
+
+    // Update in local cache
+    this.objects.set(id, updatedObject);
+
     // Update the entity
     try {
-      return await this.entityService.updateEntity(id, {
-        ...updates,
-        type: 'object',
-      });
+      return await this.entityService.updateEntity(id, updatedObject);
     } catch (error) {
       this.logger.error(`Failed to update object entity ${id}:`, error);
+      // Rollback local cache on failure
+      this.objects.set(id, object);
       return false;
     }
   }

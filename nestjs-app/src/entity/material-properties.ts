@@ -21,6 +21,22 @@ const materialDefaults: Record<string, IMaterialProperties> = {
     brittleness: 3,
     resistances: { fire: 7, lightning: 2, force: 5, ice: 7 },
   },
+  steel: {
+    material: 'steel',
+    density: 7.85,
+    conductivity: 8,
+    flammability: 0,
+    brittleness: 2,
+    resistances: { fire: 8, lightning: 2, force: 5, ice: 8 },
+  },
+  iron: {
+    material: 'iron',
+    density: 7.87,
+    conductivity: 7,
+    flammability: 0,
+    brittleness: 3,
+    resistances: { fire: 6, lightning: 3, force: 4, ice: 6 },
+  },
   stone: {
     material: 'stone',
     density: 2.5,
